@@ -6,6 +6,8 @@
   <title>@yield('title', 'Dummy')</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Tailwind Styling -->
+  <link rel="stylesheet" href="../../../css/app.css">
   <!-- Bootstrap -->
   <link rel="stylesheet" href="{{ asset('themes/plugins/bootstrap/css/bootstrap.min.css') }}">
   <!-- Font Awesome -->
