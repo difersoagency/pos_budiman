@@ -107,3 +107,8 @@ window.addEventListener("load", () => {
     }
   });
 });
+
+// Datepicker
+document.querySelector('.input-daterange input').each(function() {
+  this.datepicker('clearDates');
+});

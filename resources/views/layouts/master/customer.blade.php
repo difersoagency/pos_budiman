@@ -11,18 +11,18 @@
                     <!-- Dropdown -->
                     <div class="dropdown tw-mb-7 md:tw-mb-0">
                         <button class="btn tw-text-prim-white tw-bg-prim-black dropdown-toggle tw-text-sm md:tw-w-fit tw-w-full" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Lihat Tipe Produk
+                            Pilh Kota
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="#">Ban</a>
-                            <a class="dropdown-item" href="#">Lampu</a>
-                            <a class="dropdown-item" href="#">Rem</a>
+                            <a class="dropdown-item" href="#">Surabaya</a>
+                            <a class="dropdown-item" href="#">Bandung</a>
+                            <a class="dropdown-item" href="#">Jakarta</a>
                         </div>
                     </div>
                     <!-- End Dropdown  -->
                     <!-- START : Search Bar -->
                     <div class="search-bar tw-text-right items">
-                        <input type="text" name="" id="" placeholder="Cari Barang" class="tw-bg-transparent tw-w-[90%] md:tw-w-[60%] tw-border-x-0 tw-border-t-0 tw-border-b-prim-blue tw-outline-none focus:tw-border-b-prim-red tw-transition-all">  
+                        <input type="text" name="" id="" placeholder="Cari Data Pelanggan" class="tw-bg-transparent tw-w-[90%] md:tw-w-[60%] tw-border-x-0 tw-border-t-0 tw-border-b-prim-blue tw-outline-none focus:tw-border-b-prim-red tw-transition-all">  
                         <a href="" class="tw-w-fit">
                             <i class="fa fa-search tw-text-prim-red ml-2"></i>
                         </a>
@@ -32,22 +32,12 @@
                 </div>
               <div class="card tw-w-full tw-px-6 tw-py-5 tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-items-center">
                 <div class="tw-w-full">
-                    <h1 class="tw-m-0 tw-text-2xl tw-font-bold">List Barang</h1>
+                    <h1 class="tw-m-0 tw-text-2xl tw-font-bold">List Pelanggan</h1>
                 </div>
                 <div class="tw-text-right tw-grid tw-grid-cols-1 md:tw-flex tw-mx-auto md:tw-mx-0 md:tw-ml-auto tw-w-full md:tw-w-fit tw-mt-4 md:tw-mt-0">
-                    <div class="dropdown tw-mb-4 md:tw-mr-3">
-                        <button class="btn tw-text-prim-black tw-w-full tw-bg-prim-white dropdown-toggle tw-text-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Pilih Merk
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="#">Honda</a>
-                            <a class="dropdown-item" href="#">Suzuki</a>
-                            <a class="dropdown-item" href="#">Yamaha</a>
-                        </div>
-                    </div>
-                    <div class="dropdown tw-mb-4 tw-w-full md:tw-w-fit">
+                    <div class="tw-mb-4 tw-w-full md:tw-w-fit">
                         <button class="btn tw-text-prim-white tw-bg-prim-red tw-text-sm tw-w-full md:tw-w-fit" type="button" id="addItemButton">
-                            + Tambah Barang
+                            + Tambah Pelanggan
                         </button>
                     </div>
                 </div>
@@ -58,28 +48,20 @@
                         <table class="table item-table">
                             <tbody>
                                 <tr>
-                                    <th scope="row" class="tw-bg-gray-100">Kode</th>
-                                    <td>LM001</td>
+                                    <th scope="row" class="tw-bg-gray-100 tw-w-[50%]">Nama Customer</th>
+                                    <td>Budiman</td>
                                 </tr>
                                 <tr>
-                                    <th scope="row" class="tw-bg-gray-100">Nama Barang</th>
-                                    <td>Lampu Mobil</td>
+                                    <th scope="row" class="tw-bg-gray-100 tw-w-[50%]">Alamat</th>
+                                    <td>Jl. Padepokan 55</td>
                                 </tr>
                                 <tr>
-                                    <th scope="row" class="tw-bg-gray-100">Tipe</th>
-                                    <td>Lampu</td>
+                                    <th scope="row" class="tw-bg-gray-100 tw-w-[50%]">Kota</th>
+                                    <td>Surabaya</td>
                                 </tr>
                                 <tr>
-                                    <th scope="row" class="tw-bg-gray-100">Merk</th>
-                                    <td>Honda</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="tw-bg-gray-100">Harga Beli</th>
-                                    <td>Rp.2.500.000</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="tw-bg-gray-100">Harga Jual</th>
-                                    <td>Rp.12.000.000</td>
+                                    <th scope="row" class="tw-bg-gray-100 tw-w-[50%]">No. Telepon</th>
+                                    <td>099173978698</td>
                                 </tr>
                                 <tr class="tw-py-5">
                                     <td class="tw-border-none tw-py-5">
@@ -99,28 +81,20 @@
                         <table class="table item-table">
                             <tbody>
                                 <tr>
-                                    <th scope="row" class="tw-bg-gray-100">Kode</th>
-                                    <td>LM001</td>
+                                    <th scope="row" class="tw-bg-gray-100 tw-w-[50%]">Nama Customer</th>
+                                    <td>Wisnu</td>
                                 </tr>
                                 <tr>
-                                    <th scope="row" class="tw-bg-gray-100">Nama Barang</th>
-                                    <td>Lampu Mobil</td>
+                                    <th scope="row" class="tw-bg-gray-100 tw-w-[50%]">Alamat</th>
+                                    <td>Puri Jaya Selatan Blok A 22</td>
                                 </tr>
                                 <tr>
-                                    <th scope="row" class="tw-bg-gray-100">Tipe</th>
-                                    <td>Lampu</td>
+                                    <th scope="row" class="tw-bg-gray-100 tw-w-[50%]">Kota</th>
+                                    <td>Surabaya</td>
                                 </tr>
                                 <tr>
-                                    <th scope="row" class="tw-bg-gray-100">Merk</th>
-                                    <td>Honda</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="tw-bg-gray-100">Harga Beli</th>
-                                    <td>Rp.2.500.000</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="tw-bg-gray-100">Harga Jual</th>
-                                    <td>Rp.12.000.000</td>
+                                    <th scope="row" class="tw-bg-gray-100 tw-w-[50%]">No. Telepon</th>
+                                    <td>099173978698</td>
                                 </tr>
                                 <tr class="tw-py-5">
                                     <td class="tw-border-none tw-py-5">
@@ -140,28 +114,20 @@
                         <table class="table item-table">
                             <tbody>
                                 <tr>
-                                    <th scope="row" class="tw-bg-gray-100">Kode</th>
-                                    <td>LM001</td>
+                                    <th scope="row" class="tw-bg-gray-100 tw-w-[50%]">Nama Customer</th>
+                                    <td>Anton</td>
                                 </tr>
                                 <tr>
-                                    <th scope="row" class="tw-bg-gray-100">Nama Barang</th>
-                                    <td>Lampu Mobil</td>
+                                    <th scope="row" class="tw-bg-gray-100 tw-w-[50%]">Alamat</th>
+                                    <td>Jl. Padepokan 55</td>
                                 </tr>
                                 <tr>
-                                    <th scope="row" class="tw-bg-gray-100">Tipe</th>
-                                    <td>Lampu</td>
+                                    <th scope="row" class="tw-bg-gray-100 tw-w-[50%]">Kota</th>
+                                    <td>Surabaya</td>
                                 </tr>
                                 <tr>
-                                    <th scope="row" class="tw-bg-gray-100">Merk</th>
-                                    <td>Honda</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="tw-bg-gray-100">Harga Beli</th>
-                                    <td>Rp.2.500.000</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="tw-bg-gray-100">Harga Jual</th>
-                                    <td>Rp.12.000.000</td>
+                                    <th scope="row" class="tw-bg-gray-100 tw-w-[50%]">No. Telepon</th>
+                                    <td>099173978698</td>
                                 </tr>
                                 <tr class="tw-py-5">
                                     <td class="tw-border-none tw-py-5">
@@ -177,6 +143,7 @@
                                 </tr>
                             </tbody>
                         </table>
+
                     </div>
 
                     <!-- START : Pagination -->
@@ -186,12 +153,6 @@
                                 <a class="page-link pagination-button" href="#" tabindex="-1" id="prev-btn">Previous</a>
                             </li>
                             <ul class="pagination" id="pagination-numbers">
-                            <!-- <li class="page-item">
-                                <a class="page-link tw-text-prim-black" href="#">2</a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link tw-text-prim-black" href="#">3</a>
-                            </li>    -->
                             </ul>
                                                   
                             <li class="page-item ">
@@ -206,26 +167,22 @@
                 <!-- START: Table Tablet + Desktop -->
                 <div class="table-barang tw-mt-10 tw-col-span-2 tw-hidden md:tw-block">
                     <table class="table table-striped">
-                        <thead class="tw-w-full">
+                        <thead class="tw-w-full tw-bg-prim-blue tw-table tw-table-fixed">
                             <tr class="">
-                            <th class="tw-font-normal tw-border-b-prim-black tw-text-prim-black tw-border-t-0">Kode</th>
-                            <th class="tw-font-normal tw-border-b-prim-black tw-text-prim-black tw-border-t-0">Nama Barang</th>
-                            <th class="tw-font-normal tw-border-b-prim-black tw-text-prim-black tw-border-t-0">Tipe</th>
-                            <th class="tw-font-normal tw-border-b-prim-black tw-text-prim-black tw-border-t-0">Merk</th>
-                            <th class="tw-font-normal tw-border-b-prim-black tw-text-prim-black tw-border-t-0">Harga Beli</th>
-                            <th class="tw-font-normal tw-border-b-prim-black tw-text-prim-black tw-border-t-0">Harga Jual</th>
-                            <th class="tw-font-normal tw-border-b-prim-black tw-text-prim-black tw-border-t-0 col-span-2">Action</th>
+                            <th class="tw-font-bold tw-px-3 tw-text-pri tw-border-b-prim-black tw-text-prim-white tw-border-t-0">Nama Customer</th>
+                            <th class="tw-font-bold tw-px-3 tw-text-pri tw-border-b-prim-black tw-text-prim-white tw-border-t-0">Alamat</th>
+                            <th class="tw-font-bold tw-px-3 tw-text-pri tw-border-b-prim-black tw-text-prim-white tw-border-t-0">Kota</th>
+                            <th class="tw-font-bold tw-px-3 tw-text-pri tw-border-b-prim-black tw-text-prim-white tw-border-t-0">No. Telepon</th>
+                            <th class="tw-font-bold tw-px-3 tw-text-pri tw-border-b-prim-black tw-text-prim-white tw-border-t-0 col-span-2">Action</th>
                             </tr>
                         </thead>
-                        <tbody class="tw-h-44 tw-w-full tw-overflow-y-scroll ">
-                            <tr class=" tw-w-full">
-                                <td class="tw-font-normal ">LM001</td>
-                                <td class="">Lampu Mobil</td>
-                                <td class="">Lampu</td>
-                                <td class="">Honda</td>
-                                <td class="">Rp.2.500.000</td>
-                                <td class="">Rp.12.000.000</td>
-                                <td class="">
+                        <tbody class="tw-block tw-max-h-96 tw-w-full tw-overflow-y-scroll">
+                            <tr class=" tw-w-full tw-table tw-table-fixed">
+                                <td class="tw-px-3 tw-font-normal ">Budiman</td>
+                                <td class="tw-px-3">Jl.Padepokan 55</td>
+                                <td class="tw-px-3">Surabaya</td>
+                                <td class="tw-px-3">08992993123</td>
+                                <td class="tw-px-3">
                                     <div class="grid grid-cols-2">
                                         <a href="" class="mr-4">
                                             <i class="fa fa-pen tw-text-prim-blue"></i>
@@ -236,14 +193,12 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr class=" tw-w-full">
-                                <td class="tw-font-normal ">LM001</td>
-                                <td class="">Lampu Mobil</td>
-                                <td class="">Lampu</td>
-                                <td class="">Honda</td>
-                                <td class="">Rp.2.500.000</td>
-                                <td class="">Rp.12.000.000</td>
-                                <td class="">
+                            <tr class=" tw-w-full tw-table tw-table-fixed">
+                                <td class="tw-px-3 tw-font-normal ">Wisnu</td>
+                                <td class="tw-px-3">Jl.Palangka Gg.VII</td>
+                                <td class="tw-px-3">Banyuwangi</td>
+                                <td class="tw-px-3">08123424321</td>
+                                <td class="tw-px-3">
                                     <div class="grid grid-cols-2">
                                         <a href="" class="mr-4">
                                             <i class="fa fa-pen tw-text-prim-blue"></i>
@@ -254,6 +209,39 @@
                                     </div>
                                 </td>
                             </tr>
+                            <tr class=" tw-w-full tw-table tw-table-fixed">
+                                <td class="tw-px-3 tw-font-normal ">Anton</td>
+                                <td class="tw-px-3">Puri Indah Selatan Blok XX No. 12</td>
+                                <td class="tw-px-3">Malang</td>
+                                <td class="tw-px-3">012381723987</td>
+                                <td class="tw-px-3">
+                                    <div class="grid grid-cols-2">
+                                        <a href="" class="mr-4">
+                                            <i class="fa fa-pen tw-text-prim-blue"></i>
+                                        </a>
+                                        <a href="">
+                                            <i class="fa fa-trash tw-text-prim-red"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class=" tw-w-full tw-table tw-table-fixed">
+                                <td class="tw-px-3 tw-font-normal ">Lulu Tobing</td>
+                                <td class="tw-px-3">Jl. Harapan Indah Semata 12</td>
+                                <td class="tw-px-3">Jombang</td>
+                                <td class="tw-px-3">02839163</td>
+                                <td class="tw-px-3">
+                                    <div class="grid grid-cols-2">
+                                        <a href="" class="mr-4">
+                                            <i class="fa fa-pen tw-text-prim-blue"></i>
+                                        </a>
+                                        <a href="">
+                                            <i class="fa fa-trash tw-text-prim-red"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        
                         </tbody>
                     </table>
                 </div>

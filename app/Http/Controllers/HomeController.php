@@ -45,6 +45,44 @@ class HomeController extends Controller
 
     public function master_barang()
     {
-        return view('barang');
+        return view('layouts.master.barang');
+    }
+
+    public function master_customer()
+    {
+        return view('layouts.master.customer');
+    }
+    public function master_supplier()
+    {
+        return view('layouts.master.supplier');
+    }
+    public function master_user()
+    {
+        return view('layouts.master.user');
+    }
+    public function master_promo()
+    {
+        return view('layouts.master.promo');
+    }
+    public function master_merk()
+    {
+        return view('layouts.master.merk');
+    }
+    public function master_tipe()
+    {
+        return view('layouts.master.tipe');
+    }
+    public function master_jasa()
+    {
+        return view('layouts.master.jasa');
+    }
+    public function master_pegawai()
+    {
+        return view('layouts.master.pegawai');
+    }
+
+    public function master_satuan()
+    {
+        return view('layouts.master.satuan');
     }
 }
