@@ -42,4 +42,9 @@ class HomeController extends Controller
     {
         return view('home_kasir');
     }
+
+    public function master_barang()
+    {
+        return view('barang');
+    }
 }
