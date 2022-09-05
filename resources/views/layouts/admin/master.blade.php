@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>@yield('title', 'Dummy')</title>
+  <title>@yield('title', 'Dashboard Owner PT.MBM')</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Tailwind Styling -->
-  <link rel="stylesheet" href="../../../css/app.css">
+  <link rel="stylesheet" href="{{asset('assets/css/tailwind.css')}}">
   <!-- Bootstrap -->
   <link rel="stylesheet" href="{{ asset('themes/plugins/bootstrap/css/bootstrap.min.css') }}">
   <!-- Font Awesome -->
@@ -34,7 +34,7 @@
   @font-face
   {
     font-family: 'Poppins';
-    src: url('{{asset('themes/font/Poppins/Poppins-Regular.ttf')}});
+    src: url('{{asset("themes/font/Poppins/Poppins-Regular.ttf")}}');
   }
   aside{
     background: #8199AE;
@@ -64,9 +64,9 @@
 
   @yield('content')
 
-  <footer class="main-footer">
-    <span>PT Dummy</span>
-    <span class="float-right"><strong> Sistem Dummy  &copy; <script>document.write(new Date().getFullYear());</script> .</strong></span>
+  <footer class="main-footer tw-bg-prim-blue">
+    <span class="tw-font-bold tw-text-prim-white">PT Maju Bersama Motor</span>
+    <!-- <span class="float-right"><strong> PT.MBM  &copy; <script>document.write(new Date().getFullYear());</script> .</strong></span> -->
   </footer>
 
   <!-- Control Sidebar -->
@@ -77,6 +77,8 @@
 </div>
 <!-- ./wrapper -->
 
+<!-- Custom JS -->
+<script src="{{asset('assets/js/custom.js')}}"></script>
 <!-- jQuery -->
 <script src="{{ asset('themes/plugins/jquery/jquery.min.js')}}"></script>
 <!-- jQuery UI 1.11.4 -->
