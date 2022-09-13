@@ -32,8 +32,4 @@ class Barang extends Model
         return $this->hasMany(Koreksi::class, 'kode_barang');
     }
     
-    public function Koreksi()
-    {
-        return $this->hasMany(Koreksi::class, 'kode_barang');
-    }
 }

@@ -9,7 +9,7 @@ class LevelUser extends Model
 {
     use HasFactory;
     protected $table = 'level_user';
-    protected $fillable = ['nama'];
+    protected $fillable = ['kode_level', 'nama_level'];
 
     public function User()
     {

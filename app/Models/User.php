@@ -18,10 +18,11 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'kode_user',
+        'kode_pegawai',
         'email',
         'password',
-        'level_user_id',
+        'level_user',
     ];
 
     /**
@@ -45,12 +46,16 @@ class User extends Authenticatable
 
     public function LevelUser()
     {
-        return $this->belongsTo(LevelUser::class);
+        return $this->belongsTo(LevelUser::class, 'level_user');
     }
 
+    public function Pegawai()
+    {
+        return $this->belongsTo(Pegawai::class, 'kode_pegawai');
+    }
 
     public function hasRole($role){
-       $data = LevelUser::where('nama',$role)->limit(1);
+       $data = LevelUser::where('kode_user',$role)->limit(1);
        return $data->id;
     }
 }
