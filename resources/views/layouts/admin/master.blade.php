@@ -6,6 +6,8 @@
   <title>@yield('title', 'Dashboard Owner PT.MBM')</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Datatable CDN -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.12.1/af-2.4.0/b-2.2.3/b-colvis-2.2.3/b-html5-2.2.3/date-1.1.2/fh-3.2.4/r-2.3.0/sc-2.0.7/sb-1.3.4/sp-2.0.2/sl-1.4.0/datatables.min.css"/>
   <!-- Tailwind Styling -->
   <link rel="stylesheet" href="{{asset('assets/css/tailwind.css')}}">
   <!-- Bootstrap -->
@@ -14,6 +16,7 @@
   <link rel="stylesheet" href="{{ asset('themes/plugins/fontawesome-free/css/all.min.css') }}">
    <!-- Datatable -->
   <link href="{{ asset('themes/plugins/datatables/DataTables-1.11.4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
+  
 
    <!-- Select2 -->
    <link rel="stylesheet" href="{{ asset('themes/plugins/select2/css/select2.min.css') }}">
@@ -64,7 +67,7 @@
 
   @yield('content')
 
-  <footer class="main-footer tw-bg-prim-blue">
+  <footer class="main-footer tw-bg-prim-blue tw-z-40">
     <span class="tw-font-bold tw-text-prim-white">PT Maju Bersama Motor</span>
     <!-- <span class="float-right"><strong> PT.MBM  &copy; <script>document.write(new Date().getFullYear());</script> .</strong></span> -->
   </footer>
@@ -77,8 +80,7 @@
 </div>
 <!-- ./wrapper -->
 
-<!-- Custom JS -->
-<script src="{{asset('assets/js/custom.js')}}"></script>
+
 <!-- jQuery -->
 <script src="{{ asset('themes/plugins/jquery/jquery.min.js')}}"></script>
 <!-- jQuery UI 1.11.4 -->
@@ -87,6 +89,11 @@
 <script>
   $.widget.bridge('uibutton', $.ui.button)
 </script>
+<!--Datatable CDN JS -->
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.12.1/af-2.4.0/b-2.2.3/b-colvis-2.2.3/b-html5-2.2.3/date-1.1.2/fh-3.2.4/r-2.3.0/sc-2.0.7/sb-1.3.4/sp-2.0.2/sl-1.4.0/datatables.min.js"></script>
+<!-- Custom JS -->
+<script src="{{asset('assets/js/custom.js')}}"></script>
+
 <!-- Bootstrap 4 -->
 <script src="{{ asset('themes/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <!-- Select2 -->
