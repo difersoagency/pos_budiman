@@ -108,7 +108,8 @@ window.addEventListener("load", () => {
   });
 });
 
-// Datepicker
-document.querySelector('.input-daterange input').each(function() {
-  this.datepicker('clearDates');
+// Datatable
+
+$(document).ready(function () {
+  $('#example').DataTable();
 });

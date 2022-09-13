@@ -8,18 +8,10 @@
           <div class="row">
             <div class="col-lg-12">
               <div class="card tw-w-full tw-px-6 tw-py-5 tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-items-center">
-                <div class="tw-w-full">
+                <div class="tw-w-full tw-col-span-2 md:tw-col-span-1">
                     <h1 class="tw-m-0 tw-text-2xl tw-font-bold">Daftar Pegawai</h1>
                 </div>
-                <div class="tw-text-right tw-items-center tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-mx-auto md:tw-mx-0 md:tw-ml-auto tw-w-full md:tw-w-fit tw-mt-4 md:tw-mt-0">
-                    <!-- START : Search Bar -->
-                    <div class="search-bar tw-text-right items md:tw-mr-5">
-                        <input type="text" name="" id="" placeholder="Cari Nama Pegawai" class="tw-bg-transparent tw-w-[90%] md:tw-w-[80%] tw-mb-4 md:tw-mb-0 tw-border-x-0 tw-border-t-0 tw-border-b-prim-blue tw-outline-none focus:tw-border-b-prim-red tw-transition-all">  
-                        <a href="" class="tw-w-fit">
-                            <i class="fa fa-search tw-text-prim-red ml-2"></i>
-                        </a>
-                    </div>
-                    <!-- END : Search Bar -->
+                <div class="tw-text-right tw-items-center tw-grid tw-grid-cols-1 tw-mx-auto md:tw-mx-0 md:tw-ml-auto tw-w-full md:tw-w-fit tw-mt-4 md:tw-mt-0">
                     <div class="tw-w-full md:tw-w-fit md:tw-ml-auto">
                         <button class="btn tw-text-prim-white tw-bg-prim-red tw-text-sm tw-w-full md:tw-w-fit" type="button" id="addItemButton">
                             + Tambah Pegawai
@@ -27,151 +19,74 @@
                     </div>
                 </div>
 
-                <!-- START: Table Mobile View -->
-                <div class="table-barang-mobile tw-mt-5 md:tw-hidden">
-                    <div class="list-barang" data-current-page="1">
-                        <table class="table item-table">
-                            <tbody>
-                                <tr>
-                                    <th scope="row" class="tw-bg-gray-100 tw-w-[50%]">Nama</th>
-                                    <td>Wisnu</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="tw-bg-gray-100 tw-w-[50%]">Jabatan</th>
-                                    <td>Teknisi</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="tw-bg-gray-100 tw-w-[50%]">No. Telepon</th>
-                                    <td>0123176418763</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="tw-bg-gray-100 tw-w-[50%]">Tanggal Aktif</th>
-                                    <td>12/02/2021</td>
-                                </tr>
-                                <tr class="tw-py-5">
-                                    <td class="tw-border-none tw-py-5">
-                                        <a href="" class="tw-px-6 tw-py-2 tw-mt-10 tw-bg-prim-blue tw-rounded-sm tw-text-prim-white tw-w-full">
-                                            Edit
-                                        </a>
-                                    </td>
-                                    <td class="tw-border-none tw-py-5">
-                                        <a href="" class="tw-px-6 tw-py-2 tw-bg-prim-red tw-rounded-sm tw-text-prim-white tw-w-full">
-                                            Hapus
-                                        </a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <table class="table item-table">
-                            <tbody>
-                                <tr>
-                                    <th scope="row" class="tw-bg-gray-100 tw-w-[50%]">Nama</th>
-                                    <td>Wisnu</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="tw-bg-gray-100 tw-w-[50%]">Jabatan</th>
-                                    <td>Teknisi</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="tw-bg-gray-100 tw-w-[50%]">No. Telepon</th>
-                                    <td>0123176418763</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="tw-bg-gray-100 tw-w-[50%]">Tanggal Aktif</th>
-                                    <td>12/02/2021</td>
-                                </tr>
-                                <tr class="tw-py-5">
-                                    <td class="tw-border-none tw-py-5">
-                                        <a href="" class="tw-px-6 tw-py-2 tw-mt-10 tw-bg-prim-blue tw-rounded-sm tw-text-prim-white tw-w-full">
-                                            Edit
-                                        </a>
-                                    </td>
-                                    <td class="tw-border-none tw-py-5">
-                                        <a href="" class="tw-px-6 tw-py-2 tw-bg-prim-red tw-rounded-sm tw-text-prim-white tw-w-full">
-                                            Hapus
-                                        </a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <table class="table item-table">
-                            <tbody>
-                                <tr>
-                                    <th scope="row" class="tw-bg-gray-100 tw-w-[50%]">Nama</th>
-                                    <td>Wisnu</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="tw-bg-gray-100 tw-w-[50%]">Jabatan</th>
-                                    <td>Teknisi</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="tw-bg-gray-100 tw-w-[50%]">No. Telepon</th>
-                                    <td>0123176418763</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="tw-bg-gray-100 tw-w-[50%]">Tanggal Aktif</th>
-                                    <td>12/02/2021</td>
-                                </tr>
-                                <tr class="tw-py-5">
-                                    <td class="tw-border-none tw-py-5">
-                                        <a href="" class="tw-px-6 tw-py-2 tw-mt-10 tw-bg-prim-blue tw-rounded-sm tw-text-prim-white tw-w-full">
-                                            Edit
-                                        </a>
-                                    </td>
-                                    <td class="tw-border-none tw-py-5">
-                                        <a href="" class="tw-px-6 tw-py-2 tw-bg-prim-red tw-rounded-sm tw-text-prim-white tw-w-full">
-                                            Hapus
-                                        </a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-
+               <!-- START: Table Mobile View -->
+               <div class="table-barang-mobile tw-mt-5 md:tw-hidden">
+                    <div class="list-barang" data-current-page="1"> 
                         
-                        
-
                     </div>
-
-                    <!-- START : Pagination -->
-                    <nav aria-label="..." class="pagination-container">
-                        <ul class="pagination">
-                            <li class="page-item disabled">
-                                <a class="page-link pagination-button" href="#" tabindex="-1" id="prev-btn">Previous</a>
-                            </li>
-                            <ul class="pagination" id="pagination-numbers">
-                            </ul>
-                                                  
-                            <li class="page-item ">
-                                <a class="page-link tw-text-prim-white tw-bg-prim-blue pagination-button" href="#" id="next-btn">Next</a>
-                            </li>
-                        </ul>
-                    </nav>
-                    <!-- END : Pagination -->
                 </div>
                 <!-- END: Table Mobile View -->
 
                 <!-- START: Table Tablet + Desktop -->
-                <div class="table-barang tw-mt-10 tw-col-span-2 tw-hidden md:tw-block">
-                    <table class="table table-striped">
-                        <thead class="tw-w-full tw-bg-prim-blue tw-table tw-table-fixed">
-                            <tr class="">
-                            <th class="tw-font-bold tw-px-3 tw-text-pri tw-border-b-prim-black tw-text-prim-white tw-border-t-0">Nama</th>
-                            <th class="tw-font-bold tw-px-3 tw-text-pri tw-border-b-prim-black tw-text-prim-white tw-border-t-0">Jabatan</th>
-                            <th class="tw-font-bold tw-px-3 tw-text-pri tw-border-b-prim-black tw-text-prim-white tw-border-t-0">No. Telepon</th>
-                            <th class="tw-font-bold tw-px-3 tw-text-pri tw-border-b-prim-black tw-text-prim-white tw-border-t-0">Tanggal Aktif</th>
-                            <th class="tw-font-bold tw-px-3 tw-text-pri tw-border-b-prim-black tw-text-prim-white tw-border-t-0 col-span-2">Action</th>
+                <div class="table-barang tw-mt-5 tw-col-span-2" data-current-page="1">
+                    <table id="example" class="table table-bordered responsive nowrap" style="width:100%">
+                        <thead class="tw-bg-prim-blue">
+                            <tr>
+                                <th class="tw-text-prim-white">No. Pegawai</th>
+                                <th class="tw-text-prim-white">Nama</th>
+                                <th class="tw-text-prim-white">Jenis Kelamin</th>
+                                <th class="tw-text-prim-white">Divisi</th>
+                                <th class="tw-text-prim-white">Telepon</th>
+                                <th class="tw-text-prim-white">Email</th>
+                                <th class="tw-text-prim-white">Action</th>
                             </tr>
                         </thead>
-                        <tbody class="tw-block tw-max-h-96 tw-w-full tw-overflow-y-scroll">
-                            <tr class=" tw-w-full tw-table tw-table-fixed">
-                                <td class="tw-px-3 tw-font-normal ">Wisnu</td>
-                                <td class="tw-px-3">Teknisi</td>
-                                <td class="tw-px-3">01234558723</td>
-                                <td class="tw-px-3">12/02/2021</td>
+                        <tbody>
+                            <tr>
+                                <td>162823982</td>
+                                <td>Adi Sutrisna</td>
+                                <td>Laki - Laki</td>
+                                <td>Keuangan</td>
+                                <td>08123757123</td>
+                                <td>adisutrisna@gmail.com</td>
                                 <td class="tw-px-3">
-                                    <div class="grid grid-cols-2">
+                                    <div class="grid grid-cols-2 tw-contents">
+                                        <a href="" class="mr-4">
+                                            <i class="fa fa-pen tw-text-prim-blue"></i>
+                                        </a>
+                                        <a href="">
+                                            <i class="fa fa-trash tw-text-prim-red"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>162823982</td>
+                                <td>Adi Sutrisna</td>
+                                <td>Laki - Laki</td>
+                                <td>Keuangan</td>
+                                <td>08123757123</td>
+                                <td>adisutrisna@gmail.com</td>
+                                <td class="tw-px-3">
+                                    <div class="grid grid-cols-2 tw-contents">
+                                        <a href="" class="mr-4">
+                                            <i class="fa fa-pen tw-text-prim-blue"></i>
+                                        </a>
+                                        <a href="">
+                                            <i class="fa fa-trash tw-text-prim-red"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>162823982</td>
+                                <td>Adi Sutrisna</td>
+                                <td>Laki - Laki</td>
+                                <td>Keuangan</td>
+                                <td>08123757123</td>
+                                <td>adisutrisna@gmail.com</td>
+                                <td class="tw-px-3">
+                                    <div class="grid grid-cols-2 tw-contents">
                                         <a href="" class="mr-4">
                                             <i class="fa fa-pen tw-text-prim-blue"></i>
                                         </a>
@@ -182,45 +97,12 @@
                                 </td>
                             </tr>
 
-                            <tr class=" tw-w-full tw-table tw-table-fixed">
-                                <td class="tw-px-3 tw-font-normal ">Wisnu</td>
-                                <td class="tw-px-3">Teknisi</td>
-                                <td class="tw-px-3">01234558723</td>
-                                <td class="tw-px-3">12/02/2021</td>
-                                <td class="tw-px-3">
-                                    <div class="grid grid-cols-2">
-                                        <a href="" class="mr-4">
-                                            <i class="fa fa-pen tw-text-prim-blue"></i>
-                                        </a>
-                                        <a href="">
-                                            <i class="fa fa-trash tw-text-prim-red"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <tr class=" tw-w-full tw-table tw-table-fixed">
-                                <td class="tw-px-3 tw-font-normal ">Wisnu</td>
-                                <td class="tw-px-3">Teknisi</td>
-                                <td class="tw-px-3">01234558723</td>
-                                <td class="tw-px-3">12/02/2021</td>
-                                <td class="tw-px-3">
-                                    <div class="grid grid-cols-2">
-                                        <a href="" class="mr-4">
-                                            <i class="fa fa-pen tw-text-prim-blue"></i>
-                                        </a>
-                                        <a href="">
-                                            <i class="fa fa-trash tw-text-prim-red"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            
-                            
                         </tbody>
+    
                     </table>
                 </div>
                 <!-- END : Tabel Tablet + Desktop -->
+
 
               </div>
             </div>

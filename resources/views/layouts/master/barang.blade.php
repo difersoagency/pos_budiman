@@ -20,18 +20,10 @@
                         </div>
                     </div>
                     <!-- End Dropdown  -->
-                    <!-- START : Search Bar -->
-                    <div class="search-bar tw-text-right items">
-                        <input type="text" name="" id="" placeholder="Cari Barang" class="tw-bg-transparent tw-w-[90%] md:tw-w-[60%] tw-border-x-0 tw-border-t-0 tw-border-b-prim-blue tw-outline-none focus:tw-border-b-prim-red tw-transition-all">  
-                        <a href="" class="tw-w-fit">
-                            <i class="fa fa-search tw-text-prim-red ml-2"></i>
-                        </a>
-                    </div>
-                    <!-- END : Search Bar -->
 
                 </div>
               <div class="card tw-w-full tw-px-6 tw-py-5 tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-items-center">
-                <div class="tw-w-full">
+                <div class="tw-w-full tw-col-span-2 md:tw-col-span-1">
                     <h1 class="tw-m-0 tw-text-2xl tw-font-bold">List Barang</h1>
                 </div>
                 <div class="tw-text-right tw-grid tw-grid-cols-1 md:tw-flex tw-mx-auto md:tw-mx-0 md:tw-ml-auto tw-w-full md:tw-w-fit tw-mt-4 md:tw-mt-0">
@@ -54,177 +46,55 @@
 
                 <!-- START: Table Mobile View -->
                 <div class="table-barang-mobile tw-mt-5 md:tw-hidden">
-                    <div class="list-barang" data-current-page="1">
-                        <table class="table item-table">
-                            <tbody>
-                                <tr>
-                                    <th scope="row" class="tw-bg-gray-100">Kode</th>
-                                    <td>LM001</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="tw-bg-gray-100">Nama Barang</th>
-                                    <td>Lampu Mobil</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="tw-bg-gray-100">Tipe</th>
-                                    <td>Lampu</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="tw-bg-gray-100">Merk</th>
-                                    <td>Honda</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="tw-bg-gray-100">Harga Beli</th>
-                                    <td>Rp.2.500.000</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="tw-bg-gray-100">Harga Jual</th>
-                                    <td>Rp.12.000.000</td>
-                                </tr>
-                                <tr class="tw-py-5">
-                                    <td class="tw-border-none tw-py-5">
-                                        <a href="" class="tw-px-6 tw-py-2 tw-mt-10 tw-bg-prim-blue tw-rounded-sm tw-text-prim-white tw-w-full">
-                                            Edit
-                                        </a>
-                                    </td>
-                                    <td class="tw-border-none tw-py-5">
-                                        <a href="" class="tw-px-6 tw-py-2 tw-bg-prim-red tw-rounded-sm tw-text-prim-white tw-w-full">
-                                            Hapus
-                                        </a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <table class="table item-table">
-                            <tbody>
-                                <tr>
-                                    <th scope="row" class="tw-bg-gray-100">Kode</th>
-                                    <td>LM001</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="tw-bg-gray-100">Nama Barang</th>
-                                    <td>Lampu Mobil</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="tw-bg-gray-100">Tipe</th>
-                                    <td>Lampu</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="tw-bg-gray-100">Merk</th>
-                                    <td>Honda</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="tw-bg-gray-100">Harga Beli</th>
-                                    <td>Rp.2.500.000</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="tw-bg-gray-100">Harga Jual</th>
-                                    <td>Rp.12.000.000</td>
-                                </tr>
-                                <tr class="tw-py-5">
-                                    <td class="tw-border-none tw-py-5">
-                                        <a href="" class="tw-px-6 tw-py-2 tw-mt-10 tw-bg-prim-blue tw-rounded-sm tw-text-prim-white tw-w-full">
-                                            Edit
-                                        </a>
-                                    </td>
-                                    <td class="tw-border-none tw-py-5">
-                                        <a href="" class="tw-px-6 tw-py-2 tw-bg-prim-red tw-rounded-sm tw-text-prim-white tw-w-full">
-                                            Hapus
-                                        </a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <table class="table item-table">
-                            <tbody>
-                                <tr>
-                                    <th scope="row" class="tw-bg-gray-100">Kode</th>
-                                    <td>LM001</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="tw-bg-gray-100">Nama Barang</th>
-                                    <td>Lampu Mobil</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="tw-bg-gray-100">Tipe</th>
-                                    <td>Lampu</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="tw-bg-gray-100">Merk</th>
-                                    <td>Honda</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="tw-bg-gray-100">Harga Beli</th>
-                                    <td>Rp.2.500.000</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row" class="tw-bg-gray-100">Harga Jual</th>
-                                    <td>Rp.12.000.000</td>
-                                </tr>
-                                <tr class="tw-py-5">
-                                    <td class="tw-border-none tw-py-5">
-                                        <a href="" class="tw-px-6 tw-py-2 tw-mt-10 tw-bg-prim-blue tw-rounded-sm tw-text-prim-white tw-w-full">
-                                            Edit
-                                        </a>
-                                    </td>
-                                    <td class="tw-border-none tw-py-5">
-                                        <a href="" class="tw-px-6 tw-py-2 tw-bg-prim-red tw-rounded-sm tw-text-prim-white tw-w-full">
-                                            Hapus
-                                        </a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div class="list-barang" data-current-page="1"> 
+                        
                     </div>
-
-                    <!-- START : Pagination -->
-                    <nav aria-label="..." class="pagination-container">
-                        <ul class="pagination">
-                            <li class="page-item disabled">
-                                <a class="page-link pagination-button" href="#" tabindex="-1" id="prev-btn">Previous</a>
-                            </li>
-                            <ul class="pagination" id="pagination-numbers">
-                            <!-- <li class="page-item">
-                                <a class="page-link tw-text-prim-black" href="#">2</a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link tw-text-prim-black" href="#">3</a>
-                            </li>    -->
-                            </ul>
-                                                  
-                            <li class="page-item ">
-                                <a class="page-link tw-text-prim-white tw-bg-prim-blue pagination-button" href="#" id="next-btn">Next</a>
-                            </li>
-                        </ul>
-                    </nav>
-                    <!-- END : Pagination -->
                 </div>
                 <!-- END: Table Mobile View -->
 
                 <!-- START: Table Tablet + Desktop -->
-                <div class="table-barang tw-mt-10 tw-col-span-2 tw-hidden md:tw-block">
-                    <table class="table table-striped">
-                        <thead class="tw-w-full tw-bg-prim-blue tw-table tw-table-fixed">
-                            <tr class="">
-                            <th class="tw-font-bold tw-px-3 tw-text-pri tw-border-b-prim-black tw-text-prim-white tw-border-t-0">Kode</th>
-                            <th class="tw-font-bold tw-px-3 tw-text-pri tw-border-b-prim-black tw-text-prim-white tw-border-t-0">Nama Barang</th>
-                            <th class="tw-font-bold tw-px-3 tw-text-pri tw-border-b-prim-black tw-text-prim-white tw-border-t-0">Tipe</th>
-                            <th class="tw-font-bold tw-px-3 tw-text-pri tw-border-b-prim-black tw-text-prim-white tw-border-t-0">Merk</th>
-                            <th class="tw-font-bold tw-px-3 tw-text-pri tw-border-b-prim-black tw-text-prim-white tw-border-t-0">Harga Beli</th>
-                            <th class="tw-font-bold tw-px-3 tw-text-pri tw-border-b-prim-black tw-text-prim-white tw-border-t-0">Harga Jual</th>
-                            <th class="tw-font-bold tw-px-3 tw-text-pri tw-border-b-prim-black tw-text-prim-white tw-border-t-0 col-span-2">Action</th>
+                <div class="table-barang tw-mt-5 tw-col-span-2" data-current-page="1">
+                    <table id="example" class="table table-bordered responsive nowrap" style="width:100%">
+                        <thead class="tw-bg-prim-blue">
+                            <tr>
+                                <th class="tw-text-prim-white">Kode Barang</th>
+                                <th class="tw-text-prim-white">Nama Barang</th>
+                                <th class="tw-text-prim-white">Merk</th>
+                                <th class="tw-text-prim-white">Tipe</th>
+                                <th class="tw-text-prim-white">Harga Beli</th>
+                                <th class="tw-text-prim-white">Harga Jual</th>
+                                <th class="tw-text-prim-white">Stok</th>
+                                <th class="tw-text-prim-white">Action</th>
                             </tr>
                         </thead>
-                        <tbody class="tw-block tw-max-h-96 tw-w-full tw-overflow-y-scroll ">
-                            <tr class=" tw-w-full tw-table tw-table-fixed">
-                                <td class="tw-px-3 tw-font-normal ">LM001</td>
-                                <td class="tw-px-3">Lampu Mobil</td>
-                                <td class="tw-px-3">Lampu</td>
-                                <td class="tw-px-3">Honda</td>
-                                <td class="tw-px-3">Rp.2.500.000</td>
-                                <td class="tw-px-3">Rp.12.000.000</td>
+                        <tbody>
+                            <tr>
+                                <td>LM001</td>
+                                <td>Lampu Motor</td>
+                                <td>Yamaha</td>
+                                <td>Lampu</td>
+                                <td>Rp 25.000</td>
+                                <td>Rp 60.000</td>
+                                <td>12 Pcs</td>
+                                <td class="tw-px-3">
+                                    <div class="grid grid-cols-2 tw-contents">
+                                        <a href="" class="mr-4">
+                                            <i class="fa fa-pen tw-text-prim-blue"></i>
+                                        </a>
+                                        <a href="">
+                                            <i class="fa fa-trash tw-text-prim-red"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>LM002</td>
+                                <td>Lampu Mobil</td>
+                                <td>Honda</td>
+                                <td>Lampu</td>
+                                <td>Rp 15.000</td>
+                                <td>Rp 50.000</td>
+                                <td>15 Pcs</td>
                                 <td class="tw-px-3">
                                     <div class="grid grid-cols-2">
                                         <a href="" class="mr-4">
@@ -236,68 +106,15 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr class=" tw-w-full tw-table tw-table-fixed">
-                                <td class="tw-font-normal ">LM001</td>
-                                <td class="">Lampu Mobil</td>
-                                <td class="">Lampu</td>
-                                <td class="">Honda</td>
-                                <td class="">Rp.2.500.000</td>
-                                <td class="">Rp.12.000.000</td>
-                                <td class="">
-                                    <div class="grid grid-cols-2">
-                                        <a href="" class="mr-4">
-                                            <i class="fa fa-pen tw-text-prim-blue"></i>
-                                        </a>
-                                        <a href="">
-                                            <i class="fa fa-trash tw-text-prim-red"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class=" tw-w-full tw-table tw-table-fixed">
-                                <td class="tw-font-normal ">LM001</td>
-                                <td class="">Lampu Mobil</td>
-                                <td class="">Lampu</td>
-                                <td class="">Honda</td>
-                                <td class="">Rp.2.500.000</td>
-                                <td class="">Rp.12.000.000</td>
-                                <td class="">
-                                    <div class="grid grid-cols-2">
-                                        <a href="" class="mr-4">
-                                            <i class="fa fa-pen tw-text-prim-blue"></i>
-                                        </a>
-                                        <a href="">
-                                            <i class="fa fa-trash tw-text-prim-red"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class=" tw-w-full tw-table tw-table-fixed">
-                                <td class="tw-font-normal ">LM001</td>
-                                <td class="">Lampu Mobil</td>
-                                <td class="">Lampu</td>
-                                <td class="">Honda</td>
-                                <td class="">Rp.2.500.000</td>
-                                <td class="">Rp.12.000.000</td>
-                                <td class="">
-                                    <div class="grid grid-cols-2">
-                                        <a href="" class="mr-4">
-                                            <i class="fa fa-pen tw-text-prim-blue"></i>
-                                        </a>
-                                        <a href="">
-                                            <i class="fa fa-trash tw-text-prim-red"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class=" tw-w-full tw-table tw-table-fixed">
-                                <td class="tw-font-normal ">LM001</td>
-                                <td class="">Lampu Mobil</td>
-                                <td class="">Lampu</td>
-                                <td class="">Honda</td>
-                                <td class="">Rp.2.500.000</td>
-                                <td class="">Rp.12.000.000</td>
-                                <td class="">
+                            <tr>
+                                <td>LM002</td>
+                                <td>Lampu Mobil</td>
+                                <td>Honda</td>
+                                <td>Lampu</td>
+                                <td>Rp 15.000</td>
+                                <td>Rp 50.000</td>
+                                <td>15 Pcs</td>
+                                <td class="tw-px-3">
                                     <div class="grid grid-cols-2">
                                         <a href="" class="mr-4">
                                             <i class="fa fa-pen tw-text-prim-blue"></i>
@@ -309,79 +126,8 @@
                                 </td>
                             </tr>
 
-                            <tr class=" tw-w-full tw-table tw-table-fixed">
-                                <td class="tw-font-normal ">LM001</td>
-                                <td class="">Lampu Mobil</td>
-                                <td class="">Lampu</td>
-                                <td class="">Honda</td>
-                                <td class="">Rp.2.500.000</td>
-                                <td class="">Rp.12.000.000</td>
-                                <td class="">
-                                    <div class="grid grid-cols-2">
-                                        <a href="" class="mr-4">
-                                            <i class="fa fa-pen tw-text-prim-blue"></i>
-                                        </a>
-                                        <a href="">
-                                            <i class="fa fa-trash tw-text-prim-red"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class=" tw-w-full tw-table tw-table-fixed">
-                                <td class="tw-font-normal ">LM001</td>
-                                <td class="">Lampu Mobil</td>
-                                <td class="">Lampu</td>
-                                <td class="">Honda</td>
-                                <td class="">Rp.2.500.000</td>
-                                <td class="">Rp.12.000.000</td>
-                                <td class="">
-                                    <div class="grid grid-cols-2">
-                                        <a href="" class="mr-4">
-                                            <i class="fa fa-pen tw-text-prim-blue"></i>
-                                        </a>
-                                        <a href="">
-                                            <i class="fa fa-trash tw-text-prim-red"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class=" tw-w-full tw-table tw-table-fixed">
-                                <td class="tw-font-normal ">LM001</td>
-                                <td class="">Lampu Mobil</td>
-                                <td class="">Lampu</td>
-                                <td class="">Honda</td>
-                                <td class="">Rp.2.500.000</td>
-                                <td class="">Rp.12.000.000</td>
-                                <td class="">
-                                    <div class="grid grid-cols-2">
-                                        <a href="" class="mr-4">
-                                            <i class="fa fa-pen tw-text-prim-blue"></i>
-                                        </a>
-                                        <a href="">
-                                            <i class="fa fa-trash tw-text-prim-red"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class=" tw-w-full tw-table tw-table-fixed">
-                                <td class="tw-font-normal ">LM001</td>
-                                <td class="">Lampu Mobil</td>
-                                <td class="">Lampu</td>
-                                <td class="">Honda</td>
-                                <td class="">Rp.2.500.000</td>
-                                <td class="">Rp.12.000.000</td>
-                                <td class="">
-                                    <div class="grid grid-cols-2">
-                                        <a href="" class="mr-4">
-                                            <i class="fa fa-pen tw-text-prim-blue"></i>
-                                        </a>
-                                        <a href="">
-                                            <i class="fa fa-trash tw-text-prim-red"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
                         </tbody>
+    
                     </table>
                 </div>
                 <!-- END : Tabel Tablet + Desktop -->
