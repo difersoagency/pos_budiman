@@ -17,11 +17,11 @@ class Admin
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::check() && Auth::user()->level_user_id == 2) {
+        if (Auth::check() && Auth::user()->KODE_LEVEL == 2) {
             return $next($request);
-          }else if(Auth::check() && Auth::user()->level_user_id == 1){
+          }else if(Auth::check() && Auth::user()->KODE_LEVEL == 1){
             return redirect()->route('home_owner');
-          }elseif(Auth::check() && Auth::user()->level_user_id == 3){
+          }elseif(Auth::check() && Auth::user()->KODE_LEVEL == 3){
             return redirect()->route('home_kasir');
           }
           return redirect()->route('home');

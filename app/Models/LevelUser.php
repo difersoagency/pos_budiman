@@ -9,11 +9,12 @@ class LevelUser extends Model
 {
     use HasFactory;
     protected $table = 'level_user';
-    protected $fillable = ['kode_level', 'nama_level'];
+    protected $primaryKey = 'KODE_LEVEL';
+    protected $fillable = ['KODE_LEVEL', 'NAMA_LEVEL'];
 
     public function User()
     {
-        return $this->hasMany(User::class);
+        return $this->hasMany(User::class, 'KODE_LEVEL');
     }
 
 }

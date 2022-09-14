@@ -20,7 +20,7 @@
               Username atau password salah
             </div>
             @endif
-            
+
 
             <div class="mt-3">
               <div class="">
@@ -43,18 +43,18 @@
                     </div>
                   </div>
                   <div class="row">
-                   
+
 
                     <div class="col-4">
                       <button type="submit" class="btn tw-bg-slate-500 btn-block">Masuk</button>
                     </div>
-       
+
 
                   </div>
                 </form>
               </div>
-              
-              
+
+
             </div>
           </div>
           </div>
@@ -77,7 +77,7 @@
                         <span class="fas fa-envelope tw-text-red-500 tw-bg-none"></span>
                       </div>
                     </div>
-                    <input type="text" placeholder="Username" name="username" class="bg-none form-control tw-border-x-0 tw-border-t-0 tw-border-b-1 focus:tw-border-b-2 focus:tw-border-red-500">  
+                    <input type="text" placeholder="Username" name="username" class="bg-none form-control tw-border-x-0 tw-border-t-0 tw-border-b-1 focus:tw-border-b-2 focus:tw-border-red-500">
                   </div>
 
                   <div class="input-group mb-4">
@@ -87,15 +87,15 @@
                       </div>
                     </div>
                     <input type="password" class="bg-none form-control tw-border-x-0 tw-border-t-0 tw-border-b-1 focus:tw-border-b-2 focus:tw-border-red-500" placeholder="Password" name="password">
-                    
+
                   </div>
                   <div class="row">
-                   
+
 
                     <div class="col-4">
                       <button type="submit" class="btn tw-bg-black btn-block tw-text-red-500 tw-font-bold hover:tw-bg-red">Masuk</button>
                     </div>
-       
+
 
                   </div>
                 </form>

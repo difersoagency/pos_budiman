@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
@@ -47,24 +48,24 @@ class LoginController extends Controller
 
     protected function sendFailedLoginResponse(Request $request)
     {
-
         $username = $request->input('username');
         $password = $request->input('password');
 
-        $user = User::where('name', '=', $username)->first();
+        $user = User::where('KODE_USER', '=', $username)->first();
         if (!$user) {
-            return redirect()->back()->with('error', 'Incorrect username or password');
+            return redirect()->back()->with('error', 'Incorrect username or password ');
         }
         if (!Hash::check($password, $user->password)) {
             return redirect()->back()->with('error', 'Incorrect username or password');
         }
+        echo $this->username;
     }
 
     public function findUsername()
     {
         $login = request()->input('username');
 
-        $fieldType = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'name' : 'name';
+        $fieldType = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'KODE_USER' : 'KODE_USER';
 
         request()->merge([$fieldType => $login]);
 
@@ -79,16 +80,15 @@ class LoginController extends Controller
 
     public function authenticated()
     {
-        if (auth()->user()->level_user_id == '1') {
+        if (auth()->user()->KODE_LEVEL == '1') {
             return redirect()->route('home_owner');
         }
-        else if (auth()->user()->level_user_id == '2') {
+        else if (auth()->user()->KODE_LEVEL == '2') {
             return redirect()->route('home_admin');
         }
-        else if (auth()->user()->level_user_id == '3') {
+        else if (auth()->user()->KODE_LEVEL == '3') {
             return redirect()->route('home_kasir');
         }
-
 
     }
 
