@@ -50,11 +50,11 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'KODE_USER' => ['required', 'string', 'max:20', 'unique:user'],
-            'KODE_LEVEL' => ['required', 'string', 'max:10'],
-            'KODE_PEGAWAI' => ['required', 'string', 'max:10'],
-            'EMAIL' => ['required', 'string', 'email', 'max:255', 'unique:user'],
-            'PASSWORD' => ['required', 'string', 'confirmed'],
+            'kode_user' => ['required', 'string', 'max:20', 'unique:user'],
+            'kode_level' => ['required', 'string', 'max:10'],
+            'kode_pegawai' => ['required', 'string', 'max:10'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:user'],
+            'password' => ['required', 'string', 'confirmed'],
         ]);
     }
 
@@ -67,11 +67,11 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         return User::create([
-            'KODE_USER' => $data['name'],
-            'KODE_PEGAWAI' => 'NULL',
-            'KODE_LEVEL' => 1,
-            'EMAIL' => $data['email'],
-            'PASSWORD' => Hash::make($data['password']),
+            'kode_user' => $data['name'],
+            'kode_pegawai' => 'NULL',
+            'kode_level' => 1,
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
         ]);
     }
 }

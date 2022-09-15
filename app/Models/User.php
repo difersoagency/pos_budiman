@@ -19,13 +19,13 @@ class User extends Authenticatable
      */
     protected $table = 'user';
 
-    protected $primaryKey = 'KODE_USER';
+    protected $primaryKey = 'kode_user';
     protected $fillable = [
-        'KODE_USER',
-        'KODE_PEGAWAI',
-        'EMAIL',
+        'kode_user',
+        'kode_pegawai',
+        'email',
         'password',
-        'KODE_LEVEL',
+        'kode_level',
     ];
 
     /**
@@ -35,7 +35,7 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
-        'REMEMBER_TOKEN',
+        'remember_token',
     ];
 
     /**
@@ -44,21 +44,21 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
-        'EMAIL_VERIFIED_AT' => 'datetime',
+        'email_verified_at' => 'datetime',
     ];
 
     public function LevelUser()
     {
-        return $this->belongsTo(LevelUser::class, 'KODE_LEVEL');
+        return $this->belongsTo(LevelUser::class, 'kode_level');
     }
 
     public function Pegawai()
     {
-        return $this->belongsTo(Pegawai::class, 'KODE_PEGAWAI');
+        return $this->belongsTo(Pegawai::class, 'kode_pegawai');
     }
 
     public function hasRole($role){
-       $data = LevelUser::where('KODE_LEVEL', $role)->limit(1);
+       $data = LevelUser::where('kode_level', $role)->limit(1);
        return $data->id;
     }
 }

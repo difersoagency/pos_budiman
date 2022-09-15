@@ -51,7 +51,7 @@ class LoginController extends Controller
         $username = $request->input('username');
         $password = $request->input('password');
 
-        $user = User::where('KODE_USER', '=', $username)->first();
+        $user = User::where('kode_user', '=', $username)->first();
         if (!$user) {
             return redirect()->back()->with('error', 'Incorrect username or password ');
         }
@@ -65,7 +65,7 @@ class LoginController extends Controller
     {
         $login = request()->input('username');
 
-        $fieldType = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'KODE_USER' : 'KODE_USER';
+        $fieldType = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'kode_user' : 'kode_user';
 
         request()->merge([$fieldType => $login]);
 
@@ -80,13 +80,13 @@ class LoginController extends Controller
 
     public function authenticated()
     {
-        if (auth()->user()->KODE_LEVEL == '1') {
+        if (auth()->user()->kode_level == '1') {
             return redirect()->route('home_owner');
         }
-        else if (auth()->user()->KODE_LEVEL == '2') {
+        else if (auth()->user()->kode_level == '2') {
             return redirect()->route('home_admin');
         }
-        else if (auth()->user()->KODE_LEVEL == '3') {
+        else if (auth()->user()->kode_level == '3') {
             return redirect()->route('home_kasir');
         }
 

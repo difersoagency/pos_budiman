@@ -29,12 +29,12 @@
 
                 <!-- START: Table Tablet + Desktop -->
                 <div class="table-barang tw-mt-5 tw-col-span-2" data-current-page="1">
-                    <table id="example" class="table table-bordered responsive nowrap" style="width:100%">
+                    <table id="showtable" class="table table-bordered responsive nowrap" style="width:100%">
                         <thead class="tw-bg-prim-blue">
                             <tr>
+                                <th class="tw-text-prim-white">No</th>
                                 <th class="tw-text-prim-white">Kode Tipe</th>
                                 <th class="tw-text-prim-white">Nama Tipe</th>
-                                <th class="tw-text-prim-white">Jumlah Produk</th>
                                 <th class="tw-text-prim-white">Action</th>
                             </tr>
                         </thead>
@@ -101,3 +101,40 @@
     <!-- /.content -->
   </div>
 @endsection
+
+@push('script')
+<script>
+    $(function(){
+        $('#showtable').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                'url': '/api/data_tipe',
+                'method': 'GET',
+                'headers': {
+                    'X-CSRF-TOKEN': '{{csrf_token()}}'
+                }
+            },
+            language: {
+                processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
+            },
+            columns: [{
+                data: 'DT_RowIndex',
+                className: 'nowrap-text align-center',
+                orderable: false,
+                searchable: false
+            }, {
+                data: 'kode_tipe',
+
+            }, {
+                data: 'nama_tipe',
+
+            }, {
+                data: 'action',
+                orderable: false,
+                searchable: false
+            } ]
+        });
+    })
+</script>
+@endpush

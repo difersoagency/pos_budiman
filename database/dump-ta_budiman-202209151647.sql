@@ -1,833 +1,833 @@
--- MySQL dump 10.13  Distrib 5.7.33, for Win64 (x86_64)
+-- mysql dump 10.13  distrib 5.7.33, for win64 (x86_64)
 --
--- Host: localhost    Database: ta_budiman
+-- host: localhost    database: ta_budiman
 -- ------------------------------------------------------
--- Server version	5.7.33
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+-- server version	5.7.33
+
+/*!40101 set @old_character_set_client=@@character_set_client */;
+/*!40101 set @old_character_set_results=@@character_set_results */;
+/*!40101 set @old_collation_connection=@@collation_connection */;
+/*!40101 set names utf8 */;
+/*!40103 set @old_time_zone=@@time_zone */;
+/*!40103 set time_zone='+00:00' */;
+/*!40014 set @old_unique_checks=@@unique_checks, unique_checks=0 */;
+/*!40014 set @old_foreign_key_checks=@@foreign_key_checks, foreign_key_checks=0 */;
+/*!40101 set @old_sql_mode=@@sql_mode, sql_mode='no_auto_value_on_zero' */;
+/*!40111 set @old_sql_notes=@@sql_notes, sql_notes=0 */;
 
 --
--- Table structure for table `barang`
+-- table structure for table `barang`
 --
 
-DROP TABLE IF EXISTS `barang`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `barang` (
-  `KODE_BARANG` varchar(20) NOT NULL,
-  `KODE_TIPE` varchar(10) DEFAULT NULL,
-  `KODE_MEREK` varchar(10) DEFAULT NULL,
-  `NAMA_BARANG` varchar(20) NOT NULL,
-  `KODE_SATUAN` varchar(10) CHARACTER SET utf8mb4 NOT NULL,
-  `STOK` int(11) NOT NULL,
-  `HARGA_BELI` float NOT NULL,
-  `HARGA_JUAL` float NOT NULL,
-  PRIMARY KEY (`KODE_BARANG`),
-  KEY `RELATIONSHIP_1_FK` (`KODE_MEREK`),
-  KEY `RELATIONSHIP_2_FK` (`KODE_TIPE`),
-  KEY `KODE_SATUAN_BARANG` (`KODE_SATUAN`),
-  CONSTRAINT `KODE_MEREK_BARANG` FOREIGN KEY (`KODE_MEREK`) REFERENCES `merek` (`KODE_MEREK`),
-  CONSTRAINT `KODE_SATUAN_BARANG` FOREIGN KEY (`KODE_SATUAN`) REFERENCES `satuan` (`KODE_SATUAN`),
-  CONSTRAINT `KODE_TIPE_BARANG` FOREIGN KEY (`KODE_TIPE`) REFERENCES `tipe` (`KODE_TIPE`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `barang`;
+/*!40101 set @saved_cs_client     = @@character_set_client */;
+/*!40101 set character_set_client = utf8 */;
+create table `barang` (
+  `kode_barang` varchar(20) not null,
+  `kode_tipe` varchar(10) default null,
+  `kode_merek` varchar(10) default null,
+  `nama_barang` varchar(20) not null,
+  `kode_satuan` varchar(10) character set utf8mb4 not null,
+  `stok` int(11) not null,
+  `harga_beli` float not null,
+  `harga_jual` float not null,
+  primary key (`kode_barang`),
+  key `relationship_1_fk` (`kode_merek`),
+  key `relationship_2_fk` (`kode_tipe`),
+  key `kode_satuan_barang` (`kode_satuan`),
+  constraint `kode_merek_barang` foreign key (`kode_merek`) references `merek` (`kode_merek`),
+  constraint `kode_satuan_barang` foreign key (`kode_satuan`) references `satuan` (`kode_satuan`),
+  constraint `kode_tipe_barang` foreign key (`kode_tipe`) references `tipe` (`kode_tipe`)
+) engine=innodb default charset=latin1;
+/*!40101 set character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `barang`
+-- dumping data for table `barang`
 --
 
-LOCK TABLES `barang` WRITE;
-/*!40000 ALTER TABLE `barang` DISABLE KEYS */;
-/*!40000 ALTER TABLE `barang` ENABLE KEYS */;
-UNLOCK TABLES;
+lock tables `barang` write;
+/*!40000 alter table `barang` disable keys */;
+/*!40000 alter table `barang` enable keys */;
+unlock tables;
 
 --
--- Table structure for table `booking`
+-- table structure for table `booking`
 --
 
-DROP TABLE IF EXISTS `booking`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `booking` (
-  `NO_BOOKING` varchar(20) NOT NULL,
-  `TGL_BOOKING` date DEFAULT NULL,
-  `KODE_CUSTOMER` varchar(50) CHARACTER SET utf8mb4 NOT NULL,
-  PRIMARY KEY (`NO_BOOKING`),
-  KEY `KODE_CUSTOMER` (`KODE_CUSTOMER`),
-  CONSTRAINT `KODE_CUSTOMER` FOREIGN KEY (`KODE_CUSTOMER`) REFERENCES `customer` (`KODE_CUSTOMER`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `booking`;
+/*!40101 set @saved_cs_client     = @@character_set_client */;
+/*!40101 set character_set_client = utf8 */;
+create table `booking` (
+  `no_booking` varchar(20) not null,
+  `tgl_booking` date default null,
+  `kode_customer` varchar(50) character set utf8mb4 not null,
+  primary key (`no_booking`),
+  key `kode_customer` (`kode_customer`),
+  constraint `kode_customer` foreign key (`kode_customer`) references `customer` (`kode_customer`)
+) engine=innodb default charset=latin1;
+/*!40101 set character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `booking`
+-- dumping data for table `booking`
 --
 
-LOCK TABLES `booking` WRITE;
-/*!40000 ALTER TABLE `booking` DISABLE KEYS */;
-/*!40000 ALTER TABLE `booking` ENABLE KEYS */;
-UNLOCK TABLES;
+lock tables `booking` write;
+/*!40000 alter table `booking` disable keys */;
+/*!40000 alter table `booking` enable keys */;
+unlock tables;
 
 --
--- Table structure for table `customer`
+-- table structure for table `customer`
 --
 
-DROP TABLE IF EXISTS `customer`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `customer` (
-  `KODE_CUSTOMER` varchar(50) NOT NULL,
-  `KODE_KOTA` varchar(10) CHARACTER SET latin1 NOT NULL,
-  `NAMA_CUSTOMER` varchar(100) NOT NULL,
-  `ALAMAT` text,
-  `TELEPON` varchar(20) DEFAULT NULL,
-  PRIMARY KEY (`KODE_CUSTOMER`),
-  KEY `KODE_KOTA` (`KODE_KOTA`),
-  CONSTRAINT `KODE_KOTA` FOREIGN KEY (`KODE_KOTA`) REFERENCES `kota` (`KODE_KOTA`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `customer`;
+/*!40101 set @saved_cs_client     = @@character_set_client */;
+/*!40101 set character_set_client = utf8 */;
+create table `customer` (
+  `kode_customer` varchar(50) not null,
+  `kode_kota` varchar(10) character set latin1 not null,
+  `nama_customer` varchar(100) not null,
+  `alamat` text,
+  `telepon` varchar(20) default null,
+  primary key (`kode_customer`),
+  key `kode_kota` (`kode_kota`),
+  constraint `kode_kota` foreign key (`kode_kota`) references `kota` (`kode_kota`)
+) engine=innodb default charset=utf8mb4;
+/*!40101 set character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `customer`
+-- dumping data for table `customer`
 --
 
-LOCK TABLES `customer` WRITE;
-/*!40000 ALTER TABLE `customer` DISABLE KEYS */;
-/*!40000 ALTER TABLE `customer` ENABLE KEYS */;
-UNLOCK TABLES;
+lock tables `customer` write;
+/*!40000 alter table `customer` disable keys */;
+/*!40000 alter table `customer` enable keys */;
+unlock tables;
 
 --
--- Table structure for table `d_booking`
+-- table structure for table `d_booking`
 --
 
-DROP TABLE IF EXISTS `d_booking`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `d_booking` (
-  `NO_BOOKING` varchar(20) NOT NULL,
-  `KODE_BARANG` varchar(20) DEFAULT NULL,
-  `JUMLAH` int(11) DEFAULT NULL,
-  KEY `KODE_BARANG_BOOKING` (`KODE_BARANG`),
-  KEY `NO_BOOKING_DETAIL` (`NO_BOOKING`),
-  CONSTRAINT `KODE_BARANG_BOOKING` FOREIGN KEY (`KODE_BARANG`) REFERENCES `barang` (`KODE_BARANG`),
-  CONSTRAINT `NO_BOOKING_DETAIL` FOREIGN KEY (`NO_BOOKING`) REFERENCES `booking` (`NO_BOOKING`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `d_booking`;
+/*!40101 set @saved_cs_client     = @@character_set_client */;
+/*!40101 set character_set_client = utf8 */;
+create table `d_booking` (
+  `no_booking` varchar(20) not null,
+  `kode_barang` varchar(20) default null,
+  `jumlah` int(11) default null,
+  key `kode_barang_booking` (`kode_barang`),
+  key `no_booking_detail` (`no_booking`),
+  constraint `kode_barang_booking` foreign key (`kode_barang`) references `barang` (`kode_barang`),
+  constraint `no_booking_detail` foreign key (`no_booking`) references `booking` (`no_booking`)
+) engine=innodb default charset=latin1;
+/*!40101 set character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `d_booking`
+-- dumping data for table `d_booking`
 --
 
-LOCK TABLES `d_booking` WRITE;
-/*!40000 ALTER TABLE `d_booking` DISABLE KEYS */;
-/*!40000 ALTER TABLE `d_booking` ENABLE KEYS */;
-UNLOCK TABLES;
+lock tables `d_booking` write;
+/*!40000 alter table `d_booking` disable keys */;
+/*!40000 alter table `d_booking` enable keys */;
+unlock tables;
 
 --
--- Table structure for table `d_hutang`
+-- table structure for table `d_hutang`
 --
 
-DROP TABLE IF EXISTS `d_hutang`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `d_hutang` (
-  `NO_HUTANG` varchar(20) CHARACTER SET latin1 NOT NULL,
-  `TGL_BAYAR` date NOT NULL,
-  `TOTAL_BAYAR` float NOT NULL,
-  KEY `NO_HUTANG_D` (`NO_HUTANG`),
-  CONSTRAINT `NO_HUTANG_D` FOREIGN KEY (`NO_HUTANG`) REFERENCES `h_hutang` (`NO_HUTANG`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `d_hutang`;
+/*!40101 set @saved_cs_client     = @@character_set_client */;
+/*!40101 set character_set_client = utf8 */;
+create table `d_hutang` (
+  `no_hutang` varchar(20) character set latin1 not null,
+  `tgl_bayar` date not null,
+  `total_bayar` float not null,
+  key `no_hutang_d` (`no_hutang`),
+  constraint `no_hutang_d` foreign key (`no_hutang`) references `h_hutang` (`no_hutang`)
+) engine=innodb default charset=utf8mb4;
+/*!40101 set character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `d_hutang`
+-- dumping data for table `d_hutang`
 --
 
-LOCK TABLES `d_hutang` WRITE;
-/*!40000 ALTER TABLE `d_hutang` DISABLE KEYS */;
-/*!40000 ALTER TABLE `d_hutang` ENABLE KEYS */;
-UNLOCK TABLES;
+lock tables `d_hutang` write;
+/*!40000 alter table `d_hutang` disable keys */;
+/*!40000 alter table `d_hutang` enable keys */;
+unlock tables;
 
 --
--- Table structure for table `d_piutang`
+-- table structure for table `d_piutang`
 --
 
-DROP TABLE IF EXISTS `d_piutang`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `d_piutang` (
-  `NO_PIUTANG` varchar(20) CHARACTER SET latin1 NOT NULL,
-  `TGL_PIUTANG` date NOT NULL,
-  `TOTAL_BAYAR` float NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `d_piutang`;
+/*!40101 set @saved_cs_client     = @@character_set_client */;
+/*!40101 set character_set_client = utf8 */;
+create table `d_piutang` (
+  `no_piutang` varchar(20) character set latin1 not null,
+  `tgl_piutang` date not null,
+  `total_bayar` float not null
+) engine=innodb default charset=utf8mb4;
+/*!40101 set character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `d_piutang`
+-- dumping data for table `d_piutang`
 --
 
-LOCK TABLES `d_piutang` WRITE;
-/*!40000 ALTER TABLE `d_piutang` DISABLE KEYS */;
-/*!40000 ALTER TABLE `d_piutang` ENABLE KEYS */;
-UNLOCK TABLES;
+lock tables `d_piutang` write;
+/*!40000 alter table `d_piutang` disable keys */;
+/*!40000 alter table `d_piutang` enable keys */;
+unlock tables;
 
 --
--- Table structure for table `dretur_beli`
+-- table structure for table `dretur_beli`
 --
 
-DROP TABLE IF EXISTS `dretur_beli`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `dretur_beli` (
-  `NO_RETUR_BELI` varchar(10) NOT NULL,
-  `KODE_BARANG` varchar(20) NOT NULL,
-  `JUMLAH` int(11) DEFAULT NULL,
-  `HARGA` float NOT NULL,
-  KEY `NO_RETUR_BELI` (`NO_RETUR_BELI`),
-  KEY `KODE_BARANG_RETUR_BELI` (`KODE_BARANG`),
-  CONSTRAINT `KODE_BARANG_RETUR_BELI` FOREIGN KEY (`KODE_BARANG`) REFERENCES `barang` (`KODE_BARANG`),
-  CONSTRAINT `NO_RETUR_BELI` FOREIGN KEY (`NO_RETUR_BELI`) REFERENCES `hretur_beli` (`NO_RETUR_BELI`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `dretur_beli`;
+/*!40101 set @saved_cs_client     = @@character_set_client */;
+/*!40101 set character_set_client = utf8 */;
+create table `dretur_beli` (
+  `no_retur_beli` varchar(10) not null,
+  `kode_barang` varchar(20) not null,
+  `jumlah` int(11) default null,
+  `harga` float not null,
+  key `no_retur_beli` (`no_retur_beli`),
+  key `kode_barang_retur_beli` (`kode_barang`),
+  constraint `kode_barang_retur_beli` foreign key (`kode_barang`) references `barang` (`kode_barang`),
+  constraint `no_retur_beli` foreign key (`no_retur_beli`) references `hretur_beli` (`no_retur_beli`)
+) engine=innodb default charset=latin1;
+/*!40101 set character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `dretur_beli`
+-- dumping data for table `dretur_beli`
 --
 
-LOCK TABLES `dretur_beli` WRITE;
-/*!40000 ALTER TABLE `dretur_beli` DISABLE KEYS */;
-/*!40000 ALTER TABLE `dretur_beli` ENABLE KEYS */;
-UNLOCK TABLES;
+lock tables `dretur_beli` write;
+/*!40000 alter table `dretur_beli` disable keys */;
+/*!40000 alter table `dretur_beli` enable keys */;
+unlock tables;
 
 --
--- Table structure for table `dretur_jual`
+-- table structure for table `dretur_jual`
 --
 
-DROP TABLE IF EXISTS `dretur_jual`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `dretur_jual` (
-  `NO_RETUR_JUAL` varchar(20) CHARACTER SET utf8mb4 NOT NULL,
-  `KODE_BARANG` varchar(20) NOT NULL,
-  `JUMLAH` int(11) DEFAULT NULL,
-  `HARGA` float NOT NULL,
-  KEY `NO_RETUR_JUAL` (`NO_RETUR_JUAL`),
-  KEY `KODE_BARANG` (`KODE_BARANG`),
-  CONSTRAINT `KODE_BARANG` FOREIGN KEY (`KODE_BARANG`) REFERENCES `barang` (`KODE_BARANG`),
-  CONSTRAINT `NO_RETUR_JUAL` FOREIGN KEY (`NO_RETUR_JUAL`) REFERENCES `hretur_jual` (`NO_RETUR_JUAL`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `dretur_jual`;
+/*!40101 set @saved_cs_client     = @@character_set_client */;
+/*!40101 set character_set_client = utf8 */;
+create table `dretur_jual` (
+  `no_retur_jual` varchar(20) character set utf8mb4 not null,
+  `kode_barang` varchar(20) not null,
+  `jumlah` int(11) default null,
+  `harga` float not null,
+  key `no_retur_jual` (`no_retur_jual`),
+  key `kode_barang` (`kode_barang`),
+  constraint `kode_barang` foreign key (`kode_barang`) references `barang` (`kode_barang`),
+  constraint `no_retur_jual` foreign key (`no_retur_jual`) references `hretur_jual` (`no_retur_jual`)
+) engine=innodb default charset=latin1;
+/*!40101 set character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `dretur_jual`
+-- dumping data for table `dretur_jual`
 --
 
-LOCK TABLES `dretur_jual` WRITE;
-/*!40000 ALTER TABLE `dretur_jual` DISABLE KEYS */;
-/*!40000 ALTER TABLE `dretur_jual` ENABLE KEYS */;
-UNLOCK TABLES;
+lock tables `dretur_jual` write;
+/*!40000 alter table `dretur_jual` disable keys */;
+/*!40000 alter table `dretur_jual` enable keys */;
+unlock tables;
 
 --
--- Table structure for table `dtrans_beli`
+-- table structure for table `dtrans_beli`
 --
 
-DROP TABLE IF EXISTS `dtrans_beli`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `dtrans_beli` (
-  `NO_TRANS_BELI` varchar(20) CHARACTER SET utf8mb4 NOT NULL,
-  `KODE_BARANG` varchar(20) DEFAULT NULL,
-  `JUMLAH` int(11) DEFAULT NULL,
-  `HARGA` float NOT NULL,
-  `DISC` float DEFAULT NULL,
-  KEY `NO_TRANS_BELI` (`NO_TRANS_BELI`),
-  KEY `KODE_BARANG_TRANS_BELI` (`KODE_BARANG`),
-  CONSTRAINT `KODE_BARANG_TRANS_BELI` FOREIGN KEY (`KODE_BARANG`) REFERENCES `barang` (`KODE_BARANG`),
-  CONSTRAINT `NO_TRANS_BELI` FOREIGN KEY (`NO_TRANS_BELI`) REFERENCES `htrans_beli` (`NO_TRANS_BELI`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `dtrans_beli`;
+/*!40101 set @saved_cs_client     = @@character_set_client */;
+/*!40101 set character_set_client = utf8 */;
+create table `dtrans_beli` (
+  `no_trans_beli` varchar(20) character set utf8mb4 not null,
+  `kode_barang` varchar(20) default null,
+  `jumlah` int(11) default null,
+  `harga` float not null,
+  `disc` float default null,
+  key `no_trans_beli` (`no_trans_beli`),
+  key `kode_barang_trans_beli` (`kode_barang`),
+  constraint `kode_barang_trans_beli` foreign key (`kode_barang`) references `barang` (`kode_barang`),
+  constraint `no_trans_beli` foreign key (`no_trans_beli`) references `htrans_beli` (`no_trans_beli`)
+) engine=innodb default charset=latin1;
+/*!40101 set character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `dtrans_beli`
+-- dumping data for table `dtrans_beli`
 --
 
-LOCK TABLES `dtrans_beli` WRITE;
-/*!40000 ALTER TABLE `dtrans_beli` DISABLE KEYS */;
-/*!40000 ALTER TABLE `dtrans_beli` ENABLE KEYS */;
-UNLOCK TABLES;
+lock tables `dtrans_beli` write;
+/*!40000 alter table `dtrans_beli` disable keys */;
+/*!40000 alter table `dtrans_beli` enable keys */;
+unlock tables;
 
 --
--- Table structure for table `dtrans_jual`
+-- table structure for table `dtrans_jual`
 --
 
-DROP TABLE IF EXISTS `dtrans_jual`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `dtrans_jual` (
-  `NO_TRANS_JUAL` varchar(20) NOT NULL,
-  `KODE_BARANG` varchar(20) DEFAULT NULL,
-  `JUMLAH` int(11) DEFAULT NULL,
-  `HARGA` float NOT NULL,
-  `DISC` int(11) DEFAULT NULL,
-  KEY `NO_TRANS_JUAL_DETAIL` (`NO_TRANS_JUAL`),
-  KEY `KODE_BARANG_DETAIL` (`KODE_BARANG`),
-  CONSTRAINT `KODE_BARANG_DETAIL` FOREIGN KEY (`KODE_BARANG`) REFERENCES `barang` (`KODE_BARANG`),
-  CONSTRAINT `NO_TRANS_JUAL_DETAIL` FOREIGN KEY (`NO_TRANS_JUAL`) REFERENCES `htrans_jual` (`NO_TRANS_JUAL`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `dtrans_jual`;
+/*!40101 set @saved_cs_client     = @@character_set_client */;
+/*!40101 set character_set_client = utf8 */;
+create table `dtrans_jual` (
+  `no_trans_jual` varchar(20) not null,
+  `kode_barang` varchar(20) default null,
+  `jumlah` int(11) default null,
+  `harga` float not null,
+  `disc` int(11) default null,
+  key `no_trans_jual_detail` (`no_trans_jual`),
+  key `kode_barang_detail` (`kode_barang`),
+  constraint `kode_barang_detail` foreign key (`kode_barang`) references `barang` (`kode_barang`),
+  constraint `no_trans_jual_detail` foreign key (`no_trans_jual`) references `htrans_jual` (`no_trans_jual`)
+) engine=innodb default charset=latin1;
+/*!40101 set character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `dtrans_jual`
+-- dumping data for table `dtrans_jual`
 --
 
-LOCK TABLES `dtrans_jual` WRITE;
-/*!40000 ALTER TABLE `dtrans_jual` DISABLE KEYS */;
-/*!40000 ALTER TABLE `dtrans_jual` ENABLE KEYS */;
-UNLOCK TABLES;
+lock tables `dtrans_jual` write;
+/*!40000 alter table `dtrans_jual` disable keys */;
+/*!40000 alter table `dtrans_jual` enable keys */;
+unlock tables;
 
 --
--- Table structure for table `h_hutang`
+-- table structure for table `h_hutang`
 --
 
-DROP TABLE IF EXISTS `h_hutang`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `h_hutang` (
-  `NO_HUTANG` varchar(20) NOT NULL,
-  `KODE_BAYAR` char(10) DEFAULT NULL,
-  `NO_TRANS_BELI` varchar(20) CHARACTER SET utf8mb4 NOT NULL,
-  `TGL_HUTANG` date DEFAULT NULL,
-  `TOTAL_HUTANG` decimal(10,0) DEFAULT NULL,
-  `BAYAR_HUTANG` decimal(10,0) DEFAULT NULL,
-  PRIMARY KEY (`NO_HUTANG`),
-  KEY `KODE_BAYAR_HUTANG` (`KODE_BAYAR`),
-  KEY `NO_TRANS_BELI_HUTANG` (`NO_TRANS_BELI`),
-  CONSTRAINT `KODE_BAYAR_HUTANG` FOREIGN KEY (`KODE_BAYAR`) REFERENCES `pembayaran` (`KODE_BAYAR`),
-  CONSTRAINT `NO_TRANS_BELI_HUTANG` FOREIGN KEY (`NO_TRANS_BELI`) REFERENCES `htrans_beli` (`NO_TRANS_BELI`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `h_hutang`;
+/*!40101 set @saved_cs_client     = @@character_set_client */;
+/*!40101 set character_set_client = utf8 */;
+create table `h_hutang` (
+  `no_hutang` varchar(20) not null,
+  `kode_bayar` char(10) default null,
+  `no_trans_beli` varchar(20) character set utf8mb4 not null,
+  `tgl_hutang` date default null,
+  `total_hutang` decimal(10,0) default null,
+  `bayar_hutang` decimal(10,0) default null,
+  primary key (`no_hutang`),
+  key `kode_bayar_hutang` (`kode_bayar`),
+  key `no_trans_beli_hutang` (`no_trans_beli`),
+  constraint `kode_bayar_hutang` foreign key (`kode_bayar`) references `pembayaran` (`kode_bayar`),
+  constraint `no_trans_beli_hutang` foreign key (`no_trans_beli`) references `htrans_beli` (`no_trans_beli`)
+) engine=innodb default charset=latin1;
+/*!40101 set character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `h_hutang`
+-- dumping data for table `h_hutang`
 --
 
-LOCK TABLES `h_hutang` WRITE;
-/*!40000 ALTER TABLE `h_hutang` DISABLE KEYS */;
-/*!40000 ALTER TABLE `h_hutang` ENABLE KEYS */;
-UNLOCK TABLES;
+lock tables `h_hutang` write;
+/*!40000 alter table `h_hutang` disable keys */;
+/*!40000 alter table `h_hutang` enable keys */;
+unlock tables;
 
 --
--- Table structure for table `h_piutang`
+-- table structure for table `h_piutang`
 --
 
-DROP TABLE IF EXISTS `h_piutang`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `h_piutang` (
-  `NO_PIUTANG` varchar(20) NOT NULL,
-  `NO_TRANS_JUAL` varchar(20) NOT NULL,
-  `KODE_BAYAR` char(10) DEFAULT NULL,
-  `TGL_PIUTANG` date DEFAULT NULL,
-  `TOTAL_PIUTANG` decimal(10,0) DEFAULT NULL,
-  PRIMARY KEY (`NO_PIUTANG`),
-  KEY `NO_TRANS_JUAL_PIUTANG` (`NO_TRANS_JUAL`),
-  CONSTRAINT `NO_TRANS_JUAL_PIUTANG` FOREIGN KEY (`NO_TRANS_JUAL`) REFERENCES `htrans_jual` (`NO_TRANS_JUAL`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `h_piutang`;
+/*!40101 set @saved_cs_client     = @@character_set_client */;
+/*!40101 set character_set_client = utf8 */;
+create table `h_piutang` (
+  `no_piutang` varchar(20) not null,
+  `no_trans_jual` varchar(20) not null,
+  `kode_bayar` char(10) default null,
+  `tgl_piutang` date default null,
+  `total_piutang` decimal(10,0) default null,
+  primary key (`no_piutang`),
+  key `no_trans_jual_piutang` (`no_trans_jual`),
+  constraint `no_trans_jual_piutang` foreign key (`no_trans_jual`) references `htrans_jual` (`no_trans_jual`)
+) engine=innodb default charset=latin1;
+/*!40101 set character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `h_piutang`
+-- dumping data for table `h_piutang`
 --
 
-LOCK TABLES `h_piutang` WRITE;
-/*!40000 ALTER TABLE `h_piutang` DISABLE KEYS */;
-/*!40000 ALTER TABLE `h_piutang` ENABLE KEYS */;
-UNLOCK TABLES;
+lock tables `h_piutang` write;
+/*!40000 alter table `h_piutang` disable keys */;
+/*!40000 alter table `h_piutang` enable keys */;
+unlock tables;
 
 --
--- Table structure for table `hretur_beli`
+-- table structure for table `hretur_beli`
 --
 
-DROP TABLE IF EXISTS `hretur_beli`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `hretur_beli` (
-  `NO_RETUR_BELI` varchar(10) NOT NULL,
-  `NO_TRANS_BELI` varchar(20) CHARACTER SET utf8mb4 NOT NULL,
-  `TGL_RETUR_BELI` date NOT NULL,
-  `TOTAL_RETUR_BELI` float DEFAULT NULL,
-  PRIMARY KEY (`NO_RETUR_BELI`),
-  KEY `NO_TRANS_BELI_RETUR` (`NO_TRANS_BELI`),
-  CONSTRAINT `NO_TRANS_BELI_RETUR` FOREIGN KEY (`NO_TRANS_BELI`) REFERENCES `htrans_beli` (`NO_TRANS_BELI`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `hretur_beli`;
+/*!40101 set @saved_cs_client     = @@character_set_client */;
+/*!40101 set character_set_client = utf8 */;
+create table `hretur_beli` (
+  `no_retur_beli` varchar(10) not null,
+  `no_trans_beli` varchar(20) character set utf8mb4 not null,
+  `tgl_retur_beli` date not null,
+  `total_retur_beli` float default null,
+  primary key (`no_retur_beli`),
+  key `no_trans_beli_retur` (`no_trans_beli`),
+  constraint `no_trans_beli_retur` foreign key (`no_trans_beli`) references `htrans_beli` (`no_trans_beli`)
+) engine=innodb default charset=latin1;
+/*!40101 set character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `hretur_beli`
+-- dumping data for table `hretur_beli`
 --
 
-LOCK TABLES `hretur_beli` WRITE;
-/*!40000 ALTER TABLE `hretur_beli` DISABLE KEYS */;
-/*!40000 ALTER TABLE `hretur_beli` ENABLE KEYS */;
-UNLOCK TABLES;
+lock tables `hretur_beli` write;
+/*!40000 alter table `hretur_beli` disable keys */;
+/*!40000 alter table `hretur_beli` enable keys */;
+unlock tables;
 
 --
--- Table structure for table `hretur_jual`
+-- table structure for table `hretur_jual`
 --
 
-DROP TABLE IF EXISTS `hretur_jual`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `hretur_jual` (
-  `NO_RETUR_JUAL` varchar(20) NOT NULL,
-  `NO_TRANS_JUAL` varchar(20) CHARACTER SET latin1 NOT NULL,
-  `TGL_RETUR_JUAL` date NOT NULL,
-  `TOTAL_RETUR_JUAL` float NOT NULL,
-  PRIMARY KEY (`NO_RETUR_JUAL`),
-  KEY `NO_TRANS_JUAL` (`NO_TRANS_JUAL`),
-  CONSTRAINT `NO_TRANS_JUAL` FOREIGN KEY (`NO_TRANS_JUAL`) REFERENCES `htrans_jual` (`NO_TRANS_JUAL`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `hretur_jual`;
+/*!40101 set @saved_cs_client     = @@character_set_client */;
+/*!40101 set character_set_client = utf8 */;
+create table `hretur_jual` (
+  `no_retur_jual` varchar(20) not null,
+  `no_trans_jual` varchar(20) character set latin1 not null,
+  `tgl_retur_jual` date not null,
+  `total_retur_jual` float not null,
+  primary key (`no_retur_jual`),
+  key `no_trans_jual` (`no_trans_jual`),
+  constraint `no_trans_jual` foreign key (`no_trans_jual`) references `htrans_jual` (`no_trans_jual`)
+) engine=innodb default charset=utf8mb4;
+/*!40101 set character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `hretur_jual`
+-- dumping data for table `hretur_jual`
 --
 
-LOCK TABLES `hretur_jual` WRITE;
-/*!40000 ALTER TABLE `hretur_jual` DISABLE KEYS */;
-/*!40000 ALTER TABLE `hretur_jual` ENABLE KEYS */;
-UNLOCK TABLES;
+lock tables `hretur_jual` write;
+/*!40000 alter table `hretur_jual` disable keys */;
+/*!40000 alter table `hretur_jual` enable keys */;
+unlock tables;
 
 --
--- Table structure for table `htrans_beli`
+-- table structure for table `htrans_beli`
 --
 
-DROP TABLE IF EXISTS `htrans_beli`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `htrans_beli` (
-  `NO_TRANS_BELI` varchar(20) NOT NULL,
-  `KD_SUPPLIER` varchar(20) CHARACTER SET latin1 NOT NULL,
-  `KODE_BAYAR` char(10) CHARACTER SET latin1 NOT NULL,
-  `NOMOR_PO` varchar(50) NOT NULL,
-  `TGL_TRANS_BELI` date NOT NULL,
-  `TGL_MAX_GARANSI` date DEFAULT NULL,
-  `DISC` float DEFAULT NULL,
-  `TOTAL_BAYAR` float NOT NULL,
-  PRIMARY KEY (`NO_TRANS_BELI`),
-  KEY `KD_SUPPLIER` (`KD_SUPPLIER`),
-  KEY `KODE_BAYAR_TRANS_BELI` (`KODE_BAYAR`),
-  CONSTRAINT `KD_SUPPLIER` FOREIGN KEY (`KD_SUPPLIER`) REFERENCES `supplier` (`KD_SUPPLIER`),
-  CONSTRAINT `KODE_BAYAR_TRANS_BELI` FOREIGN KEY (`KODE_BAYAR`) REFERENCES `pembayaran` (`KODE_BAYAR`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `htrans_beli`;
+/*!40101 set @saved_cs_client     = @@character_set_client */;
+/*!40101 set character_set_client = utf8 */;
+create table `htrans_beli` (
+  `no_trans_beli` varchar(20) not null,
+  `kd_supplier` varchar(20) character set latin1 not null,
+  `kode_bayar` char(10) character set latin1 not null,
+  `nomor_po` varchar(50) not null,
+  `tgl_trans_beli` date not null,
+  `tgl_max_garansi` date default null,
+  `disc` float default null,
+  `total_bayar` float not null,
+  primary key (`no_trans_beli`),
+  key `kd_supplier` (`kd_supplier`),
+  key `kode_bayar_trans_beli` (`kode_bayar`),
+  constraint `kd_supplier` foreign key (`kd_supplier`) references `supplier` (`kd_supplier`),
+  constraint `kode_bayar_trans_beli` foreign key (`kode_bayar`) references `pembayaran` (`kode_bayar`)
+) engine=innodb default charset=utf8mb4;
+/*!40101 set character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `htrans_beli`
+-- dumping data for table `htrans_beli`
 --
 
-LOCK TABLES `htrans_beli` WRITE;
-/*!40000 ALTER TABLE `htrans_beli` DISABLE KEYS */;
-/*!40000 ALTER TABLE `htrans_beli` ENABLE KEYS */;
-UNLOCK TABLES;
+lock tables `htrans_beli` write;
+/*!40000 alter table `htrans_beli` disable keys */;
+/*!40000 alter table `htrans_beli` enable keys */;
+unlock tables;
 
 --
--- Table structure for table `htrans_jual`
+-- table structure for table `htrans_jual`
 --
 
-DROP TABLE IF EXISTS `htrans_jual`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `htrans_jual` (
-  `NO_TRANS_JUAL` varchar(20) NOT NULL,
-  `KODE_PROMO` varchar(10) DEFAULT NULL,
-  `KODE_JASA` varchar(10) DEFAULT NULL,
-  `KODE_BAYAR` varchar(10) DEFAULT NULL,
-  `NO_BOOKING` varchar(20) DEFAULT NULL,
-  `TGL_TRANS_JUAL` date DEFAULT NULL,
-  `TOTAL_JUAL` decimal(10,0) DEFAULT NULL,
-  `BAYAR_JUAL` decimal(10,0) DEFAULT NULL,
-  `KEMBALI_JUAL` decimal(10,0) DEFAULT NULL,
-  `TGL_MAX_GARANSI` date DEFAULT NULL,
-  PRIMARY KEY (`NO_TRANS_JUAL`),
-  KEY `KODE_BAYAR_TRANS_JUAL` (`KODE_BAYAR`),
-  KEY `KODE_PROMO_TRANS_JUAL` (`KODE_PROMO`),
-  KEY `KODE_JASA_TRANS_JUAL` (`KODE_JASA`),
-  KEY `NO_BOOKING_TRANS_JUAL` (`NO_BOOKING`),
-  CONSTRAINT `KODE_BAYAR_TRANS_JUAL` FOREIGN KEY (`KODE_BAYAR`) REFERENCES `pembayaran` (`KODE_BAYAR`),
-  CONSTRAINT `KODE_JASA_TRANS_JUAL` FOREIGN KEY (`KODE_JASA`) REFERENCES `jasa` (`KODE_JASA`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `KODE_PROMO_TRANS_JUAL` FOREIGN KEY (`KODE_PROMO`) REFERENCES `promo` (`KODE_PROMO`),
-  CONSTRAINT `NO_BOOKING_TRANS_JUAL` FOREIGN KEY (`NO_BOOKING`) REFERENCES `booking` (`NO_BOOKING`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `htrans_jual`;
+/*!40101 set @saved_cs_client     = @@character_set_client */;
+/*!40101 set character_set_client = utf8 */;
+create table `htrans_jual` (
+  `no_trans_jual` varchar(20) not null,
+  `kode_promo` varchar(10) default null,
+  `kode_jasa` varchar(10) default null,
+  `kode_bayar` varchar(10) default null,
+  `no_booking` varchar(20) default null,
+  `tgl_trans_jual` date default null,
+  `total_jual` decimal(10,0) default null,
+  `bayar_jual` decimal(10,0) default null,
+  `kembali_jual` decimal(10,0) default null,
+  `tgl_max_garansi` date default null,
+  primary key (`no_trans_jual`),
+  key `kode_bayar_trans_jual` (`kode_bayar`),
+  key `kode_promo_trans_jual` (`kode_promo`),
+  key `kode_jasa_trans_jual` (`kode_jasa`),
+  key `no_booking_trans_jual` (`no_booking`),
+  constraint `kode_bayar_trans_jual` foreign key (`kode_bayar`) references `pembayaran` (`kode_bayar`),
+  constraint `kode_jasa_trans_jual` foreign key (`kode_jasa`) references `jasa` (`kode_jasa`) on delete cascade on update cascade,
+  constraint `kode_promo_trans_jual` foreign key (`kode_promo`) references `promo` (`kode_promo`),
+  constraint `no_booking_trans_jual` foreign key (`no_booking`) references `booking` (`no_booking`)
+) engine=innodb default charset=latin1;
+/*!40101 set character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `htrans_jual`
+-- dumping data for table `htrans_jual`
 --
 
-LOCK TABLES `htrans_jual` WRITE;
-/*!40000 ALTER TABLE `htrans_jual` DISABLE KEYS */;
-/*!40000 ALTER TABLE `htrans_jual` ENABLE KEYS */;
-UNLOCK TABLES;
+lock tables `htrans_jual` write;
+/*!40000 alter table `htrans_jual` disable keys */;
+/*!40000 alter table `htrans_jual` enable keys */;
+unlock tables;
 
 --
--- Table structure for table `jasa`
+-- table structure for table `jasa`
 --
 
-DROP TABLE IF EXISTS `jasa`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `jasa` (
-  `KODE_JASA` varchar(10) NOT NULL,
-  `NAMA_JASA` varchar(20) DEFAULT NULL,
-  PRIMARY KEY (`KODE_JASA`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `jasa`;
+/*!40101 set @saved_cs_client     = @@character_set_client */;
+/*!40101 set character_set_client = utf8 */;
+create table `jasa` (
+  `kode_jasa` varchar(10) not null,
+  `nama_jasa` varchar(20) default null,
+  primary key (`kode_jasa`)
+) engine=innodb default charset=latin1;
+/*!40101 set character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `jasa`
+-- dumping data for table `jasa`
 --
 
-LOCK TABLES `jasa` WRITE;
-/*!40000 ALTER TABLE `jasa` DISABLE KEYS */;
-/*!40000 ALTER TABLE `jasa` ENABLE KEYS */;
-UNLOCK TABLES;
+lock tables `jasa` write;
+/*!40000 alter table `jasa` disable keys */;
+/*!40000 alter table `jasa` enable keys */;
+unlock tables;
 
 --
--- Table structure for table `koreksi`
+-- table structure for table `koreksi`
 --
 
-DROP TABLE IF EXISTS `koreksi`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `koreksi` (
-  `NO_KOREKSI` varchar(20) NOT NULL,
-  `KODE_BARANG` varchar(20) NOT NULL,
-  `TGL_KOREKSI` date NOT NULL,
-  `JUMLAH` int(11) NOT NULL,
-  `JENIS` enum('IN','OUT') NOT NULL,
-  `KETERANGAN` text,
-  PRIMARY KEY (`NO_KOREKSI`),
-  KEY `KODE_BARANG_KOREKSI` (`KODE_BARANG`),
-  CONSTRAINT `KODE_BARANG_KOREKSI` FOREIGN KEY (`KODE_BARANG`) REFERENCES `barang` (`KODE_BARANG`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `koreksi`;
+/*!40101 set @saved_cs_client     = @@character_set_client */;
+/*!40101 set character_set_client = utf8 */;
+create table `koreksi` (
+  `no_koreksi` varchar(20) not null,
+  `kode_barang` varchar(20) not null,
+  `tgl_koreksi` date not null,
+  `jumlah` int(11) not null,
+  `jenis` enum('in','out') not null,
+  `keterangan` text,
+  primary key (`no_koreksi`),
+  key `kode_barang_koreksi` (`kode_barang`),
+  constraint `kode_barang_koreksi` foreign key (`kode_barang`) references `barang` (`kode_barang`)
+) engine=innodb default charset=latin1;
+/*!40101 set character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `koreksi`
+-- dumping data for table `koreksi`
 --
 
-LOCK TABLES `koreksi` WRITE;
-/*!40000 ALTER TABLE `koreksi` DISABLE KEYS */;
-/*!40000 ALTER TABLE `koreksi` ENABLE KEYS */;
-UNLOCK TABLES;
+lock tables `koreksi` write;
+/*!40000 alter table `koreksi` disable keys */;
+/*!40000 alter table `koreksi` enable keys */;
+unlock tables;
 
 --
--- Table structure for table `kota`
+-- table structure for table `kota`
 --
 
-DROP TABLE IF EXISTS `kota`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `kota` (
-  `KODE_KOTA` varchar(10) NOT NULL,
-  `NAMA_KOTA` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`KODE_KOTA`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `kota`;
+/*!40101 set @saved_cs_client     = @@character_set_client */;
+/*!40101 set character_set_client = utf8 */;
+create table `kota` (
+  `kode_kota` varchar(10) not null,
+  `nama_kota` varchar(50) default null,
+  primary key (`kode_kota`)
+) engine=innodb default charset=latin1;
+/*!40101 set character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `kota`
+-- dumping data for table `kota`
 --
 
-LOCK TABLES `kota` WRITE;
-/*!40000 ALTER TABLE `kota` DISABLE KEYS */;
-INSERT INTO `kota` VALUES ('1101','KABUPATEN SIMEULUE'),('1102','KABUPATEN ACEH SINGKIL'),('1103','KABUPATEN ACEH SELATAN'),('1104','KABUPATEN ACEH TENGGARA'),('1105','KABUPATEN ACEH TIMUR'),('1106','KABUPATEN ACEH TENGAH'),('1107','KABUPATEN ACEH BARAT'),('1108','KABUPATEN ACEH BESAR'),('1109','KABUPATEN PIDIE'),('1110','KABUPATEN BIREUEN'),('1111','KABUPATEN ACEH UTARA'),('1112','KABUPATEN ACEH BARAT DAYA'),('1113','KABUPATEN GAYO LUES'),('1114','KABUPATEN ACEH TAMIANG'),('1115','KABUPATEN NAGAN RAYA'),('1116','KABUPATEN ACEH JAYA'),('1117','KABUPATEN BENER MERIAH'),('1118','KABUPATEN PIDIE JAYA'),('1171','KOTA BANDA ACEH'),('1172','KOTA SABANG'),('1173','KOTA LANGSA'),('1174','KOTA LHOKSEUMAWE'),('1175','KOTA SUBULUSSALAM'),('1201','KABUPATEN NIAS'),('1202','KABUPATEN MANDAILING NATAL'),('1203','KABUPATEN TAPANULI SELATAN'),('1204','KABUPATEN TAPANULI TENGAH'),('1205','KABUPATEN TAPANULI UTARA'),('1206','KABUPATEN TOBA SAMOSIR'),('1207','KABUPATEN LABUHAN BATU'),('1208','KABUPATEN ASAHAN'),('1209','KABUPATEN SIMALUNGUN'),('1210','KABUPATEN DAIRI'),('1211','KABUPATEN KARO'),('1212','KABUPATEN DELI SERDANG'),('1213','KABUPATEN LANGKAT'),('1214','KABUPATEN NIAS SELATAN'),('1215','KABUPATEN HUMBANG HASUNDUTAN'),('1216','KABUPATEN PAKPAK BHARAT'),('1217','KABUPATEN SAMOSIR'),('1218','KABUPATEN SERDANG BEDAGAI'),('1219','KABUPATEN BATU BARA'),('1220','KABUPATEN PADANG LAWAS UTARA'),('1221','KABUPATEN PADANG LAWAS'),('1222','KABUPATEN LABUHAN BATU SELATAN'),('1223','KABUPATEN LABUHAN BATU UTARA'),('1224','KABUPATEN NIAS UTARA'),('1225','KABUPATEN NIAS BARAT'),('1271','KOTA SIBOLGA'),('1272','KOTA TANJUNG BALAI'),('1273','KOTA PEMATANG SIANTAR'),('1274','KOTA TEBING TINGGI'),('1275','KOTA MEDAN'),('1276','KOTA BINJAI'),('1277','KOTA PADANGSIDIMPUAN'),('1278','KOTA GUNUNGSITOLI'),('1301','KABUPATEN KEPULAUAN MENTAWAI'),('1302','KABUPATEN PESISIR SELATAN'),('1303','KABUPATEN SOLOK'),('1304','KABUPATEN SIJUNJUNG'),('1305','KABUPATEN TANAH DATAR'),('1306','KABUPATEN PADANG PARIAMAN'),('1307','KABUPATEN AGAM'),('1308','KABUPATEN LIMA PULUH KOTA'),('1309','KABUPATEN PASAMAN'),('1310','KABUPATEN SOLOK SELATAN'),('1311','KABUPATEN DHARMASRAYA'),('1312','KABUPATEN PASAMAN BARAT'),('1371','KOTA PADANG'),('1372','KOTA SOLOK'),('1373','KOTA SAWAH LUNTO'),('1374','KOTA PADANG PANJANG'),('1375','KOTA BUKITTINGGI'),('1376','KOTA PAYAKUMBUH'),('1377','KOTA PARIAMAN'),('1401','KABUPATEN KUANTAN SINGINGI'),('1402','KABUPATEN INDRAGIRI HULU'),('1403','KABUPATEN INDRAGIRI HILIR'),('1404','KABUPATEN PELALAWAN'),('1405','KABUPATEN SIAK'),('1406','KABUPATEN KAMPAR'),('1407','KABUPATEN ROKAN HULU'),('1408','KABUPATEN BENGKALIS'),('1409','KABUPATEN ROKAN HILIR'),('1410','KABUPATEN KEPULAUAN MERANTI'),('1471','KOTA PEKANBARU'),('1473','KOTA DUMAI'),('1501','KABUPATEN KERINCI'),('1502','KABUPATEN MERANGIN'),('1503','KABUPATEN SAROLANGUN'),('1504','KABUPATEN BATANG HARI'),('1505','KABUPATEN MUARO JAMBI'),('1506','KABUPATEN TANJUNG JABUNG TIMUR'),('1507','KABUPATEN TANJUNG JABUNG BARAT'),('1508','KABUPATEN TEBO'),('1509','KABUPATEN BUNGO'),('1571','KOTA JAMBI'),('1572','KOTA SUNGAI PENUH'),('1601','KABUPATEN OGAN KOMERING ULU'),('1602','KABUPATEN OGAN KOMERING ILIR'),('1603','KABUPATEN MUARA ENIM'),('1604','KABUPATEN LAHAT'),('1605','KABUPATEN MUSI RAWAS'),('1606','KABUPATEN MUSI BANYUASIN'),('1607','KABUPATEN BANYU ASIN'),('1608','KABUPATEN OGAN KOMERING ULU SELATAN'),('1609','KABUPATEN OGAN KOMERING ULU TIMUR'),('1610','KABUPATEN OGAN ILIR'),('1611','KABUPATEN EMPAT LAWANG'),('1612','KABUPATEN PENUKAL ABAB LEMATANG ILIR'),('1613','KABUPATEN MUSI RAWAS UTARA'),('1671','KOTA PALEMBANG'),('1672','KOTA PRABUMULIH'),('1673','KOTA PAGAR ALAM'),('1674','KOTA LUBUKLINGGAU'),('1701','KABUPATEN BENGKULU SELATAN'),('1702','KABUPATEN REJANG LEBONG'),('1703','KABUPATEN BENGKULU UTARA'),('1704','KABUPATEN KAUR'),('1705','KABUPATEN SELUMA'),('1706','KABUPATEN MUKOMUKO'),('1707','KABUPATEN LEBONG'),('1708','KABUPATEN KEPAHIANG'),('1709','KABUPATEN BENGKULU TENGAH'),('1771','KOTA BENGKULU'),('1801','KABUPATEN LAMPUNG BARAT'),('1802','KABUPATEN TANGGAMUS'),('1803','KABUPATEN LAMPUNG SELATAN'),('1804','KABUPATEN LAMPUNG TIMUR'),('1805','KABUPATEN LAMPUNG TENGAH'),('1806','KABUPATEN LAMPUNG UTARA'),('1807','KABUPATEN WAY KANAN'),('1808','KABUPATEN TULANGBAWANG'),('1809','KABUPATEN PESAWARAN'),('1810','KABUPATEN PRINGSEWU'),('1811','KABUPATEN MESUJI'),('1812','KABUPATEN TULANG BAWANG BARAT'),('1813','KABUPATEN PESISIR BARAT'),('1871','KOTA BANDAR LAMPUNG'),('1872','KOTA METRO'),('1901','KABUPATEN BANGKA'),('1902','KABUPATEN BELITUNG'),('1903','KABUPATEN BANGKA BARAT'),('1904','KABUPATEN BANGKA TENGAH'),('1905','KABUPATEN BANGKA SELATAN'),('1906','KABUPATEN BELITUNG TIMUR'),('1971','KOTA PANGKAL PINANG'),('2101','KABUPATEN KARIMUN'),('2102','KABUPATEN BINTAN'),('2103','KABUPATEN NATUNA'),('2104','KABUPATEN LINGGA'),('2105','KABUPATEN KEPULAUAN ANAMBAS'),('2171','KOTA BATAM'),('2172','KOTA TANJUNG PINANG'),('3101','KABUPATEN KEPULAUAN SERIBU'),('3171','KOTA JAKARTA SELATAN'),('3172','KOTA JAKARTA TIMUR'),('3173','KOTA JAKARTA PUSAT'),('3174','KOTA JAKARTA BARAT'),('3175','KOTA JAKARTA UTARA'),('3201','KABUPATEN BOGOR'),('3202','KABUPATEN SUKABUMI'),('3203','KABUPATEN CIANJUR'),('3204','KABUPATEN BANDUNG'),('3205','KABUPATEN GARUT'),('3206','KABUPATEN TASIKMALAYA'),('3207','KABUPATEN CIAMIS'),('3208','KABUPATEN KUNINGAN'),('3209','KABUPATEN CIREBON'),('3210','KABUPATEN MAJALENGKA'),('3211','KABUPATEN SUMEDANG'),('3212','KABUPATEN INDRAMAYU'),('3213','KABUPATEN SUBANG'),('3214','KABUPATEN PURWAKARTA'),('3215','KABUPATEN KARAWANG'),('3216','KABUPATEN BEKASI'),('3217','KABUPATEN BANDUNG BARAT'),('3218','KABUPATEN PANGANDARAN'),('3271','KOTA BOGOR'),('3272','KOTA SUKABUMI'),('3273','KOTA BANDUNG'),('3274','KOTA CIREBON'),('3275','KOTA BEKASI'),('3276','KOTA DEPOK'),('3277','KOTA CIMAHI'),('3278','KOTA TASIKMALAYA'),('3279','KOTA BANJAR'),('3301','KABUPATEN CILACAP'),('3302','KABUPATEN BANYUMAS'),('3303','KABUPATEN PURBALINGGA'),('3304','KABUPATEN BANJARNEGARA'),('3305','KABUPATEN KEBUMEN'),('3306','KABUPATEN PURWOREJO'),('3307','KABUPATEN WONOSOBO'),('3308','KABUPATEN MAGELANG'),('3309','KABUPATEN BOYOLALI'),('3310','KABUPATEN KLATEN'),('3311','KABUPATEN SUKOHARJO'),('3312','KABUPATEN WONOGIRI'),('3313','KABUPATEN KARANGANYAR'),('3314','KABUPATEN SRAGEN'),('3315','KABUPATEN GROBOGAN'),('3316','KABUPATEN BLORA'),('3317','KABUPATEN REMBANG'),('3318','KABUPATEN PATI'),('3319','KABUPATEN KUDUS'),('3320','KABUPATEN JEPARA'),('3321','KABUPATEN DEMAK'),('3322','KABUPATEN SEMARANG'),('3323','KABUPATEN TEMANGGUNG'),('3324','KABUPATEN KENDAL'),('3325','KABUPATEN BATANG'),('3326','KABUPATEN PEKALONGAN'),('3327','KABUPATEN PEMALANG'),('3328','KABUPATEN TEGAL'),('3329','KABUPATEN BREBES'),('3371','KOTA MAGELANG'),('3372','KOTA SURAKARTA'),('3373','KOTA SALATIGA'),('3374','KOTA SEMARANG'),('3375','KOTA PEKALONGAN'),('3376','KOTA TEGAL'),('3401','KABUPATEN KULON PROGO'),('3402','KABUPATEN BANTUL'),('3403','KABUPATEN GUNUNG KIDUL'),('3404','KABUPATEN SLEMAN'),('3471','KOTA YOGYAKARTA'),('3501','KABUPATEN PACITAN'),('3502','KABUPATEN PONOROGO'),('3503','KABUPATEN TRENGGALEK'),('3504','KABUPATEN TULUNGAGUNG'),('3505','KABUPATEN BLITAR'),('3506','KABUPATEN KEDIRI'),('3507','KABUPATEN MALANG'),('3508','KABUPATEN LUMAJANG'),('3509','KABUPATEN JEMBER'),('3510','KABUPATEN BANYUWANGI'),('3511','KABUPATEN BONDOWOSO'),('3512','KABUPATEN SITUBONDO'),('3513','KABUPATEN PROBOLINGGO'),('3514','KABUPATEN PASURUAN'),('3515','KABUPATEN SIDOARJO'),('3516','KABUPATEN MOJOKERTO'),('3517','KABUPATEN JOMBANG'),('3518','KABUPATEN NGANJUK'),('3519','KABUPATEN MADIUN'),('3520','KABUPATEN MAGETAN'),('3521','KABUPATEN NGAWI'),('3522','KABUPATEN BOJONEGORO'),('3523','KABUPATEN TUBAN'),('3524','KABUPATEN LAMONGAN'),('3525','KABUPATEN GRESIK'),('3526','KABUPATEN BANGKALAN'),('3527','KABUPATEN SAMPANG'),('3528','KABUPATEN PAMEKASAN'),('3529','KABUPATEN SUMENEP'),('3571','KOTA KEDIRI'),('3572','KOTA BLITAR'),('3573','KOTA MALANG'),('3574','KOTA PROBOLINGGO'),('3575','KOTA PASURUAN'),('3576','KOTA MOJOKERTO'),('3577','KOTA MADIUN'),('3578','KOTA SURABAYA'),('3579','KOTA BATU'),('3601','KABUPATEN PANDEGLANG'),('3602','KABUPATEN LEBAK'),('3603','KABUPATEN TANGERANG'),('3604','KABUPATEN SERANG'),('3671','KOTA TANGERANG'),('3672','KOTA CILEGON'),('3673','KOTA SERANG'),('3674','KOTA TANGERANG SELATAN'),('5101','KABUPATEN JEMBRANA'),('5102','KABUPATEN TABANAN'),('5103','KABUPATEN BADUNG'),('5104','KABUPATEN GIANYAR'),('5105','KABUPATEN KLUNGKUNG'),('5106','KABUPATEN BANGLI'),('5107','KABUPATEN KARANG ASEM'),('5108','KABUPATEN BULELENG'),('5171','KOTA DENPASAR'),('5201','KABUPATEN LOMBOK BARAT'),('5202','KABUPATEN LOMBOK TENGAH'),('5203','KABUPATEN LOMBOK TIMUR'),('5204','KABUPATEN SUMBAWA'),('5205','KABUPATEN DOMPU'),('5206','KABUPATEN BIMA'),('5207','KABUPATEN SUMBAWA BARAT'),('5208','KABUPATEN LOMBOK UTARA'),('5271','KOTA MATARAM'),('5272','KOTA BIMA'),('5301','KABUPATEN SUMBA BARAT'),('5302','KABUPATEN SUMBA TIMUR'),('5303','KABUPATEN KUPANG'),('5304','KABUPATEN TIMOR TENGAH SELATAN'),('5305','KABUPATEN TIMOR TENGAH UTARA'),('5306','KABUPATEN BELU'),('5307','KABUPATEN ALOR'),('5308','KABUPATEN LEMBATA'),('5309','KABUPATEN FLORES TIMUR'),('5310','KABUPATEN SIKKA'),('5311','KABUPATEN ENDE'),('5312','KABUPATEN NGADA'),('5313','KABUPATEN MANGGARAI'),('5314','KABUPATEN ROTE NDAO'),('5315','KABUPATEN MANGGARAI BARAT'),('5316','KABUPATEN SUMBA TENGAH'),('5317','KABUPATEN SUMBA BARAT DAYA'),('5318','KABUPATEN NAGEKEO'),('5319','KABUPATEN MANGGARAI TIMUR'),('5320','KABUPATEN SABU RAIJUA'),('5321','KABUPATEN MALAKA'),('5371','KOTA KUPANG'),('6101','KABUPATEN SAMBAS'),('6102','KABUPATEN BENGKAYANG'),('6103','KABUPATEN LANDAK'),('6104','KABUPATEN MEMPAWAH'),('6105','KABUPATEN SANGGAU'),('6106','KABUPATEN KETAPANG'),('6107','KABUPATEN SINTANG'),('6108','KABUPATEN KAPUAS HULU'),('6109','KABUPATEN SEKADAU'),('6110','KABUPATEN MELAWI'),('6111','KABUPATEN KAYONG UTARA'),('6112','KABUPATEN KUBU RAYA'),('6171','KOTA PONTIANAK'),('6172','KOTA SINGKAWANG'),('6201','KABUPATEN KOTAWARINGIN BARAT'),('6202','KABUPATEN KOTAWARINGIN TIMUR'),('6203','KABUPATEN KAPUAS'),('6204','KABUPATEN BARITO SELATAN'),('6205','KABUPATEN BARITO UTARA'),('6206','KABUPATEN SUKAMARA'),('6207','KABUPATEN LAMANDAU'),('6208','KABUPATEN SERUYAN'),('6209','KABUPATEN KATINGAN'),('6210','KABUPATEN PULANG PISAU'),('6211','KABUPATEN GUNUNG MAS'),('6212','KABUPATEN BARITO TIMUR'),('6213','KABUPATEN MURUNG RAYA'),('6271','KOTA PALANGKA RAYA'),('6301','KABUPATEN TANAH LAUT'),('6302','KABUPATEN KOTA BARU'),('6303','KABUPATEN BANJAR'),('6304','KABUPATEN BARITO KUALA'),('6305','KABUPATEN TAPIN'),('6306','KABUPATEN HULU SUNGAI SELATAN'),('6307','KABUPATEN HULU SUNGAI TENGAH'),('6308','KABUPATEN HULU SUNGAI UTARA'),('6309','KABUPATEN TABALONG'),('6310','KABUPATEN TANAH BUMBU'),('6311','KABUPATEN BALANGAN'),('6371','KOTA BANJARMASIN'),('6372','KOTA BANJAR BARU'),('6401','KABUPATEN PASER'),('6402','KABUPATEN KUTAI BARAT'),('6403','KABUPATEN KUTAI KARTANEGARA'),('6404','KABUPATEN KUTAI TIMUR'),('6405','KABUPATEN BERAU'),('6409','KABUPATEN PENAJAM PASER UTARA'),('6411','KABUPATEN MAHAKAM HULU'),('6471','KOTA BALIKPAPAN'),('6472','KOTA SAMARINDA'),('6474','KOTA BONTANG'),('6501','KABUPATEN MALINAU'),('6502','KABUPATEN BULUNGAN'),('6503','KABUPATEN TANA TIDUNG'),('6504','KABUPATEN NUNUKAN'),('6571','KOTA TARAKAN'),('7101','KABUPATEN BOLAANG MONGONDOW'),('7102','KABUPATEN MINAHASA'),('7103','KABUPATEN KEPULAUAN SANGIHE'),('7104','KABUPATEN KEPULAUAN TALAUD'),('7105','KABUPATEN MINAHASA SELATAN'),('7106','KABUPATEN MINAHASA UTARA'),('7107','KABUPATEN BOLAANG MONGONDOW UTARA'),('7108','KABUPATEN SIAU TAGULANDANG BIARO'),('7109','KABUPATEN MINAHASA TENGGARA'),('7110','KABUPATEN BOLAANG MONGONDOW SELATAN'),('7111','KABUPATEN BOLAANG MONGONDOW TIMUR'),('7171','KOTA MANADO'),('7172','KOTA BITUNG'),('7173','KOTA TOMOHON'),('7174','KOTA KOTAMOBAGU'),('7201','KABUPATEN BANGGAI KEPULAUAN'),('7202','KABUPATEN BANGGAI'),('7203','KABUPATEN MOROWALI'),('7204','KABUPATEN POSO'),('7205','KABUPATEN DONGGALA'),('7206','KABUPATEN TOLI-TOLI'),('7207','KABUPATEN BUOL'),('7208','KABUPATEN PARIGI MOUTONG'),('7209','KABUPATEN TOJO UNA-UNA'),('7210','KABUPATEN SIGI'),('7211','KABUPATEN BANGGAI LAUT'),('7212','KABUPATEN MOROWALI UTARA'),('7271','KOTA PALU'),('7301','KABUPATEN KEPULAUAN SELAYAR'),('7302','KABUPATEN BULUKUMBA'),('7303','KABUPATEN BANTAENG'),('7304','KABUPATEN JENEPONTO'),('7305','KABUPATEN TAKALAR'),('7306','KABUPATEN GOWA'),('7307','KABUPATEN SINJAI'),('7308','KABUPATEN MAROS'),('7309','KABUPATEN PANGKAJENE DAN KEPULAUAN'),('7310','KABUPATEN BARRU'),('7311','KABUPATEN BONE'),('7312','KABUPATEN SOPPENG'),('7313','KABUPATEN WAJO'),('7314','KABUPATEN SIDENRENG RAPPANG'),('7315','KABUPATEN PINRANG'),('7316','KABUPATEN ENREKANG'),('7317','KABUPATEN LUWU'),('7318','KABUPATEN TANA TORAJA'),('7322','KABUPATEN LUWU UTARA'),('7325','KABUPATEN LUWU TIMUR'),('7326','KABUPATEN TORAJA UTARA'),('7371','KOTA MAKASSAR'),('7372','KOTA PAREPARE'),('7373','KOTA PALOPO'),('7401','KABUPATEN BUTON'),('7402','KABUPATEN MUNA'),('7403','KABUPATEN KONAWE'),('7404','KABUPATEN KOLAKA'),('7405','KABUPATEN KONAWE SELATAN'),('7406','KABUPATEN BOMBANA'),('7407','KABUPATEN WAKATOBI'),('7408','KABUPATEN KOLAKA UTARA'),('7409','KABUPATEN BUTON UTARA'),('7410','KABUPATEN KONAWE UTARA'),('7411','KABUPATEN KOLAKA TIMUR'),('7412','KABUPATEN KONAWE KEPULAUAN'),('7413','KABUPATEN MUNA BARAT'),('7414','KABUPATEN BUTON TENGAH'),('7415','KABUPATEN BUTON SELATAN'),('7471','KOTA KENDARI'),('7472','KOTA BAUBAU'),('7501','KABUPATEN BOALEMO'),('7502','KABUPATEN GORONTALO'),('7503','KABUPATEN POHUWATO'),('7504','KABUPATEN BONE BOLANGO'),('7505','KABUPATEN GORONTALO UTARA'),('7571','KOTA GORONTALO'),('7601','KABUPATEN MAJENE'),('7602','KABUPATEN POLEWALI MANDAR'),('7603','KABUPATEN MAMASA'),('7604','KABUPATEN MAMUJU'),('7605','KABUPATEN MAMUJU UTARA'),('7606','KABUPATEN MAMUJU TENGAH'),('8101','KABUPATEN MALUKU TENGGARA BARAT'),('8102','KABUPATEN MALUKU TENGGARA'),('8103','KABUPATEN MALUKU TENGAH'),('8104','KABUPATEN BURU'),('8105','KABUPATEN KEPULAUAN ARU'),('8106','KABUPATEN SERAM BAGIAN BARAT'),('8107','KABUPATEN SERAM BAGIAN TIMUR'),('8108','KABUPATEN MALUKU BARAT DAYA'),('8109','KABUPATEN BURU SELATAN'),('8171','KOTA AMBON'),('8172','KOTA TUAL'),('8201','KABUPATEN HALMAHERA BARAT'),('8202','KABUPATEN HALMAHERA TENGAH'),('8203','KABUPATEN KEPULAUAN SULA'),('8204','KABUPATEN HALMAHERA SELATAN'),('8205','KABUPATEN HALMAHERA UTARA'),('8206','KABUPATEN HALMAHERA TIMUR'),('8207','KABUPATEN PULAU MOROTAI'),('8208','KABUPATEN PULAU TALIABU'),('8271','KOTA TERNATE'),('8272','KOTA TIDORE KEPULAUAN'),('9101','KABUPATEN FAKFAK'),('9102','KABUPATEN KAIMANA'),('9103','KABUPATEN TELUK WONDAMA'),('9104','KABUPATEN TELUK BINTUNI'),('9105','KABUPATEN MANOKWARI'),('9106','KABUPATEN SORONG SELATAN'),('9107','KABUPATEN SORONG'),('9108','KABUPATEN RAJA AMPAT'),('9109','KABUPATEN TAMBRAUW'),('9110','KABUPATEN MAYBRAT'),('9111','KABUPATEN MANOKWARI SELATAN'),('9112','KABUPATEN PEGUNUNGAN ARFAK'),('9171','KOTA SORONG'),('9401','KABUPATEN MERAUKE'),('9402','KABUPATEN JAYAWIJAYA'),('9403','KABUPATEN JAYAPURA'),('9404','KABUPATEN NABIRE'),('9408','KABUPATEN KEPULAUAN YAPEN'),('9409','KABUPATEN BIAK NUMFOR'),('9410','KABUPATEN PANIAI'),('9411','KABUPATEN PUNCAK JAYA'),('9412','KABUPATEN MIMIKA'),('9413','KABUPATEN BOVEN DIGOEL'),('9414','KABUPATEN MAPPI'),('9415','KABUPATEN ASMAT'),('9416','KABUPATEN YAHUKIMO'),('9417','KABUPATEN PEGUNUNGAN BINTANG'),('9418','KABUPATEN TOLIKARA'),('9419','KABUPATEN SARMI'),('9420','KABUPATEN KEEROM'),('9426','KABUPATEN WAROPEN'),('9427','KABUPATEN SUPIORI'),('9428','KABUPATEN MAMBERAMO RAYA'),('9429','KABUPATEN NDUGA'),('9430','KABUPATEN LANNY JAYA'),('9431','KABUPATEN MAMBERAMO TENGAH'),('9432','KABUPATEN YALIMO'),('9433','KABUPATEN PUNCAK'),('9434','KABUPATEN DOGIYAI'),('9435','KABUPATEN INTAN JAYA'),('9436','KABUPATEN DEIYAI'),('9471','KOTA JAYAPURA');
-/*!40000 ALTER TABLE `kota` ENABLE KEYS */;
-UNLOCK TABLES;
+lock tables `kota` write;
+/*!40000 alter table `kota` disable keys */;
+insert into `kota` values ('1101','kabupaten simeulue'),('1102','kabupaten aceh singkil'),('1103','kabupaten aceh selatan'),('1104','kabupaten aceh tenggara'),('1105','kabupaten aceh timur'),('1106','kabupaten aceh tengah'),('1107','kabupaten aceh barat'),('1108','kabupaten aceh besar'),('1109','kabupaten pidie'),('1110','kabupaten bireuen'),('1111','kabupaten aceh utara'),('1112','kabupaten aceh barat daya'),('1113','kabupaten gayo lues'),('1114','kabupaten aceh tamiang'),('1115','kabupaten nagan raya'),('1116','kabupaten aceh jaya'),('1117','kabupaten bener meriah'),('1118','kabupaten pidie jaya'),('1171','kota banda aceh'),('1172','kota sabang'),('1173','kota langsa'),('1174','kota lhokseumawe'),('1175','kota subulussalam'),('1201','kabupaten nias'),('1202','kabupaten mandailing natal'),('1203','kabupaten tapanuli selatan'),('1204','kabupaten tapanuli tengah'),('1205','kabupaten tapanuli utara'),('1206','kabupaten toba samosir'),('1207','kabupaten labuhan batu'),('1208','kabupaten asahan'),('1209','kabupaten simalungun'),('1210','kabupaten dairi'),('1211','kabupaten karo'),('1212','kabupaten deli serdang'),('1213','kabupaten langkat'),('1214','kabupaten nias selatan'),('1215','kabupaten humbang hasundutan'),('1216','kabupaten pakpak bharat'),('1217','kabupaten samosir'),('1218','kabupaten serdang bedagai'),('1219','kabupaten batu bara'),('1220','kabupaten padang lawas utara'),('1221','kabupaten padang lawas'),('1222','kabupaten labuhan batu selatan'),('1223','kabupaten labuhan batu utara'),('1224','kabupaten nias utara'),('1225','kabupaten nias barat'),('1271','kota sibolga'),('1272','kota tanjung balai'),('1273','kota pematang siantar'),('1274','kota tebing tinggi'),('1275','kota medan'),('1276','kota binjai'),('1277','kota padangsidimpuan'),('1278','kota gunungsitoli'),('1301','kabupaten kepulauan mentawai'),('1302','kabupaten pesisir selatan'),('1303','kabupaten solok'),('1304','kabupaten sijunjung'),('1305','kabupaten tanah datar'),('1306','kabupaten padang pariaman'),('1307','kabupaten agam'),('1308','kabupaten lima puluh kota'),('1309','kabupaten pasaman'),('1310','kabupaten solok selatan'),('1311','kabupaten dharmasraya'),('1312','kabupaten pasaman barat'),('1371','kota padang'),('1372','kota solok'),('1373','kota sawah lunto'),('1374','kota padang panjang'),('1375','kota bukittinggi'),('1376','kota payakumbuh'),('1377','kota pariaman'),('1401','kabupaten kuantan singingi'),('1402','kabupaten indragiri hulu'),('1403','kabupaten indragiri hilir'),('1404','kabupaten pelalawan'),('1405','kabupaten siak'),('1406','kabupaten kampar'),('1407','kabupaten rokan hulu'),('1408','kabupaten bengkalis'),('1409','kabupaten rokan hilir'),('1410','kabupaten kepulauan meranti'),('1471','kota pekanbaru'),('1473','kota dumai'),('1501','kabupaten kerinci'),('1502','kabupaten merangin'),('1503','kabupaten sarolangun'),('1504','kabupaten batang hari'),('1505','kabupaten muaro jambi'),('1506','kabupaten tanjung jabung timur'),('1507','kabupaten tanjung jabung barat'),('1508','kabupaten tebo'),('1509','kabupaten bungo'),('1571','kota jambi'),('1572','kota sungai penuh'),('1601','kabupaten ogan komering ulu'),('1602','kabupaten ogan komering ilir'),('1603','kabupaten muara enim'),('1604','kabupaten lahat'),('1605','kabupaten musi rawas'),('1606','kabupaten musi banyuasin'),('1607','kabupaten banyu asin'),('1608','kabupaten ogan komering ulu selatan'),('1609','kabupaten ogan komering ulu timur'),('1610','kabupaten ogan ilir'),('1611','kabupaten empat lawang'),('1612','kabupaten penukal abab lematang ilir'),('1613','kabupaten musi rawas utara'),('1671','kota palembang'),('1672','kota prabumulih'),('1673','kota pagar alam'),('1674','kota lubuklinggau'),('1701','kabupaten bengkulu selatan'),('1702','kabupaten rejang lebong'),('1703','kabupaten bengkulu utara'),('1704','kabupaten kaur'),('1705','kabupaten seluma'),('1706','kabupaten mukomuko'),('1707','kabupaten lebong'),('1708','kabupaten kepahiang'),('1709','kabupaten bengkulu tengah'),('1771','kota bengkulu'),('1801','kabupaten lampung barat'),('1802','kabupaten tanggamus'),('1803','kabupaten lampung selatan'),('1804','kabupaten lampung timur'),('1805','kabupaten lampung tengah'),('1806','kabupaten lampung utara'),('1807','kabupaten way kanan'),('1808','kabupaten tulangbawang'),('1809','kabupaten pesawaran'),('1810','kabupaten pringsewu'),('1811','kabupaten mesuji'),('1812','kabupaten tulang bawang barat'),('1813','kabupaten pesisir barat'),('1871','kota bandar lampung'),('1872','kota metro'),('1901','kabupaten bangka'),('1902','kabupaten belitung'),('1903','kabupaten bangka barat'),('1904','kabupaten bangka tengah'),('1905','kabupaten bangka selatan'),('1906','kabupaten belitung timur'),('1971','kota pangkal pinang'),('2101','kabupaten karimun'),('2102','kabupaten bintan'),('2103','kabupaten natuna'),('2104','kabupaten lingga'),('2105','kabupaten kepulauan anambas'),('2171','kota batam'),('2172','kota tanjung pinang'),('3101','kabupaten kepulauan seribu'),('3171','kota jakarta selatan'),('3172','kota jakarta timur'),('3173','kota jakarta pusat'),('3174','kota jakarta barat'),('3175','kota jakarta utara'),('3201','kabupaten bogor'),('3202','kabupaten sukabumi'),('3203','kabupaten cianjur'),('3204','kabupaten bandung'),('3205','kabupaten garut'),('3206','kabupaten tasikmalaya'),('3207','kabupaten ciamis'),('3208','kabupaten kuningan'),('3209','kabupaten cirebon'),('3210','kabupaten majalengka'),('3211','kabupaten sumedang'),('3212','kabupaten indramayu'),('3213','kabupaten subang'),('3214','kabupaten purwakarta'),('3215','kabupaten karawang'),('3216','kabupaten bekasi'),('3217','kabupaten bandung barat'),('3218','kabupaten pangandaran'),('3271','kota bogor'),('3272','kota sukabumi'),('3273','kota bandung'),('3274','kota cirebon'),('3275','kota bekasi'),('3276','kota depok'),('3277','kota cimahi'),('3278','kota tasikmalaya'),('3279','kota banjar'),('3301','kabupaten cilacap'),('3302','kabupaten banyumas'),('3303','kabupaten purbalingga'),('3304','kabupaten banjarnegara'),('3305','kabupaten kebumen'),('3306','kabupaten purworejo'),('3307','kabupaten wonosobo'),('3308','kabupaten magelang'),('3309','kabupaten boyolali'),('3310','kabupaten klaten'),('3311','kabupaten sukoharjo'),('3312','kabupaten wonogiri'),('3313','kabupaten karanganyar'),('3314','kabupaten sragen'),('3315','kabupaten grobogan'),('3316','kabupaten blora'),('3317','kabupaten rembang'),('3318','kabupaten pati'),('3319','kabupaten kudus'),('3320','kabupaten jepara'),('3321','kabupaten demak'),('3322','kabupaten semarang'),('3323','kabupaten temanggung'),('3324','kabupaten kendal'),('3325','kabupaten batang'),('3326','kabupaten pekalongan'),('3327','kabupaten pemalang'),('3328','kabupaten tegal'),('3329','kabupaten brebes'),('3371','kota magelang'),('3372','kota surakarta'),('3373','kota salatiga'),('3374','kota semarang'),('3375','kota pekalongan'),('3376','kota tegal'),('3401','kabupaten kulon progo'),('3402','kabupaten bantul'),('3403','kabupaten gunung kidul'),('3404','kabupaten sleman'),('3471','kota yogyakarta'),('3501','kabupaten pacitan'),('3502','kabupaten ponorogo'),('3503','kabupaten trenggalek'),('3504','kabupaten tulungagung'),('3505','kabupaten blitar'),('3506','kabupaten kediri'),('3507','kabupaten malang'),('3508','kabupaten lumajang'),('3509','kabupaten jember'),('3510','kabupaten banyuwangi'),('3511','kabupaten bondowoso'),('3512','kabupaten situbondo'),('3513','kabupaten probolinggo'),('3514','kabupaten pasuruan'),('3515','kabupaten sidoarjo'),('3516','kabupaten mojokerto'),('3517','kabupaten jombang'),('3518','kabupaten nganjuk'),('3519','kabupaten madiun'),('3520','kabupaten magetan'),('3521','kabupaten ngawi'),('3522','kabupaten bojonegoro'),('3523','kabupaten tuban'),('3524','kabupaten lamongan'),('3525','kabupaten gresik'),('3526','kabupaten bangkalan'),('3527','kabupaten sampang'),('3528','kabupaten pamekasan'),('3529','kabupaten sumenep'),('3571','kota kediri'),('3572','kota blitar'),('3573','kota malang'),('3574','kota probolinggo'),('3575','kota pasuruan'),('3576','kota mojokerto'),('3577','kota madiun'),('3578','kota surabaya'),('3579','kota batu'),('3601','kabupaten pandeglang'),('3602','kabupaten lebak'),('3603','kabupaten tangerang'),('3604','kabupaten serang'),('3671','kota tangerang'),('3672','kota cilegon'),('3673','kota serang'),('3674','kota tangerang selatan'),('5101','kabupaten jembrana'),('5102','kabupaten tabanan'),('5103','kabupaten badung'),('5104','kabupaten gianyar'),('5105','kabupaten klungkung'),('5106','kabupaten bangli'),('5107','kabupaten karang asem'),('5108','kabupaten buleleng'),('5171','kota denpasar'),('5201','kabupaten lombok barat'),('5202','kabupaten lombok tengah'),('5203','kabupaten lombok timur'),('5204','kabupaten sumbawa'),('5205','kabupaten dompu'),('5206','kabupaten bima'),('5207','kabupaten sumbawa barat'),('5208','kabupaten lombok utara'),('5271','kota mataram'),('5272','kota bima'),('5301','kabupaten sumba barat'),('5302','kabupaten sumba timur'),('5303','kabupaten kupang'),('5304','kabupaten timor tengah selatan'),('5305','kabupaten timor tengah utara'),('5306','kabupaten belu'),('5307','kabupaten alor'),('5308','kabupaten lembata'),('5309','kabupaten flores timur'),('5310','kabupaten sikka'),('5311','kabupaten ende'),('5312','kabupaten ngada'),('5313','kabupaten manggarai'),('5314','kabupaten rote ndao'),('5315','kabupaten manggarai barat'),('5316','kabupaten sumba tengah'),('5317','kabupaten sumba barat daya'),('5318','kabupaten nagekeo'),('5319','kabupaten manggarai timur'),('5320','kabupaten sabu raijua'),('5321','kabupaten malaka'),('5371','kota kupang'),('6101','kabupaten sambas'),('6102','kabupaten bengkayang'),('6103','kabupaten landak'),('6104','kabupaten mempawah'),('6105','kabupaten sanggau'),('6106','kabupaten ketapang'),('6107','kabupaten sintang'),('6108','kabupaten kapuas hulu'),('6109','kabupaten sekadau'),('6110','kabupaten melawi'),('6111','kabupaten kayong utara'),('6112','kabupaten kubu raya'),('6171','kota pontianak'),('6172','kota singkawang'),('6201','kabupaten kotawaringin barat'),('6202','kabupaten kotawaringin timur'),('6203','kabupaten kapuas'),('6204','kabupaten barito selatan'),('6205','kabupaten barito utara'),('6206','kabupaten sukamara'),('6207','kabupaten lamandau'),('6208','kabupaten seruyan'),('6209','kabupaten katingan'),('6210','kabupaten pulang pisau'),('6211','kabupaten gunung mas'),('6212','kabupaten barito timur'),('6213','kabupaten murung raya'),('6271','kota palangka raya'),('6301','kabupaten tanah laut'),('6302','kabupaten kota baru'),('6303','kabupaten banjar'),('6304','kabupaten barito kuala'),('6305','kabupaten tapin'),('6306','kabupaten hulu sungai selatan'),('6307','kabupaten hulu sungai tengah'),('6308','kabupaten hulu sungai utara'),('6309','kabupaten tabalong'),('6310','kabupaten tanah bumbu'),('6311','kabupaten balangan'),('6371','kota banjarmasin'),('6372','kota banjar baru'),('6401','kabupaten paser'),('6402','kabupaten kutai barat'),('6403','kabupaten kutai kartanegara'),('6404','kabupaten kutai timur'),('6405','kabupaten berau'),('6409','kabupaten penajam paser utara'),('6411','kabupaten mahakam hulu'),('6471','kota balikpapan'),('6472','kota samarinda'),('6474','kota bontang'),('6501','kabupaten malinau'),('6502','kabupaten bulungan'),('6503','kabupaten tana tidung'),('6504','kabupaten nunukan'),('6571','kota tarakan'),('7101','kabupaten bolaang mongondow'),('7102','kabupaten minahasa'),('7103','kabupaten kepulauan sangihe'),('7104','kabupaten kepulauan talaud'),('7105','kabupaten minahasa selatan'),('7106','kabupaten minahasa utara'),('7107','kabupaten bolaang mongondow utara'),('7108','kabupaten siau tagulandang biaro'),('7109','kabupaten minahasa tenggara'),('7110','kabupaten bolaang mongondow selatan'),('7111','kabupaten bolaang mongondow timur'),('7171','kota manado'),('7172','kota bitung'),('7173','kota tomohon'),('7174','kota kotamobagu'),('7201','kabupaten banggai kepulauan'),('7202','kabupaten banggai'),('7203','kabupaten morowali'),('7204','kabupaten poso'),('7205','kabupaten donggala'),('7206','kabupaten toli-toli'),('7207','kabupaten buol'),('7208','kabupaten parigi moutong'),('7209','kabupaten tojo una-una'),('7210','kabupaten sigi'),('7211','kabupaten banggai laut'),('7212','kabupaten morowali utara'),('7271','kota palu'),('7301','kabupaten kepulauan selayar'),('7302','kabupaten bulukumba'),('7303','kabupaten bantaeng'),('7304','kabupaten jeneponto'),('7305','kabupaten takalar'),('7306','kabupaten gowa'),('7307','kabupaten sinjai'),('7308','kabupaten maros'),('7309','kabupaten pangkajene dan kepulauan'),('7310','kabupaten barru'),('7311','kabupaten bone'),('7312','kabupaten soppeng'),('7313','kabupaten wajo'),('7314','kabupaten sidenreng rappang'),('7315','kabupaten pinrang'),('7316','kabupaten enrekang'),('7317','kabupaten luwu'),('7318','kabupaten tana toraja'),('7322','kabupaten luwu utara'),('7325','kabupaten luwu timur'),('7326','kabupaten toraja utara'),('7371','kota makassar'),('7372','kota parepare'),('7373','kota palopo'),('7401','kabupaten buton'),('7402','kabupaten muna'),('7403','kabupaten konawe'),('7404','kabupaten kolaka'),('7405','kabupaten konawe selatan'),('7406','kabupaten bombana'),('7407','kabupaten wakatobi'),('7408','kabupaten kolaka utara'),('7409','kabupaten buton utara'),('7410','kabupaten konawe utara'),('7411','kabupaten kolaka timur'),('7412','kabupaten konawe kepulauan'),('7413','kabupaten muna barat'),('7414','kabupaten buton tengah'),('7415','kabupaten buton selatan'),('7471','kota kendari'),('7472','kota baubau'),('7501','kabupaten boalemo'),('7502','kabupaten gorontalo'),('7503','kabupaten pohuwato'),('7504','kabupaten bone bolango'),('7505','kabupaten gorontalo utara'),('7571','kota gorontalo'),('7601','kabupaten majene'),('7602','kabupaten polewali mandar'),('7603','kabupaten mamasa'),('7604','kabupaten mamuju'),('7605','kabupaten mamuju utara'),('7606','kabupaten mamuju tengah'),('8101','kabupaten maluku tenggara barat'),('8102','kabupaten maluku tenggara'),('8103','kabupaten maluku tengah'),('8104','kabupaten buru'),('8105','kabupaten kepulauan aru'),('8106','kabupaten seram bagian barat'),('8107','kabupaten seram bagian timur'),('8108','kabupaten maluku barat daya'),('8109','kabupaten buru selatan'),('8171','kota ambon'),('8172','kota tual'),('8201','kabupaten halmahera barat'),('8202','kabupaten halmahera tengah'),('8203','kabupaten kepulauan sula'),('8204','kabupaten halmahera selatan'),('8205','kabupaten halmahera utara'),('8206','kabupaten halmahera timur'),('8207','kabupaten pulau morotai'),('8208','kabupaten pulau taliabu'),('8271','kota ternate'),('8272','kota tidore kepulauan'),('9101','kabupaten fakfak'),('9102','kabupaten kaimana'),('9103','kabupaten teluk wondama'),('9104','kabupaten teluk bintuni'),('9105','kabupaten manokwari'),('9106','kabupaten sorong selatan'),('9107','kabupaten sorong'),('9108','kabupaten raja ampat'),('9109','kabupaten tambrauw'),('9110','kabupaten maybrat'),('9111','kabupaten manokwari selatan'),('9112','kabupaten pegunungan arfak'),('9171','kota sorong'),('9401','kabupaten merauke'),('9402','kabupaten jayawijaya'),('9403','kabupaten jayapura'),('9404','kabupaten nabire'),('9408','kabupaten kepulauan yapen'),('9409','kabupaten biak numfor'),('9410','kabupaten paniai'),('9411','kabupaten puncak jaya'),('9412','kabupaten mimika'),('9413','kabupaten boven digoel'),('9414','kabupaten mappi'),('9415','kabupaten asmat'),('9416','kabupaten yahukimo'),('9417','kabupaten pegunungan bintang'),('9418','kabupaten tolikara'),('9419','kabupaten sarmi'),('9420','kabupaten keerom'),('9426','kabupaten waropen'),('9427','kabupaten supiori'),('9428','kabupaten mamberamo raya'),('9429','kabupaten nduga'),('9430','kabupaten lanny jaya'),('9431','kabupaten mamberamo tengah'),('9432','kabupaten yalimo'),('9433','kabupaten puncak'),('9434','kabupaten dogiyai'),('9435','kabupaten intan jaya'),('9436','kabupaten deiyai'),('9471','kota jayapura');
+/*!40000 alter table `kota` enable keys */;
+unlock tables;
 
 --
--- Table structure for table `level_user`
+-- table structure for table `level_user`
 --
 
-DROP TABLE IF EXISTS `level_user`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `level_user` (
-  `KODE_LEVEL` varchar(10) NOT NULL,
-  `NAMA_LEVEL` varchar(20) NOT NULL,
-  PRIMARY KEY (`KODE_LEVEL`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `level_user`;
+/*!40101 set @saved_cs_client     = @@character_set_client */;
+/*!40101 set character_set_client = utf8 */;
+create table `level_user` (
+  `kode_level` varchar(10) not null,
+  `nama_level` varchar(20) not null,
+  primary key (`kode_level`)
+) engine=innodb default charset=utf8mb4;
+/*!40101 set character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `level_user`
+-- dumping data for table `level_user`
 --
 
-LOCK TABLES `level_user` WRITE;
-/*!40000 ALTER TABLE `level_user` DISABLE KEYS */;
-INSERT INTO `level_user` VALUES ('1','Owner'),('2','Admin'),('3','Kasir');
-/*!40000 ALTER TABLE `level_user` ENABLE KEYS */;
-UNLOCK TABLES;
+lock tables `level_user` write;
+/*!40000 alter table `level_user` disable keys */;
+insert into `level_user` values ('1','owner'),('2','admin'),('3','kasir');
+/*!40000 alter table `level_user` enable keys */;
+unlock tables;
 
 --
--- Table structure for table `merek`
+-- table structure for table `merek`
 --
 
-DROP TABLE IF EXISTS `merek`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `merek` (
-  `KODE_MEREK` varchar(10) NOT NULL,
-  `NAMA_MEREK` varchar(20) DEFAULT NULL,
-  PRIMARY KEY (`KODE_MEREK`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `merek`;
+/*!40101 set @saved_cs_client     = @@character_set_client */;
+/*!40101 set character_set_client = utf8 */;
+create table `merek` (
+  `kode_merek` varchar(10) not null,
+  `nama_merek` varchar(20) default null,
+  primary key (`kode_merek`)
+) engine=innodb default charset=latin1;
+/*!40101 set character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `merek`
+-- dumping data for table `merek`
 --
 
-LOCK TABLES `merek` WRITE;
-/*!40000 ALTER TABLE `merek` DISABLE KEYS */;
-INSERT INTO `merek` VALUES ('CST','Castrol'),('HND','Honda'),('SHL','Shell'),('YMH','Yamaha');
-/*!40000 ALTER TABLE `merek` ENABLE KEYS */;
-UNLOCK TABLES;
+lock tables `merek` write;
+/*!40000 alter table `merek` disable keys */;
+insert into `merek` values ('cst','castrol'),('hnd','honda'),('shl','shell'),('ymh','yamaha');
+/*!40000 alter table `merek` enable keys */;
+unlock tables;
 
 --
--- Table structure for table `pegawai`
+-- table structure for table `pegawai`
 --
 
-DROP TABLE IF EXISTS `pegawai`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `pegawai` (
-  `KODE_PEGAWAI` varchar(10) NOT NULL,
-  `NAMA_PEGAWAI` varchar(20) DEFAULT NULL,
-  PRIMARY KEY (`KODE_PEGAWAI`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `pegawai`;
+/*!40101 set @saved_cs_client     = @@character_set_client */;
+/*!40101 set character_set_client = utf8 */;
+create table `pegawai` (
+  `kode_pegawai` varchar(10) not null,
+  `nama_pegawai` varchar(20) default null,
+  primary key (`kode_pegawai`)
+) engine=innodb default charset=latin1;
+/*!40101 set character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `pegawai`
+-- dumping data for table `pegawai`
 --
 
-LOCK TABLES `pegawai` WRITE;
-/*!40000 ALTER TABLE `pegawai` DISABLE KEYS */;
-INSERT INTO `pegawai` VALUES ('A001','Nurul'),('A002','Tutik'),('K001','Fian'),('O001','Hasan');
-/*!40000 ALTER TABLE `pegawai` ENABLE KEYS */;
-UNLOCK TABLES;
+lock tables `pegawai` write;
+/*!40000 alter table `pegawai` disable keys */;
+insert into `pegawai` values ('a001','nurul'),('a002','tutik'),('k001','fian'),('o001','hasan');
+/*!40000 alter table `pegawai` enable keys */;
+unlock tables;
 
 --
--- Table structure for table `pembayaran`
+-- table structure for table `pembayaran`
 --
 
-DROP TABLE IF EXISTS `pembayaran`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `pembayaran` (
-  `KODE_BAYAR` char(10) NOT NULL,
-  `NAMA_BAYAR` char(10) DEFAULT NULL,
-  PRIMARY KEY (`KODE_BAYAR`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `pembayaran`;
+/*!40101 set @saved_cs_client     = @@character_set_client */;
+/*!40101 set character_set_client = utf8 */;
+create table `pembayaran` (
+  `kode_bayar` char(10) not null,
+  `nama_bayar` char(10) default null,
+  primary key (`kode_bayar`)
+) engine=innodb default charset=latin1;
+/*!40101 set character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `pembayaran`
+-- dumping data for table `pembayaran`
 --
 
-LOCK TABLES `pembayaran` WRITE;
-/*!40000 ALTER TABLE `pembayaran` DISABLE KEYS */;
-/*!40000 ALTER TABLE `pembayaran` ENABLE KEYS */;
-UNLOCK TABLES;
+lock tables `pembayaran` write;
+/*!40000 alter table `pembayaran` disable keys */;
+/*!40000 alter table `pembayaran` enable keys */;
+unlock tables;
 
 --
--- Table structure for table `promo`
+-- table structure for table `promo`
 --
 
-DROP TABLE IF EXISTS `promo`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `promo` (
-  `KODE_PROMO` varchar(10) NOT NULL,
-  `TGL_MULAI` date NOT NULL,
-  `TGL_SELESAI` date NOT NULL,
-  `NAMA_PROMO` varchar(20) DEFAULT NULL,
-  `KODE_BARANG` varchar(20) NOT NULL,
-  `QTY_SK` int(11) NOT NULL,
-  `DISC` decimal(10,0) NOT NULL,
-  PRIMARY KEY (`KODE_PROMO`),
-  KEY `KODE_BARANG_PROMO` (`KODE_BARANG`),
-  CONSTRAINT `KODE_BARANG_PROMO` FOREIGN KEY (`KODE_BARANG`) REFERENCES `barang` (`KODE_BARANG`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `promo`;
+/*!40101 set @saved_cs_client     = @@character_set_client */;
+/*!40101 set character_set_client = utf8 */;
+create table `promo` (
+  `kode_promo` varchar(10) not null,
+  `tgl_mulai` date not null,
+  `tgl_selesai` date not null,
+  `nama_promo` varchar(20) default null,
+  `kode_barang` varchar(20) not null,
+  `qty_sk` int(11) not null,
+  `disc` decimal(10,0) not null,
+  primary key (`kode_promo`),
+  key `kode_barang_promo` (`kode_barang`),
+  constraint `kode_barang_promo` foreign key (`kode_barang`) references `barang` (`kode_barang`)
+) engine=innodb default charset=latin1;
+/*!40101 set character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `promo`
+-- dumping data for table `promo`
 --
 
-LOCK TABLES `promo` WRITE;
-/*!40000 ALTER TABLE `promo` DISABLE KEYS */;
-/*!40000 ALTER TABLE `promo` ENABLE KEYS */;
-UNLOCK TABLES;
+lock tables `promo` write;
+/*!40000 alter table `promo` disable keys */;
+/*!40000 alter table `promo` enable keys */;
+unlock tables;
 
 --
--- Table structure for table `satuan`
+-- table structure for table `satuan`
 --
 
-DROP TABLE IF EXISTS `satuan`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `satuan` (
-  `KODE_SATUAN` varchar(10) NOT NULL,
-  `NAMA_SATUAN` varchar(15) NOT NULL,
-  PRIMARY KEY (`KODE_SATUAN`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `satuan`;
+/*!40101 set @saved_cs_client     = @@character_set_client */;
+/*!40101 set character_set_client = utf8 */;
+create table `satuan` (
+  `kode_satuan` varchar(10) not null,
+  `nama_satuan` varchar(15) not null,
+  primary key (`kode_satuan`)
+) engine=innodb default charset=utf8mb4;
+/*!40101 set character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `satuan`
+-- dumping data for table `satuan`
 --
 
-LOCK TABLES `satuan` WRITE;
-/*!40000 ALTER TABLE `satuan` DISABLE KEYS */;
-INSERT INTO `satuan` VALUES ('lsn','lusin'),('ltr','liter'),('pcs','pieces');
-/*!40000 ALTER TABLE `satuan` ENABLE KEYS */;
-UNLOCK TABLES;
+lock tables `satuan` write;
+/*!40000 alter table `satuan` disable keys */;
+insert into `satuan` values ('lsn','lusin'),('ltr','liter'),('pcs','pieces');
+/*!40000 alter table `satuan` enable keys */;
+unlock tables;
 
 --
--- Table structure for table `subtitusi`
+-- table structure for table `subtitusi`
 --
 
-DROP TABLE IF EXISTS `subtitusi`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `subtitusi` (
-  `TGL_SUBTITUSI` date NOT NULL,
-  `NO_SUBTITUSI` varchar(20) NOT NULL,
-  `KODE_BARANG1` varchar(20) NOT NULL,
-  `KODE_BARANG2` varchar(20) NOT NULL,
-  PRIMARY KEY (`NO_SUBTITUSI`),
-  KEY `KODE_BARANG1_D_SUBTITUSI` (`KODE_BARANG1`),
-  KEY `KODE_BARANG2_D_SUBTITUSI` (`KODE_BARANG2`),
-  CONSTRAINT `KODE_BARANG1_D_SUBTITUSI` FOREIGN KEY (`KODE_BARANG1`) REFERENCES `barang` (`KODE_BARANG`),
-  CONSTRAINT `KODE_BARANG2_D_SUBTITUSI` FOREIGN KEY (`KODE_BARANG2`) REFERENCES `barang` (`KODE_BARANG`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `subtitusi`;
+/*!40101 set @saved_cs_client     = @@character_set_client */;
+/*!40101 set character_set_client = utf8 */;
+create table `subtitusi` (
+  `tgl_subtitusi` date not null,
+  `no_subtitusi` varchar(20) not null,
+  `kode_barang1` varchar(20) not null,
+  `kode_barang2` varchar(20) not null,
+  primary key (`no_subtitusi`),
+  key `kode_barang1_d_subtitusi` (`kode_barang1`),
+  key `kode_barang2_d_subtitusi` (`kode_barang2`),
+  constraint `kode_barang1_d_subtitusi` foreign key (`kode_barang1`) references `barang` (`kode_barang`),
+  constraint `kode_barang2_d_subtitusi` foreign key (`kode_barang2`) references `barang` (`kode_barang`)
+) engine=innodb default charset=latin1;
+/*!40101 set character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `subtitusi`
+-- dumping data for table `subtitusi`
 --
 
-LOCK TABLES `subtitusi` WRITE;
-/*!40000 ALTER TABLE `subtitusi` DISABLE KEYS */;
-/*!40000 ALTER TABLE `subtitusi` ENABLE KEYS */;
-UNLOCK TABLES;
+lock tables `subtitusi` write;
+/*!40000 alter table `subtitusi` disable keys */;
+/*!40000 alter table `subtitusi` enable keys */;
+unlock tables;
 
 --
--- Table structure for table `supplier`
+-- table structure for table `supplier`
 --
 
-DROP TABLE IF EXISTS `supplier`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `supplier` (
-  `KD_SUPPLIER` varchar(20) NOT NULL,
-  `KODE_KOTA` varchar(10) DEFAULT NULL,
-  `NAMA_SUPPLIER` varchar(20) DEFAULT NULL,
-  `ALAMAT_SUPPLIER` varchar(200) DEFAULT NULL,
-  `TELEPON_SUPPLIER` varchar(20) DEFAULT NULL,
-  PRIMARY KEY (`KD_SUPPLIER`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `supplier`;
+/*!40101 set @saved_cs_client     = @@character_set_client */;
+/*!40101 set character_set_client = utf8 */;
+create table `supplier` (
+  `kd_supplier` varchar(20) not null,
+  `kode_kota` varchar(10) default null,
+  `nama_supplier` varchar(20) default null,
+  `alamat_supplier` varchar(200) default null,
+  `telepon_supplier` varchar(20) default null,
+  primary key (`kd_supplier`)
+) engine=innodb default charset=latin1;
+/*!40101 set character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `supplier`
+-- dumping data for table `supplier`
 --
 
-LOCK TABLES `supplier` WRITE;
-/*!40000 ALTER TABLE `supplier` DISABLE KEYS */;
-/*!40000 ALTER TABLE `supplier` ENABLE KEYS */;
-UNLOCK TABLES;
+lock tables `supplier` write;
+/*!40000 alter table `supplier` disable keys */;
+/*!40000 alter table `supplier` enable keys */;
+unlock tables;
 
 --
--- Table structure for table `tipe`
+-- table structure for table `tipe`
 --
 
-DROP TABLE IF EXISTS `tipe`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tipe` (
-  `KODE_TIPE` varchar(10) NOT NULL,
-  `NAMA_TIPE` varchar(20) DEFAULT NULL,
-  PRIMARY KEY (`KODE_TIPE`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `tipe`;
+/*!40101 set @saved_cs_client     = @@character_set_client */;
+/*!40101 set character_set_client = utf8 */;
+create table `tipe` (
+  `kode_tipe` varchar(10) not null,
+  `nama_tipe` varchar(20) default null,
+  primary key (`kode_tipe`)
+) engine=innodb default charset=latin1;
+/*!40101 set character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tipe`
+-- dumping data for table `tipe`
 --
 
-LOCK TABLES `tipe` WRITE;
-/*!40000 ALTER TABLE `tipe` DISABLE KEYS */;
-INSERT INTO `tipe` VALUES ('001','Oli'),('002','Busi'),('003','Filter Udara'),('004','Filter AC'),('005','Kampas Rem'),('006','Aki');
-/*!40000 ALTER TABLE `tipe` ENABLE KEYS */;
-UNLOCK TABLES;
+lock tables `tipe` write;
+/*!40000 alter table `tipe` disable keys */;
+insert into `tipe` values ('001','oli'),('002','busi'),('003','filter udara'),('004','filter ac'),('005','kampas rem'),('006','aki');
+/*!40000 alter table `tipe` enable keys */;
+unlock tables;
 
 --
--- Table structure for table `user`
+-- table structure for table `user`
 --
 
-DROP TABLE IF EXISTS `user`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `user` (
-  `KODE_USER` varchar(20) NOT NULL,
-  `KODE_LEVEL` varchar(10) CHARACTER SET utf8mb4 NOT NULL,
-  `KODE_PEGAWAI` varchar(10) NOT NULL,
-  `EMAIL` varchar(255) NOT NULL,
-  `EMAIL_VERIFIED_AT` timestamp NULL DEFAULT NULL,
-  `password` varchar(255) NOT NULL,
-  `REMEMBER_TOKEN` varchar(255) DEFAULT NULL,
-  `CREATED_AT` timestamp NULL DEFAULT NULL,
-  `UPDATED_AT` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`KODE_USER`),
-  KEY `KODE_LEVEL_USER` (`KODE_LEVEL`),
-  KEY `KODE_PEGAWAI_USER` (`KODE_PEGAWAI`),
-  CONSTRAINT `KODE_LEVEL_USER` FOREIGN KEY (`KODE_LEVEL`) REFERENCES `level_user` (`KODE_LEVEL`),
-  CONSTRAINT `KODE_PEGAWAI_USER` FOREIGN KEY (`KODE_PEGAWAI`) REFERENCES `pegawai` (`KODE_PEGAWAI`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+drop table if exists `user`;
+/*!40101 set @saved_cs_client     = @@character_set_client */;
+/*!40101 set character_set_client = utf8 */;
+create table `user` (
+  `kode_user` varchar(20) not null,
+  `kode_level` varchar(10) character set utf8mb4 not null,
+  `kode_pegawai` varchar(10) not null,
+  `email` varchar(255) not null,
+  `email_verified_at` timestamp null default null,
+  `password` varchar(255) not null,
+  `remember_token` varchar(255) default null,
+  `created_at` timestamp null default null,
+  `updated_at` timestamp null default null,
+  primary key (`kode_user`),
+  key `kode_level_user` (`kode_level`),
+  key `kode_pegawai_user` (`kode_pegawai`),
+  constraint `kode_level_user` foreign key (`kode_level`) references `level_user` (`kode_level`),
+  constraint `kode_pegawai_user` foreign key (`kode_pegawai`) references `pegawai` (`kode_pegawai`)
+) engine=innodb default charset=latin1;
+/*!40101 set character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `user`
+-- dumping data for table `user`
 --
 
-LOCK TABLES `user` WRITE;
-/*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES ('admin1','2','A001','admin@gmail.com','2022-08-30 13:49:13','$2y$10$Ktu04iC39Wu98QErXs5dlezFc5DmgAl0gCODUiaFHKjTVIay0ifKm',NULL,NULL,NULL),('kasir1','3','K001','kasir@gmail.com','2022-08-30 13:49:13','$2y$10$aBghtGc2Y7kmBcdZF61w...Vzh8Kpyw2QahA0Os49s60OweptXhBu',NULL,NULL,NULL),('owner1','1','O001','owner@gmail.com','2022-08-30 13:49:13','$2y$10$vN1IiVyQTwxcKejwo6HJE.UCpqxU/YT4c/l4/DwSzinnqr/AaKGeu',NULL,NULL,NULL);
-/*!40000 ALTER TABLE `user` ENABLE KEYS */;
-UNLOCK TABLES;
+lock tables `user` write;
+/*!40000 alter table `user` disable keys */;
+insert into `user` values ('admin1','2','a001','admin@gmail.com','2022-08-30 13:49:13','$2y$10$ktu04ic39wu98qerxs5dlezfc5dmgal0gcoduiafhkjtviay0ifkm',null,null,null),('kasir1','3','k001','kasir@gmail.com','2022-08-30 13:49:13','$2y$10$abghtgc2y7kmbcdzf61w...vzh8kpyw2qaha0os49s60oweptxhbu',null,null,null),('owner1','1','o001','owner@gmail.com','2022-08-30 13:49:13','$2y$10$vn1iivyqtwxckejwo6hje.ucpqxu/yt4c/l4/dwszinnqr/aakgeu',null,null,null);
+/*!40000 alter table `user` enable keys */;
+unlock tables;
 
 --
--- Dumping routines for database 'ta_budiman'
+-- dumping routines for database 'ta_budiman'
 --
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+/*!40103 set time_zone=@old_time_zone */;
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+/*!40101 set sql_mode=@old_sql_mode */;
+/*!40014 set foreign_key_checks=@old_foreign_key_checks */;
+/*!40014 set unique_checks=@old_unique_checks */;
+/*!40101 set character_set_client=@old_character_set_client */;
+/*!40101 set character_set_results=@old_character_set_results */;
+/*!40101 set collation_connection=@old_collation_connection */;
+/*!40111 set sql_notes=@old_sql_notes */;
 
--- Dump completed on 2022-09-15 16:47:31
+-- dump completed on 2022-09-15 16:47:31

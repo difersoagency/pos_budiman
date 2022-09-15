@@ -17,11 +17,11 @@ class Kasir
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::check() && Auth::user()->KODE_LEVEL == 3) {
+        if (Auth::check() && Auth::user()->kode_level == 3) {
             return $next($request);
-          }else if(Auth::check() && Auth::user()->KODE_LEVEL == 2){
+          }else if(Auth::check() && Auth::user()->kode_level == 2){
             return redirect()->route('home_admin');
-          }elseif(Auth::check() && Auth::user()->KODE_LEVEL == 1){
+          }elseif(Auth::check() && Auth::user()->kode_level == 1){
             return redirect()->route('home_owner');
           }
 
