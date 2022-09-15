@@ -67,6 +67,9 @@
 
   @yield('content')
 
+  
+  @include('layouts.modal.delete')
+
   <footer class="main-footer tw-bg-prim-blue tw-z-40">
     <span class="tw-font-bold tw-text-prim-white">PT Maju Bersama Motor</span>
     <!-- <span class="float-right"><strong> PT.MBM  &copy; <script>document.write(new Date().getFullYear());</script> .</strong></span> -->
@@ -98,7 +101,6 @@
 <script src="{{ asset('themes/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <!-- Select2 -->
 <script src="{{ asset('themes/plugins/select2/js/select2.min.js') }}"></script>
-<!-- DataTable-->
 
 <!-- daterangepicker -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js"></script>

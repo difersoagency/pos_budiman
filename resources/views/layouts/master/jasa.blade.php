@@ -13,7 +13,7 @@
                 </div>
                 <div class="tw-text-right tw-items-center tw-grid tw-grid-cols-1 tw-mx-auto md:tw-mx-0 md:tw-ml-auto tw-w-full md:tw-w-fit tw-mt-4 md:tw-mt-0">
                     <div class="tw-w-full md:tw-w-fit md:tw-ml-auto">
-                        <button class="btn tw-text-prim-white tw-bg-prim-red tw-text-sm tw-w-full md:tw-w-fit" type="button" id="addItemButton">
+                        <button class="btn tw-text-prim-white tw-bg-prim-red tw-text-sm tw-w-full md:tw-w-fit" type="button" data-toggle="modal" data-target="#jasaModal" id="addItemButton">
                             + Tambah Jasa
                         </button>
                     </div>
@@ -44,43 +44,13 @@
                                 <td>Pasang Lampu</td>
                                 <td>Rp.250.000</td>
                                 <td class="tw-px-3">
-                                    <div class="grid grid-cols-2 tw-contents">
-                                        <a href="" class="mr-4">
+                                <div class="grid grid-cols-2 tw-contents">
+                                        <button href="" class="mr-4 tw-bg-transparent tw-border-none" data-toggle="modal" data-target="#jasaModal">
                                             <i class="fa fa-pen tw-text-prim-blue"></i>
-                                        </a>
-                                        <a href="">
+                                        </button>
+                                        <button data-toggle="modal" data-target="#deleteModal" class="tw-bg-transparent tw-border-none">
                                             <i class="fa fa-trash tw-text-prim-red"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>KS0012</td>
-                                <td>Pasang Lampu</td>
-                                <td>Rp.250.000</td>
-                                <td class="tw-px-3">
-                                    <div class="grid grid-cols-2 tw-contents">
-                                        <a href="" class="mr-4">
-                                            <i class="fa fa-pen tw-text-prim-blue"></i>
-                                        </a>
-                                        <a href="">
-                                            <i class="fa fa-trash tw-text-prim-red"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>KS0012</td>
-                                <td>Pasang Lampu</td>
-                                <td>Rp.250.000</td>
-                                <td class="tw-px-3">
-                                    <div class="grid grid-cols-2 tw-contents">
-                                        <a href="" class="mr-4">
-                                            <i class="fa fa-pen tw-text-prim-blue"></i>
-                                        </a>
-                                        <a href="">
-                                            <i class="fa fa-trash tw-text-prim-red"></i>
-                                        </a>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -97,6 +67,10 @@
           <!-- /.row -->
         </div>
     </section>
+     <!-- Modal -->
+     @include('layouts.modal.jasa-modal')
+    
+    <!-- END:Modal -->
     <!-- /.content -->
   </div>
 @endsection

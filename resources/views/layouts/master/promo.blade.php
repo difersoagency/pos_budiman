@@ -23,7 +23,7 @@
                 <div class="tw-text-right tw-grid tw-grid-cols-1 md:tw-flex tw-mx-auto md:tw-mx-0 md:tw-ml-auto tw-w-full md:tw-w-fit tw-mt-4 md:tw-mt-0">
 
                     <div class="dropdown tw-mb-4 tw-w-full md:tw-w-fit">
-                        <button class="btn tw-text-prim-white tw-bg-prim-red tw-text-sm tw-w-full md:tw-w-fit" type="button" id="addItemButton">
+                        <button class="btn tw-text-prim-white tw-bg-prim-red tw-text-sm tw-w-full md:tw-w-fit" data-toggle="modal" data-target="#promoModal" type="button" id="addItemButton">
                             + Tambah Promo
                         </button>
                     </div>
@@ -61,48 +61,12 @@
                                 <td>04/07/2022</td>
                                 <td class="tw-px-3">
                                     <div class="grid grid-cols-2 tw-contents">
-                                        <a href="" class="mr-4">
+                                        <button class="mr-4 tw-bg-transparent tw-border-none" data-toggle="modal" data-target="#promoModal">
                                             <i class="fa fa-pen tw-text-prim-blue"></i>
-                                        </a>
-                                        <a href="">
+                                        </button>
+                                        <button data-toggle="modal" data-target="#deleteModal" class="tw-bg-transparent tw-border-none">
                                             <i class="fa fa-trash tw-text-prim-red"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>FREE99</td>
-                                <td>Gratis Spesial 9.9</td>
-                                <td>100%</td>
-                                <td>Rp. 200.0000</td>
-                                <td>04/05/2022</td>
-                                <td>04/07/2022</td>
-                                <td class="tw-px-3">
-                                    <div class="grid grid-cols-2 tw-contents">
-                                        <a href="" class="mr-4">
-                                            <i class="fa fa-pen tw-text-prim-blue"></i>
-                                        </a>
-                                        <a href="">
-                                            <i class="fa fa-trash tw-text-prim-red"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>FREE99</td>
-                                <td>Gratis Spesial 9.9</td>
-                                <td>100%</td>
-                                <td>Rp. 200.0000</td>
-                                <td>04/05/2022</td>
-                                <td>04/07/2022</td>
-                                <td class="tw-px-3">
-                                    <div class="grid grid-cols-2 tw-contents">
-                                        <a href="" class="mr-4">
-                                            <i class="fa fa-pen tw-text-prim-blue"></i>
-                                        </a>
-                                        <a href="">
-                                            <i class="fa fa-trash tw-text-prim-red"></i>
-                                        </a>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -120,6 +84,10 @@
           <!-- /.row -->
         </div>
     </section>
+       <!-- Modal -->
+       @include('layouts.modal.promo-modal')
+    
+    <!-- END:Modal -->
     <!-- /.content -->
   </div>
 @endsection

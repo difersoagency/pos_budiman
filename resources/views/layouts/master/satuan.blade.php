@@ -43,40 +43,12 @@
                                 <td>Kilogram</td>
                                 <td class="tw-px-3">
                                     <div class="grid grid-cols-2 tw-contents">
-                                        <a href="" class="mr-4">
+                                        <button class="mr-4 tw-bg-transparent tw-border-none" data-toggle="modal" data-target="#promoModal">
                                             <i class="fa fa-pen tw-text-prim-blue"></i>
-                                        </a>
-                                        <a href="">
+                                        </button>
+                                        <button data-toggle="modal" data-target="#deleteModal" class="tw-bg-transparent tw-border-none">
                                             <i class="fa fa-trash tw-text-prim-red"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>KG</td>
-                                <td>Kilogram</td>
-                                <td class="tw-px-3">
-                                    <div class="grid grid-cols-2 tw-contents">
-                                        <a href="" class="mr-4">
-                                            <i class="fa fa-pen tw-text-prim-blue"></i>
-                                        </a>
-                                        <a href="">
-                                            <i class="fa fa-trash tw-text-prim-red"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>KG</td>
-                                <td>Kilogram</td>
-                                <td class="tw-px-3">
-                                    <div class="grid grid-cols-2 tw-contents">
-                                        <a href="" class="mr-4">
-                                            <i class="fa fa-pen tw-text-prim-blue"></i>
-                                        </a>
-                                        <a href="">
-                                            <i class="fa fa-trash tw-text-prim-red"></i>
-                                        </a>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>

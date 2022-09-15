@@ -28,7 +28,7 @@
                 </div>
                 <div class="tw-text-right tw-grid tw-grid-cols-1 md:tw-flex tw-mx-auto md:tw-mx-0 md:tw-ml-auto tw-w-full md:tw-w-fit tw-mt-4 md:tw-mt-0">
                     <div class="tw-mb-4 tw-w-full md:tw-w-fit">
-                        <button class="btn tw-text-prim-white tw-bg-prim-red tw-text-sm tw-w-full md:tw-w-fit" type="button" id="addItemButton">
+                        <button class="btn tw-text-prim-white tw-bg-prim-red tw-text-sm tw-w-full md:tw-w-fit" type="button" id="addItemButton" data-toggle="modal" data-target="#customerModal">
                             + Tambah Pelanggan
                         </button>
                     </div>
@@ -62,47 +62,16 @@
                                 <td>081234123</td>
                                 <td class="tw-px-3">
                                     <div class="grid grid-cols-2 tw-contents">
-                                        <a href="" class="mr-4">
+                                        <button href="" class="mr-4 tw-bg-transparent tw-border-none" data-toggle="modal" data-target="#customerModal">
                                             <i class="fa fa-pen tw-text-prim-blue"></i>
-                                        </a>
-                                        <a href="">
+                                        </button>
+                                        <button data-toggle="modal" data-target="#deleteModal" class="tw-bg-transparent tw-border-none">
                                             <i class="fa fa-trash tw-text-prim-red"></i>
-                                        </a>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>Wisnu Sunadi</td>
-                                <td>Bojonegoro</td>
-                                <td>Jl.Padepokan 12</td>
-                                <td>081234123</td>
-                                <td class="tw-px-3">
-                                    <div class="grid grid-cols-2 tw-contents">
-                                        <a href="" class="mr-4">
-                                            <i class="fa fa-pen tw-text-prim-blue"></i>
-                                        </a>
-                                        <a href="">
-                                            <i class="fa fa-trash tw-text-prim-red"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Wisnu Sunadi</td>
-                                <td>Bojonegoro</td>
-                                <td>Jl.Padepokan 12</td>
-                                <td>081234123</td>
-                                <td class="tw-px-3">
-                                    <div class="grid grid-cols-2 tw-contents">
-                                        <a href="" class="mr-4">
-                                            <i class="fa fa-pen tw-text-prim-blue"></i>
-                                        </a>
-                                        <a href="">
-                                            <i class="fa fa-trash tw-text-prim-red"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
+                            
 
                         </tbody>
     
@@ -118,6 +87,10 @@
           <!-- /.row -->
         </div>
     </section>
+    <!-- Modal -->
+    @include('layouts.modal.customer-modal')
+    
+    <!-- END:Modal -->
     <!-- /.content -->
   </div>
 @endsection

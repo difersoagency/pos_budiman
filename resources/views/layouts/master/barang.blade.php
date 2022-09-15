@@ -38,7 +38,7 @@
                         </div>
                     </div>
                     <div class="dropdown tw-mb-4 tw-w-full md:tw-w-fit">
-                        <button class="btn tw-text-prim-white tw-bg-prim-red tw-text-sm tw-w-full md:tw-w-fit" type="button" id="addItemButton">
+                        <button class="btn tw-text-prim-white tw-bg-prim-red tw-text-sm tw-w-full md:tw-w-fit" type="button" id="addItemButton"  data-toggle="modal" data-target="#barangModal">
                             + Tambah Barang
                         </button>
                     </div>
@@ -78,60 +78,22 @@
                                 <td>12 Pcs</td>
                                 <td class="tw-px-3">
                                     <div class="grid grid-cols-2 tw-contents">
-                                        <a href="" class="mr-4">
+                                        <button href="" class="mr-4 tw-bg-transparent tw-border-none" data-toggle="modal" data-target="#barangModal">
                                             <i class="fa fa-pen tw-text-prim-blue"></i>
-                                        </a>
-                                        <a href="">
+                                        </button>
+                                        <button data-toggle="modal" data-target="#deleteModal" class="tw-bg-transparent tw-border-none">
                                             <i class="fa fa-trash tw-text-prim-red"></i>
-                                        </a>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>LM002</td>
-                                <td>Lampu Mobil</td>
-                                <td>Honda</td>
-                                <td>Lampu</td>
-                                <td>Rp 15.000</td>
-                                <td>Rp 50.000</td>
-                                <td>15 Pcs</td>
-                                <td class="tw-px-3">
-                                    <div class="grid grid-cols-2">
-                                        <a href="" class="mr-4">
-                                            <i class="fa fa-pen tw-text-prim-blue"></i>
-                                        </a>
-                                        <a href="">
-                                            <i class="fa fa-trash tw-text-prim-red"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>LM002</td>
-                                <td>Lampu Mobil</td>
-                                <td>Honda</td>
-                                <td>Lampu</td>
-                                <td>Rp 15.000</td>
-                                <td>Rp 50.000</td>
-                                <td>15 Pcs</td>
-                                <td class="tw-px-3">
-                                    <div class="grid grid-cols-2">
-                                        <a href="" class="mr-4">
-                                            <i class="fa fa-pen tw-text-prim-blue"></i>
-                                        </a>
-                                        <a href="">
-                                            <i class="fa fa-trash tw-text-prim-red"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
+                    
 
                         </tbody>
     
                     </table>
                 </div>
                 <!-- END : Tabel Tablet + Desktop -->
-
               </div>
             </div>
             <!-- /.col-md-6 -->
@@ -139,6 +101,10 @@
           <!-- /.row -->
         </div>
     </section>
+    <!-- Modal -->
+    @include('layouts.modal.barang-modal')
+    
+    <!-- END:Modal -->
     <!-- /.content -->
   </div>
 @endsection
