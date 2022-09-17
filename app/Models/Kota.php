@@ -9,12 +9,11 @@ class Kota extends Model
 {
     use HasFactory;
     protected $table = 'kota';
-    protected $primaryKey = 'kode_kota';
-    protected $fillable = ['kode_kota', 'nama_kota'];
+    protected $fillable = ['nama_kota'];
 
     public function Customer()
     {
-        return $this->hasMany(Customer::class, 'kode_kota');
+        return $this->hasMany(Customer::class);
     }
 
     public function Supplier()

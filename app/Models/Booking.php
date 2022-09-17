@@ -9,16 +9,15 @@ class Booking extends Model
 {
     use HasFactory;
     protected $table = 'booking';
-    protected $primaryKey = 'no_booking';
-    protected $fillable = ['no_booking', 'kode_customer', 'tgl_booking'];
+    protected $fillable = ['no_booking', 'customer_id', 'tgl_booking'];
 
     public function Customer()
     {
-        return $this->belongsTo(Customer::class, 'kode_customer');
+        return $this->belongsTo(Customer::class);
     }
 
     public function TransJual()
     {
-        return $this->hasMany(TransJual::class, 'no_booking');
+        return $this->hasMany(TransJual::class);
     }
 }

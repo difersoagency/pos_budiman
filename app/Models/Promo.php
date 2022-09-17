@@ -9,16 +9,15 @@ class Promo extends Model
 {
     use HasFactory;
     protected $table = 'promo';
-    protected $primaryKey = 'kode_promo';
-    protected $fillable = ['kode_promo', 'tgl_mulai', 'tgl_selesai', 'nama_promo', 'kode_barang', 'qty_sk', 'disc'];
+    protected $fillable = ['kode_promo', 'tgl_mulai', 'tgl_selesai', 'nama_promo', 'barang_id', 'qty_sk', 'disc'];
 
     public function Barang()
     {
-        return $this->belongsTo(Barang::class, 'kode_barang');
+        return $this->belongsTo(Barang::class);
     }
 
     public function TransJual()
     {
-        return $this->hasMany(TransJual::class, 'kode_promo');
+        return $this->hasMany(TransJual::class);
     }
 }

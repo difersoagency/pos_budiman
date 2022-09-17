@@ -9,27 +9,26 @@ class Barang extends Model
 {
     use HasFactory;
     protected $table = 'barang';
-    protected $primaryKey = 'kode_barang';
-    protected $fillable = ['kode_barang', 'kode_tipe', 'kode_merek', 'nama_barang', 'kode_satuan', 'stok', 'harga_beli', 'harga_jual'];
+    protected $fillable = ['kode_barang', 'tipe_id', 'merek_id', 'nama_barang', 'satuan_id', 'stok', 'harga_beli', 'harga_jual'];
 
     public function Tipe()
     {
-        return $this->belongsTo(Tipe::class, 'kode_tipe');
+        return $this->belongsTo(Tipe::class);
     }
 
     public function Merek()
     {
-        return $this->belongsTo(Merek::class, 'kode_merek');
+        return $this->belongsTo(Merek::class);
     }
 
     public function Satuan()
     {
-        return $this->belongsTo(Satuan::class, 'kode_satuan');
+        return $this->belongsTo(Satuan::class);
     }
 
     public function Koreksi()
     {
-        return $this->hasMany(Koreksi::class, 'kode_barang');
+        return $this->hasMany(Koreksi::class);
     }
     
 }

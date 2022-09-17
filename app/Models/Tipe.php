@@ -9,11 +9,10 @@ class Tipe extends Model
 {
     use HasFactory;
     protected $table = 'tipe';
-    protected $primaryKey = 'kode_tipe';
     protected $fillable = ['kode_tipe', 'nama_tipe'];
 
     public function Barang()
     {
-        return $this->hasMany(Barang::class, 'kode_tipe');
+        return $this->hasMany(Barang::class);
     }
 }

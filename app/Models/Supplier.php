@@ -9,16 +9,15 @@ class Supplier extends Model
 {
     use HasFactory;
     protected $table = 'supplier';
-    protected $primaryKey = 'kd_supplier';
-    protected $fillable = ['kd_supplier', 'kode_kota', 'nama_supplier', 'alamat_supplier', 'telepon_supplier'];
+    protected $fillable = ['kota_id', 'nama_supplier', 'alamat', 'telepon'];
 
     public function Kota()
     {
-        return $this->belongsTo(Kota::class, 'kode_kota');
+        return $this->belongsTo(Kota::class);
     }
 
     public function TransBeli()
     {
-        return $this->hasMany(TransBeli::class, 'kd_supplier');
+        return $this->hasMany(TransBeli::class);
     }
 }

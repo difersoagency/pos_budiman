@@ -23,11 +23,11 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                if (Auth::user()->kode_level == 1) {
+                if (Auth::user()->level_user_id == 1) {
                     return redirect()->route('home_owner');
-                  }else if(Auth::user()->kode_level == 2){
+                  }else if(Auth::user()->level_user_id == 2){
                     return redirect()->route('home_admin');
-                  }elseif(Auth::user()->kode_level == 3){
+                  }elseif(Auth::user()->level_user_id == 3){
                     return redirect()->route('home_kasir');
                   }
             }

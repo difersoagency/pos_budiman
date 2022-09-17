@@ -22,20 +22,20 @@ class CekRole
     {
         $allow = array();
         foreach($allowed_roles as $a){
-           $l =  LevelUser::where('kode_level',$a)->first();
+           $l =  LevelUser::where('id',$a)->first();
             $allow[] = $l->id;
         }
         
-        $role = strtolower( request()->user()->kode_level );
+        $role = strtolower( request()->user()->level_user_id );
 
         if( in_array($role, $allow) ) {
             return $next($request);
         }
-        if (Auth::check() && Auth::user()->kode_level == 1) {
+        if (Auth::check() && Auth::user()->level_user_id == 1) {
             return redirect()->route('home_owner');
-          }else if(Auth::check() && Auth::user()->kode_level == 2){
+          }else if(Auth::check() && Auth::user()->level_user_id == 2){
             return redirect()->route('home_admin');
-          }elseif(Auth::check() && Auth::user()->kode_level == 3){
+          }elseif(Auth::check() && Auth::user()->level_user_id == 3){
             return redirect()->route('home_kasir');
           }
 

@@ -9,16 +9,15 @@ class Customer extends Model
 {
     use HasFactory;
     protected $table = 'customer';
-    protected $primaryKey = 'kode_customer';
-    protected $fillable = ['kode_customer', 'kode_kota', 'nama_customer', 'alamat', 'telepon'];
+    protected $fillable = ['kota_id', 'nama_customer', 'alamat', 'telepon'];
 
     public function Kota()
     {
-        return $this->belongsTo(Kota::class, 'kode_kota');
+        return $this->belongsTo(Kota::class);
     }
 
     public function Booking()
     {
-        return $this->hasMany(Booking::class, 'kode_customer');
+        return $this->hasMany(Booking::class);
     }
 }

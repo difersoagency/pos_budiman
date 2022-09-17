@@ -17,11 +17,11 @@ class Owner
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::check() && Auth::user()->kode_level == 1) {
+        if (Auth::check() && Auth::user()->level_user_id == 1) {
             return $next($request);
-          }else if(Auth::check() && Auth::user()->kode_level == 2){
+          }else if(Auth::check() && Auth::user()->level_user_id == 2){
             return redirect()->route('home_admin');
-          }elseif(Auth::check() && Auth::user()->kode_level == 3){
+          }elseif(Auth::check() && Auth::user()->level_user_id == 3){
             return redirect()->route('home_kasir');
           }
 
