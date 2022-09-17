@@ -9,15 +9,21 @@
             <div class="col-lg-12">
                 <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-items-end tw-mb-4">
                     <!-- Dropdown -->
-                    <div class="dropdown tw-mb-7 md:tw-mb-0">
-                        <button class="btn tw-text-prim-white tw-bg-prim-black dropdown-toggle tw-text-sm md:tw-w-fit tw-w-full" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <div class="dropdown tw-mb-7 md:tw-mb-0 tw-w-2/4">
+                        <!-- <button class="btn tw-text-prim-white tw-bg-prim-black dropdown-toggle tw-text-sm md:tw-w-fit tw-w-full" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Lihat Tipe Produk
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <a class="dropdown-item" href="#">Ban</a>
                             <a class="dropdown-item" href="#">Lampu</a>
                             <a class="dropdown-item" href="#">Rem</a>
-                        </div>
+                        </div> -->
+                        <select class="custom-select select-2 tw-bg-prim-blue tw-text-prim-white" id="merk" name="state">
+                            <option selected>Lihat Tipe Product</option>
+                            <option value="1">Honda</option>
+                            <option value="2">Yamaha</option>
+                            <option value="3">Suzuki</option>
+                        </select>
                     </div>
                     <!-- End Dropdown  -->
 
@@ -27,7 +33,7 @@
                     <h1 class="tw-m-0 tw-text-2xl tw-font-bold">List Barang</h1>
                 </div>
                 <div class="tw-text-right tw-grid tw-grid-cols-1 md:tw-flex tw-mx-auto md:tw-mx-0 md:tw-ml-auto tw-w-full md:tw-w-fit tw-mt-4 md:tw-mt-0">
-                    <div class="dropdown tw-mb-4 md:tw-mr-3">
+                    <!-- <div class="dropdown tw-mb-4 md:tw-mr-3">
                         <button class="btn tw-text-prim-black tw-w-full tw-bg-prim-white dropdown-toggle tw-text-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Pilih Merk
                         </button>
@@ -36,9 +42,17 @@
                             <a class="dropdown-item" href="#">Suzuki</a>
                             <a class="dropdown-item" href="#">Yamaha</a>
                         </div>
+                    </div> -->
+                    <div class="dropdown tw-mb-4 md:tw-mr-3">
+                        <select class="custom-select input-select-2" id="merk">
+                            <option selected>Pilih Merk</option>
+                            <option value="1">Honda</option>
+                            <option value="2">Yamaha</option>
+                            <option value="3">Suzuki</option>
+                        </select>
                     </div>
                     <div class="dropdown tw-mb-4 tw-w-full md:tw-w-fit">
-                        <button class="btn tw-text-prim-white tw-bg-prim-red tw-text-sm tw-w-full md:tw-w-fit" type="button" id="addItemButton"  data-toggle="modal" data-target="#barangModal">
+                        <button class="btn tw-text-prim-white tw-bg-prim-red tw-text-sm tw-w-full md:tw-w-fit" type="button" id="addItemButton"  data-toggle="modal" data-target="#modalPop">
                             + Tambah Barang
                         </button>
                     </div>
@@ -78,7 +92,7 @@
                                 <td>12 Pcs</td>
                                 <td class="tw-px-3">
                                     <div class="grid grid-cols-2 tw-contents">
-                                        <button href="" class="mr-4 tw-bg-transparent tw-border-none" data-toggle="modal" data-target="#barangModal">
+                                        <button href="" class="mr-4 tw-bg-transparent tw-border-none" data-toggle="modal" data-target="#modalPop">
                                             <i class="fa fa-pen tw-text-prim-blue"></i>
                                         </button>
                                         <button data-toggle="modal" data-target="#deleteModal" class="tw-bg-transparent tw-border-none">

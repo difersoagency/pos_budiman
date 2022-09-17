@@ -11,11 +11,11 @@
   <!-- Tailwind Styling -->
   <link rel="stylesheet" href="{{asset('assets/css/tailwind.css')}}">
   <!-- Bootstrap -->
-  <link rel="stylesheet" href="{{ asset('themes/plugins/bootstrap/css/bootstrap.min.css') }}">
+  <!-- <link rel="stylesheet" href="{{ asset('themes/plugins/bootstrap/css/bootstrap.min.css') }}"> -->
   <!-- Font Awesome -->
   <link rel="stylesheet" href="{{ asset('themes/plugins/fontawesome-free/css/all.min.css') }}">
    <!-- Datatable -->
-  <link href="{{ asset('themes/plugins/datatables/DataTables-1.11.4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
+  <!-- <link href="{{ asset('themes/plugins/datatables/DataTables-1.11.4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"> -->
   
 
    <!-- Select2 -->
@@ -106,8 +106,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js"></script>
 <script src="{{ asset('themes/plugins/daterangepicker/daterangepicker.js') }}"></script>
 
-<script src="{{ asset('themes/plugins/datatables/DataTables-1.11.4/js/jquery.dataTables.min.js') }}"></script>
-<script src="{{ asset('themes/plugins/datatables/DataTables-1.11.4/js/dataTables.bootstrap4.min.js') }}"></script>
+<!-- <script src="{{ asset('themes/plugins/datatables/DataTables-1.11.4/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('themes/plugins/datatables/DataTables-1.11.4/js/dataTables.bootstrap4.min.js') }}"></script> -->
 
 
 <!-- Slimscroll -->
@@ -118,9 +118,9 @@
 <script src="{{ asset('themes/dist/js/adminlte.js') }}"></script>
 
  <!-- Font Awesome -->
- <script type="text/javascript" src="{{ asset('themes/plugins/fontawesome-free/js/all.min.js') }}"></script>
+ <!-- <script type="text/javascript" src="{{ asset('themes/plugins/fontawesome-free/js/all.min.js') }}"></script>
  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+ <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
  <script>
      </script>
 @yield('script')

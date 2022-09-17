@@ -2,7 +2,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Form Merk</h5>
+        <h5 class="modal-title" id="modalPop">Form Merk</h5>
         <button type="button" class="close tw-text-prim-red" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>

@@ -25,7 +25,7 @@ Route::group(['prefix' => '/home'], function () {
     Route::get('/owner', [App\Http\Controllers\HomeController::class, 'home_owner'])->name('home_owner')->middleware('owner');
     Route::get('/admin', [App\Http\Controllers\HomeController::class, 'home_admin'])->name('home_admin')->middleware('admin');
     Route::get('/kasir', [App\Http\Controllers\HomeController::class, 'home_kasir'])->name('home_kasir')->middleware('kasir');
-    Route::get('/barang', [App\Http\Controllers\HomeController::class, 'master_barang'])->name('barang')->middleware('owner');
+    Route::get('/barang', [App\Http\Controllers\HomeController::class, 'master_barang'])->name('barang');
     Route::get('/customer', [App\Http\Controllers\HomeController::class, 'master_customer'])->name('customer')->middleware('owner');
     Route::get('/supplier', [App\Http\Controllers\HomeController::class, 'master_supplier'])->name('supplier')->middleware('owner');
     Route::get('/user', [App\Http\Controllers\HomeController::class, 'master_user'])->name('user')->middleware('owner');

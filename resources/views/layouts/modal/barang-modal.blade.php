@@ -1,8 +1,8 @@
-<div class="modal fade" id="barangModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="modalPop" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Edit Data</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Form Barang</h5>
         <button type="button" class="close tw-text-prim-red" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -24,18 +24,17 @@
             <div class="form-group tw-mr-3">
               <label for="tipe" class="col-form-label">Tipe:</label>
               <div class="dropdown tw-mb-4">
-                <select class="custom-select" id="tipe">
-                  <option selected>Pilih Tipe</option>
-                  <option value="1">Lampu</option>
-                  <option value="2">Oli</option>
-                  <option value="3">Ban</option>
+                <select class="custom-select input-select2" id="tipe" name="state">
+                  <option value="LM">Lampu</option>
+                  <option value="OL">Oli</option>
+                  <option value="BN">Ban</option>
                 </select>
               </div>
             </div>
             <div class="form-group">
               <label for="merk" class="col-form-label">Merk:</label>
               <div class="dropdown tw-mb-4">
-                <select class="custom-select" id="merk">
+                <select class="custom-select input-select2" id="merk">
                   <option selected>Pilih Merk</option>
                   <option value="1">Honda</option>
                   <option value="2">Yamaha</option>
@@ -80,15 +79,15 @@
               </div>
             </div>
           </div>
-
+          <div class="modal-footer">
+        <button type="button" class="btn tw-bg-prim-red tw-text-prim-white" data-dismiss="modal">Batal</button>
+        <button type="button" class="btn save tw-bg-prim-blue tw-text-prim-white">Save</button>
+      </div>
           
      
         </form>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn tw-bg-prim-red tw-text-prim-white" data-dismiss="modal">Batal</button>
-        <button type="button" class="btn tw-bg-prim-blue tw-text-prim-white">Save</button>
-      </div>
+      
     </div>
   </div>
 </div>
