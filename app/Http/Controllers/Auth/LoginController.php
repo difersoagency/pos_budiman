@@ -42,7 +42,7 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
-        $this->username = $this->findUsername();
+
 
     }
 
@@ -61,20 +61,16 @@ class LoginController extends Controller
         echo $this->username;
     }
 
-    public function findUsername()
+
+    public function username()
     {
         $login = request()->input('username');
 
-        $fieldType = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'username' : 'username';
+        $fieldType = 'username';
 
         request()->merge([$fieldType => $login]);
 
         return $fieldType;
-    }
-
-    public function username()
-    {
-        return $this->username;
     }
 
 
