@@ -13,7 +13,7 @@
                 </div>
                 <div class="tw-text-right tw-items-center tw-grid tw-grid-cols-1 tw-mx-auto md:tw-mx-0 md:tw-ml-auto tw-w-full md:tw-w-fit tw-mt-4 md:tw-mt-0">
                     <div class="tw-w-full md:tw-w-fit md:tw-ml-auto">
-                        <button class="btn tw-text-prim-white tw-bg-prim-red tw-text-sm tw-w-full md:tw-w-fit" type="button" id="addItemButton" data-toggle="modal" data-target="#pegawaiModal">
+                        <button class="btn tw-text-prim-white tw-bg-prim-red tw-text-sm tw-w-full md:tw-w-fit" type="button" id="addItemButton" data-toggle="modal" data-target="#modalPop">
                             + Tambah Pegawai
                         </button>
                     </div>
@@ -49,7 +49,7 @@
                                 <td>adisutrisna@gmail.com</td>
                                 <td class="tw-px-3">
                                     <div class="grid grid-cols-2 tw-contents">
-                                        <button href="" class="mr-4 tw-bg-transparent tw-border-none" data-toggle="modal" data-target="#pegawaiModal">
+                                        <button href="" class="mr-4 tw-bg-transparent tw-border-none" data-toggle="modal" data-target="#modalPop">
                                             <i class="fa fa-pen tw-text-prim-blue"></i>
                                         </button>
                                         <button data-toggle="modal" data-target="#deleteModal" class="tw-bg-transparent tw-border-none">

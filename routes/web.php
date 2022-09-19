@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
 Route::group(['middleware' => 'guest'], function () {
     Route::get('/', function () {
         return view('auth.login');
@@ -26,19 +27,17 @@ Route::group(['prefix' => '/home'], function () {
     Route::get('/admin', [App\Http\Controllers\HomeController::class, 'home_admin'])->name('home_admin')->middleware('admin');
     Route::get('/kasir', [App\Http\Controllers\HomeController::class, 'home_kasir'])->name('home_kasir')->middleware('kasir');
     Route::get('/barang', [App\Http\Controllers\HomeController::class, 'master_barang'])->name('barang');
-    Route::get('/customer', [App\Http\Controllers\HomeController::class, 'master_customer'])->name('customer')->middleware('owner');
-    Route::get('/supplier', [App\Http\Controllers\HomeController::class, 'master_supplier'])->name('supplier')->middleware('owner');
-    Route::get('/user', [App\Http\Controllers\HomeController::class, 'master_user'])->name('user')->middleware('owner');
-    Route::get('/promo', [App\Http\Controllers\HomeController::class, 'master_promo'])->name('promo')->middleware('owner');
-    Route::get('/merk', [App\Http\Controllers\HomeController::class, 'master_merk'])->name('merk')->middleware('owner');
-    Route::get('/tipe', [App\Http\Controllers\HomeController::class, 'master_tipe'])->name('tipe')->middleware('role:owner,admin');
-    Route::get('/jasa', [App\Http\Controllers\HomeController::class, 'master_jasa'])->name('jasa')->middleware('owner');
-    Route::get('/pegawai', [App\Http\Controllers\HomeController::class, 'master_pegawai'])->name('pegawai')->middleware('owner');
-    Route::get('/satuan', [App\Http\Controllers\HomeController::class, 'master_satuan'])->name('satuan')->middleware('owner');
+    Route::get('/customer', [App\Http\Controllers\HomeController::class, 'master_customer'])->name('customer');
+    Route::get('/supplier', [App\Http\Controllers\HomeController::class, 'master_supplier'])->name('supplier');
+    Route::get('/user', [App\Http\Controllers\HomeController::class, 'master_user'])->name('user');
+    Route::get('/promo', [App\Http\Controllers\HomeController::class, 'master_promo'])->name('promo');
+    Route::get('/merk', [App\Http\Controllers\HomeController::class, 'master_merk'])->name('merk');
+    Route::get('/tipe', [App\Http\Controllers\HomeController::class, 'master_tipe'])->name('tipe');
+    Route::get('/jasa', [App\Http\Controllers\HomeController::class, 'master_jasa'])->name('jasa');
+    Route::get('/pegawai', [App\Http\Controllers\HomeController::class, 'master_pegawai'])->name('pegawai');
+    Route::get('/satuan', [App\Http\Controllers\HomeController::class, 'master_satuan'])->name('satuan');
 });
 Route::get('/kota', [App\Http\Controllers\MasterController::class, 'data_kota'])->name('data.kota');
 Route::get('/merek', [App\Http\Controllers\MasterController::class, 'data_merek'])->name('data.merek');
 Route::get('/satuan', [App\Http\Controllers\MasterController::class, 'data_satuan'])->name('data.satuan');
 Route::get('/tipe', [App\Http\Controllers\MasterController::class, 'data_tipe'])->name('data.tipe');
-
-

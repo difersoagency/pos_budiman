@@ -2,7 +2,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modalPop">Form Satuan</h5>
+        <h5 class="modal-title" id="modalPop">Form Pegawai</h5>
         <button type="button" class="close tw-text-prim-red" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -10,13 +10,20 @@
       <div class="modal-body">
         <form>
           <div class="form-group tw-mr-3">
-            <label for="kode-merk" class="col-form-label">Kode Satuan:</label>
+            <label for="kode-merk" class="col-form-label">Nama Pegawai:</label>
             <input type="text" class="form-control" id="kode-merk">
           </div>
 
-          <div class="form-group tw-mr-3">
-            <label for="nama-merk" class="col-form-label">Nama Satuan:</label>
-            <input type="text" class="form-control" id="nama-merk">
+          <div class="form-group">
+            <label for="merk" class="col-form-label">Role:</label>
+            <div class="dropdown tw-mb-4">
+              <select class="custom-select input-select2" id="merk">
+                <option selected>Pilih Role</option>
+                <option value="1">Admin</option>
+                <option value="2">Editor</option>
+                <option value="3">Kasir</option>
+              </select>
+            </div>
           </div>
         </form>
       </div>

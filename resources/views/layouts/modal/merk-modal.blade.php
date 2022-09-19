@@ -9,26 +9,26 @@
       </div>
       <div class="modal-body">
         <form>
-            <div class="form-group tw-mr-3">
-              <label for="kode-merk" class="col-form-label">Kode Merk:</label>
-              <input type="text" class="form-control" id="kode-merk">
-            </div>
+          <div class="form-group tw-mr-3">
+            <label for="kode-merk" class="col-form-label">Kode Merk:</label>
+            <input type="text" class="form-control" id="kode-merk">
+          </div>
 
-            <div class="form-group tw-mr-3">
-              <label for="nama-merk" class="col-form-label">Nama Merk:</label>
-              <input type="text" class="form-control" id="nama-merk">
-            </div>
+          <div class="form-group tw-mr-3">
+            <label for="nama-merk" class="col-form-label">Nama Merk:</label>
+            <input type="text" class="form-control" id="nama-merk">
+          </div>
 
-            <div class="tw-grid tw-grid-cols-2">
+          <div class="tw-grid tw-grid-cols-2">
             <div class="form-group tw-mr-3">
               <label for="jumlah-merk" class="col-form-label">Jumlah Barang:</label>
               <div class="input-group mb-3">
                 <div class="input-group-prepend">
-                  <button class="min-btn w-outline-none tw-border-transparent tw-px-2" disabled>-</button>
+                  <button type="button" class="min-btn w-outline-none tw-border-transparent tw-px-2" disabled>-</button>
                 </div>
-                <input type="text" class="form-control tw-w-4 tw-text-center" aria-label="Amount" id="jumlah-merk" value="0">
+                <input type="text" class="form-control tw-w-4 tw-text-center form-amount" aria-label="Amount" id="jumlah-merk" value="0">
                 <div class="input-group-prepend">
-                  <button class="plus-btn tw-outline-none tw-border-transparent tw-px-2">+</button>
+                  <button type="button" class="plus-btn tw-outline-none tw-border-transparent tw-px-2">+</button>
                 </div>
               </div>
             </div>

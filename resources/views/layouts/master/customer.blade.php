@@ -9,7 +9,7 @@
             <div class="col-lg-12">
                 <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-items-end tw-mb-4">
                     <!-- Dropdown -->
-                    <div class="dropdown tw-mb-7 md:tw-mb-0">
+                    <!-- <div class="dropdown tw-mb-7 md:tw-mb-0">
                         <button class="btn tw-text-prim-white tw-bg-prim-black dropdown-toggle tw-text-sm md:tw-w-fit tw-w-full" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Pilh Kota
                         </button>
@@ -18,6 +18,14 @@
                             <a class="dropdown-item" href="#">Bandung</a>
                             <a class="dropdown-item" href="#">Jakarta</a>
                         </div>
+                    </div> -->
+                    <div class="dropdown tw-mb-4">
+                        <select class="custom-select input-select2 tw-w-2/4 tw-bg-prim-black tw-text-prim-white" id="tipe">
+                        <option selected>Pilih Kota</option>
+                        <option value="1">Surabaya</option>
+                        <option value="2">Depok</option>
+                        <option value="3">Banjarmasin</option>
+                        </select>
                     </div>
                     <!-- End Dropdown  -->
 
@@ -28,7 +36,7 @@
                 </div>
                 <div class="tw-text-right tw-grid tw-grid-cols-1 md:tw-flex tw-mx-auto md:tw-mx-0 md:tw-ml-auto tw-w-full md:tw-w-fit tw-mt-4 md:tw-mt-0">
                     <div class="tw-mb-4 tw-w-full md:tw-w-fit">
-                        <button class="btn tw-text-prim-white tw-bg-prim-red tw-text-sm tw-w-full md:tw-w-fit" type="button" id="addItemButton" data-toggle="modal" data-target="#customerModal">
+                        <button class="btn tw-text-prim-white tw-bg-prim-red tw-text-sm tw-w-full md:tw-w-fit" type="button" id="addItemButton" data-toggle="modal" data-target="#modalPop">
                             + Tambah Pelanggan
                         </button>
                     </div>
@@ -62,7 +70,7 @@
                                 <td>081234123</td>
                                 <td class="tw-px-3">
                                     <div class="grid grid-cols-2 tw-contents">
-                                        <button href="" class="mr-4 tw-bg-transparent tw-border-none" data-toggle="modal" data-target="#customerModal">
+                                        <button href="" class="mr-4 tw-bg-transparent tw-border-none" data-toggle="modal" data-target="#modalPop">
                                             <i class="fa fa-pen tw-text-prim-blue"></i>
                                         </button>
                                         <button data-toggle="modal" data-target="#deleteModal" class="tw-bg-transparent tw-border-none">
