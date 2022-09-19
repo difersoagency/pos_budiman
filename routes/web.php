@@ -31,7 +31,7 @@ Route::group(['prefix' => '/home'], function () {
     Route::get('/user', [App\Http\Controllers\HomeController::class, 'master_user'])->name('user')->middleware('owner');
     Route::get('/promo', [App\Http\Controllers\HomeController::class, 'master_promo'])->name('promo')->middleware('owner');
     Route::get('/merk', [App\Http\Controllers\HomeController::class, 'master_merk'])->name('merk')->middleware('owner');
-    Route::get('/tipe', [App\Http\Controllers\HomeController::class, 'master_tipe'])->name('tipe')->middleware('role:owner,admin');
+    Route::get('/tipe', [App\Http\Controllers\HomeController::class, 'master_tipe'])->name('tipe')->middleware('owner');
     Route::get('/jasa', [App\Http\Controllers\HomeController::class, 'master_jasa'])->name('jasa')->middleware('owner');
     Route::get('/pegawai', [App\Http\Controllers\HomeController::class, 'master_pegawai'])->name('pegawai')->middleware('owner');
     Route::get('/satuan', [App\Http\Controllers\HomeController::class, 'master_satuan'])->name('satuan')->middleware('owner');
@@ -40,5 +40,8 @@ Route::get('/kota', [App\Http\Controllers\MasterController::class, 'data_kota'])
 Route::get('/merek', [App\Http\Controllers\MasterController::class, 'data_merek'])->name('data.merek');
 Route::get('/satuan', [App\Http\Controllers\MasterController::class, 'data_satuan'])->name('data.satuan');
 Route::get('/tipe', [App\Http\Controllers\MasterController::class, 'data_tipe'])->name('data.tipe');
+Route::get('/jasa', [App\Http\Controllers\MasterController::class, 'data_jasa'])->name('data.jasa');
+Route::get('/supplier', [App\Http\Controllers\MasterController::class, 'data_supplier'])->name('data.supplier');
+Route::get('/customer', [App\Http\Controllers\MasterController::class, 'data_customer'])->name('data.customer');
 
 

@@ -1,8 +1,8 @@
 // Datatable
 
-$(document).ready(function () {
-  $('#example').DataTable();
-});
+// $(document).ready(function () {
+//   $('#example').DataTable();
+// });
 
 // Select 2
 $(document).ready(function() {

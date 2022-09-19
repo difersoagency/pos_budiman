@@ -29,17 +29,17 @@
 
                 <!-- START: Table Tablet + Desktop -->
                 <div class="table-barang tw-mt-5 tw-col-span-2" data-current-page="1">
-                    <table id="example" class="table table-bordered responsive nowrap" style="width:100%">
+                    <table id="showtable" class="table table-bordered responsive nowrap" style="width:100%">
                         <thead class="tw-bg-prim-blue">
                             <tr>
-                                <th class="tw-text-prim-white">Kode Merk</th>
+                                <th class="tw-text-prim-white">No</th>
                                 <th class="tw-text-prim-white">Nama Merk</th>
-                                <th class="tw-text-prim-white">Jumlah Barang</th>
+                                <!-- <th class="tw-text-prim-white">Jumlah Barang</th> -->
                                 <th class="tw-text-prim-white">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
+                            <!-- <tr>
                                 <td>HN1223</td>
                                 <td>Honda</td>
                                 <td>20</td>
@@ -53,7 +53,7 @@
                                         </button>
                                     </div>
                                 </td>
-                            </tr>                        
+                            </tr>                         -->
 
                         </tbody>
     
@@ -75,4 +75,41 @@
     <!-- END:Modal -->
     <!-- /.content -->
   </div>
+@endsection
+@section('script')
+<script>
+    $(document).ready(function(){
+        $('#showtable').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                'url': '/merek',
+                'method': 'GET',
+                'headers': {
+                    'X-CSRF-TOKEN': '{{csrf_token()}}'
+                }
+            },
+            language: {
+                processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
+            },
+            columns: [{
+                data: 'DT_RowIndex',
+                className: 'nowrap-text align-center',
+                orderable: false,
+                searchable: false
+            },{
+                data: 'nama_merek',
+
+            }, 
+            // {
+            //     data: 'harga',
+            // }, 
+            {
+                data: 'action',
+                orderable: false,
+                searchable: false
+            } ]
+        });
+    })
+</script>
 @endsection

@@ -29,9 +29,10 @@
 
                 <!-- START: Table Tablet + Desktop -->
                 <div class="table-barang tw-mt-5 tw-col-span-2" data-current-page="1">
-                    <table id="example" class="table table-bordered responsive nowrap" style="width:100%">
+                    <table id="showtable" class="table table-bordered responsive nowrap" style="width:100%">
                         <thead class="tw-bg-prim-blue">
                             <tr>
+                                <th class="tw-text-prim-white">No</th>
                                 <th class="tw-text-prim-white">Kode Satuan</th>
                                 <th class="tw-text-prim-white">Nama Satuan</th>
                                 <th class="tw-text-prim-white">Action</th>
@@ -67,4 +68,41 @@
     </section>
     <!-- /.content -->
   </div>
+@endsection
+
+@section('script')
+<script>
+    $(document).ready(function(){
+        $('#showtable').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                'url': '/satuan',
+                'method': 'GET',
+                'headers': {
+                    'X-CSRF-TOKEN': '{{csrf_token()}}'
+                }
+            },
+            language: {
+                processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
+            },
+            columns: [{
+                data: 'DT_RowIndex',
+                className: 'nowrap-text align-center',
+                orderable: false,
+                searchable: false
+            }, {
+                data: 'kode_satuan',
+
+            }, {
+                data: 'nama_satuan',
+
+            }, {
+                data: 'action',
+                orderable: false,
+                searchable: false
+            } ]
+        });
+    })
+</script>
 @endsection

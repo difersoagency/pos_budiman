@@ -22,7 +22,7 @@ class CekRole
     {
         $allow = array();
         foreach($allowed_roles as $a){
-           $l =  LevelUser::where('id',$a)->first();
+            $l =  LevelUser::where('id', $a)->first();
             $allow[] = $l->id;
         }
         

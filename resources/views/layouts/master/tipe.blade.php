@@ -39,7 +39,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
+                            <!-- <tr>
                                 <td>LMP993</td>
                                 <td>Lampu Mobil</td>
                                 <td>14</td>
@@ -83,7 +83,7 @@
                                         </a>
                                     </div>
                                 </td>
-                            </tr>
+                            </tr> -->
 
                         </tbody>
     
@@ -102,14 +102,14 @@
   </div>
 @endsection
 
-@push('script')
+@section('script')
 <script>
-    $(function(){
+    $(document).ready(function(){
         $('#showtable').DataTable({
             processing: true,
             serverSide: true,
             ajax: {
-                'url': '/api/data_tipe',
+                'url': '/tipe',
                 'method': 'GET',
                 'headers': {
                     'X-CSRF-TOKEN': '{{csrf_token()}}'
@@ -137,4 +137,4 @@
         });
     })
 </script>
-@endpush
+@endsection
