@@ -52,14 +52,17 @@
                         </p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="{{ route('barang') }}" class="nav-link ">
-                        <i class="nav-icon fa fa-home tw-text-prim-white"></i>
-                        <p class="tw-text-prim-red tw-font-bold">
-                            Barang
-                        </p>
-                    </a>
-                </li>
+                @if (in_array(Auth::user()->LevelUser->nama_level, ['owner', 'admin']))
+                    <li class="nav-item">
+                        <a href="{{ route('barang') }}" class="nav-link ">
+                            <i class="nav-icon fa fa-home tw-text-prim-white"></i>
+                            <p class="tw-text-prim-red tw-font-bold">
+                                Barang
+                            </p>
+                        </a>
+                    </li>
+                @endif
+
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('logout') }}"
                         onclick="event.preventDefault();
