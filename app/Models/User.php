@@ -56,8 +56,9 @@ class User extends Authenticatable
         return $this->belongsTo(Pegawai::class, 'pegawai_id');
     }
 
-    public function hasRole($role){
-       $data = LevelUser::where('nama_level', $role)->limit(1);
-       return $data->id;
+    public function hasRole($role)
+    {
+        $data = LevelUser::where('nama_level', $role)->limit(1);
+        return $data->id;
     }
 }

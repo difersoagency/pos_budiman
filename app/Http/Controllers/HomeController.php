@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Barang;
+use App\Models\Customer;
+use App\Models\Kota;
 use App\Models\Merek;
 use App\Models\Tipe;
 use Illuminate\Http\Request;
@@ -56,7 +58,8 @@ class HomeController extends Controller
 
     public function master_customer()
     {
-        return view('layouts.master.customer');
+        $kota = Kota::all();
+        return view('layouts.master.customer', ['kota' => $kota]);
     }
     public function master_supplier()
     {
@@ -184,7 +187,7 @@ class HomeController extends Controller
             'stok' => ['required'],
         ]);
         if ($validator->fails()) {
-            return redirect()->back()->with('error', "Data");
+            return redirect()->back()->with('error', "Update Gagal, periksa kembali");
         } else {
 
             $data = $request->all();
@@ -221,5 +224,108 @@ class HomeController extends Controller
         $tipe = Tipe::all();
         $merek = Merek::all();
         return view('layouts.modal.barang-modal-edit', ['tipe' => $tipe, 'merek' => $merek, 'data' => $data]);
+    }
+    public function customer_create()
+    {
+        $kota = Kota::all();
+        return view('layouts.modal.customer-modal-create', ['kota' => $kota]);
+    }
+    public function customer_edit($id)
+    {
+        $kota = Kota::all();
+        $data = Customer::find($id);
+        return view('layouts.modal.customer-modal-edit', ['kota' => $kota, 'data' => $data]);
+    }
+    public function customer_store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'nama_customer' => ['required', 'unique:customer,nama_customer'],
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', "Update Gagal, periksa kembali");
+        } else {
+            $c = Customer::create([
+                'nama_customer' => $request->nama_customer,
+                'alamat' => $request->alamat,
+                'kota_id' => $request->kota_id,
+                'telepon' => $request->telepon,
+            ]);
+
+            if ($c) {
+                return redirect()->back()->with('success', "Data berhasil di tambah");
+            } else {
+                return redirect()->back()->with('error', "Update Gagal, periksa kembali");
+            }
+        }
+    }
+
+    public function customer_data($id)
+    {
+        if ($id != 0) {
+            $data = Customer::with(['Kota'])->where('kota_id', $id)->get();
+        } else {
+            $data = Customer::with(['Kota'])->get();
+        }
+
+        return datatables()->of($data)
+            ->addIndexColumn()
+            ->addColumn('nama', function ($data) {
+                return $data->nama_customer;
+            })
+            ->addColumn('alamat', function ($data) {
+                return $data->alamat;
+            })
+            ->addColumn('kota', function ($data) {
+                return ucfirst($data->Kota->nama_kota);
+            })
+            ->addColumn('telepon', function ($data) {
+                return  $data->telepon;
+            })
+            ->addColumn('button', function ($data) {
+                return ' <div class="grid grid-cols-2 tw-contents">
+                                                    <button id="btnedit" class="mr-4 tw-bg-transparent tw-border-none"
+                                                      data-id="' . $data->id . '"   data-nama="' . $data->nama_barang . '" >
+                                                        <i class="fa fa-pen tw-text-prim-blue"></i>
+                                                    </button>
+                                                    <button id="btndelete"       data-id="' . $data->id . '"   data-nama="' . $data->nama_barang . '"
+                                                        class="tw-bg-transparent tw-border-none">
+                                                        <i class="fa fa-trash tw-text-prim-red"></i>
+                                                    </button>
+                                                </div>';
+            })
+            ->rawColumns(['button'])
+            ->make(true);
+    }
+
+    public function customer_update(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'nama_customer' => ['required', 'unique:customer,nama_customer,' . $id],
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', "Update Gagal, periksa kembali");
+        } else {
+
+            $data = $request->all();
+            $customer = Customer::find($id);
+            $customer->update($data);
+
+            if ($customer) {
+                return redirect()->back()->with('success', "Data berhasil di update");
+            } else {
+                return redirect()->back()->with('error', "Update Gagal, periksa kembali");
+            }
+        }
+    }
+
+    public function customer_delete(Request $request)
+    {
+        $b = Customer::find($request->id);
+        $delete = $b->delete();
+        if ($delete) {
+            return response()->json(['info' => 'success', 'msg' => 'Data berhasil di hapus']);
+        } else {
+            return response()->json(['info' => 'error', 'msg' => 'Hapus Gagal, periksa kembali']);
+        }
     }
 }
