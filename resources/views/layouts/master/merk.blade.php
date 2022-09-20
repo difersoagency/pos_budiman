@@ -13,7 +13,7 @@
                 </div>
                 <div class="tw-text-right tw-items-center tw-grid tw-grid-cols-1 tw-mx-auto md:tw-mx-0 md:tw-ml-auto tw-w-full md:tw-w-fit tw-mt-4 md:tw-mt-0">
                     <div class="tw-w-full md:tw-w-fit md:tw-ml-auto">
-                        <button class="btn tw-text-prim-white tw-bg-prim-red tw-text-sm tw-w-full md:tw-w-fit" type="button" id="addItemButton" data-toggle="modal" data-target="#merkModal">
+                        <button class="btn tw-text-prim-white tw-bg-prim-red tw-text-sm tw-w-full md:tw-w-fit" type="button" id="tambah_merk" data-toggle="modal" data-target="#merkModal">
                             + Tambah Merk
                         </button>
                     </div>
@@ -70,21 +70,49 @@
         </div>
     </section>
      <!-- Modal -->
-     @include('layouts.modal.merk-modal')
+     <div class="modal fade" id="modalPop" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Form Merk</h5>
+                <button type="button" class="close tw-text-prim-red" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            </div>
+            </div>
+        </div>
+     </div>
     
     <!-- END:Modal -->
     <!-- /.content -->
   </div>
 @endsection
 @section('script')
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    @if (Session::has('error'))
+            Swal.fire({
+                title: 'Gagal',
+                text: "{{ Session::get('error') }}",
+                icon: 'error',
+            });
+        @endif
+        @if (Session::has('success'))
+            Swal.fire({
+                title: 'Berhasil',
+                text: "{{ Session::get('success') }}",
+                icon: 'success',
+            });
+        @endif
     $(document).ready(function(){
         $('#showtable').DataTable({
             processing: true,
             serverSide: true,
             ajax: {
-                'url': '/merek',
-                'method': 'GET',
+                'url': '/merek/data',
+                'method': 'POST',
                 'headers': {
                     'X-CSRF-TOKEN': '{{csrf_token()}}'
                 }
@@ -101,15 +129,45 @@
                 data: 'nama_merek',
 
             }, 
-            // {
-            //     data: 'harga',
-            // }, 
             {
                 data: 'action',
                 orderable: false,
                 searchable: false
             } ]
         });
+
+        $(document).on('click', '#tambah_merk', function(event) {
+            event.preventDefault();
+            $.ajax({
+                url: "{{ route('merek.create') }}",
+                beforeSend: function() {
+                    $('#loader').show();
+                },
+                // return the result
+                success: function(result) {
+                    $('#modalPop').modal("show");
+                    $('.modal-body').html(result).show();
+                },
+            })
+        });
+
+        $(document).on('click', '#btnedit', function(event) {
+            event.preventDefault();
+            var data_id = $(this).attr('data-id');
+            $.ajax({
+                url: "/merek/edit/"+data_id,
+                beforeSend: function() {
+                    $('#loader').show();
+                },
+                // return the result
+                success: function(result) {
+                    alert(result);
+                    $('#modalPop').modal("show");
+                    $('.modal-body').html(result).show();
+                },
+            })
+        });
+
     })
 </script>
 @endsection

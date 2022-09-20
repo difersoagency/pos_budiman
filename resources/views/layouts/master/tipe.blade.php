@@ -109,8 +109,8 @@
             processing: true,
             serverSide: true,
             ajax: {
-                'url': '/tipe',
-                'method': 'GET',
+                'url': '/tipe/data',
+                'method': 'POST',
                 'headers': {
                     'X-CSRF-TOKEN': '{{csrf_token()}}'
                 }

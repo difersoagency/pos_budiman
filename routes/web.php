@@ -56,12 +56,69 @@ Route::group(['prefix' => '/barang'], function () {
     Route::delete('/delete', [App\Http\Controllers\HomeController::class, 'master_barang_delete'])->name('barang.delete');
 });
 
-Route::get('/kota', [App\Http\Controllers\MasterController::class, 'data_kota'])->name('data.kota');
-Route::get('/merek', [App\Http\Controllers\MasterController::class, 'data_merek'])->name('data.merek');
-Route::get('/satuan', [App\Http\Controllers\MasterController::class, 'data_satuan'])->name('data.satuan');
-Route::get('/tipe', [App\Http\Controllers\MasterController::class, 'data_tipe'])->name('data.tipe');
-Route::get('/jasa', [App\Http\Controllers\MasterController::class, 'data_jasa'])->name('data.jasa');
-Route::get('/supplier', [App\Http\Controllers\MasterController::class, 'data_supplier'])->name('data.supplier');
-// Route::get('/customer', [App\Http\Controllers\MasterController::class, 'data_customer'])->name('data.customer');
+
+Route::group(['prefix' => '/kota'], function () {
+    // Route::post('/store', [App\Http\Controllers\HomeController::class, 'master_kota_store'])->name('kota.store');
+    Route::post('/data', [App\Http\Controllers\HomeController::class, 'master_kota_data'])->name('kota.data');
+    // Route::get('/create', [App\Http\Controllers\HomeController::class, 'master_kota_create'])->name('kota.create');
+    // Route::get('/edit/{id}', [App\Http\Controllers\HomeController::class, 'master_kota_edit'])->name('kota.edit');
+    // Route::post('/update/{id}', [App\Http\Controllers\HomeController::class, 'master_kota_update'])->name('kota.update');
+    // Route::delete('/delete', [App\Http\Controllers\HomeController::class, 'master_kota_delete'])->name('kota.delete');
+});
+
+
+Route::group(['prefix' => '/merek'], function () {
+    Route::post('/store', [App\Http\Controllers\HomeController::class, 'master_merek_store'])->name('merek.store');
+    Route::post('/data', [App\Http\Controllers\HomeController::class, 'master_merek_data'])->name('merek.data');
+    Route::get('/create', [App\Http\Controllers\HomeController::class, 'master_merek_create'])->name('merek.create');
+    Route::get('/edit/{id}', [App\Http\Controllers\HomeController::class, 'master_merek_edit'])->name('merek.edit');
+    Route::post('/update/{id}', [App\Http\Controllers\HomeController::class, 'master_merek_update'])->name('merek.update');
+    // Route::delete('/delete', [App\Http\Controllers\HomeController::class, 'master_merek_delete'])->name('merek.delete');
+});
+
+Route::group(['prefix' => '/satuan'], function () {
+    Route::post('/store', [App\Http\Controllers\HomeController::class, 'master_satuan_store'])->name('satuan.store');
+    Route::post('/data', [App\Http\Controllers\HomeController::class, 'master_satuan_data'])->name('satuan.data');
+    Route::get('/create', [App\Http\Controllers\HomeController::class, 'master_satuan_create'])->name('satuan.create');
+    Route::get('/edit/{id}', [App\Http\Controllers\HomeController::class, 'master_satuan_edit'])->name('satuan.edit');
+    Route::post('/update/{id}', [App\Http\Controllers\HomeController::class, 'master_satuan_update'])->name('satuan.update');
+    // Route::delete('/delete', [App\Http\Controllers\HomeController::class, 'master_satuan_delete'])->name('satuan.delete');
+});
+
+Route::group(['prefix' => '/tipe'], function () {
+    // Route::post('/store', [App\Http\Controllers\HomeController::class, 'master_tipe_store'])->name('tipe.store');
+    Route::post('/data', [App\Http\Controllers\HomeController::class, 'master_tipe_data'])->name('tipe.data');
+    // Route::get('/create', [App\Http\Controllers\HomeController::class, 'master_tipe_create'])->name('tipe.create');
+    // Route::get('/edit/{id}', [App\Http\Controllers\HomeController::class, 'master_tipe_edit'])->name('tipe.edit');
+    // Route::post('/update/{id}', [App\Http\Controllers\HomeController::class, 'master_tipe_update'])->name('tipe.update');
+    // Route::delete('/delete', [App\Http\Controllers\HomeController::class, 'master_tipe_delete'])->name('tipe.delete');
+});
+
+Route::group(['prefix' => '/jasa'], function () {
+    // Route::post('/store', [App\Http\Controllers\HomeController::class, 'master_jasa_store'])->name('jasa.store');
+    Route::post('/data', [App\Http\Controllers\HomeController::class, 'master_jasa_data'])->name('jasa.data');
+    // Route::get('/create', [App\Http\Controllers\HomeController::class, 'master_jasa_create'])->name('jasa.create');
+    // Route::get('/edit/{id}', [App\Http\Controllers\HomeController::class, 'master_jasa_edit'])->name('jasa.edit');
+    // Route::post('/update/{id}', [App\Http\Controllers\HomeController::class, 'master_jasa_update'])->name('jasa.update');
+    // Route::delete('/delete', [App\Http\Controllers\HomeController::class, 'master_jasa_delete'])->name('jasa.delete');
+});
+
+Route::group(['prefix' => '/supplier'], function () {
+    Route::post('/store', [App\Http\Controllers\HomeController::class, 'master_supplier_store'])->name('supplier.store');
+    Route::post('/data', [App\Http\Controllers\HomeController::class, 'master_supplier_data'])->name('supplier.data');
+    Route::get('/create', [App\Http\Controllers\HomeController::class, 'master_supplier_create'])->name('supplier.create');
+    Route::get('/edit/{id}', [App\Http\Controllers\HomeController::class, 'master_supplier_edit'])->name('supplier.edit');
+    Route::post('/update/{id}', [App\Http\Controllers\HomeController::class, 'master_supplier_update'])->name('supplier.update');
+    // Route::delete('/delete', [App\Http\Controllers\HomeController::class, 'master_supplier_delete'])->name('supplier.delete');
+});
+
+Route::group(['prefix' => '/pegawai'], function () {
+    // Route::post('/store', [App\Http\Controllers\HomeController::class, 'master_pegawai_store'])->name('pegawai.store');
+    Route::post('/data', [App\Http\Controllers\HomeController::class, 'master_pegawai_data'])->name('pegawai.data');
+    // Route::get('/create', [App\Http\Controllers\HomeController::class, 'master_pegawai_create'])->name('pegawai.create');
+    // Route::get('/edit/{id}', [App\Http\Controllers\HomeController::class, 'master_pegawai_edit'])->name('pegawai.edit');
+    // Route::post('/update/{id}', [App\Http\Controllers\HomeController::class, 'master_pegawai_update'])->name('pegawai.update');
+    // Route::delete('/delete', [App\Http\Controllers\HomeController::class, 'master_pegawai_delete'])->name('pegawai.delete');
+});
 
 

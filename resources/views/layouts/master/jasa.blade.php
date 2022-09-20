@@ -68,7 +68,20 @@
         </div>
     </section>
      <!-- Modal -->
-     @include('layouts.modal.jasa-modal')
+    <div class="modal fade" id="modalPop" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Form Pelanggan</h5>
+                <button type="button" class="close tw-text-prim-red" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            </div>
+            </div>
+        </div>
+        </div>
     
     <!-- END:Modal -->
     <!-- /.content -->
@@ -79,11 +92,13 @@
 <script>
     $(document).ready(function(){
         $('#showtable').DataTable({
+            destroy: true,
             processing: true,
             serverSide: true,
             ajax: {
-                'url': '/jasa',
-                'method': 'GET',
+                'url': '/jasa/data',
+                'method': 'POST',
+                'datatype': 'JSON',
                 'headers': {
                     'X-CSRF-TOKEN': '{{csrf_token()}}'
                 }
