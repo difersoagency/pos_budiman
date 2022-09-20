@@ -50,7 +50,8 @@ class HomeController extends Controller
 
     public function master_barang()
     {
-        return view('layouts.master.barang');
+        $merek = Merek::all();
+        return view('layouts.master.barang', ['merek' => $merek]);
     }
 
     public function master_customer()
@@ -104,7 +105,7 @@ class HomeController extends Controller
             'stok' => ['required'],
         ]);
         if ($validator->fails()) {
-            return redirect()->back()->with('error', "Unable to create data, please check your form");
+            return redirect()->back()->with('error', "Update Gagal, periksa kembali");
         } else {
             $c = Barang::create([
                 'kode_barang' => $request->kode_barang,
@@ -118,16 +119,21 @@ class HomeController extends Controller
             ]);
 
             if ($c) {
-                return redirect()->back()->with('success', "Data created successfully");
+                return redirect()->back()->with('success', "Data berhasil di tambah");
             } else {
-                return redirect()->back()->with('error', "Unable to create data, please check your form");
+                return redirect()->back()->with('error', "Update Gagal, periksa kembali");
             }
         }
     }
 
-    public function master_barang_data()
+    public function master_barang_data($id)
     {
-        $data = Barang::with(['Merek', 'Tipe'])->get();
+        if ($id != 0) {
+            $data = Barang::with(['Merek', 'Tipe'])->where('merek_id', $id)->get();
+        } else {
+            $data = Barang::with(['Merek', 'Tipe'])->get();
+        }
+
         return datatables()->of($data)
             ->addIndexColumn()
             ->addColumn('kode', function ($data) {
@@ -137,10 +143,10 @@ class HomeController extends Controller
                 return $data->nama_barang;
             })
             ->addColumn('merk', function ($data) {
-                return $data->Merek->nama_merek;
+                return ucfirst($data->Merek->nama_merek);
             })
             ->addColumn('tipe', function ($data) {
-                return $data->Tipe->nama_tipe;
+                return  ucfirst($data->Tipe->nama_tipe);
             })
             ->addColumn('harga_beli', function ($data) {
                 return $data->harga_beli;
@@ -166,13 +172,48 @@ class HomeController extends Controller
             ->rawColumns(['button'])
             ->make(true);
     }
+    public function master_barang_update(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'kode_barang' => ['required', 'unique:barang,kode_barang,' . $id],
+            'nama_barang' => ['required'],
+            'tipe_id' => ['required'],
+            'merek_id' => ['required'],
+            'harga_jual' => ['required'],
+            'harga_beli' => ['required'],
+            'stok' => ['required'],
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', "Data");
+        } else {
 
+            $data = $request->all();
+            $barang = Barang::find($id);
+            $barang->update($data);
+
+            if ($barang) {
+                return redirect()->back()->with('success', "Data berhasil di update");
+            } else {
+                return redirect()->back()->with('error', "Update Gagal, periksa kembali");
+            }
+        }
+    }
 
     public function master_barang_create()
     {
         $tipe = Tipe::all();
         $merek = Merek::all();
         return view('layouts.modal.barang-modal-create', ['tipe' => $tipe, 'merek' => $merek]);
+    }
+    public function master_barang_delete(Request $request)
+    {
+        $b = Barang::find($request->id);
+        $delete = $b->delete();
+        if ($delete) {
+            return response()->json(['info' => 'success', 'msg' => 'Data berhasil di hapus']);
+        } else {
+            return response()->json(['info' => 'error', 'msg' => 'Hapus Gagal, periksa kembali']);
+        }
     }
     public function master_barang_edit($id)
     {

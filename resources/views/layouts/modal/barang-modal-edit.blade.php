@@ -1,4 +1,4 @@
-<form action="{{ route('barang.store') }}" method="POST">
+<form action="{{ route('barang.update', ['id' => $data->id]) }}" method="POST">
     @csrf
     <div class="tw-grid tw-grid-cols-2">
         <div class="form-group tw-mr-3">
@@ -16,10 +16,10 @@
         <div class="form-group tw-mr-3">
             <label for="tipe" class="col-form-label">Tipe:</label>
             <div class="dropdown tw-mb-4">
-                <select class="custom-select input-select2" id="tipe" name="tipe">
-                    <option value="{{ $data->tipe_id }}" selected>{{ Str::ucfirst($data->Tipe->nama_tipe) }}</option>
+                <select class="custom-select input-select2" id="tipe" name="tipe_id">
                     @foreach ($tipe as $t)
-                        <option value="{{ $t->id }}">{{ Str::ucfirst($t->Tipe->nama_tipe) }}</option>
+                        <option value="{{ $t->id }}" @if ($t->id == $data->tipe_id) selected @endif>
+                            {{ Str::ucfirst($t->nama_tipe) }}</option>
                     @endforeach
 
                 </select>
@@ -28,9 +28,10 @@
         <div class="form-group">
             <label for="merk" class="col-form-label">Merk:</label>
             <div class="dropdown tw-mb-4">
-                <select class="custom-select input-select2" id="merk" name="merek">
+                <select class="custom-select input-select2" id="merk" name="merek_id">
                     @foreach ($merek as $m)
-                        <option value="{{ $m->id }}">{{ Str::ucfirst($m->Merek->nama_merek) }}</option>
+                        <option value="{{ $m->id }}" @if ($m->id == $data->merek_id) selected @endif>
+                            {{ Str::ucfirst($m->nama_merek) }}</option>
                     @endforeach
                 </select>
             </div>
@@ -69,7 +70,7 @@
                         disabled>-</button>
                 </div>
                 <input type="text" class="form-control tw-w-4 tw-text-center" aria-label="Amount" id="stok-barang"
-                    value="0" name="stok">
+                    value="{{ $data->stok }}" name="stok">
                 <div class="input-group-prepend">
                     <button
                         type="button"class="plus-btn tw-outline-none tw-border-transparent

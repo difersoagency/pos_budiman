@@ -42,9 +42,11 @@ Route::group(['prefix' => '/home'], function () {
 
 Route::group(['prefix' => '/barang'], function () {
     Route::post('/store', [App\Http\Controllers\HomeController::class, 'master_barang_store'])->name('barang.store');
-    Route::post('/data', [App\Http\Controllers\HomeController::class, 'master_barang_data'])->name('barang.data');
+    Route::post('/data/{id}', [App\Http\Controllers\HomeController::class, 'master_barang_data'])->name('barang.data');
     Route::get('/create', [App\Http\Controllers\HomeController::class, 'master_barang_create'])->name('barang.create');
     Route::get('/edit/{id}', [App\Http\Controllers\HomeController::class, 'master_barang_edit'])->name('barang.edit');
+    Route::post('/update/{id}', [App\Http\Controllers\HomeController::class, 'master_barang_update'])->name('barang.update');
+    Route::delete('/delete', [App\Http\Controllers\HomeController::class, 'master_barang_delete'])->name('barang.delete');
 });
 
 Route::get('/kota', [App\Http\Controllers\MasterController::class, 'data_kota'])->name('data.kota');

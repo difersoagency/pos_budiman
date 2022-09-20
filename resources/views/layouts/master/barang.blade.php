@@ -11,19 +11,19 @@
                             <!-- Dropdown -->
                             <div class="dropdown tw-mb-7 md:tw-mb-0 tw-w-2/4">
                                 <!-- <button class="btn tw-text-prim-white tw-bg-prim-black dropdown-toggle tw-text-sm md:tw-w-fit tw-w-full" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                Lihat Tipe Produk
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </button>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <a class="dropdown-item" href="#">Ban</a>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <a class="dropdown-item" href="#">Lampu</a>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <a class="dropdown-item" href="#">Rem</a>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </div> -->
-                                <select class="custom-select select-2 tw-bg-prim-blue tw-text-prim-white" id="merk"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            Lihat Tipe Produk
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </button>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <a class="dropdown-item" href="#">Ban</a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <a class="dropdown-item" href="#">Lampu</a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <a class="dropdown-item" href="#">Rem</a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </div> -->
+                                <select class="custom-select select-2 tw-bg-prim-blue tw-text-prim-white" id="merk_id"
                                     name="state">
-                                    <option selected>Lihat Tipe Product</option>
-                                    <option value="1">Honda</option>
-                                    <option value="2">Yamaha</option>
-                                    <option value="3">Suzuki</option>
+                                    <option value="0">Semua</option>
+                                    @foreach ($merek as $m)
+                                        <option value="{{ $m->id }}">{{ Str::ucfirst($m->nama_merek) }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                             <!-- End Dropdown  -->
@@ -37,23 +37,23 @@
                             <div
                                 class="tw-text-right tw-grid tw-grid-cols-1 md:tw-flex tw-mx-auto md:tw-mx-0 md:tw-ml-auto tw-w-full md:tw-w-fit tw-mt-4 md:tw-mt-0">
                                 <!-- <div class="dropdown tw-mb-4 md:tw-mr-3">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <button class="btn tw-text-prim-black tw-w-full tw-bg-prim-white dropdown-toggle tw-text-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                Pilih Merk
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </button>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <a class="dropdown-item" href="#">Honda</a>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <a class="dropdown-item" href="#">Suzuki</a>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <a class="dropdown-item" href="#">Yamaha</a>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            </div>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </div> -->
-                                <div class="dropdown tw-mb-4 md:tw-mr-3">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <button class="btn tw-text-prim-black tw-w-full tw-bg-prim-white dropdown-toggle tw-text-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            Pilih Merk
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </button>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <a class="dropdown-item" href="#">Honda</a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <a class="dropdown-item" href="#">Suzuki</a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <a class="dropdown-item" href="#">Yamaha</a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </div> -->
+                                {{-- <div class="dropdown tw-mb-4 md:tw-mr-3">
                                     <select class="custom-select input-select-2" id="merk">
                                         <option selected>Pilih Merk</option>
                                         <option value="1">Honda</option>
                                         <option value="2">Yamaha</option>
                                         <option value="3">Suzuki</option>
                                     </select>
-                                </div>
+                                </div> --}}
                                 <div class="dropdown tw-mb-4 tw-w-full md:tw-w-fit">
                                     <button class="btn tw-text-prim-white tw-bg-prim-red tw-text-sm tw-w-full md:tw-w-fit"
                                         type="button" id="addItemButton">
@@ -148,14 +148,14 @@
         @if (Session::has('error'))
             Swal.fire({
                 title: 'Gagal',
-                text: 'Data gagal di tambah',
+                text: "{{ Session::get('error') }}",
                 icon: 'error',
             });
         @endif
         @if (Session::has('success'))
             Swal.fire({
                 title: 'Berhasil',
-                text: 'Data berhasil di tambah',
+                text: "{{ Session::get('success') }}",
                 icon: 'success',
             });
         @endif
@@ -171,6 +171,11 @@
                 success: function(result) {
                     $('#modalPop').modal("show");
                     $('#modal-body').html(result).show();
+                    $(".input-select2").select2({
+                        dropdownParent: $("#modalPop")
+                    });
+                    stok_button();
+
                 },
 
             })
@@ -187,8 +192,32 @@
                 success: function(result) {
                     $('#modalPop').modal("show");
                     $('#modal-body').html(result).show();
+                    $(".input-select2").select2({
+                        dropdownParent: $("#modalPop")
+                    });
+                    stok_button();
                 },
 
+            })
+        }
+
+        function stok_button() {
+            const buttonPlus = document.querySelector('.plus-btn');
+            const buttonMin = document.querySelector('.min-btn');
+            let stok = document.querySelector('#stok-barang');
+
+            buttonPlus.addEventListener('click', function() {
+                if (stok.value >= 0) {
+                    buttonMin.disabled = false;
+                }
+                stok.value++;
+            })
+
+            buttonMin.addEventListener('click', function() {
+                if (stok.value < 2) {
+                    buttonMin.disabled = true;
+                }
+                stok.value--;
             })
         }
 
@@ -201,7 +230,7 @@
                 ajax: {
                     'type': 'POST',
                     'datatype': 'JSON',
-                    'url': '/barang/data',
+                    'url': '/barang/data/0',
                     'headers': {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     }
@@ -229,7 +258,7 @@
                         render: $.fn.dataTable.render.number(',', '.', 2),
                     },
                     {
-                        data: 'harga_beli',
+                        data: 'harga_jual',
                         className: 'nowrap-text align-center',
                         orderable: false,
                         searchable: false,
@@ -283,16 +312,42 @@
                 }).then((result) => {
                     /* Read more about isConfirmed, isDenied below */
                     if (result.isConfirmed) {
-                        Swal.fire('Saved!', '', 'success')
-                    } else if (result.isDenied) {
-                        Swal.fire('Changes are not saved', '', 'info')
+                        $.ajax({
+                            url: '{{ route('barang.delete') }}',
+                            type: 'DELETE',
+                            dataType: 'json',
+                            data: {
+                                "id": id,
+                                "_method": "DELETE",
+                                _token: "{{ csrf_token() }}"
+                            },
+                            success: function(result) {
+                                if (result.info == "success") {
+                                    Swal.fire({
+                                        title: 'Berhasil',
+                                        text: 'Data berhasil di hapus',
+                                        icon: 'success',
+                                    });
+                                    window.location.reload();
+                                } else {
+                                    Swal.fire({
+                                        title: 'Gagal',
+                                        text: 'Data gagal di hapus',
+                                        icon: 'error',
+                                    });
+                                }
+                            }
+                        });
                     }
                 })
 
             })
 
 
-
+            $('#merk_id').change(function() {
+                var merek_id = $(this).val();
+                $('#table_barang').DataTable().ajax.url('/barang/data/' + merek_id).load();
+            });
 
         });
     </script>

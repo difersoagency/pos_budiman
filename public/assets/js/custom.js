@@ -6,7 +6,7 @@ $(document).ready(function () {
 
 // Select 2
 $(document).ready(function() {
-  $(".select-2").select2();
+  $('.select-2').prepend('<option selected=""></option>').select2({placeholder: "Pilih Data"});
 });
 $(document).ready(function() {
   $(".input-select2").select2({
