@@ -26,9 +26,7 @@ Route::group(['prefix' => '/home'], function () {
     Route::get('/owner', [App\Http\Controllers\HomeController::class, 'home_owner'])->name('home_owner')->middleware('owner');
     Route::get('/admin', [App\Http\Controllers\HomeController::class, 'home_admin'])->name('home_admin')->middleware('admin');
     Route::get('/kasir', [App\Http\Controllers\HomeController::class, 'home_kasir'])->name('home_kasir')->middleware('kasir');
-    Route::get('/barang', [App\Http\Controllers\HomeController::class, 'master_barang'])->name('barang');
-
-
+    Route::get('/barang', [App\Http\Controllers\HomeController::class, 'master_barang'])->name('barang')->middleware('admin');
     Route::get('/customer', [App\Http\Controllers\HomeController::class, 'master_customer'])->name('customer')->middleware('owner');
     Route::get('/supplier', [App\Http\Controllers\HomeController::class, 'master_supplier'])->name('supplier')->middleware('owner');
     Route::get('/user', [App\Http\Controllers\HomeController::class, 'master_user'])->name('user')->middleware('owner');
@@ -38,6 +36,15 @@ Route::group(['prefix' => '/home'], function () {
     Route::get('/jasa', [App\Http\Controllers\HomeController::class, 'master_jasa'])->name('jasa')->middleware('owner');
     Route::get('/pegawai', [App\Http\Controllers\HomeController::class, 'master_pegawai'])->name('pegawai')->middleware('owner');
     Route::get('/satuan', [App\Http\Controllers\HomeController::class, 'master_satuan'])->name('satuan')->middleware('owner');
+});
+
+Route::group(['prefix' => '/customer'], function () {
+    Route::get('/create', [App\Http\Controllers\HomeController::class, 'customer_create'])->name('customer.create');
+    Route::post('/store', [App\Http\Controllers\HomeController::class, 'customer_store'])->name('customer.store');
+    Route::post('/data/{id}', [App\Http\Controllers\HomeController::class, 'customer_data'])->name('customer.data');
+    Route::get('/edit/{id}', [App\Http\Controllers\HomeController::class, 'customer_edit'])->name('customer.edit');
+    Route::post('/update/{id}', [App\Http\Controllers\HomeController::class, 'customer_update'])->name('customer.update');
+    Route::delete('/delete', [App\Http\Controllers\HomeController::class, 'customer_delete'])->name('customer.delete');
 });
 
 Route::group(['prefix' => '/barang'], function () {
