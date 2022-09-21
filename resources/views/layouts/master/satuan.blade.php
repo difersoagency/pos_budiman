@@ -39,20 +39,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>KG</td>
-                                <td>Kilogram</td>
-                                <td class="tw-px-3">
-                                    <div class="grid grid-cols-2 tw-contents">
-                                        <button class="mr-4 tw-bg-transparent tw-border-none" data-toggle="modal" data-target="#promoModal">
-                                            <i class="fa fa-pen tw-text-prim-blue"></i>
-                                        </button>
-                                        <button data-toggle="modal" data-target="#deleteModal" class="tw-bg-transparent tw-border-none">
-                                            <i class="fa fa-trash tw-text-prim-red"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
                         </tbody>
 
                     </table>

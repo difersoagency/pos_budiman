@@ -37,29 +37,10 @@
                                 <th class="tw-text-prim-white">Nama</th>
                                 <th class="tw-text-prim-white">Gender</th>
                                 <th class="tw-text-prim-white">Telepon</th>
-                                <th class="tw-text-prim-white">Email</th>
                                 <th class="tw-text-prim-white">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>162823982</td>
-                                <td>Adi Sutrisna</td>
-                                <td>Laki - Laki</td>
-                                <td>08123757123</td>
-                                <td>adisutrisna@gmail.com</td>
-                                <td class="tw-px-3">
-                                    <div class="grid grid-cols-2 tw-contents">
-                                        <button href="" class="mr-4 tw-bg-transparent tw-border-none" data-toggle="modal" data-target="#pegawaiModal">
-                                            <i class="fa fa-pen tw-text-prim-blue"></i>
-                                        </button>
-                                        <button data-toggle="modal" data-target="#deleteModal" class="tw-bg-transparent tw-border-none">
-                                            <i class="fa fa-trash tw-text-prim-red"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-
                         </tbody>
 
                     </table>
@@ -142,10 +123,6 @@
                   },{
                       data: 'telepon',
 
-                  },
-                  {
-                      data: 'email',
-
                   },{
                       data: 'action',
                       orderable: false,
@@ -200,7 +177,7 @@
                                   $('.modal-title').html("Ubah Pegawai");
                                   $('.modal-body').html(result).show();
                                   $(".select2").select2({
-                                      dropdownParent: $(".modal-body")
+                                      dropdownParent: $("#pegawaimodal")
                                   });
                               },
                           })

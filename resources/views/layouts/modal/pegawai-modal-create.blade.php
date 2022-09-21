@@ -4,11 +4,11 @@
           <div class="tw-grid tw-grid-cols-2">
             <div class="form-group tw-mr-3">
               <label for="no-pegawai" class="col-form-label">Nomor Pegawai:</label>
-              <input type="text" class="form-control" id="no-pegawai">
+              <input type="text" class="form-control" id="no-pegawai" name="kode_pegawai">
             </div>
             <div class="form-group">
               <label for="nama-pegawai" class="col-form-label">Nama Pegawai:</label>
-              <input type="text" class="form-control" id="nama-pegawai">
+              <input type="text" class="form-control" id="nama-pegawai" name="nama_pegawai">
             </div>
           </div>
 
@@ -16,7 +16,7 @@
             <div class="form-group tw-mr-3">
               <label for="tipe" class="col-form-label">Gender:</label>
               <div class="dropdown tw-mb-4">
-                <select class="custom-select" id="tipe">
+                <select class="custom-select" id="tipe" name="gender">
                   <option selected>Jenis Kelamin</option>
                   <option value="L">Laki-Laki</option>
                   <option value="P">Perempuan</option>
@@ -29,18 +29,18 @@
                 <div class="input-group-prepend">
                   <span class="input-group-text">+62</span>
                 </div>
-                <input type="number" class="form-control" aria-label="Amount" id="tel-pegawai">
+                <input type="number" class="form-control" aria-label="Amount" id="tel-pegawai" name="telepon">
               </div>
             </div>
           </div>
 
 
-          <div class="tw-grid tw-grid-cols-1">
+          <!-- <div class="tw-grid tw-grid-cols-1">
             <div class="form-group">
               <label for="email-pegawai" class="col-form-label">Alamat Email:</label>
-              <input type="text" class="form-control" id="email-pegawai">
+              <input type="text" class="form-control" id="email-pegawai" name="email">
             </div>
-          </div>
+          </div> -->
 
           <div class="row">
             <div class="col-6"><button type="button" class="btn tw-bg-prim-red tw-text-prim-white" data-dismiss="modal">Batal</button></div>

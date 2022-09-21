@@ -19,7 +19,6 @@
                     @foreach ($tipe as $t)
                         <option value="{{ $t->id }}">{{ Str::ucfirst($t->nama_tipe) }}</option>
                     @endforeach
-
                 </select>
             </div>
         </div>

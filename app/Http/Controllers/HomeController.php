@@ -6,12 +6,13 @@ use App\Models\Barang;
 use App\Models\Customer;
 use App\Models\Kota;
 use App\Models\Merek;
+use App\Models\Promo;
 use App\Models\Tipe;
 use App\Models\Satuan;
 use App\Models\Jasa;
-use App\Models\Promo;
 use App\Models\Supplier;
 use App\Models\Pegawai;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use PhpParser\Node\Stmt\Return_;
@@ -68,9 +69,37 @@ class HomeController extends Controller
     }
     public function master_supplier()
     {
-        return view('layouts.master.supplier');
+        $kota = Kota::all();
+        return view('layouts.master.supplier', ['kotas' => $kota]);
     }
 
+    //USER
+    public function master_user_data(){
+        $data = User::with('LevelUser', 'Pegawai')->get();
+        return datatables()->of($data)
+            ->addIndexColumn()
+            ->addColumn('nama_user', function($data){
+                return $data->Pegawai->nama_pegawai;
+            })
+            ->editColumn('level_user_id', function($data){
+                return $data->LevelUser->nama_level;
+            })
+            ->addColumn('action', function ($data) {
+                return  '<div class="grid grid-cols-2 tw-contents">
+                <button class="mr-4 tw-bg-transparent tw-border-none" id="btnedit" data-id="' . $data->id . '"   data-nama="' . $data->username . '">
+                    <i class="fa fa-pen tw-text-prim-blue"></i>
+                </button>
+                <button class="mr-4 tw-bg-transparent tw-border-none" id="btndelete" data-id="' . $data->id . '"   data-nama="' . $data->username . '">
+                    <i class="fa fa-trash tw-text-prim-red"></i>
+                </button>
+            </div>';
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+
+    }
+
+    //SUPPLIER
     public function master_supplier_data(){
         $data = Supplier::with('Kota')->get();
         return datatables()->of($data)
@@ -434,32 +463,14 @@ class HomeController extends Controller
             ->addIndexColumn()
             ->addColumn('action', function ($data) {
                 return  '<div class="grid grid-cols-2">
-                <a href="/api/kota/edit/'.$data->id.'" class="mr-4">
+                <button id="btnedit" class="mr-4 tw-bg-transparent tw-border-none"
+                data-id="' . $data->id . '"   data-nama="' . $data->nama_tipe . '" >
                     <i class="fa fa-pen tw-text-prim-blue"></i>
-                </a>
-                <a href="/api/kota/delete/'.$data->id.'">
+                </button>
+                <button id="btndelete" class="mr-4 tw-bg-transparent tw-border-none"
+                data-id="' . $data->id . '"   data-nama="' . $data->nama_barang . '" >
                     <i class="fa fa-trash tw-text-prim-red"></i>
-                </a>
-            </div>';
-            })
-            ->rawColumns(['action'])
-            ->make(true);
-
-    }
-
-    public function master_jasa_data(){
-        $data = Jasa::all();
-        return datatables()->of($data)
-            ->addIndexColumn()
-            ->addColumn('action', function ($data) {
-                return  '<div class="grid grid-cols-2">
-                <button id="btnedit" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->nama_barang . '" >
-                                                        <i class="fa fa-pen tw-text-prim-blue"></i>
-                                                    </button>
-                                                    <button id="btndelete" data-id="' . $data->id . '" data-nama="' . $data->nama_barang . '"
-                                                        class="tw-bg-transparent tw-border-none">
-                                                        <i class="fa fa-trash tw-text-prim-red"></i>
-                                                    </button>
+                </button>
             </div>';
             })
             ->rawColumns(['action'])
@@ -486,6 +497,131 @@ class HomeController extends Controller
 
     }
 
+    
+
+
+    public function promo_create()
+    {
+        $data = Barang::all();
+        return view('layouts.modal.promo-modal-create', ['data' => $data]);
+    }
+
+    public function promo_edit($id)
+    {
+        $data = Promo::find($id);
+        $barang = Barang::all();
+        return view('layouts.modal.promo-modal-edit', ['data' => $data, 'barang' => $barang]);
+    }
+
+    public function promo_store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'kode_promo' => ['required'],
+            'tgl_mulai' => ['required'],
+            'tgl_selesai' => ['required'],
+            'barang_id' => ['required'],
+            'qty_sk' => ['required'],
+            'disc' => ['required'],
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', "Update Gagal, periksa kembali");
+        } else {
+            $c = Promo::create([
+                'kode_promo' => $request->kode_promo,
+                'tgl_mulai' => $request->tgl_mulai,
+                'tgl_selesai' => $request->tgl_selesai,
+                'nama_promo' => $request->nama_promo,
+                'barang_id' => $request->barang_id,
+                'qty_sk' => $request->qty_sk,
+                'disc' => $request->disc,
+            ]);
+
+            if ($c) {
+                return redirect()->back()->with('success', "Data berhasil di tambah");
+            } else {
+                return redirect()->back()->with('error', "Update Gagal, periksa kembali");
+            }
+        }
+    }
+    public function promo_data()
+    {
+        $data = Promo::with('Barang');
+        return datatables()->of($data)
+            ->addIndexColumn()
+            ->addColumn('kode_promo', function ($data) {
+                return $data->kode_promo;
+            })
+            ->addColumn('tgl_mulai', function ($data) {
+                return $data->tgl_mulai;
+            })
+            ->addColumn('tgl_selesai', function ($data) {
+                return $data->tgl_selesai;
+            })
+            ->addColumn('nama_promo', function ($data) {
+                return $data->nama_promo;
+            })
+            ->addColumn('barang', function ($data) {
+                return $data->Barang->nama_barang;
+            })
+            ->addColumn('qty', function ($data) {
+                return $data->qty_sk;
+            })
+            ->addColumn('disc', function ($data) {
+                return $data->disc . ' %';
+            })
+            ->addColumn('button', function ($data) {
+                return ' <div class="grid grid-cols-2 tw-contents">
+                                                    <button id="btnedit" class="mr-4 tw-bg-transparent tw-border-none"
+                                                      data-id="' . $data->id . '"   data-nama="' . $data->nama_barang . '" >
+                                                        <i class="fa fa-pen tw-text-prim-blue"></i>
+                                                    </button>
+                                                    <button id="btndelete"       data-id="' . $data->id . '"   data-nama="' . $data->nama_barang . '"
+                                                        class="tw-bg-transparent tw-border-none">
+                                                        <i class="fa fa-trash tw-text-prim-red"></i>
+                                                    </button>
+                                                </div>';
+            })
+            ->rawColumns(['button'])
+            ->make(true);
+    }
+
+    public function promo_update(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'kode_promo' => ['required', 'unique:promo,kode_promo,' . $id],
+            'tgl_mulai' => ['required'],
+            'tgl_selesai' => ['required'],
+            'barang_id' => ['required'],
+            'qty_sk' => ['required'],
+            'disc' => ['required'],
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', "Update Gagal, periksa kembali");
+        } else {
+
+            $data = $request->all();
+            $promo = Promo::find($id);
+            $promo->update($data);
+
+            if ($promo) {
+                return redirect()->back()->with('success', "Data berhasil di update");
+            } else {
+                return redirect()->back()->with('error', "Update Gagal, periksa kembali");
+            }
+        }
+    }
+    public function promo_delete(Request $request)
+    {
+        $b = Promo::find($request->id);
+        $delete = $b->delete();
+        if ($delete) {
+            return response()->json(['info' => 'success', 'msg' => 'Data berhasil di hapus']);
+        } else {
+            return response()->json(['info' => 'error', 'msg' => 'Hapus Gagal, periksa kembali']);
+        }
+    }
+
+    //MEREK
     public function master_merek_data(){
         $data = Merek::all();
         return datatables()->of($data)
@@ -571,6 +707,7 @@ class HomeController extends Controller
         }
     }
 
+    //SATUAN
     public function master_satuan_data(){
         $data = Satuan::all();
         return datatables()->of($data)
@@ -606,13 +743,13 @@ class HomeController extends Controller
         } else {
             $c = Satuan::create([
                 'kode_satuan' => $request->kode_satuan,
-                'nama_satuan' => $request->nama_satuan,
-            ]);
+                'nama_satuan' => $request->nama_satuan
+                ]);
 
             if ($c) {
                 return redirect()->back()->with('success', "Data berhasil di tambah");
             } else {
-                return redirect()->back()->with('error', "Update Gagal, periksa kembali");
+                return redirect()->back()->with('error', "Gagal menambahkan, silahkan periksa data kembali");
             }
         }
     }
@@ -622,7 +759,7 @@ class HomeController extends Controller
         $data = Satuan::find($id);
         return view('layouts.modal.satuan-modal-edit', ['data' => $data]);
     }
-
+            
     public function master_satuan_update($id, Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -632,11 +769,11 @@ class HomeController extends Controller
         if ($validator->fails()) {
             return redirect()->back()->with('error', "Update Gagal, periksa kembali");
         } else {
-
+            
             $data = $request->all();
             $satuan = Satuan::find($id);
             $satuan->update($data);
-
+            
             if ($satuan) {
                 return redirect()->back()->with('success', "Data berhasil di update");
             } else {
@@ -644,7 +781,7 @@ class HomeController extends Controller
             }
         }
     }
-
+            
     public function master_satuan_delete(Request $request)
     {
         $satuan = Satuan::find($request->id);
@@ -656,8 +793,7 @@ class HomeController extends Controller
         }
     }
 
-
-
+    //PEGAWAI
     public function master_pegawai_data(){
         $data = Pegawai::all();
         return datatables()->of($data)
@@ -695,7 +831,6 @@ class HomeController extends Controller
                 'kode_pegawai' => $request->kode_pegawai,
                 'nama_pegawai' => $request->nama_pegawai,
                 'gender' => $request->gender,
-                'email' => $request->email,
                 'telepon' => $request->telepon,
             ]);
 
@@ -739,6 +874,157 @@ class HomeController extends Controller
     {
         $pegawai = Pegawai::find($request->id);
         $delete = $pegawai->delete();
+        if ($delete) {
+            return response()->json(['info' => 'success', 'msg' => 'Berhasil menghapus data']);
+        } else {
+            return response()->json(['info' => 'error', 'msg' => 'Gagal menghapus data, periksa kembali data']);
+        }
+    }
+
+    //JASA
+    public function master_jasa_data(){
+        $data = Jasa::all();
+        return datatables()->of($data)
+            ->addIndexColumn()
+            ->addColumn('action', function ($data) {
+                return  '<div class="grid grid-cols-2">
+                <button id="btnedit" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->nama_barang . '" >
+                                                        <i class="fa fa-pen tw-text-prim-blue"></i>
+                                                    </button>
+                                                    <button id="btndelete" data-id="' . $data->id . '" data-nama="' . $data->nama_barang . '"
+                                                        class="tw-bg-transparent tw-border-none">
+                                                        <i class="fa fa-trash tw-text-prim-red"></i>
+                                                    </button>
+            </div>';
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+
+    }
+
+    public function master_jasa_create()
+    {
+        return view('layouts.modal.jasa-modal-create');
+    }
+
+    public function master_jasa_store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'nama_jasa' => ['required', 'unique:jasa,nama_jasa'],
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', "Update Gagal, periksa kembali");
+        } else {
+            $c = Jasa::create([
+                'nama_jasa' => $request->nama_jasa,
+                'harga' => $request->harga
+                ]);
+
+            if ($c) {
+                return redirect()->back()->with('success', "Data berhasil di tambah");
+            } else {
+                return redirect()->back()->with('error', "Gagal menambahkan, silahkan periksa data kembali");
+            }
+        }
+    }
+
+    public function master_jasa_edit($id)
+    {
+        $data = Jasa::find($id);
+        return view('layouts.modal.jasa-modal-edit', ['data' => $data]);
+    }
+            
+    public function master_jasa_update($id, Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'nama_jasa' => ['required', 'unique:jasa,nama_jasa,' . $id]
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', "Update Gagal, periksa kembali");
+        } else {
+            
+            $data = $request->all();
+            $jasa = Jasa::find($id);
+            $jasa->update($data);
+            
+            if ($jasa) {
+                return redirect()->back()->with('success', "Data berhasil di update");
+            } else {
+                return redirect()->back()->with('error', "Update Gagal, periksa kembali");
+            }
+        }
+    }
+            
+    public function master_jasa_delete(Request $request)
+    {
+        $jasa = Jasa::find($request->id);
+        $delete = $jasa->delete();
+        if ($delete) {
+            return response()->json(['info' => 'success', 'msg' => 'Berhasil menghapus data']);
+        } else {
+            return response()->json(['info' => 'error', 'msg' => 'Gagal menghapus data, periksa kembali data']);
+        }
+    }
+
+    public function master_tipe_create()
+    {
+        return view('layouts.modal.tipe-modal-create');
+    }
+
+    public function master_tipe_store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'kode_tipe' => ['required', 'unique:tipe,kode_tipe'],
+            'nama_tipe' => ['required', 'unique:tipe,nama_tipe'],
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', "Update Gagal, periksa kembali");
+        } else {
+            $c = Tipe::create([
+                'kode_tipe' => $request->kode_tipe,
+                'nama_tipe' => $request->nama_tipe
+                ]);
+
+            if ($c) {
+                return redirect()->back()->with('success', "Data berhasil di tambah");
+            } else {
+                return redirect()->back()->with('error', "Gagal menambahkan, silahkan periksa data kembali");
+            }
+        }
+    }
+
+    public function master_tipe_edit($id)
+    {
+        $data = Tipe::find($id);
+        return view('layouts.modal.tipe-modal-edit', ['data' => $data]);
+    }
+            
+    public function master_tipe_update($id, Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'kode_tipe' => ['required', 'unique:tipe,kode_tipe,' . $id],
+            'nama_tipe' => ['required', 'unique:tipe,nama_tipe,' . $id]
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', "Update Gagal, periksa kembali");
+        } else {
+            
+            $data = $request->all();
+            $tipe = Tipe::find($id);
+            $tipe->update($data);
+            
+            if ($tipe) {
+                return redirect()->back()->with('success', "Data berhasil di update");
+            } else {
+                return redirect()->back()->with('error', "Update Gagal, periksa kembali");
+            }
+        }
+    }
+            
+    public function master_tipe_delete(Request $request)
+    {
+        $tipe = Tipe::find($request->id);
+        $delete = $tipe->delete();
         if ($delete) {
             return response()->json(['info' => 'success', 'msg' => 'Berhasil menghapus data']);
         } else {

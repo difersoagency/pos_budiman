@@ -39,22 +39,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- <tr>
-                                <td>HN1223</td>
-                                <td>Honda</td>
-                                <td>20</td>
-                                <td class="tw-px-3">
-                                    <div class="grid grid-cols-2 tw-contents">
-                                        <button class="mr-4 tw-bg-transparent tw-border-none" data-toggle="modal" data-target="#merkModal">
-                                            <i class="fa fa-pen tw-text-prim-blue"></i>
-                                        </button>
-                                        <button data-toggle="modal" data-target="#deleteModal" class="tw-bg-transparent tw-border-none">
-                                            <i class="fa fa-trash tw-text-prim-red"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>                         -->
-
                         </tbody>
 
                     </table>

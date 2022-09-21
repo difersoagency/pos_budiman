@@ -9,6 +9,7 @@ class Jasa extends Model
 {
     use HasFactory;
     protected $table = 'jasa';
+    public $timestamps = false;
     protected $fillable = ['nama_jasa', 'harga'];
 
     public function TransJual()

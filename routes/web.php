@@ -22,10 +22,10 @@ Route::group(['middleware' => 'guest'], function () {
 
 Auth::routes();
 Route::group(['prefix' => '/home'], function () {
-    Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('role:owner,kasir');
-    Route::get('/owner', [App\Http\Controllers\HomeController::class, 'home_owner'])->name('home_owner')->middleware('owner');
-    Route::get('/admin', [App\Http\Controllers\HomeController::class, 'home_admin'])->name('home_admin')->middleware('admin');
-    Route::get('/kasir', [App\Http\Controllers\HomeController::class, 'home_kasir'])->name('home_kasir')->middleware('kasir');
+    // Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('role:owner,kasir');
+    Route::get('/owner', [App\Http\Controllers\HomeController::class, 'home_owner'])->name('home_owner')->middleware('role:owner');
+    Route::get('/admin', [App\Http\Controllers\HomeController::class, 'home_admin'])->name('home_admin')->middleware('role:admin');
+    Route::get('/kasir', [App\Http\Controllers\HomeController::class, 'home_kasir'])->name('home_kasir')->middleware('role:kasir');
     Route::get('/barang', [App\Http\Controllers\HomeController::class, 'master_barang'])->name('barang')->middleware('admin');
     Route::get('/customer', [App\Http\Controllers\HomeController::class, 'master_customer'])->name('customer')->middleware('owner');
     Route::get('/supplier', [App\Http\Controllers\HomeController::class, 'master_supplier'])->name('supplier')->middleware('owner');
@@ -66,6 +66,16 @@ Route::group(['prefix' => '/kota'], function () {
     // Route::delete('/delete', [App\Http\Controllers\HomeController::class, 'master_kota_delete'])->name('kota.delete');
 });
 
+Route::group(['prefix' => '/user'], function () {
+    // Route::post('/store', [App\Http\Controllers\HomeController::class, 'master_kota_store'])->name('kota.store');
+    Route::post('/data', [App\Http\Controllers\HomeController::class, 'master_user_data'])->name('kota.data');
+    // Route::get('/create', [App\Http\Controllers\HomeController::class, 'master_kota_create'])->name('kota.create');
+    // Route::get('/edit/{id}', [App\Http\Controllers\HomeController::class, 'master_kota_edit'])->name('kota.edit');
+    // Route::post('/update/{id}', [App\Http\Controllers\HomeController::class, 'master_kota_update'])->name('kota.update');
+    // Route::delete('/delete', [App\Http\Controllers\HomeController::class, 'master_kota_delete'])->name('kota.delete');
+});
+
+
 
 Route::group(['prefix' => '/merek'], function () {
     Route::post('/store', [App\Http\Controllers\HomeController::class, 'master_merek_store'])->name('merek.store');
@@ -86,21 +96,21 @@ Route::group(['prefix' => '/satuan'], function () {
 });
 
 Route::group(['prefix' => '/tipe'], function () {
-    // Route::post('/store', [App\Http\Controllers\HomeController::class, 'master_tipe_store'])->name('tipe.store');
+    Route::post('/store', [App\Http\Controllers\HomeController::class, 'master_tipe_store'])->name('tipe.store');
     Route::post('/data', [App\Http\Controllers\HomeController::class, 'master_tipe_data'])->name('tipe.data');
-    // Route::get('/create', [App\Http\Controllers\HomeController::class, 'master_tipe_create'])->name('tipe.create');
-    // Route::get('/edit/{id}', [App\Http\Controllers\HomeController::class, 'master_tipe_edit'])->name('tipe.edit');
-    // Route::post('/update/{id}', [App\Http\Controllers\HomeController::class, 'master_tipe_update'])->name('tipe.update');
-    // Route::delete('/delete', [App\Http\Controllers\HomeController::class, 'master_tipe_delete'])->name('tipe.delete');
+    Route::get('/create', [App\Http\Controllers\HomeController::class, 'master_tipe_create'])->name('tipe.create');
+    Route::get('/edit/{id}', [App\Http\Controllers\HomeController::class, 'master_tipe_edit'])->name('tipe.edit');
+    Route::post('/update/{id}', [App\Http\Controllers\HomeController::class, 'master_tipe_update'])->name('tipe.update');
+    Route::delete('/delete', [App\Http\Controllers\HomeController::class, 'master_tipe_delete'])->name('tipe.delete');
 });
 
 Route::group(['prefix' => '/jasa'], function () {
-    // Route::post('/store', [App\Http\Controllers\HomeController::class, 'master_jasa_store'])->name('jasa.store');
+    Route::post('/store', [App\Http\Controllers\HomeController::class, 'master_jasa_store'])->name('jasa.store');
     Route::post('/data', [App\Http\Controllers\HomeController::class, 'master_jasa_data'])->name('jasa.data');
-    // Route::get('/create', [App\Http\Controllers\HomeController::class, 'master_jasa_create'])->name('jasa.create');
-    // Route::get('/edit/{id}', [App\Http\Controllers\HomeController::class, 'master_jasa_edit'])->name('jasa.edit');
-    // Route::post('/update/{id}', [App\Http\Controllers\HomeController::class, 'master_jasa_update'])->name('jasa.update');
-    // Route::delete('/delete', [App\Http\Controllers\HomeController::class, 'master_jasa_delete'])->name('jasa.delete');
+    Route::get('/create', [App\Http\Controllers\HomeController::class, 'master_jasa_create'])->name('jasa.create');
+    Route::get('/edit/{id}', [App\Http\Controllers\HomeController::class, 'master_jasa_edit'])->name('jasa.edit');
+    Route::post('/update/{id}', [App\Http\Controllers\HomeController::class, 'master_jasa_update'])->name('jasa.update');
+    Route::delete('/delete', [App\Http\Controllers\HomeController::class, 'master_jasa_delete'])->name('jasa.delete');
 });
 
 Route::group(['prefix' => '/supplier'], function () {
@@ -119,6 +129,16 @@ Route::group(['prefix' => '/pegawai'], function () {
     Route::get('/edit/{id}', [App\Http\Controllers\HomeController::class, 'master_pegawai_edit'])->name('pegawai.edit');
     Route::post('/update/{id}', [App\Http\Controllers\HomeController::class, 'master_pegawai_update'])->name('pegawai.update');
     Route::delete('/delete', [App\Http\Controllers\HomeController::class, 'master_pegawai_delete'])->name('pegawai.delete');
+});
+
+
+Route::group(['prefix' => '/promo'], function () {
+    Route::post('/data', [App\Http\Controllers\HomeController::class, 'promo_data'])->name('promo.data');
+    Route::get('/create', [App\Http\Controllers\HomeController::class, 'promo_create'])->name('promo.create');
+    Route::post('/store', [App\Http\Controllers\HomeController::class, 'promo_store'])->name('promo.store');
+    Route::get('/edit/{id}', [App\Http\Controllers\HomeController::class, 'promo_edit'])->name('promo.edit');
+    Route::post('/update/{id}', [App\Http\Controllers\HomeController::class, 'promo_update'])->name('promo.update');
+    Route::delete('/delete', [App\Http\Controllers\HomeController::class, 'promo_delete'])->name('promo.delete');
 });
 
 

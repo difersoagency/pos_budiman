@@ -15,7 +15,7 @@
         <div class="form-group tw-mr-3">
             <label for="kota" class="col-form-label">Kota:</label>
             <div class="dropdown tw-mb-4">
-                <select class="custom-select select2" id="kota" name="kota_id">
+                <select class="custom-select select2 kota" id="kota" name="kota_id">
                     @foreach ($kota as $k)
                         <option value="{{ $k->id }}" @if ($k->id == $data->kota_id) selected @endif>
                             {{ $k->nama_kota }}</option>
@@ -28,9 +28,8 @@
             <input type="number" class="form-control" id="no-telp" name="telepon" value="{{ $data->telepon }}">
         </div>
     </div>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn tw-bg-prim-red tw-text-prim-white" data-dismiss="modal">Batal</button>
-        <button type="submit" class="btn tw-bg-prim-blue tw-text-prim-white">Save</button>
+    <div class="row">
+        <div class="col-6"><button type="button" class="btn tw-bg-prim-red tw-text-prim-white" data-dismiss="modal">Batal</button></div>
+        <div class="col-6"><button type="submit" class="btn tw-bg-prim-blue tw-text-prim-white float-right">Save</button></div>
     </div>
 </form>

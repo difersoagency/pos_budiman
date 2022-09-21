@@ -16,8 +16,8 @@
             <div class="form-group tw-mr-3">
               <label for="tipe" class="col-form-label">Gender:</label>
               <div class="dropdown tw-mb-4">
-                <select class="custom-select" id="tipe">
-                  <option selected>Jenis Kelamin</option>
+                <select class="custom-select select2" id="gender" name="gender">
+                  <option>Jenis Kelamin</option>
                   <option value="L" @if($data->gender == "L") selected @endif>Laki-Laki</option>
                   <option value="P" @if($data->gender == "P") selected @endif>Perempuan</option>
                 </select>
@@ -35,12 +35,12 @@
           </div>
 
 
-          <div class="tw-grid tw-grid-cols-1">
+          <!-- <div class="tw-grid tw-grid-cols-1">
             <div class="form-group">
               <label for="email-pegawai" class="col-form-label">Alamat Email:</label>
               <input type="text" class="form-control" id="email-pegawai" name="email" value="{{$data->email}}">
             </div>
-          </div>
+          </div> -->
 
           <div class="row">
             <div class="col-6"><button type="button" class="btn tw-bg-prim-red tw-text-prim-white" data-dismiss="modal">Batal</button></div>
