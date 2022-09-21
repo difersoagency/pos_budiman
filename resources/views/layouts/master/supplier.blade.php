@@ -36,8 +36,8 @@
 
                 <!-- START: Table Mobile View -->
                 <div class="table-barang-mobile tw-mt-5 md:tw-hidden">
-                    <div class="list-barang" data-current-page="1"> 
-                        
+                    <div class="list-barang" data-current-page="1">
+
                     </div>
                 </div>
                 <!-- END: Table Mobile View -->
@@ -106,7 +106,7 @@
                             </tr>
 
                         </tbody>
-    
+
                     </table>
                 </div>
                 <!-- END : Tabel Tablet + Desktop -->
@@ -131,7 +131,7 @@
       </div>
       <div class="modal-body">
       </div>
-      
+
       </div>
     </div>
   </div>
@@ -203,10 +203,11 @@
                 },
                 // return the result
                 success: function(result) {
-                    
+
                     $('#suppliermodal').modal("show");
+                    $('.modal-title').html("Tambah Supplier");
                     $('.modal-body').html(result).show();
-                    $(".kota").select2({
+                    $(".select2").select2({
                         dropdownParent: $("#suppliermodal")
                     });
                 },
@@ -216,19 +217,80 @@
         $(document).on('click', '#btnedit', function(event) {
             event.preventDefault();
             var data_id = $(this).attr('data-id');
-            $.ajax({
-                url: "/supplier/edit/"+data_id,
-                beforeSend: function() {
-                    $('#loader').show();
-                },
-                // return the result
-                success: function(result) {
-                    $('#suppliermodal').modal("show");
-                    $('.modal-body').html(result).show();
-                    $(".kota").select2({
-                        dropdownParent: $("#suppliermodal")
-                    });
-                },
+            Swal.fire({
+                title: 'Ubah Data',
+                text: "Apakah anda ingin merubah data ini?",
+                icon: 'question',
+                showCancelButton: true,
+                cancelButtonColor: '#d33',
+                confirmButtonColor: '#3085d6',
+
+                confirmButtonText: 'Ubah',
+                cancelButtonText: 'Batal',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "/supplier/edit/"+data_id,
+                        beforeSend: function() {
+                            $('#loader').show();
+                        },
+                        // return the result
+                        success: function(result) {
+                            $('#suppliermodal').modal("show");
+                            $('.modal-title').html("Ubah Supplier");
+                            $('.modal-body').html(result).show();
+                            $(".select2").select2({
+                                dropdownParent: $(".modal-body")
+                            });
+                        },
+                    })
+                }
+            })
+        });
+
+        $(document).on('click', '#btndelete', function(event) {
+            event.preventDefault();
+            var data_id = $(this).attr('data-id');
+            var data_nama = $(this).attr('data-nama');
+            Swal.fire({
+                title: 'Hapus Data',
+                text: "Apakah anda ingin menghapus data "+data_nama+"?",
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonColor: 'grey',
+                confirmButtonColor: '#d33',
+
+                confirmButtonText: 'Hapus',
+                cancelButtonText: 'Batal',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                            url: '{{ route("supplier.delete") }}',
+                            type: 'DELETE',
+                            dataType: 'json',
+                            data: {
+                                "id": data_id,
+                                "_method": "DELETE",
+                                _token: "{{ csrf_token() }}"
+                            },
+                            success: function(result) {
+                                if (result.info == "success") {
+                                    Swal.fire({
+                                        title: 'Berhasil',
+                                        text: 'Data berhasil di hapus',
+                                        icon: 'success',
+                                    });
+                                    window.location.reload();
+                                } else {
+                                    Swal.fire({
+                                        title: 'Gagal',
+                                        text: 'Data gagal di hapus',
+                                        icon: 'error',
+                                    });
+                                }
+                            }
+                        });
+                }
             })
         });
     })

@@ -21,8 +21,8 @@
 
                 <!-- START: Table Mobile View -->
                 <div class="table-barang-mobile tw-mt-5 md:tw-hidden">
-                    <div class="list-barang" data-current-page="1"> 
-                        
+                    <div class="list-barang" data-current-page="1">
+
                     </div>
                 </div>
                 <!-- END: Table Mobile View -->
@@ -33,8 +33,8 @@
                         <thead class="tw-bg-prim-blue">
                             <tr>
                                 <th class="tw-text-prim-white">No</th>
+                                <th class="tw-text-prim-white">Kode Merk</th>
                                 <th class="tw-text-prim-white">Nama Merk</th>
-                                <!-- <th class="tw-text-prim-white">Jumlah Barang</th> -->
                                 <th class="tw-text-prim-white">Action</th>
                             </tr>
                         </thead>
@@ -56,7 +56,7 @@
                             </tr>                         -->
 
                         </tbody>
-    
+
                     </table>
                 </div>
                 <!-- END : Tabel Tablet + Desktop -->
@@ -70,7 +70,7 @@
         </div>
     </section>
      <!-- Modal -->
-     <div class="modal fade" id="modalPop" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+     <div class="modal fade" id="merekmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
             <div class="modal-header">
@@ -84,7 +84,7 @@
             </div>
         </div>
      </div>
-    
+
     <!-- END:Modal -->
     <!-- /.content -->
   </div>
@@ -126,9 +126,12 @@
                 orderable: false,
                 searchable: false
             },{
+                data: 'kode_merek',
+
+            },{
                 data: 'nama_merek',
 
-            }, 
+            },
             {
                 data: 'action',
                 orderable: false,
@@ -145,8 +148,10 @@
                 },
                 // return the result
                 success: function(result) {
-                    $('#modalPop').modal("show");
+                    $('#merekmodal').modal("show");
+                    $('.modal-title').html("Tambah Merk");
                     $('.modal-body').html(result).show();
+
                 },
             })
         });
@@ -154,17 +159,77 @@
         $(document).on('click', '#btnedit', function(event) {
             event.preventDefault();
             var data_id = $(this).attr('data-id');
-            $.ajax({
-                url: "/merek/edit/"+data_id,
-                beforeSend: function() {
-                    $('#loader').show();
-                },
-                // return the result
-                success: function(result) {
-                    alert(result);
-                    $('#modalPop').modal("show");
-                    $('.modal-body').html(result).show();
-                },
+            Swal.fire({
+                title: 'Ubah Data',
+                text: "Apakah anda ingin merubah data ini?",
+                icon: 'question',
+                showCancelButton: true,
+                cancelButtonColor: '#d33',
+                confirmButtonColor: '#3085d6',
+
+                confirmButtonText: 'Ubah',
+                cancelButtonText: 'Batal',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "/merek/edit/"+data_id,
+                        beforeSend: function() {
+                            $('#loader').show();
+                        },
+                        // return the result
+                        success: function(result) {
+                            $('#merekmodal').modal("show");
+                            $('.modal-title').html("Ubah Merk");
+                            $('.modal-body').html(result).show();
+                        },
+                    })
+                }
+            })
+        });
+
+        $(document).on('click', '#btndelete', function(event) {
+            event.preventDefault();
+            var data_id = $(this).attr('data-id');
+            var data_nama = $(this).attr('data-nama');
+            Swal.fire({
+                title: 'Hapus Data',
+                text: "Apakah anda ingin menghapus data "+data_nama+"?",
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonColor: 'grey',
+                confirmButtonColor: '#d33',
+
+                confirmButtonText: 'Hapus',
+                cancelButtonText: 'Batal',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                            url: '{{ route("merek.delete") }}',
+                            type: 'DELETE',
+                            dataType: 'json',
+                            data: {
+                                "id": data_id,
+                                "_method": "DELETE",
+                                _token: "{{ csrf_token() }}"
+                            },
+                            success: function(result) {
+                                if (result.info == "success") {
+                                    Swal.fire({
+                                        title: 'Berhasil',
+                                        text: 'Data berhasil di hapus',
+                                        icon: 'success',
+                                    });
+                                    window.location.reload();
+                                } else {
+                                    Swal.fire({
+                                        title: 'Gagal',
+                                        text: 'Data gagal di hapus',
+                                        icon: 'error',
+                                    });
+                                }
+                            }
+                        });
+                }
             })
         });
 

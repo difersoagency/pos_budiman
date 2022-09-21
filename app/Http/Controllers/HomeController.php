@@ -11,6 +11,7 @@ use App\Models\Satuan;
 use App\Models\Jasa;
 use App\Models\Promo;
 use App\Models\Supplier;
+use App\Models\Pegawai;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use PhpParser\Node\Stmt\Return_;
@@ -82,9 +83,9 @@ class HomeController extends Controller
                 <button class="mr-4 tw-bg-transparent tw-border-none" id="btnedit" data-id="' . $data->id . '"   data-nama="' . $data->nama_supplier . '">
                     <i class="fa fa-pen tw-text-prim-blue"></i>
                 </button>
-                <a href="">
+                <button class="mr-4 tw-bg-transparent tw-border-none" id="btndelete" data-id="' . $data->id . '"   data-nama="' . $data->nama_supplier . '">
                     <i class="fa fa-trash tw-text-prim-red"></i>
-                </a>
+                </button>
             </div>';
             })
             ->rawColumns(['action'])
@@ -146,6 +147,17 @@ class HomeController extends Controller
             } else {
                 return redirect()->back()->with('error', "Update Gagal, periksa kembali");
             }
+        }
+    }
+
+    public function master_supplier_delete(Request $request)
+    {
+        $supplier = Supplier::find($request->id);
+        $delete = $supplier->delete();
+        if ($delete) {
+            return response()->json(['info' => 'success', 'msg' => 'Berhasil menghapus data']);
+        } else {
+            return response()->json(['info' => 'error', 'msg' => 'Gagal menghapus data, periksa kembali data']);
         }
     }
 
@@ -414,7 +426,7 @@ class HomeController extends Controller
         }
     }
 
-    
+
 
     public function master_tipe_data(){
         $data = Tipe::all();
@@ -441,17 +453,10 @@ class HomeController extends Controller
             ->addIndexColumn()
             ->addColumn('action', function ($data) {
                 return  '<div class="grid grid-cols-2">
-                <a href="/api/kota/edit/'.$data->id.'" class="mr-4">
-                    <i class="fa fa-pen tw-text-prim-blue"></i>
-                </a>
-                <a href="/api/kota/delete/'.$data->id.'">
-                    <i class="fa fa-trash tw-text-prim-red"></i>
-                </a>
-
-                <button id="btnedit" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '"   data-nama="' . $data->nama_barang . '" >
+                <button id="btnedit" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->nama_barang . '" >
                                                         <i class="fa fa-pen tw-text-prim-blue"></i>
                                                     </button>
-                                                    <button id="btndelete"       data-id="' . $data->id . '"   data-nama="' . $data->nama_barang . '"
+                                                    <button id="btndelete" data-id="' . $data->id . '" data-nama="' . $data->nama_barang . '"
                                                         class="tw-bg-transparent tw-border-none">
                                                         <i class="fa fa-trash tw-text-prim-red"></i>
                                                     </button>
@@ -499,7 +504,7 @@ class HomeController extends Controller
             ->make(true);
 
     }
-    
+
     public function master_merek_create()
     {
         return view('layouts.modal.merk-modal-create');
@@ -552,6 +557,17 @@ class HomeController extends Controller
             } else {
                 return redirect()->back()->with('error', "Update Gagal, periksa kembali");
             }
+        }
+    }
+
+    public function master_merek_delete(Request $request)
+    {
+        $merek = Merek::find($request->id);
+        $delete = $merek->delete();
+        if ($delete) {
+            return response()->json(['info' => 'success', 'msg' => 'Berhasil menghapus data']);
+        } else {
+            return response()->json(['info' => 'error', 'msg' => 'Gagal menghapus data, periksa kembali data']);
         }
     }
 
@@ -626,6 +642,104 @@ class HomeController extends Controller
             } else {
                 return redirect()->back()->with('error', "Update Gagal, periksa kembali");
             }
+        }
+    }
+
+    public function master_satuan_delete(Request $request)
+    {
+        $satuan = Satuan::find($request->id);
+        $delete = $satuan->delete();
+        if ($delete) {
+            return response()->json(['info' => 'success', 'msg' => 'Berhasil menghapus data']);
+        } else {
+            return response()->json(['info' => 'error', 'msg' => 'Gagal menghapus data, periksa kembali data']);
+        }
+    }
+
+
+
+    public function master_pegawai_data(){
+        $data = Pegawai::all();
+        return datatables()->of($data)
+            ->addIndexColumn()
+            ->addColumn('action', function ($data) {
+                return  '<div class="grid grid-cols-2">
+                <button class="mr-4 tw-bg-transparent tw-border-none" id="btnedit" data-id="' . $data->id . '"   data-nama="' . $data->nama_pegawai . '">
+                    <i class="fa fa-pen tw-text-prim-blue"></i>
+                </button>
+                <button id="btndelete" class="tw-bg-transparent tw-border-none" data-id="' . $data->id . '"   data-nama="' . $data->nama_pegawai . '">
+                    <i class="fa fa-trash tw-text-prim-red"></i>
+                </button>
+            </div>';
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+
+    }
+
+    public function master_pegawai_create()
+    {
+        return view('layouts.modal.pegawai-modal-create');
+    }
+
+    public function master_pegawai_store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'kode_pegawai' => ['required', 'unique:pegawai,kode_pegawai'],
+            'nama_pegawai' => ['required', 'unique:pegawai,nama_pegawai'],
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', "Update Gagal, periksa kembali");
+        } else {
+            $c = Pegawai::create([
+                'kode_pegawai' => $request->kode_pegawai,
+                'nama_pegawai' => $request->nama_pegawai,
+            ]);
+
+            if ($c) {
+                return redirect()->back()->with('success', "Data berhasil di tambah");
+            } else {
+                return redirect()->back()->with('error', "Update Gagal, periksa kembali");
+            }
+        }
+    }
+
+    public function master_pegawai_edit($id)
+    {
+        $data = Pegawai::find($id);
+        return view('layouts.modal.pegawai-modal-edit', ['data' => $data]);
+    }
+
+    public function master_pegawai_update($id, Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'kode_pegawai' => ['required', 'unique:pegawai,kode_pegawai,' . $id],
+            'nama_pegawai' => ['required', 'unique:pegawai,nama_pegawai,' . $id]
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', "Update Gagal, periksa kembali");
+        } else {
+
+            $data = $request->all();
+            $pegawai = Pegawai::find($id);
+            $pegawai->update($data);
+
+            if ($pegawai) {
+                return redirect()->back()->with('success', "Data berhasil di update");
+            } else {
+                return redirect()->back()->with('error', "Update Gagal, periksa kembali");
+            }
+        }
+    }
+
+    public function master_pegawai_delete(Request $request)
+    {
+        $pegawai = Pegawai::find($request->id);
+        $delete = $pegawai->delete();
+        if ($delete) {
+            return response()->json(['info' => 'success', 'msg' => 'Berhasil menghapus data']);
+        } else {
+            return response()->json(['info' => 'error', 'msg' => 'Gagal menghapus data, periksa kembali data']);
         }
     }
 }

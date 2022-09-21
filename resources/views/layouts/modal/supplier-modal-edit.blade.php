@@ -15,7 +15,7 @@
         <div class="form-group tw-mr-3">
             <label for="kota" class="col-form-label">Kota:</label>
             <div class="dropdown tw-mb-4">
-                <select class="custom-select select2 kota" id="kota" name="kota_id">
+                <select class="custom-select select2" id="kota" name="kota_id">
                     @foreach ($kota as $k)
                         <option value="{{ $k->id }}" @if ($k->id == $data->kota_id) selected @endif>
                             {{ $k->nama_kota }}</option>
