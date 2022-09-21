@@ -9,6 +9,7 @@ class Supplier extends Model
 {
     use HasFactory;
     protected $table = 'supplier';
+    public $timestamps = false;
     protected $fillable = ['kota_id', 'nama_supplier', 'alamat', 'telepon'];
 
     public function Kota()

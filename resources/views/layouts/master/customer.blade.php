@@ -289,3 +289,47 @@
     </script>
 @stop
 @endsection
+
+<!-- @section('script')
+<script>
+    $(document).ready(function(){
+        $('#showtable').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                'url': '/customer',
+                'method': 'GET',
+                'headers': {
+                    'X-CSRF-TOKEN': '{{csrf_token()}}'
+                }
+            },
+            language: {
+                processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
+            },
+            columns: [{
+                data: 'DT_RowIndex',
+                className: 'nowrap-text align-center',
+                orderable: false,
+                searchable: false
+            },{
+                data: 'nama_customer',
+
+            },{
+                data: 'kota_id',
+
+            },{
+                data: 'alamat',
+
+            },
+            {
+                data: 'telepon',
+
+            },{
+                data: 'action',
+                orderable: false,
+                searchable: false
+            } ]
+        });
+    })
+</script>
+@endsection -->
