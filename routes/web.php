@@ -22,10 +22,10 @@ Route::group(['middleware' => 'guest'], function () {
 
 Auth::routes();
 Route::group(['prefix' => '/home'], function () {
-    Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('role:owner,kasir');
-    Route::get('/owner', [App\Http\Controllers\HomeController::class, 'home_owner'])->name('home_owner')->middleware('owner');
-    Route::get('/admin', [App\Http\Controllers\HomeController::class, 'home_admin'])->name('home_admin')->middleware('admin');
-    Route::get('/kasir', [App\Http\Controllers\HomeController::class, 'home_kasir'])->name('home_kasir')->middleware('kasir');
+    // Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('role:owner,kasir');
+    Route::get('/owner', [App\Http\Controllers\HomeController::class, 'home_owner'])->name('home_owner')->middleware('role:owner');
+    Route::get('/admin', [App\Http\Controllers\HomeController::class, 'home_admin'])->name('home_admin')->middleware('role:admin');
+    Route::get('/kasir', [App\Http\Controllers\HomeController::class, 'home_kasir'])->name('home_kasir')->middleware('role:kasir');
     Route::get('/barang', [App\Http\Controllers\HomeController::class, 'master_barang'])->name('barang')->middleware('admin');
     Route::get('/customer', [App\Http\Controllers\HomeController::class, 'master_customer'])->name('customer')->middleware('owner');
     Route::get('/supplier', [App\Http\Controllers\HomeController::class, 'master_supplier'])->name('supplier')->middleware('owner');
@@ -54,6 +54,15 @@ Route::group(['prefix' => '/barang'], function () {
     Route::get('/edit/{id}', [App\Http\Controllers\HomeController::class, 'master_barang_edit'])->name('barang.edit');
     Route::post('/update/{id}', [App\Http\Controllers\HomeController::class, 'master_barang_update'])->name('barang.update');
     Route::delete('/delete', [App\Http\Controllers\HomeController::class, 'master_barang_delete'])->name('barang.delete');
+});
+
+Route::group(['prefix' => '/promo'], function () {
+    Route::post('/data', [App\Http\Controllers\HomeController::class, 'promo_data'])->name('promo.data');
+    Route::get('/create', [App\Http\Controllers\HomeController::class, 'promo_create'])->name('promo.create');
+    Route::post('/store', [App\Http\Controllers\HomeController::class, 'promo_store'])->name('promo.store');
+    Route::get('/edit/{id}', [App\Http\Controllers\HomeController::class, 'promo_edit'])->name('promo.edit');
+    Route::post('/update/{id}', [App\Http\Controllers\HomeController::class, 'promo_update'])->name('promo.update');
+    Route::delete('/delete', [App\Http\Controllers\HomeController::class, 'promo_delete'])->name('promo.delete');
 });
 
 Route::get('/kota', [App\Http\Controllers\MasterController::class, 'data_kota'])->name('data.kota');

@@ -45,16 +45,16 @@
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                 data-accordion="false">
                 <li class="nav-item">
-                    <a href="/home" class="nav-link ">
+                    <a href="/home/{{ Auth::user()->LevelUser->nama_level }}" class="nav-link ">
                         <i class="nav-icon fa fa-home tw-text-prim-white"></i>
                         <p class="tw-text-prim-red tw-font-bold">
                             Dashboard
                         </p>
                     </a>
                 </li>
-                @if (in_array(Auth::user()->LevelUser->nama_level, ['owner', 'admin']))
+                @if (in_array(Auth::user()->LevelUser->nama_level, ['admin']))
                     <li class="nav-item">
-                        <a href="{{ route('barang') }}" class="nav-link ">
+                        <a href="{{ route('barang') }}" class="nav-link">
                             <i class="nav-icon fa fa-home tw-text-prim-white"></i>
                             <p class="tw-text-prim-red tw-font-bold">
                                 Barang

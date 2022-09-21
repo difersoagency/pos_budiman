@@ -30,4 +30,8 @@ class Barang extends Model
     {
         return $this->hasMany(Koreksi::class);
     }
+    public function Promo()
+    {
+        return $this->hasMany(Promo::class);
+    }
 }
