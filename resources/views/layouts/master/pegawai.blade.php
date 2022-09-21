@@ -13,7 +13,7 @@
                 </div>
                 <div class="tw-text-right tw-items-center tw-grid tw-grid-cols-1 tw-mx-auto md:tw-mx-0 md:tw-ml-auto tw-w-full md:tw-w-fit tw-mt-4 md:tw-mt-0">
                     <div class="tw-w-full md:tw-w-fit md:tw-ml-auto">
-                        <button class="btn tw-text-prim-white tw-bg-prim-red tw-text-sm tw-w-full md:tw-w-fit" type="button" id="addItemButton" data-toggle="modal" data-target="#pegawaiModal">
+                        <button class="btn tw-text-prim-white tw-bg-prim-red tw-text-sm tw-w-full md:tw-w-fit" type="button" id="tambah_pegawai">
                             + Tambah Pegawai
                         </button>
                     </div>
@@ -29,10 +29,11 @@
 
                 <!-- START: Table Tablet + Desktop -->
                 <div class="table-barang tw-mt-5 tw-col-span-2" data-current-page="1">
-                    <table id="example" class="table table-bordered responsive nowrap" style="width:100%">
+                    <table id="showtable" class="table table-bordered responsive nowrap" style="width:100%">
                         <thead class="tw-bg-prim-blue">
                             <tr>
-                                <th class="tw-text-prim-white">No. Pegawai</th>
+                                <th class="tw-text-prim-white">No.</th>
+                                <th class="tw-text-prim-white">Kode Pegawai</th>
                                 <th class="tw-text-prim-white">Nama</th>
                                 <th class="tw-text-prim-white">Gender</th>
                                 <th class="tw-text-prim-white">Telepon</th>
@@ -75,7 +76,7 @@
     </section>
 </div>
     <!-- Modal -->
-    <div class="modal fade" id="suppliermodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="pegawaimodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
@@ -130,17 +131,20 @@
                       orderable: false,
                       searchable: false
                   },{
+                      data: 'kode_pegawai',
+
+                  },{
                       data: 'nama_pegawai',
 
                   },{
-                      data: 'kota_id',
+                      data: 'gender',
 
                   },{
-                      data: 'alamat',
+                      data: 'telepon',
 
                   },
                   {
-                      data: 'telepon',
+                      data: 'email',
 
                   },{
                       data: 'action',
@@ -150,6 +154,7 @@
               });
 
               $(document).on('click', '#tambah_pegawai', function(event) {
+                alert("tes");
                   event.preventDefault();
                   $.ajax({
                       url: "{{ route('pegawai.create') }}",

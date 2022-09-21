@@ -1,14 +1,6 @@
-<div class="modal fade" id="modalPop" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Form Pegawai</h5>
-        <button type="button" class="close tw-text-prim-red" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form>
+
+        <form action="{{route('pegawai.store')}}" method="POST">
+          @csrf
           <div class="tw-grid tw-grid-cols-2">
             <div class="form-group tw-mr-3">
               <label for="no-pegawai" class="col-form-label">Nomor Pegawai:</label>
@@ -19,15 +11,15 @@
               <input type="text" class="form-control" id="nama-pegawai">
             </div>
           </div>
-        
+
           <div class="tw-grid tw-grid-cols-2">
             <div class="form-group tw-mr-3">
               <label for="tipe" class="col-form-label">Gender:</label>
               <div class="dropdown tw-mb-4">
                 <select class="custom-select" id="tipe">
                   <option selected>Jenis Kelamin</option>
-                  <option value="1">Laki-Laki</option>
-                  <option value="2">Perempuan</option>
+                  <option value="L">Laki-Laki</option>
+                  <option value="P">Perempuan</option>
                 </select>
               </div>
             </div>
@@ -41,22 +33,18 @@
               </div>
             </div>
           </div>
-          
-          
+
+
           <div class="tw-grid tw-grid-cols-1">
             <div class="form-group">
               <label for="email-pegawai" class="col-form-label">Alamat Email:</label>
               <input type="text" class="form-control" id="email-pegawai">
             </div>
           </div>
-          
-     
+
+          <div class="row">
+            <div class="col-6"><button type="button" class="btn tw-bg-prim-red tw-text-prim-white" data-dismiss="modal">Batal</button></div>
+            <div class="col-6"><button type="submit" class="btn tw-bg-prim-blue tw-text-prim-white float-right">Save</button></div>
+          </div>
+
         </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn tw-bg-prim-red tw-text-prim-white" data-dismiss="modal">Batal</button>
-        <button type="button" class="btn tw-bg-prim-blue tw-text-prim-white">Save</button>
-      </div>
-    </div>
-  </div>
-</div>

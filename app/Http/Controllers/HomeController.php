@@ -694,6 +694,9 @@ class HomeController extends Controller
             $c = Pegawai::create([
                 'kode_pegawai' => $request->kode_pegawai,
                 'nama_pegawai' => $request->nama_pegawai,
+                'gender' => $request->gender,
+                'email' => $request->email,
+                'telepon' => $request->telepon,
             ]);
 
             if ($c) {
