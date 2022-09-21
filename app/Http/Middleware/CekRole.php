@@ -35,7 +35,7 @@ class CekRole
             return redirect()->route('home_owner');
         } else if (Auth::check() && Auth::user()->level_user_id == 2) {
             return redirect()->route('home_admin');
-        } elseif (Auth::check() && Auth::user()->level_user_id == 3) {
+        } else if (Auth::check() && Auth::user()->level_user_id == 3) {
             return redirect()->route('home_kasir');
         }
     }

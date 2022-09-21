@@ -6,6 +6,7 @@ use App\Models\Barang;
 use App\Models\Customer;
 use App\Models\Kota;
 use App\Models\Merek;
+use App\Models\Promo;
 use App\Models\Tipe;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -321,6 +322,127 @@ class HomeController extends Controller
     public function customer_delete(Request $request)
     {
         $b = Customer::find($request->id);
+        $delete = $b->delete();
+        if ($delete) {
+            return response()->json(['info' => 'success', 'msg' => 'Data berhasil di hapus']);
+        } else {
+            return response()->json(['info' => 'error', 'msg' => 'Hapus Gagal, periksa kembali']);
+        }
+    }
+
+    public function promo_create()
+    {
+        $data = Barang::all();
+        return view('layouts.modal.promo-modal-create', ['data' => $data]);
+    }
+
+    public function promo_edit($id)
+    {
+        $data = Promo::find($id);
+        $barang = Barang::all();
+        return view('layouts.modal.promo-modal-edit', ['data' => $data, 'barang' => $barang]);
+    }
+
+    public function promo_store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'kode_promo' => ['required'],
+            'tgl_mulai' => ['required'],
+            'tgl_selesai' => ['required'],
+            'barang_id' => ['required'],
+            'qty_sk' => ['required'],
+            'disc' => ['required'],
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', "Update Gagal, periksa kembali");
+        } else {
+            $c = Promo::create([
+                'kode_promo' => $request->kode_promo,
+                'tgl_mulai' => $request->tgl_mulai,
+                'tgl_selesai' => $request->tgl_selesai,
+                'nama_promo' => $request->nama_promo,
+                'barang_id' => $request->barang_id,
+                'qty_sk' => $request->qty_sk,
+                'disc' => $request->disc,
+            ]);
+
+            if ($c) {
+                return redirect()->back()->with('success', "Data berhasil di tambah");
+            } else {
+                return redirect()->back()->with('error', "Update Gagal, periksa kembali");
+            }
+        }
+    }
+    public function promo_data()
+    {
+        $data = Promo::with('Barang');
+        return datatables()->of($data)
+            ->addIndexColumn()
+            ->addColumn('kode_promo', function ($data) {
+                return $data->kode_promo;
+            })
+            ->addColumn('tgl_mulai', function ($data) {
+                return $data->tgl_mulai;
+            })
+            ->addColumn('tgl_selesai', function ($data) {
+                return $data->tgl_selesai;
+            })
+            ->addColumn('nama_promo', function ($data) {
+                return $data->nama_promo;
+            })
+            ->addColumn('barang', function ($data) {
+                return $data->Barang->nama_barang;
+            })
+            ->addColumn('qty', function ($data) {
+                return $data->qty_sk;
+            })
+            ->addColumn('disc', function ($data) {
+                return $data->disc . ' %';
+            })
+            ->addColumn('button', function ($data) {
+                return ' <div class="grid grid-cols-2 tw-contents">
+                                                    <button id="btnedit" class="mr-4 tw-bg-transparent tw-border-none"
+                                                      data-id="' . $data->id . '"   data-nama="' . $data->nama_barang . '" >
+                                                        <i class="fa fa-pen tw-text-prim-blue"></i>
+                                                    </button>
+                                                    <button id="btndelete"       data-id="' . $data->id . '"   data-nama="' . $data->nama_barang . '"
+                                                        class="tw-bg-transparent tw-border-none">
+                                                        <i class="fa fa-trash tw-text-prim-red"></i>
+                                                    </button>
+                                                </div>';
+            })
+            ->rawColumns(['button'])
+            ->make(true);
+    }
+
+    public function promo_update(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'kode_promo' => ['required', 'unique:promo,kode_promo,' . $id],
+            'tgl_mulai' => ['required'],
+            'tgl_selesai' => ['required'],
+            'barang_id' => ['required'],
+            'qty_sk' => ['required'],
+            'disc' => ['required'],
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', "Update Gagal, periksa kembali");
+        } else {
+
+            $data = $request->all();
+            $promo = Promo::find($id);
+            $promo->update($data);
+
+            if ($promo) {
+                return redirect()->back()->with('success', "Data berhasil di update");
+            } else {
+                return redirect()->back()->with('error', "Update Gagal, periksa kembali");
+            }
+        }
+    }
+    public function promo_delete(Request $request)
+    {
+        $b = Promo::find($request->id);
         $delete = $b->delete();
         if ($delete) {
             return response()->json(['info' => 'success', 'msg' => 'Data berhasil di hapus']);
