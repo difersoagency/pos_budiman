@@ -10,7 +10,11 @@ $(document).ready(function() {
 });
 $(document).ready(function() {
   $(".input-select2").select2({
-          dropdownParent: $("#modalPop")
+    dropdownParent: $("#modalPop")
+  });
+
+  $(".kota").select2({
+    dropdownParent: $("#suppliermodal")
   });
 });
 

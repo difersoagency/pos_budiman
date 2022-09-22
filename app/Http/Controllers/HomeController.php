@@ -12,8 +12,10 @@ use App\Models\Satuan;
 use App\Models\Jasa;
 use App\Models\Supplier;
 use App\Models\Pegawai;
+use App\Models\LevelUser;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use PhpParser\Node\Stmt\Return_;
 
@@ -96,8 +98,85 @@ class HomeController extends Controller
             })
             ->rawColumns(['action'])
             ->make(true);
-
     }
+
+    public function master_user_create()
+    {
+        $pegawai = Pegawai::doesntHave('user')->get();
+        $level_user = LevelUser::all();
+        return view('layouts.modal.user-modal-create', ['pegawai' => $pegawai, 'level_user' => $level_user]);
+    }
+
+    public function master_user_store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'username' => ['required', 'unique:user,username'],
+        ]);
+        if ($validator->fails() || $request->password === $request->conf_pass) {
+            return redirect()->back()->with('error', "Update Gagal, periksa kembali");
+        } else {
+            $c = User::create([
+                'username' => $request->username_for ,
+                'pegawai_id' => $request->pegawai_id,
+                'level_user_id' => $request->level_user_id,
+                'password' =>  Hash::make($request->password_form),
+                'email' => $request->email_form
+            ]);
+
+            if ($c) {
+                return redirect()->back()->with('success', "Data berhasil di tambah");
+            } else {
+                return redirect()->back()->with('error', "Update Gagal, periksa kembali");
+            }
+        }
+    }
+
+    public function master_user_edit($id)
+    {
+        $user = User::find($id);
+        $level_user = LevelUser::all();
+        return view('layouts.modal.user-modal-edit', ['data' => $user, 'level_user' => $level_user]);
+    }
+
+    public function master_user_update(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'username' => ['required', 'unique:user,username,' . $id],
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', "Update Gagal, periksa kembali");
+        } else {
+
+            $data = $request->all();
+            $user = User::find($id);
+            $user->username = $request->username;
+            $user->level_user_id = $request->level_user_id;
+            // if (!Hash::check($request->password, $user->password)) {
+                
+            // }
+            $user->email = $request->email;
+            $u = $user->save();
+
+            if ($u) {
+                return redirect()->back()->with('success', "Data berhasil di update");
+            } else {
+                return redirect()->back()->with('error', "Update Gagal, periksa kembali");
+            }
+        }
+    }
+
+    public function master_user_delete(Request $request)
+    {
+        $b = User::find($request->id);
+        $delete = $b->delete();
+        if ($delete) {
+            return response()->json(['info' => 'success', 'msg' => 'Data berhasil di hapus']);
+        } else {
+            return response()->json(['info' => 'error', 'msg' => 'Hapus Gagal, periksa kembali']);
+        }
+    }
+
+    
 
     //SUPPLIER
     public function master_supplier_data(){
