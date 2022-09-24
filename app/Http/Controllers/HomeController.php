@@ -220,6 +220,11 @@ class HomeController extends Controller
         return view('layouts.master.satuan');
     }
 
+    public function archive_master()
+    {
+        return view('layouts.archive.archive_master');
+    }
+
     //Store
     public function master_barang_store(Request $request)
     {

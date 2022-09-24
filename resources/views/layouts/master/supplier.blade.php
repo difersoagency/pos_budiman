@@ -10,13 +10,12 @@
                     <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-items-end tw-mb-4">
                         <!-- Dropdown -->
                         <div class="dropdown tw-mb-7 md:tw-mb-0 tw-w-2/4">
-                                <select class="custom-select select-2 tw-bg-prim-blue tw-text-prim-white" id="kota_id" placeholder="Pilih Data"
-                                    name="state">
-                                    @foreach ($kotas as $kotas)
-                                        <option value="{{ $kotas->id }}">{{ Str::ucfirst($kotas->nama_kota) }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+                            <select class="custom-select select-2 tw-bg-prim-blue tw-text-prim-white" id="kota_id" placeholder="Pilih Data" name="state">
+                                @foreach ($kotas as $kotas)
+                                <option value="{{ $kotas->id }}">{{ Str::ucfirst($kotas->nama_kota) }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                         <!-- End Dropdown  -->
 
                     </div>
@@ -59,9 +58,9 @@
                         </div>
                     </div>
                 </div>
-            <!-- /.col-md-6 -->
+                <!-- /.col-md-6 -->
             </div>
-          <!-- /.row -->
+            <!-- /.row -->
         </div>
     </section>
     <!-- /.content -->
@@ -71,7 +70,7 @@
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalPop">Form Satuan</h5>
                     <button type="button" class="close tw-text-prim-red" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                        <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
@@ -86,21 +85,21 @@
 @section('script')
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    @if (Session::has('error'))
-            Swal.fire({
-                title: 'Gagal',
-                text: "{{ Session::get('error') }}",
-                icon: 'error',
-            });
-        @endif
-        @if (Session::has('success'))
-            Swal.fire({
-                title: 'Berhasil',
-                text: "{{ Session::get('success') }}",
-                icon: 'success',
-            });
-        @endif
-    $(document).ready(function(){
+    @if(Session::has('error'))
+    Swal.fire({
+        title: 'Gagal',
+        text: "{{ Session::get('error') }}",
+        icon: 'error',
+    });
+    @endif
+    @if(Session::has('success'))
+    Swal.fire({
+        title: 'Berhasil',
+        text: "{{ Session::get('success') }}",
+        icon: 'success',
+    });
+    @endif
+    $(document).ready(function() {
         $(".select-2").select2();
         $('#showtable').DataTable({
             destroy: true,
@@ -117,28 +116,29 @@
                 processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
             },
             columns: [{
-                data: 'DT_RowIndex',
-                className: 'nowrap-text align-center',
-                orderable: false,
-                searchable: false
-            },{
-                data: 'nama_supplier',
+                    data: 'DT_RowIndex',
+                    className: 'nowrap-text align-center',
+                    orderable: false,
+                    searchable: false
+                }, {
+                    data: 'nama_supplier',
 
-            },{
-                data: 'kota_id',
+                }, {
+                    data: 'kota_id',
 
-            },{
-                data: 'alamat',
+                }, {
+                    data: 'alamat',
 
-            },
-            {
-                data: 'telepon',
+                },
+                {
+                    data: 'telepon',
 
-            },{
-                data: 'action',
-                orderable: false,
-                searchable: false
-            } ]
+                }, {
+                    data: 'action',
+                    orderable: false,
+                    searchable: false
+                }
+            ]
         });
 
         $(document).on('click', '#tambah_supplier', function(event) {
@@ -177,7 +177,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: "/supplier/edit/"+data_id,
+                        url: "/supplier/edit/" + data_id,
                         beforeSend: function() {
                             $('#loader').show();
                         },
@@ -187,7 +187,7 @@
                             $('.modal-title').html("Ubah Supplier");
                             $(".kota").select2();
                             $('.modal-body').html(result).show();
-                            
+
                         },
                     })
                 }
@@ -200,7 +200,7 @@
             var data_nama = $(this).attr('data-nama');
             Swal.fire({
                 title: 'Hapus Data',
-                text: "Apakah anda ingin menghapus data "+data_nama+"?",
+                text: "Apakah anda ingin menghapus data " + data_nama + "?",
                 icon: 'warning',
                 showCancelButton: true,
                 cancelButtonColor: 'grey',
@@ -211,31 +211,31 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                            url: '{{ route("supplier.delete") }}',
-                            type: 'DELETE',
-                            dataType: 'json',
-                            data: {
-                                "id": data_id,
-                                "_method": "DELETE",
-                                _token: "{{ csrf_token() }}"
-                            },
-                            success: function(result) {
-                                if (result.info == "success") {
-                                    Swal.fire({
-                                        title: 'Berhasil',
-                                        text: 'Data berhasil di hapus',
-                                        icon: 'success',
-                                    });
-                                    window.location.reload();
-                                } else {
-                                    Swal.fire({
-                                        title: 'Gagal',
-                                        text: 'Data gagal di hapus',
-                                        icon: 'error',
-                                    });
-                                }
+                        url: '{{ route("supplier.delete") }}',
+                        type: 'DELETE',
+                        dataType: 'json',
+                        data: {
+                            "id": data_id,
+                            "_method": "DELETE",
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(result) {
+                            if (result.info == "success") {
+                                Swal.fire({
+                                    title: 'Berhasil',
+                                    text: 'Data berhasil di hapus',
+                                    icon: 'success',
+                                });
+                                window.location.reload();
+                            } else {
+                                Swal.fire({
+                                    title: 'Gagal',
+                                    text: 'Data gagal di hapus',
+                                    icon: 'error',
+                                });
                             }
-                        });
+                        }
+                    });
                 }
             })
         });
