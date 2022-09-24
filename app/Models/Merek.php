@@ -9,7 +9,8 @@ class Merek extends Model
 {
     use HasFactory;
     protected $table = 'merek';
-    protected $fillable = ['nama_merek'];
+    public $timestamps = false;
+    protected $fillable = ['kode_merek', 'nama_merek'];
 
     public function Barang()
     {

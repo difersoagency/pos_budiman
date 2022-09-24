@@ -42,8 +42,6 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
-
-
     }
 
     protected function sendFailedLoginResponse(Request $request)
@@ -78,14 +76,10 @@ class LoginController extends Controller
     {
         if (auth()->user()->level_user_id == '1') {
             return redirect()->route('home_owner');
-        }
-        else if (auth()->user()->level_user_id == '2') {
+        } else if (auth()->user()->level_user_id == '2') {
             return redirect()->route('home_admin');
-        }
-        else if (auth()->user()->level_user_id == '3') {
+        } else if (auth()->user()->level_user_id == '3') {
             return redirect()->route('home_kasir');
         }
-
     }
-
 }

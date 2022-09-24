@@ -23,53 +23,73 @@
                         <div class="table-barang-mobile tw-mt-5 md:tw-hidden">
                             <div class="list-barang" data-current-page="1">
 
-                            </div>
-                        </div>
-                        <!-- END: Table Mobile View -->
+                                <!-- START: Table Tablet + Desktop -->
+                                <div class="table-barang tw-mt-5 tw-col-span-2" data-current-page="1">
+                                    <table id="showtable" class="table table-bordered responsive nowrap" style="width:100%">
+                                        <thead class="tw-bg-prim-blue">
+                                            <tr>
+                                                <th class="tw-text-prim-white">Kode Akun</th>
+                                                <th class="tw-text-prim-white">Nama Pegawai</th>
+                                                <th class="tw-text-prim-white">Role</th>
+                                                <th class="tw-text-prim-white">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
 
-                        <!-- START: Table Tablet + Desktop -->
-                        <div class="table-barang tw-mt-5 tw-col-span-2" data-current-page="1">
-                            <table id="example" class="table table-bordered responsive nowrap" style="width:100%">
-                                <thead class="tw-bg-prim-blue">
-                                    <tr>
-                                        <th class="tw-text-prim-white">Nama Pegawai</th>
-                                        <th class="tw-text-prim-white">Role</th>
-                                        <th class="tw-text-prim-white">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Baktinudin</td>
-                                        <td>Owner</td>
-                                        <td class="tw-px-3">
-                                            <div class="grid grid-cols-2 tw-contents">
-                                                <button class="mr-4 tw-bg-transparent tw-border-none" data-toggle="modal" data-target="#modalPop">
-                                                    <i class="fa fa-pen tw-text-prim-blue"></i>
-                                                </button>
-                                                <button data-toggle="modal" data-target="#deleteModal" class="mr-4 tw-bg-transparent tw-border-none">
-                                                    <i class="fa fa-trash tw-text-prim-red"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                    </table>
+                                </div>
+                                <!-- END : Tabel Tablet + Desktop -->
 
 
                                 </tbody>
 
-                            </table>
-                        </div>
-                        <!-- END : Tabel Tablet + Desktop -->
+                                </table>
+                            </div>
+                            <!-- END : Tabel Tablet + Desktop -->
 
+                        </div>
                     </div>
+                    <!-- /.col-md-6 -->
                 </div>
-                <!-- /.col-md-6 -->
+                <!-- /.row -->
             </div>
-            <!-- /.row -->
-        </div>
     </section>
     <!-- /.content -->
-    <!-- Modal -->
-    @include('layouts.modal.user-modal')
-    <!-- END:Modal -->
 </div>
 @endsection
+
+@section('script')
+<script>
+    $(document).ready(function() {
+        $('#showtable').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                'url': '/user/data',
+                'method': 'POST',
+                'headers': {
+                    'X-CSRF-TOKEN': '{{csrf_token()}}'
+                }
+            },
+            language: {
+                processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
+            },
+            columns: [{
+                data: 'username',
+
+            }, {
+                data: 'nama_user',
+
+            }, {
+                data: 'level_user_id',
+
+            }, {
+                data: 'action',
+                orderable: false,
+                searchable: false
+            }]
+        });
+    })
+</script>
+@stop
