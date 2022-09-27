@@ -2,8 +2,8 @@
     @csrf
     <div class="tw-grid tw-grid-cols-2">
     <div class="form-group tw-mr-3">
-        <label for="pegawai" class="col-form-label">Pegawai:</label>
-        <input type="text" class="form-control" id="username" name="username_form" readonly="true" value="{{$data->Pegawai->nama}}">
+        <label for="pegawai_id" class="col-form-label">Pegawai:</label>
+        <input type="text" class="form-control" id="pegawai_id" name="pegawai_id" readonly="true" value="{{$data->Pegawai->nama_pegawai}}">
     </div>
 
     <div class="form-group">

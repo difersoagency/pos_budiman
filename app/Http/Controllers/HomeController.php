@@ -110,13 +110,14 @@ class HomeController extends Controller
     public function master_user_store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'username' => ['required', 'unique:user,username'],
+            'username_form' => ['required', 'unique:user,username'],
+            'email_form' => ['required', 'unique:user,email'],
         ]);
-        if ($validator->fails() || $request->password === $request->conf_pass) {
-            return redirect()->back()->with('error', "Update Gagal, periksa kembali");
+        if ($validator->fails() || $request->password_form !== $request->conf_pass) {
+            return redirect()->back()->with('error', "Tambah Gagal, periksa kembali");
         } else {
             $c = User::create([
-                'username' => $request->username_for ,
+                'username' => $request->username_form ,
                 'pegawai_id' => $request->pegawai_id,
                 'level_user_id' => $request->level_user_id,
                 'password' =>  Hash::make($request->password_form),
@@ -126,14 +127,14 @@ class HomeController extends Controller
             if ($c) {
                 return redirect()->back()->with('success', "Data berhasil di tambah");
             } else {
-                return redirect()->back()->with('error', "Update Gagal, periksa kembali");
+                return redirect()->back()->with('error', "Gagal Menambah, periksa kembali");
             }
         }
     }
 
     public function master_user_edit($id)
     {
-        $user = User::find($id);
+        $user = User::with('Pegawai')->where('id',$id)->first();
         $level_user = LevelUser::all();
         return view('layouts.modal.user-modal-edit', ['data' => $user, 'level_user' => $level_user]);
     }
@@ -141,20 +142,20 @@ class HomeController extends Controller
     public function master_user_update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'username' => ['required', 'unique:user,username,' . $id],
+            'username_form' => ['required', 'unique:user,username,' . $id],
+            'email_form' => ['required', 'unique:user,email,' . $id],
         ]);
         if ($validator->fails()) {
             return redirect()->back()->with('error', "Update Gagal, periksa kembali");
         } else {
-
             $data = $request->all();
             $user = User::find($id);
-            $user->username = $request->username;
+            $user->username = $request->username_form;
             $user->level_user_id = $request->level_user_id;
             // if (!Hash::check($request->password, $user->password)) {
                 
             // }
-            $user->email = $request->email;
+            $user->email = $request->email_form;
             $u = $user->save();
 
             if ($u) {
@@ -297,6 +298,11 @@ class HomeController extends Controller
     public function master_satuan()
     {
         return view('layouts.master.satuan');
+    }
+
+    public function archive_master()
+    {
+        return view('layouts.archive.archive_master');
     }
 
     //Store

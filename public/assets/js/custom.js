@@ -1,3 +1,23 @@
+// Class Active
+let activeLink = document.querySelectorAll('.nav-link');
+activeLink.forEach((element)=>{
+  element.addEventListener('active',(e)=>{
+    element.classList.toggle('tw-bg-prim-white');
+  })
+})
+
+// Dropdown Sidebar
+let dropdownMenu = document.querySelectorAll('.sidebar .has-submenu .sub-nav-link');
+
+dropdownMenu.forEach(function(element){
+  element.addEventListener('click',(e)=>{
+    let submenu = element.nextElementSibling;
+
+    submenu.classList.toggle("show");
+    submenu.classList.toggle("collapse");
+  })
+})
+
 // Datatable
 
 // $(document).ready(function () {

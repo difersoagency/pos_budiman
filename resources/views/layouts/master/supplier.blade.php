@@ -60,9 +60,9 @@
                         </div>
                     </div>
                 </div>
-            <!-- /.col-md-6 -->
+                <!-- /.col-md-6 -->
             </div>
-          <!-- /.row -->
+            <!-- /.row -->
         </div>
     </section>
     <!-- /.content -->
@@ -72,7 +72,7 @@
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalPop">Form Satuan</h5>
                     <button type="button" class="close tw-text-prim-red" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                        <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
@@ -120,18 +120,18 @@
                 processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
             },
             columns: [{
-                data: 'DT_RowIndex',
-                className: 'nowrap-text align-center',
-                orderable: false,
-                searchable: false
-            },{
-                data: 'nama_supplier',
+                    data: 'DT_RowIndex',
+                    className: 'nowrap-text align-center',
+                    orderable: false,
+                    searchable: false
+                }, {
+                    data: 'nama_supplier',
 
-            },{
-                data: 'kota_id',
+                }, {
+                    data: 'kota_id',
 
-            },{
-                data: 'alamat',
+                }, {
+                    data: 'alamat',
 
             },
             {
@@ -201,7 +201,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: "/supplier/edit/"+data_id,
+                        url: "/supplier/edit/" + data_id,
                         beforeSend: function() {
                             $('#loader').show();
                         },
@@ -225,7 +225,7 @@
             var data_nama = $(this).attr('data-nama');
             Swal.fire({
                 title: 'Hapus Data',
-                text: "Apakah anda ingin menghapus data "+data_nama+"?",
+                text: "Apakah anda ingin menghapus data " + data_nama + "?",
                 icon: 'warning',
                 showCancelButton: true,
                 cancelButtonColor: 'grey',
@@ -236,31 +236,31 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                            url: '{{ route("supplier.delete") }}',
-                            type: 'DELETE',
-                            dataType: 'json',
-                            data: {
-                                "id": data_id,
-                                "_method": "DELETE",
-                                _token: "{{ csrf_token() }}"
-                            },
-                            success: function(result) {
-                                if (result.info == "success") {
-                                    Swal.fire({
-                                        title: 'Berhasil',
-                                        text: 'Data berhasil di hapus',
-                                        icon: 'success',
-                                    });
-                                    window.location.reload();
-                                } else {
-                                    Swal.fire({
-                                        title: 'Gagal',
-                                        text: 'Data gagal di hapus',
-                                        icon: 'error',
-                                    });
-                                }
+                        url: '{{ route("supplier.delete") }}',
+                        type: 'DELETE',
+                        dataType: 'json',
+                        data: {
+                            "id": data_id,
+                            "_method": "DELETE",
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(result) {
+                            if (result.info == "success") {
+                                Swal.fire({
+                                    title: 'Berhasil',
+                                    text: 'Data berhasil di hapus',
+                                    icon: 'success',
+                                });
+                                window.location.reload();
+                            } else {
+                                Swal.fire({
+                                    title: 'Gagal',
+                                    text: 'Data gagal di hapus',
+                                    icon: 'error',
+                                });
                             }
-                        });
+                        }
+                    });
                 }
             })
         });
