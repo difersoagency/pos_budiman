@@ -10,12 +10,14 @@
                     <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-items-end tw-mb-4">
                         <!-- Dropdown -->
                         <div class="dropdown tw-mb-7 md:tw-mb-0 tw-w-2/4">
-                            <select class="custom-select select-2 tw-bg-prim-blue tw-text-prim-white" id="kota_id" placeholder="Pilih Data" name="state">
-                                @foreach ($kotas as $kotas)
-                                <option value="{{ $kotas->id }}">{{ Str::ucfirst($kotas->nama_kota) }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+                                <select class="custom-select select-2 tw-bg-prim-blue tw-text-prim-white" id="kotafilter" placeholder="Pilih Data"
+                                    name="state">
+                                    <option value="">Semua</option>
+                                    @foreach ($kotas as $kotas)
+                                        <option value="{{ $kotas->nama_kota }}">{{ $kotas->nama_kota }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         <!-- End Dropdown  -->
 
                     </div>
@@ -80,28 +82,30 @@
     </div>
 </div>
 
-@endsection
-
 @section('script')
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    @if(Session::has('error'))
-    Swal.fire({
-        title: 'Gagal',
-        text: "{{ Session::get('error') }}",
-        icon: 'error',
-    });
-    @endif
-    @if(Session::has('success'))
-    Swal.fire({
-        title: 'Berhasil',
-        text: "{{ Session::get('success') }}",
-        icon: 'success',
-    });
-    @endif
-    $(document).ready(function() {
-        $(".select-2").select2();
-        $('#showtable').DataTable({
+    @if (Session::has('error'))
+            Swal.fire({
+                title: 'Gagal',
+                text: "{{ Session::get('error') }}",
+                icon: 'error',
+            });
+        @endif
+        @if (Session::has('success'))
+            Swal.fire({
+                title: 'Berhasil',
+                text: "{{ Session::get('success') }}",
+                icon: 'success',
+            });
+        @endif
+        var selectval;
+ 
+        // Custom filtering function which will search data in column four between two values
+        
+  
+    $(document).ready(function(){
+        var table = $('#showtable').DataTable({
             destroy: true,
             processing: true,
             serverSide: true,
@@ -129,16 +133,36 @@
                 }, {
                     data: 'alamat',
 
-                },
-                {
-                    data: 'telepon',
+            },
+            {
+                data: 'telepon',
 
-                }, {
-                    data: 'action',
-                    orderable: false,
-                    searchable: false
-                }
-            ]
+            },{
+                data: 'action',
+                orderable: false,
+                searchable: false
+            }],
+            // initComplete: function(){
+            //     $.fn.dataTable.ext.search.push(
+            //         function( settings, data, dataIndex ) {
+            //             var select = $('#kotafilter').val();
+            //             var kota_id = data[3];
+            //             console.log(kota_id);
+            //             if (
+            //                 ( select === kota_id ) ||
+            //                 ( select === null )
+            //             ) {
+            //                 return true;
+            //             }
+            //             return false;
+            //         }
+            //     );
+            // }
+        });
+
+        // Refilter the table
+        $('#kotafilter').on('change', function () {
+            table.search( this.value ).draw();
         });
 
         $(document).on('click', '#tambah_supplier', function(event) {
@@ -154,7 +178,7 @@
                     $('#suppliermodal').modal("show");
                     $('.modal-title').html("Tambah Supplier");
                     $('.modal-body').html(result).show();
-                    $('.kota').prepend('<option selected=""></option>').select2({
+                    $('.kota').select2({
                         placeholder: "Pilih Data"
                     });
                 },
@@ -185,9 +209,10 @@
                         success: function(result) {
                             $('#suppliermodal').modal("show");
                             $('.modal-title').html("Ubah Supplier");
-                            $(".kota").select2();
                             $('.modal-body').html(result).show();
-
+                            $(".kota").select2({
+                                dropdownParent: $("#suppliermodal")
+                            });
                         },
                     })
                 }
@@ -241,4 +266,6 @@
         });
     })
 </script>
+@stop
+
 @endsection

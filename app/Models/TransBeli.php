@@ -9,11 +9,21 @@ class TransBeli extends Model
 {
     use HasFactory;
     protected $table = 'htrans_beli';
-    protected $primaryKey = 'no_trans_beli';
-    protected $fillable = ['no_trans_beli', 'kd_supplier', 'kode_bayar', 'nomor_po', 'tgl_trans_beli', 'tgl_max_garansi', 'disc', 'total_bayar'];
+    public $timestamps = false;
+    protected $fillable = ['supplier_id', 'pembayaran_id', 'nomor_po', 'tgl_trans_beli', 'tgl_max_garansi', 'disc', 'total_bayar'];
 
     public function Supplier()
     {
-        return $this->belongsTo(Supplier::class, 'kd_supplier');
+        return $this->belongsTo(Supplier::class);
+    }
+
+    public function Pembayaran()
+    {
+        return $this->belongsTo(Pembayaran::class);
+    }
+
+    public function DTransBeli()
+    {
+        return $this->hasMany(DTransBeli::class);
     }
 }

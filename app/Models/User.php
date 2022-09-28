@@ -24,7 +24,6 @@ class User extends Authenticatable
         'pegawai_id',
         'email',
         'password',
-        'kode_level',
     ];
 
     /**

@@ -5,12 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Koreksi extends Model
+class DTransBeli extends Model
 {
     use HasFactory;
-    protected $table = 'koreksi';
+    protected $table = 'dtrans_beli';
     public $timestamps = false;
-    protected $fillable = ['barang_id', 'tgl_koreksi', 'jumlah', 'jenis', 'keterangan'];
+    protected $fillable = ['htrans_beli_id', 'barang_id', 'jumlah', 'harga', 'disc'];
+
+    public function TransBeli()
+    {
+        return $this->belongsTo(TransBeli::class);
+    }
 
     public function Barang()
     {
