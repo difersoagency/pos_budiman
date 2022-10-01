@@ -76,14 +76,15 @@ class HomeController extends Controller
     }
 
     //USER
-    public function master_user_data(){
+    public function master_user_data()
+    {
         $data = User::with('LevelUser', 'Pegawai')->get();
         return datatables()->of($data)
             ->addIndexColumn()
-            ->addColumn('nama_user', function($data){
+            ->addColumn('nama_user', function ($data) {
                 return $data->Pegawai->nama_pegawai;
             })
-            ->editColumn('level_user_id', function($data){
+            ->editColumn('level_user_id', function ($data) {
                 return $data->LevelUser->nama_level;
             })
             ->addColumn('action', function ($data) {
@@ -117,7 +118,7 @@ class HomeController extends Controller
             return redirect()->back()->with('error', "Tambah Gagal, periksa kembali");
         } else {
             $c = User::create([
-                'username' => $request->username_form ,
+                'username' => $request->username_form,
                 'pegawai_id' => $request->pegawai_id,
                 'level_user_id' => $request->level_user_id,
                 'password' =>  Hash::make($request->password_form),
@@ -134,7 +135,7 @@ class HomeController extends Controller
 
     public function master_user_edit($id)
     {
-        $user = User::with('Pegawai')->where('id',$id)->first();
+        $user = User::with('Pegawai')->where('id', $id)->first();
         $level_user = LevelUser::all();
         return view('layouts.modal.user-modal-edit', ['data' => $user, 'level_user' => $level_user]);
     }
@@ -153,7 +154,7 @@ class HomeController extends Controller
             $user->username = $request->username_form;
             $user->level_user_id = $request->level_user_id;
             // if (!Hash::check($request->password, $user->password)) {
-                
+
             // }
             $user->email = $request->email_form;
             $u = $user->save();
@@ -177,14 +178,15 @@ class HomeController extends Controller
         }
     }
 
-    
+
 
     //SUPPLIER
-    public function master_supplier_data(){
+    public function master_supplier_data()
+    {
         $data = Supplier::with('Kota')->get();
         return datatables()->of($data)
             ->addIndexColumn()
-            ->editColumn('kota_id', function($data){
+            ->editColumn('kota_id', function ($data) {
                 return $data->Kota->nama_kota;
             })
             ->addColumn('action', function ($data) {
@@ -199,7 +201,6 @@ class HomeController extends Controller
             })
             ->rawColumns(['action'])
             ->make(true);
-
     }
 
     public function master_supplier_create()
@@ -300,9 +301,28 @@ class HomeController extends Controller
         return view('layouts.master.satuan');
     }
 
+    public function transaksi_beli()
+    {
+        return view('layouts.transaksi.master-beli');
+    }
+
     public function archive_master()
     {
         return view('layouts.archive.archive_master');
+    }
+
+    public function tambah_beli()
+    {
+        return view('layouts.transaksi.tambah_beli');
+    }
+
+    public function archive_trans()
+    {
+        return view('layouts.archive.archive-trans');
+    }
+    public function archive_laporan()
+    {
+        return view('layouts.archive.archive-laporan');
     }
 
     //Store
@@ -542,7 +562,8 @@ class HomeController extends Controller
 
 
 
-    public function master_tipe_data(){
+    public function master_tipe_data()
+    {
         $data = Tipe::all();
         return datatables()->of($data)
             ->addIndexColumn()
@@ -560,29 +581,28 @@ class HomeController extends Controller
             })
             ->rawColumns(['action'])
             ->make(true);
-
     }
 
-    public function master_kota_data(){
+    public function master_kota_data()
+    {
         $data = Kota::all();
         return datatables()->of($data)
             ->addIndexColumn()
             ->addColumn('action', function ($data) {
                 return  '<div class="grid grid-cols-2">
-                <a href="/api/kota/edit/'.$data->kode_kota.'" class="mr-4">
+                <a href="/api/kota/edit/' . $data->kode_kota . '" class="mr-4">
                     <i class="fa fa-pen tw-text-prim-blue"></i>
                 </a>
-                <a href="/api/kota/delete/'.$data->kode_kota.'">
+                <a href="/api/kota/delete/' . $data->kode_kota . '">
                     <i class="fa fa-trash tw-text-prim-red"></i>
                 </a>
             </div>';
             })
             ->rawColumns(['action'])
             ->make(true);
-
     }
 
-    
+
 
 
     public function promo_create()
@@ -707,12 +727,13 @@ class HomeController extends Controller
     }
 
     //MEREK
-    public function master_merek_data(){
+    public function master_merek_data()
+    {
         $data = Merek::all();
         return datatables()->of($data)
             ->addIndexColumn()
             ->addColumn('action', function ($data) {
-            return   '<div class="grid grid-cols-2 tw-contents">
+                return   '<div class="grid grid-cols-2 tw-contents">
                     <button class="mr-4 tw-bg-transparent tw-border-none" id="btnedit" data-id="' . $data->id . '"   data-nama="' . $data->nama_merek . '">
                     <i class="fa fa-pen tw-text-prim-blue"></i>
                 </button>
@@ -723,7 +744,6 @@ class HomeController extends Controller
             })
             ->rawColumns(['action'])
             ->make(true);
-
     }
 
     public function master_merek_create()
@@ -793,7 +813,8 @@ class HomeController extends Controller
     }
 
     //SATUAN
-    public function master_satuan_data(){
+    public function master_satuan_data()
+    {
         $data = Satuan::all();
         return datatables()->of($data)
             ->addIndexColumn()
@@ -809,7 +830,6 @@ class HomeController extends Controller
             })
             ->rawColumns(['action'])
             ->make(true);
-
     }
 
     public function master_satuan_create()
@@ -829,7 +849,7 @@ class HomeController extends Controller
             $c = Satuan::create([
                 'kode_satuan' => $request->kode_satuan,
                 'nama_satuan' => $request->nama_satuan
-                ]);
+            ]);
 
             if ($c) {
                 return redirect()->back()->with('success', "Data berhasil di tambah");
@@ -844,7 +864,7 @@ class HomeController extends Controller
         $data = Satuan::find($id);
         return view('layouts.modal.satuan-modal-edit', ['data' => $data]);
     }
-            
+
     public function master_satuan_update($id, Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -854,11 +874,11 @@ class HomeController extends Controller
         if ($validator->fails()) {
             return redirect()->back()->with('error', "Update Gagal, periksa kembali");
         } else {
-            
+
             $data = $request->all();
             $satuan = Satuan::find($id);
             $satuan->update($data);
-            
+
             if ($satuan) {
                 return redirect()->back()->with('success', "Data berhasil di update");
             } else {
@@ -866,7 +886,7 @@ class HomeController extends Controller
             }
         }
     }
-            
+
     public function master_satuan_delete(Request $request)
     {
         $satuan = Satuan::find($request->id);
@@ -879,7 +899,8 @@ class HomeController extends Controller
     }
 
     //PEGAWAI
-    public function master_pegawai_data(){
+    public function master_pegawai_data()
+    {
         $data = Pegawai::all();
         return datatables()->of($data)
             ->addIndexColumn()
@@ -895,7 +916,6 @@ class HomeController extends Controller
             })
             ->rawColumns(['action'])
             ->make(true);
-
     }
 
     public function master_pegawai_create()
@@ -967,7 +987,8 @@ class HomeController extends Controller
     }
 
     //JASA
-    public function master_jasa_data(){
+    public function master_jasa_data()
+    {
         $data = Jasa::all();
         return datatables()->of($data)
             ->addIndexColumn()
@@ -984,7 +1005,6 @@ class HomeController extends Controller
             })
             ->rawColumns(['action'])
             ->make(true);
-
     }
 
     public function master_jasa_create()
@@ -1003,7 +1023,7 @@ class HomeController extends Controller
             $c = Jasa::create([
                 'nama_jasa' => $request->nama_jasa,
                 'harga' => $request->harga
-                ]);
+            ]);
 
             if ($c) {
                 return redirect()->back()->with('success', "Data berhasil di tambah");
@@ -1018,7 +1038,7 @@ class HomeController extends Controller
         $data = Jasa::find($id);
         return view('layouts.modal.jasa-modal-edit', ['data' => $data]);
     }
-            
+
     public function master_jasa_update($id, Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -1027,11 +1047,11 @@ class HomeController extends Controller
         if ($validator->fails()) {
             return redirect()->back()->with('error', "Update Gagal, periksa kembali");
         } else {
-            
+
             $data = $request->all();
             $jasa = Jasa::find($id);
             $jasa->update($data);
-            
+
             if ($jasa) {
                 return redirect()->back()->with('success', "Data berhasil di update");
             } else {
@@ -1039,7 +1059,7 @@ class HomeController extends Controller
             }
         }
     }
-            
+
     public function master_jasa_delete(Request $request)
     {
         $jasa = Jasa::find($request->id);
@@ -1068,7 +1088,7 @@ class HomeController extends Controller
             $c = Tipe::create([
                 'kode_tipe' => $request->kode_tipe,
                 'nama_tipe' => $request->nama_tipe
-                ]);
+            ]);
 
             if ($c) {
                 return redirect()->back()->with('success', "Data berhasil di tambah");
@@ -1083,7 +1103,7 @@ class HomeController extends Controller
         $data = Tipe::find($id);
         return view('layouts.modal.tipe-modal-edit', ['data' => $data]);
     }
-            
+
     public function master_tipe_update($id, Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -1093,11 +1113,11 @@ class HomeController extends Controller
         if ($validator->fails()) {
             return redirect()->back()->with('error', "Update Gagal, periksa kembali");
         } else {
-            
+
             $data = $request->all();
             $tipe = Tipe::find($id);
             $tipe->update($data);
-            
+
             if ($tipe) {
                 return redirect()->back()->with('success', "Data berhasil di update");
             } else {
@@ -1105,7 +1125,7 @@ class HomeController extends Controller
             }
         }
     }
-            
+
     public function master_tipe_delete(Request $request)
     {
         $tipe = Tipe::find($request->id);

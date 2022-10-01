@@ -14,7 +14,6 @@
                             <input type="date" class="form-control tw-w-10 tw-ml-3" id="tanggal_akhir" onclick="date()">
                         </div>
                         <!-- End Date Picker  -->
-
                     </div>
                     <div class="card tw-w-full tw-px-6 tw-py-5 tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-items-center">
                         <div class="tw-w-full tw-col-span-2 md:tw-col-span-1">
@@ -256,8 +255,7 @@
             /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '{{ route('
-                    promo.delete ') }}',
+                    url: '{{ route("promo.delete") }}',
                     type: 'DELETE',
                     dataType: 'json',
                     data: {

@@ -30,13 +30,17 @@ Route::group(['prefix' => '/home'], function () {
     Route::get('/customer', [App\Http\Controllers\HomeController::class, 'master_customer'])->name('customer')->middleware('owner');
     Route::get('/supplier', [App\Http\Controllers\HomeController::class, 'master_supplier'])->name('supplier')->middleware('owner');
     Route::get('/user', [App\Http\Controllers\HomeController::class, 'master_user'])->name('user')->middleware('owner');
-    Route::get('/promo', [App\Http\Controllers\HomeController::class, 'master_promo'])->name('promo')->middleware('owner');
+    Route::get('/promo', [App\Http\Controllers\HomeController::class, 'master_promo'])->name('promo');
     Route::get('/merk', [App\Http\Controllers\HomeController::class, 'master_merk'])->name('merk')->middleware('owner');
     Route::get('/tipe', [App\Http\Controllers\HomeController::class, 'master_tipe'])->name('tipe')->middleware('owner');
     Route::get('/jasa', [App\Http\Controllers\HomeController::class, 'master_jasa'])->name('jasa')->middleware('owner');
     Route::get('/pegawai', [App\Http\Controllers\HomeController::class, 'master_pegawai'])->name('pegawai')->middleware('owner');
     Route::get('/satuan', [App\Http\Controllers\HomeController::class, 'master_satuan'])->name('satuan')->middleware('owner');
     Route::get('/master', [App\Http\Controllers\HomeController::class, 'archive_master'])->name('master');
+    Route::get('/transaksi', [App\Http\Controllers\HomeController::class, 'archive_trans'])->name('transaksi');
+    Route::get('/laporan', [App\Http\Controllers\HomeController::class, 'archive_laporan'])->name('laporan');
+    Route::get('/beli', [App\Http\Controllers\HomeController::class, 'transaksi_beli'])->name('pembelian');
+    Route::get('/tambah-beli', [App\Http\Controllers\HomeController::class, 'tambah_beli'])->name('tambah-beli');
 });
 
 Route::group(['prefix' => '/customer'], function () {
@@ -141,5 +145,3 @@ Route::group(['prefix' => '/promo'], function () {
     Route::post('/update/{id}', [App\Http\Controllers\HomeController::class, 'promo_update'])->name('promo.update');
     Route::delete('/delete', [App\Http\Controllers\HomeController::class, 'promo_delete'])->name('promo.delete');
 });
-
-
