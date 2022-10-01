@@ -12,9 +12,9 @@ class Jasa extends Model
     public $timestamps = false;
     protected $fillable = ['nama_jasa', 'harga'];
 
-    public function TransJual()
+    public function DTransJualJasa()
     {
-        return $this->hasMany(TransJual::class);
+        return $this->hasMany(DTransJualJasa::class);
     }
 
 }

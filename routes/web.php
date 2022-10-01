@@ -72,12 +72,12 @@ Route::group(['prefix' => '/kota'], function () {
 });
 
 Route::group(['prefix' => '/user'], function () {
-    // Route::post('/store', [App\Http\Controllers\HomeController::class, 'master_kota_store'])->name('kota.store');
-    Route::post('/data', [App\Http\Controllers\HomeController::class, 'master_user_data'])->name('kota.data');
-    // Route::get('/create', [App\Http\Controllers\HomeController::class, 'master_kota_create'])->name('kota.create');
-    // Route::get('/edit/{id}', [App\Http\Controllers\HomeController::class, 'master_kota_edit'])->name('kota.edit');
-    // Route::post('/update/{id}', [App\Http\Controllers\HomeController::class, 'master_kota_update'])->name('kota.update');
-    // Route::delete('/delete', [App\Http\Controllers\HomeController::class, 'master_kota_delete'])->name('kota.delete');
+    Route::post('/store', [App\Http\Controllers\HomeController::class, 'master_user_store'])->name('user.store');
+    Route::post('/data', [App\Http\Controllers\HomeController::class, 'master_user_data'])->name('user.data');
+    Route::get('/create', [App\Http\Controllers\HomeController::class, 'master_user_create'])->name('user.create');
+    Route::get('/edit/{id}', [App\Http\Controllers\HomeController::class, 'master_user_edit'])->name('user.edit');
+    Route::post('/update/{id}', [App\Http\Controllers\HomeController::class, 'master_user_update'])->name('user.update');
+    Route::delete('/delete', [App\Http\Controllers\HomeController::class, 'master_user_delete'])->name('user.delete');
 });
 
 

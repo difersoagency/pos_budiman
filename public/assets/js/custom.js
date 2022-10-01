@@ -35,6 +35,10 @@ $(document).ready(function() {
   $(".input-select2").select2({
     dropdownParent: $("#modalPop")
   });
+
+  $(".kota").select2({
+    dropdownParent: $("#suppliermodal")
+  });
 });
 
 function addRow(tableID) {
