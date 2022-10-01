@@ -1,42 +1,181 @@
-/*Flip */
-/* The flip card container - set the width and height to whatever you want. We have added the border property to demonstrate that the flip itself goes out of the box on hover (remove perspective if you don't want the 3D effect */
-.flip-card {
-    background-color: transparent;
-    width: 100%px;
-    border: 1px solid #f1f1f1;
-    perspective: 1000px; /* Remove this if you don't want the 3D effect */
-  }
-  
-  /* This container is needed to position the front and back side */
-  .flip-card-inner {
-    text-align: center;
-    transition: transform 0.8s;
-    transform-style: preserve-3d;
-  }
-  
-  /* Do an horizontal flip when you move the mouse over the flip box container */
-  .flip-card:hover .flip-card-inner {
-    transform: rotateY(180deg);
-  }
-  
-  /* Position the front and back side */
-  .flip-card-front, .flip-card-back {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    -webkit-backface-visibility: hidden; /* Safari */
-    backface-visibility: hidden;
-  }
-  
-  /* Style the front side (fallback if image is missing) */
-  .flip-card-front {
-    background-color: #bbb;
-    color: black;
-  }
-  
-  /* Style the back side */
-  .flip-card-back {
-    background-color: dodgerblue;
-    color: white;
-    transform: rotateY(180deg);
-  }
+
+.one,.two,.three{
+  border: none;
+  border-radius: 4px;
+  text-shadow: 0px 0px 10px rgba(0, 0, 0, 0.48);
+  overflow: hidden;
+  padding: 20px 50px 20px 70px;
+  position: relative;
+  color: white;
+  outline: none;
+  cursor: pointer;
+  width: 100%;
+  -webkit-transition: background-position .7s,box-shadow .4s;
+  transition: background-position .7s,box-shadow .4s;
+  background-size: 110%;
+}
+.one:hover, .two:hover,.three:hover  {
+  background-position: 0% 30%;
+}
+.one:hover:after,.two:hover:after,.three:hover:after {
+  right: -40px;
+  -webkit-transition: right .4s,-webkit-transform 30s .2s linear;
+  transition: right .4s,-webkit-transform 30s .2s linear;
+  transition: right .4s,transform 30s .2s linear;
+  transition: right .4s,transform 30s .2s linear,-webkit-transform 30s .2s linear;
+}
+.one:before, .two:before, .three:before, .four:before, .five:before, .one:after, .two:after, .three:after, .four:after, .five:after {
+  font-family: FontAwesome;
+  display: block;
+  position: absolute;
+}
+.one:before, .two:before, .three:before{
+  -webkit-transition: all 1s;
+  transition: all 1s;
+  font-size: 30px;
+  left: 25px;
+  top: 5px;
+}
+.one:after, .two:after, .three:after{
+  -webkit-transition: right .4s, -webkit-transform .2s;
+  transition: right .4s, -webkit-transform .2s;
+  transition: right .4s, transform .2s;
+  transition: right .4s, transform .2s, -webkit-transform .2s;
+  font-size: 100px;
+  opacity: .3;
+  right: 20px;
+  top: -63px;
+}
+
+.one {
+  box-shadow: 0px 0px 0px 2px rgba(255, 255, 255, 0.16) inset, 0px 0px 10px 0px #F05454;
+ 
+  background-image: linear-gradient(to bottom, #F05454, rgba(162, 94, 94, 0.51));
+}
+.one:hover {
+  box-shadow: 0px 0px 0px 2px rgba(255, 255, 255, 0.16) inset, 0px 0px 30px 0px #F05454;
+}
+
+.two {
+  box-shadow: 0px 0px 0px 2px rgba(255, 255, 255, 0.16) inset, 0px 0px 10px 0px #30475E;
+ 
+  background-image: linear-gradient(to bottom, #30475E, rgba(94, 95, 162, 0.51));
+}
+.two:hover {
+  box-shadow: 0px 0px 0px 2px rgba(255, 255, 255, 0.16) inset, 0px 0px 30px 0px #30475E;
+}
+
+.three {
+  box-shadow: 0px 0px 0px 2px rgba(255, 255, 255, 0.16) inset, 0px 0px 10px 0px #222831;
+ 
+  background-image: linear-gradient(to bottom, #222831, rgba(124, 125, 176, 0.51));
+}
+.three:hover {
+  box-shadow: 0px 0px 0px 2px rgba(255, 255, 255, 0.16) inset, 0px 0px 30px 0px #222831;
+}
+
+.one:hover:after,.two:hover:after,.three:hover:after {
+  -webkit-transform: scale(2);
+          transform: scale(2);
+}
+.one:hover:before,.two:hover:before,.three:hover:before {
+  -webkit-transform: scale(1.2);
+          transform: scale(1.2);
+}
+
+.one b {
+  color: #DDA6FF;
+  font-weight: 700;
+}
+.customer:after, .customer:before {
+  font-family: "Font Awesome 5 Free";
+   content: "\f007";
+   font-weight: 900;
+}
+.satuan:after, .satuan:before {
+  font-family: "Font Awesome 5 Free";
+   content: "\f24e";
+   font-weight: 900;
+}
+.jasa:after, .jasa:before {
+  font-family: "Font Awesome 5 Free";
+   content: "\f7d9";
+   font-weight: 900;
+}
+.merk:after, .merk:before {
+  font-family: "Font Awesome 5 Free";
+   content: "\f1f9";
+   font-weight: 900;
+}
+.promo:after, .promo:before {
+  font-family: "Font Awesome 5 Free";
+   content: "\25";
+   font-weight: 900;
+}
+.pegawai:after, .pegawai:before {
+  font-family: "Font Awesome 5 Free";
+   content: "\f0b1";
+   font-weight: 900;
+}
+.user:after, .user:before {
+  font-family: "Font Awesome 5 Free";
+   content: "\f0c0";
+   font-weight: 900;
+}
+.tipe:after, .tipe:before {
+  font-family: "Font Awesome 5 Free";
+   content: "\f49e";
+   font-weight: 900;
+}
+.supplier:after, .supplier:before {
+  font-family: "Font Awesome 5 Free";
+   content: "\f0d1";
+   font-weight: 900;
+}
+
+.beli:after, .beli:before {
+  font-family: "Font Awesome 5 Free";
+   content: "\f07a";
+   font-weight: 900;
+}
+
+.jual:after, .jual:before {
+  font-family: "Font Awesome 5 Free";
+   content: "\f0d6";
+   font-weight: 900;
+}
+
+.piutang:after, .piutang:before {
+  font-family: "Font Awesome 5 Free";
+   content: "\f02b";
+   font-weight: 900;
+}
+
+.hutang:after, .hutang:before {
+  font-family: "Font Awesome 5 Free";
+   content: "\f53d";
+   font-weight: 900;
+}
+
+.lapbeli:after, .lapbeli:before {
+  font-family: "Font Awesome 5 Free";
+   content: "\f56e";
+   font-weight: 900;
+}
+
+.lapjual:after, .lapjual:before {
+  font-family: "Font Awesome 5 Free";
+   content: "\f56f";
+   font-weight: 900;
+}
+.lapbarang:after, .lapbarang:before {
+  font-family: "Font Awesome 5 Free";
+   content: "\f1c6";
+   font-weight: 900;
+}
+.lap:after, .lap:before {
+  font-family: "Font Awesome 5 Free";
+   content: "\f571";
+   font-weight: 900;
+}
+

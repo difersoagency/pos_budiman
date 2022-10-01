@@ -59,7 +59,7 @@
                     </a>
                 </li>
                 <li class="nav-item has-submenu">
-                    <a class="tw-cursor-pointer nav-link">
+                    <a class="tw-cursor-pointer nav-link" href="transaksi">
                         <i class="nav-icon fa fa-credit-card tw-text-prim-white"></i>
                         <p class="tw-text-prim-red tw-font-bold focus:tw-text-prim-white">
                             Transaksi

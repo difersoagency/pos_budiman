@@ -38,7 +38,7 @@
 <style>
   @font-face {
     font-family: 'Poppins';
-    src: url('{{ asset('themes/font/Poppins/Poppins-Regular.ttf') }}');
+    src: url('{{ asset("themes/font/Poppins/Poppins-Regular.ttf") }}');
   }
 
   aside {
