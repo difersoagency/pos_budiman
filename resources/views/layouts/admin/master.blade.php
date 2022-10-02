@@ -123,9 +123,9 @@
 
 
   <!-- Slimscroll -->
-  {{-- <script src="{{ asset('themes/plugins/slimScroll/jquery.slimscroll.min.js') }}"></script> --}}
+  <!-- <script src="{{ asset('themes/plugins/slimScroll/jquery.slimscroll.min.js') }}"></script> -->
   <!-- FastClick -->
-  {{-- <script src="{{ asset('themes/plugins/fastclick/fastclick.js') }}"></script> --}}
+  <!-- <script src="{{ asset('themes/plugins/fastclick/fastclick.js') }}"></script> -->
   <!-- AdminLTE App -->
   <script src="{{ asset('themes/dist/js/adminlte.js') }}"></script>
 

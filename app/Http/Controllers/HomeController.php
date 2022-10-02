@@ -1136,4 +1136,33 @@ class HomeController extends Controller
             return response()->json(['info' => 'error', 'msg' => 'Gagal menghapus data, periksa kembali data']);
         }
     }
+
+    public function transaksi_jual(){
+        return view('layouts.transaksi.master-jual');
+    }
+
+    public function data_transaksi_jual(){
+        $data = TransJual::with('Booking.Customer', 'Pembayaran')->orderBy('tgl_trans_jual', 'desc')->get();
+        return datatables()->of($data)
+            ->addIndexColumn()
+            ->addColumn('action', function ($data) {
+                return  '<div class="grid grid-cols-2">
+                <button id="btnedit" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->no_trans_jual . '" >
+                                                        <i class="fa fa-pen tw-text-prim-blue"></i>
+                                                    </button>
+                                                    <button id="btndelete" data-id="' . $data->id . '" data-nama="' . $data->no_trans_jual . '"
+                                                        class="tw-bg-transparent tw-border-none">
+                                                        <i class="fa fa-trash tw-text-prim-red"></i>
+                                                    </button>
+            </div>';
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+    }
+
+    
+    public function tambah_jual()
+    {
+        return view('layouts.transaksi.tambah_jual');
+    }
 }
