@@ -82,6 +82,9 @@
     </div>
 </div>
 
+
+
+@endsection
 @section('script')
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
@@ -267,5 +270,3 @@
     })
 </script>
 @stop
-
-@endsection

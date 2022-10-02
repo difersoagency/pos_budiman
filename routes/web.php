@@ -41,6 +41,8 @@ Route::group(['prefix' => '/home'], function () {
     Route::get('/laporan', [App\Http\Controllers\HomeController::class, 'archive_laporan'])->name('laporan');
     Route::get('/beli', [App\Http\Controllers\HomeController::class, 'transaksi_beli'])->name('pembelian');
     Route::get('/tambah-beli', [App\Http\Controllers\HomeController::class, 'tambah_beli'])->name('tambah-beli');
+    Route::get('/jual', [App\Http\Controllers\HomeController::class, 'transaksi_jual'])->name('penjualan');
+    Route::get('/tambah-jual', [App\Http\Controllers\HomeController::class, 'tambah_jual'])->name('tambah-jual');
 });
 
 Route::group(['prefix' => '/customer'], function () {

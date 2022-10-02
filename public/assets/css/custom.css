@@ -179,3 +179,10 @@
    font-weight: 900;
 }
 
+.promobox {
+  background: linear-gradient(90deg, rgba(3,3,61,1) 0%, rgba(53,116,129,1) 100%);
+}
+.promobox:hover {
+  box-shadow: 0px 0px 30px 0px rgba(53,116,129,1);
+}
+
