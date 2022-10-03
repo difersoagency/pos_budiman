@@ -45,7 +45,7 @@
                                         <th class="tw-text-prim-white">No.Pembelian</th>
                                         <th class="tw-text-prim-white">Di Buat Oleh</th>
                                         <th class="tw-text-prim-white tw-w-48">Deskripsi</th>
-                                        <th class="tw-text-prim-white tw-w-28">Status</th>
+                                        <th class="tw-text-prim-white tw-w-28">Total Harga</th>
                                         <th class="tw-text-prim-white">Action</th>
                                     </tr>
                                 </thead>
@@ -56,59 +56,7 @@
                                         <td>Asep</td>
                                         <td>Lampu</td>
                                         <td>
-                                            <div class="tw-bg-red-400 tw-w-fit tw-px-2 tw-rounded-xl tw-py-1">
-                                                <p class="tw-text-[12px] tw-text-prim-white tw-mb-0">On Progress</p>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="grid grid-cols-3 tw-contents">
-                                                <button href="" class="mr-4 tw-bg-transparent tw-border-none" data-toggle="tooltip" title="Edit">
-                                                    <i class="fa fa-pen tw-text-prim-blue"></i>
-                                                </button>
-                                                <button data-toggle="tooltip" title="Detail" class="tw-mr-4 tw-bg-transparent tw-border-none">
-                                                    <i class="fa fa-info tw-text-prim-black"></i>
-                                                </button>
-                                                <button data-toggle="tooltip" title="Hapus" class="tw-bg-transparent tw-border-none">
-                                                    <i class="fa fa-trash tw-text-prim-red"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-
-                                    </tr>
-                                    <tr>
-                                        <td>LM001</td>
-                                        <td>Lampu Motor</td>
-                                        <td>Putri</td>
-                                        <td>Lampu</td>
-                                        <td>
-                                            <div class="tw-bg-orange-300 tw-w-fit tw-px-2 tw-rounded-xl tw-py-1">
-                                                <p class="tw-text-[12px] tw-text-white tw-mb-0">Hold</p>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="grid grid-cols-3 tw-contents">
-                                                <button href="" class="mr-4 tw-bg-transparent tw-border-none" data-toggle="tooltip" title="Edit">
-                                                    <i class="fa fa-pen tw-text-prim-blue"></i>
-                                                </button>
-                                                <button data-toggle="tooltip" title="Detail" class="tw-mr-4 tw-bg-transparent tw-border-none">
-                                                    <i class="fa fa-info tw-text-prim-black"></i>
-                                                </button>
-                                                <button data-toggle="tooltip" title="Hapus" class="tw-bg-transparent tw-border-none">
-                                                    <i class="fa fa-trash tw-text-prim-red"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-
-                                    </tr>
-                                    <tr>
-                                        <td>LM001</td>
-                                        <td>Lampu Motor</td>
-                                        <td>Samsul</td>
-                                        <td>Lampu</td>
-                                        <td>
-                                            <div class="tw-bg-green-500 tw-w-fit tw-px-2 tw-rounded-xl tw-py-1">
-                                                <p class="tw-text-[12px] tw-text-white tw-mb-0">Success</p>
-                                            </div>
+                                            <p class="tw-mb-0">Rp. 000000</p>
                                         </td>
                                         <td>
                                             <div class="grid grid-cols-3 tw-contents">
