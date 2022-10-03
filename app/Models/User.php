@@ -18,14 +18,12 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $table = 'user';
-
-    protected $primaryKey = 'kode_user';
     protected $fillable = [
-        'kode_user',
-        'kode_pegawai',
+        'username',
+        'level_user_id',
+        'pegawai_id',
         'email',
         'password',
-        'kode_level',
     ];
 
     /**
@@ -49,16 +47,17 @@ class User extends Authenticatable
 
     public function LevelUser()
     {
-        return $this->belongsTo(LevelUser::class, 'kode_level');
+        return $this->belongsTo(LevelUser::class, 'level_user_id');
     }
 
     public function Pegawai()
     {
-        return $this->belongsTo(Pegawai::class, 'kode_pegawai');
+        return $this->belongsTo(Pegawai::class, 'pegawai_id');
     }
 
-    public function hasRole($role){
-       $data = LevelUser::where('kode_level', $role)->limit(1);
-       return $data->id;
+    public function hasRole($role)
+    {
+        $data = LevelUser::where('nama_level', $role)->limit(1);
+        return $data->id;
     }
 }

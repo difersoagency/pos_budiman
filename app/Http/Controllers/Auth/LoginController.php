@@ -42,8 +42,6 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
-        $this->username = $this->findUsername();
-
     }
 
     protected function sendFailedLoginResponse(Request $request)
@@ -61,20 +59,16 @@ class LoginController extends Controller
         echo $this->username;
     }
 
-    public function findUsername()
+
+    public function username()
     {
         $login = request()->input('username');
 
-        $fieldType = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'username' : 'username';
+        $fieldType = 'username';
 
         request()->merge([$fieldType => $login]);
 
         return $fieldType;
-    }
-
-    public function username()
-    {
-        return $this->username;
     }
 
 
@@ -82,14 +76,10 @@ class LoginController extends Controller
     {
         if (auth()->user()->level_user_id == '1') {
             return redirect()->route('home_owner');
-        }
-        else if (auth()->user()->level_user_id == '2') {
+        } else if (auth()->user()->level_user_id == '2') {
             return redirect()->route('home_admin');
-        }
-        else if (auth()->user()->level_user_id == '3') {
+        } else if (auth()->user()->level_user_id == '3') {
             return redirect()->route('home_kasir');
         }
-
     }
-
 }

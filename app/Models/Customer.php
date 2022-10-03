@@ -10,6 +10,7 @@ class Customer extends Model
     use HasFactory;
     protected $table = 'customer';
     protected $fillable = ['kota_id', 'nama_customer', 'alamat', 'telepon'];
+    public $timestamps = false;
 
     public function Kota()
     {

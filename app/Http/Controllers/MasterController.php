@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Barang;
-use App\Models\Kota;
-use App\Models\Merek;
-use App\Models\Satuan;
+
+use App\Models\Customer;
+
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Database\Eloquent\Relations\Pivot;
@@ -40,18 +40,23 @@ class MasterController extends Controller
 
     }
 
-    public function data_kota(){
-        $data = Kota::all();
+    
+
+    public function data_customer(){
+        $data = Customer::with('Kota')->get();
         return datatables()->of($data)
             ->addIndexColumn()
+            ->editColumn('kota_id', function($data){
+                return $data->Kota->nama_kota;
+            })
             ->addColumn('action', function ($data) {
-                return  '<div class="grid grid-cols-2">
-                <a href="/api/kota/edit/'.$data->kode_kota.'" class="mr-4">
+                return  '<div class="grid grid-cols-2 tw-contents">
+                <button href="" class="mr-4 tw-bg-transparent tw-border-none" data-toggle="modal" data-target="#customerModal">
                     <i class="fa fa-pen tw-text-prim-blue"></i>
-                </a>
-                <a href="/api/kota/delete/'.$data->kode_kota.'">
+                </button>
+                <button data-toggle="modal" data-target="#deleteModal" class="tw-bg-transparent tw-border-none">
                     <i class="fa fa-trash tw-text-prim-red"></i>
-                </a>
+                </button>
             </div>';
             })
             ->rawColumns(['action'])
@@ -59,41 +64,5 @@ class MasterController extends Controller
 
     }
 
-    public function data_merek(){
-        $data = Merek::all();
-        return datatables()->of($data)
-            ->addIndexColumn()
-            ->addColumn('action', function ($data) {
-                return  '<div class="grid grid-cols-2">
-                <a href="/api/kota/edit/'.$data->kode_merek.'" class="mr-4">
-                    <i class="fa fa-pen tw-text-prim-blue"></i>
-                </a>
-                <a href="/api/kota/delete/'.$data->kode_merek.'">
-                    <i class="fa fa-trash tw-text-prim-red"></i>
-                </a>
-            </div>';
-            })
-            ->rawColumns(['action'])
-            ->make(true);
-
-    }
-
-    public function data_satuan(){
-        $data = Satuan::all();
-        return datatables()->of($data)
-            ->addIndexColumn()
-            ->addColumn('action', function ($data) {
-                return  '<div class="grid grid-cols-2">
-                <a href="/api/kota/edit/'.$data->kode_satuan.'" class="mr-4">
-                    <i class="fa fa-pen tw-text-prim-blue"></i>
-                </a>
-                <a href="/api/kota/delete/'.$data->kode_satuan.'">
-                    <i class="fa fa-trash tw-text-prim-red"></i>
-                </a>
-            </div>';
-            })
-            ->rawColumns(['action'])
-            ->make(true);
-
-    }
+    
 }

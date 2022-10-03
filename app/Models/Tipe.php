@@ -9,6 +9,7 @@ class Tipe extends Model
 {
     use HasFactory;
     protected $table = 'tipe';
+    public $timestamps = false;
     protected $fillable = ['kode_tipe', 'nama_tipe'];
 
     public function Barang()
