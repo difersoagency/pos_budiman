@@ -6,8 +6,8 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="transaksi">Transaksi</a></li>
-                <li class="breadcrumb-item"><a href="beli">Penjualan</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Tambah Penjualan</li>
+                <li class="breadcrumb-item"><a href="beli">Retur Penjualan</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Tambah Retur Penjualan</li>
             </ol>
         </nav>
         <div class="tw-grid tw-grid-cols-3 tw-px-4">
@@ -37,7 +37,7 @@
                 <dt class="col-sm-12 col-md-12 col-lg-4">Batas Garansi</dt>
                 <dd class="col-sm-12 col-md-12 col-lg-8">23 November 2022</dd>
                 <dt class="col-sm-12 col-md-12 col-lg-4">Dibuat Oleh</dt>
-                <dd class="col-sm-12 col-md-12 col-lg-8">Yohanes Bartolomeus Wisnu Setyo Wibowo Sunadi Tanuwidjaya</dd>
+                <dd class="col-sm-12 col-md-12 col-lg-8">Maria Cicillia Eksi Budhi Widya Kusuma Wijaya</dd>
             </dl>
             </div>
             <div class="my-4 mx-2">
