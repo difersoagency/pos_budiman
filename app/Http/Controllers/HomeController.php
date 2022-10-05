@@ -1160,9 +1160,14 @@ class HomeController extends Controller
             ->make(true);
     }
 
-    
+
     public function tambah_jual()
     {
         return view('layouts.transaksi.tambah_jual');
+    }
+
+    public function tambah_retur_jual()
+    {
+        return view('layouts.transaksi.tambah_retur-jual');
     }
 }

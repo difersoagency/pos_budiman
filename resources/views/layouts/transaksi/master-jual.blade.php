@@ -13,7 +13,7 @@
             </nav>
             <div class="row">
                 <div class="col-lg-12">
-                
+
                     <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-items-end tw-mb-4">
                         <!-- Dropdown -->
                         <div class="dropdown tw-mb-7 md:tw-mb-0 tw-w-2/4">
@@ -32,7 +32,7 @@
                         <div class="tw-text-right tw-grid tw-grid-cols-1 md:tw-flex tw-mx-auto md:tw-mx-0 md:tw-ml-auto tw-w-full md:tw-w-fit tw-mt-4 md:tw-mt-0">
 
                             <div class="dropdown tw-mb-4 tw-w-full md:tw-w-fit">
-                                <button class="btn tw-text-prim-white tw-bg-prim-red tw-text-sm tw-w-full md:tw-w-fit" type="button" id="addItemButton" onclick="location.href = 'tambah-jual'">
+                                <button class="btn tw-text-prim-white tw-bg-prim-red tw-text-sm tw-w-full md:tw-w-fit" type="button" id="addItemButton" onclick="location.href = `{{route('tambah-jual')}}`">
                                     + Tambah Penjualan
                                 </button>
                             </div>
