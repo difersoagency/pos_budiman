@@ -6,7 +6,7 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="transaksi">Transaksi</a></li>
-                <li class="breadcrumb-item"><a href="beli">Retur Penjualan</a></li>
+                <li class="breadcrumb-item"><a href="{{route('retur-penjualan')}}">Retur Penjualan</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Tambah Retur Penjualan</li>
             </ol>
         </nav>
@@ -27,34 +27,30 @@
                 <label for="user_beli">Tgl Retur Jual</label>
                 <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_max_garansi" name="tgl_max_garansi" id="tgl_max_garansi">
             </div>
-            <div class="my-4 mx-2">
-            <label for="user_beli">Info Penjualan</label>
-            <dl class="row">
-                <dt class="col-sm-12 col-md-12 col-lg-4">No Transaksi</dt>
-                <dd class="col-sm-12 col-md-12 col-lg-8">SO/V/2022/001</dd>
-                <dt class="col-sm-12 col-md-12 col-lg-4">Tgl Transaksi</dt>
-                <dd class="col-sm-12 col-md-12 col-lg-8">23 Mei 2022</dd>
-                <dt class="col-sm-12 col-md-12 col-lg-4">Batas Garansi</dt>
-                <dd class="col-sm-12 col-md-12 col-lg-8">23 November 2022</dd>
-                <dt class="col-sm-12 col-md-12 col-lg-4">Dibuat Oleh</dt>
-                <dd class="col-sm-12 col-md-12 col-lg-8">Maria Cicillia Eksi Budhi Widya Kusuma Wijaya</dd>
+            <div class="my-4">
+            <label for="user_beli" class="mx-2">Info Penjualan</label>
+            <dl class="row mx-2">
+                <dd>Nomor SO/V/2022/001</dd>
+                <dd>Transaksi Pada 23 Mei 2022</dd>
+                <dd>Garansi Hingga 23 November 2022</dd>
+                <dd>Petugas Sulistiani</dd>
             </dl>
             </div>
-            <div class="my-4 mx-2">
-                <label for="user_beli">Customer</label>
-                <div>
-                    <div>Prima Sakti Nugraha</div>
-                    <div>Jl Ade Irma Suryani Nasution V No. 5, Tlogobendung Gresik</div>
-                    <div>0838312222290</div>
-                </div>
+            <div class="my-4">
+                <label for="user_beli" class="mx-2">Customer</label>
+                <dl class="row mx-2">
+                    <dd>Prima Sakti Nugraha</dd>
+                    <dd>Jl Ade Irma Suryani Nasution V No. 5, Tlogobendung Gresik</dd>
+                    <dd>0838312222290</dd>
+                </dl>
             </div>
 
         </div>
-        {{-- <div class="tw-grid pb-4">
+        <div class="tw-grid pb-4">
         <button class="tw-w-48 tw-bg-prim-red tw-border-0  tw-text-center tw-text-white tw-py-2 tw-rounded-lg hover:tw-bg-red-700 tw-transition-all float-right" onclick="addRow('tbody2')">
-            + Tambah Barang
+            + Tambah Barang Retur
         </button>
-        </div> --}}
+        </div>
         <div class="tw-bg-white tw-px-5 tw-py-3 ">
             <div class="tw-overflow-x-hidden tw-overflow-y-auto tw-h-52">
                 <table id="barang_beli" class="tw-w-full table table-striped">

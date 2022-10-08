@@ -41,6 +41,16 @@ Route::group(['prefix' => '/home'], function () {
     Route::get('/laporan', [App\Http\Controllers\HomeController::class, 'archive_laporan'])->name('laporan');
     Route::get('/beli', [App\Http\Controllers\HomeController::class, 'transaksi_beli'])->name('pembelian');
     Route::get('/tambah-beli', [App\Http\Controllers\HomeController::class, 'tambah_beli'])->name('tambah-beli');
+    Route::get('/jual', [App\Http\Controllers\HomeController::class, 'transaksi_jual'])->name('penjualan');
+    Route::get('/tambah-jual', [App\Http\Controllers\HomeController::class, 'tambah_jual'])->name('tambah-jual');
+    Route::get('/retur-jual', [App\Http\Controllers\HomeController::class, 'transaksi_retur_jual'])->name('retur-penjualan');
+    Route::get('/tambah-retur-jual', [App\Http\Controllers\HomeController::class, 'tambah_retur_jual'])->name('tambah-retur-jual');
+    Route::get('/retur-beli', [App\Http\Controllers\HomeController::class, 'transaksi_retur_beli'])->name('retur-pembelian');
+    Route::get('/tambah-retur-beli', [App\Http\Controllers\HomeController::class, 'tambah_retur_beli'])->name('tambah-retur-beli');
+    Route::get('/hutang', [App\Http\Controllers\HomeController::class, 'master_hutang'])->name('master_hutang');
+    Route::get('/bayar-hutang', [App\Http\Controllers\HomeController::class, 'bayar_hutang'])->name('bayar_hutang');
+    Route::get('/piutang', [App\Http\Controllers\HomeController::class, 'master_piutang'])->name('master_piutang');
+    Route::get('/bayar-piutang', [App\Http\Controllers\HomeController::class, 'bayar_piutang'])->name('bayar_piutang');
 });
 
 Route::group(['prefix' => '/customer'], function () {
@@ -146,8 +156,4 @@ Route::group(['prefix' => '/promo'], function () {
     Route::delete('/delete', [App\Http\Controllers\HomeController::class, 'promo_delete'])->name('promo.delete');
 });
 
-Route::group(['prefix' => '/transaksi'], function () {
-    Route::get('/jual', [App\Http\Controllers\HomeController::class, 'transaksi_jual'])->name('penjualan');
-    Route::get('/tambah-jual', [App\Http\Controllers\HomeController::class, 'tambah_jual'])->name('tambah-jual');
-    Route::get('/tambah-retur-jual', [App\Http\Controllers\HomeController::class, 'tambah_retur_jual'])->name('tambah-retur-jual');
-});
+

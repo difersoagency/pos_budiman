@@ -324,7 +324,22 @@ class HomeController extends Controller
     {
         return view('layouts.archive.archive-laporan');
     }
-
+    public function master_hutang()
+    {
+        return view('layouts.transaksi.master-hutang');
+    }
+    public function master_piutang()
+    {
+        return view('layouts.transaksi.master-piutang');
+    }
+    public function bayar_hutang()
+    {
+        return view('layouts.transaksi.bayar-hutang');
+    }
+    public function bayar_piutang()
+    {
+        return view('layouts.transaksi.bayar-piutang');
+    }
     //Store
     public function master_barang_store(Request $request)
     {
@@ -1137,11 +1152,13 @@ class HomeController extends Controller
         }
     }
 
-    public function transaksi_jual(){
+    public function transaksi_jual()
+    {
         return view('layouts.transaksi.master-jual');
     }
 
-    public function data_transaksi_jual(){
+    public function data_transaksi_jual()
+    {
         $data = TransJual::with('Booking.Customer', 'Pembayaran')->orderBy('tgl_trans_jual', 'desc')->get();
         return datatables()->of($data)
             ->addIndexColumn()
@@ -1166,8 +1183,31 @@ class HomeController extends Controller
         return view('layouts.transaksi.tambah_jual');
     }
 
+    public function transaksi_retur_jual()
+    {
+        return view('layouts.transaksi.retur-jual');
+    }
+
+    public function data_transaksi_retur_jual(){
+        
+    }
+
     public function tambah_retur_jual()
     {
         return view('layouts.transaksi.tambah_retur-jual');
+    }
+
+    public function transaksi_retur_beli()
+    {
+        return view('layouts.transaksi.retur-beli');
+    }
+
+    public function data_transaksi_retur_beli(){
+        
+    }
+
+    public function tambah_retur_beli()
+    {
+        return view('layouts.transaksi.tambah_retur-beli');
     }
 }
