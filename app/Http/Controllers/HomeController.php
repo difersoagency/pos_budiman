@@ -324,6 +324,14 @@ class HomeController extends Controller
     {
         return view('layouts.archive.archive-laporan');
     }
+    public function master_hutang()
+    {
+        return view('layouts.transaksi.master-hutang');
+    }
+    public function bayar_hutang()
+    {
+        return view('layouts.transaksi.bayar-hutang');
+    }
 
     //Store
     public function master_barang_store(Request $request)
@@ -1137,11 +1145,13 @@ class HomeController extends Controller
         }
     }
 
-    public function transaksi_jual(){
+    public function transaksi_jual()
+    {
         return view('layouts.transaksi.master-jual');
     }
 
-    public function data_transaksi_jual(){
+    public function data_transaksi_jual()
+    {
         $data = TransJual::with('Booking.Customer', 'Pembayaran')->orderBy('tgl_trans_jual', 'desc')->get();
         return datatables()->of($data)
             ->addIndexColumn()
@@ -1160,7 +1170,7 @@ class HomeController extends Controller
             ->make(true);
     }
 
-    
+
     public function tambah_jual()
     {
         return view('layouts.transaksi.tambah_jual');
