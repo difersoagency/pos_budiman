@@ -43,6 +43,10 @@ Route::group(['prefix' => '/home'], function () {
     Route::get('/tambah-beli', [App\Http\Controllers\HomeController::class, 'tambah_beli'])->name('tambah-beli');
     Route::get('/jual', [App\Http\Controllers\HomeController::class, 'transaksi_jual'])->name('penjualan');
     Route::get('/tambah-jual', [App\Http\Controllers\HomeController::class, 'tambah_jual'])->name('tambah-jual');
+    Route::get('/hutang', [App\Http\Controllers\HomeController::class, 'master_hutang'])->name('master_hutang');
+    Route::get('/bayar-hutang', [App\Http\Controllers\HomeController::class, 'bayar_hutang'])->name('bayar_hutang');
+    Route::get('/piutang', [App\Http\Controllers\HomeController::class, 'master_piutang'])->name('master_piutang');
+    Route::get('/bayar-piutang', [App\Http\Controllers\HomeController::class, 'bayar_piutang'])->name('bayar_piutang');
 });
 
 Route::group(['prefix' => '/customer'], function () {

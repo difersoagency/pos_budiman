@@ -18,7 +18,7 @@
                         <option value="0">Semua</option>
                     </select>
                 </div>
-                
+
             </div>
             <div class="mx-2">
                 <label for="no_trans_jual">No Transaksi Penjualan</label>
@@ -29,12 +29,12 @@
                 <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_trans_jual" name="tgl_trans_jual" id="tgl_trans_jual">
             </div>
             <div class="my-4 mx-2 tw-row-span-2">
-            <label for="user_beli">Customer</label>
-            <div>
-                <div>Prima Sakti Nugraha</div>
-                <div>Jl Ade Irma Suryani Nasution V No. 5, Tlogobendung Gresik</div>
-                <div>0838312222290</div>
-            </div>
+                <label for="user_beli">Customer</label>
+                <div>
+                    <div>Prima Sakti Nugraha</div>
+                    <div>Jl Ade Irma Suryani Nasution V No. 5, Tlogobendung Gresik</div>
+                    <div>0838312222290</div>
+                </div>
             </div>
             <div class="my-4 mx-2 tw-row-span-2">
                 <label for="user_beli">Dibuat Oleh</label>
@@ -56,21 +56,34 @@
                 </div>
             </div>
         </div>
-        <div class="tw-grid tw-grid-cols-6 tw-rounded-lg promobox mb-4 py-2">
-            <div class="my-2 mx-4 tw-text-white">
-                <label for="user_beli">Promo</label>
-                <div class="form-check tw-text-white">
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckCheckedDisabled" checked>
-                    <label class="tw-text-white" for="flexCheckCheckedDisabled">
-                        Diskon 50% untuk Pembelian 2 Oli
-                    </label>
+        <div class="tw-rounded-lg promobox mb-4 tw-py-2 tw-px-4">
+            <h2 class="tw-text-md tw-text-prim-white">Promo</h2>
+            <div class="tw-grid tw-grid-cols-4 tw-gap-7">
+                <div class="my-2  tw-text-white">
+                    <label for="user_beli">Nama Promo</label>
+                    <div class="form-check tw-text-white">
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckCheckedDisabled" checked>
+                        <label class="tw-text-white tw-text-[12px]" for="flexCheckCheckedDisabled">
+                            Diskon 50% untuk Pembelian 2 Oli
+                        </label>
+                    </div>
+                </div>
+                <div class="my-2  tw-text-white">
+                    <label for="user_beli">Nama Promo</label>
+                    <div class="form-check tw-text-white">
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckCheckedDisabled" checked>
+                        <label class="tw-text-white tw-text-[12px]" for="flexCheckCheckedDisabled">
+                            Diskon 50% untuk Pembelian 2 Oli
+                        </label>
+                    </div>
                 </div>
             </div>
+
         </div>
         <div class="tw-grid pb-4">
-        <button class="tw-w-48 tw-bg-prim-red tw-border-0  tw-text-center tw-text-white tw-py-2 tw-rounded-lg hover:tw-bg-red-700 tw-transition-all float-right" onclick="addRow('tbody2')">
-            + Tambah Barang
-        </button>
+            <button class="tw-w-48 tw-bg-prim-red tw-border-0  tw-text-center tw-text-white tw-py-2 tw-rounded-lg hover:tw-bg-red-700 tw-transition-all float-right" onclick="addRow('tbody2')">
+                + Tambah Barang
+            </button>
         </div>
         <div class="tw-bg-white tw-px-5 tw-py-3 ">
             <div class="tw-overflow-x-hidden tw-overflow-y-auto tw-h-52">
@@ -116,7 +129,7 @@
                                     <input type="number" class="form-control" name="subtotal[]" min="0">
                                 </div>
                             </td>
-                            
+
                             <td>
                                 <button data-toggle="modal" data-target="#deleteModal" class="tw-bg-transparent tw-border-none">
                                     <i class="fa fa-trash tw-text-prim-red"></i>
@@ -126,13 +139,13 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                        <td colspan="4">Total Harga</td>
-                        <td colspan="2">Rp. 0</td>
+                            <td colspan="4">Total Harga</td>
+                            <td colspan="2">Rp. 0</td>
                         </tr>
                     </tfoot>
                 </table>
             </div>
-            
+
         </div>
         <div class=" tw-mb-40 tw-mt-10">
             <button class="tw-bg-white tw-border-2 tw-mr-5 tw-text-prim-blue  tw-border-prim-blue hover:tw-bg-prim-blue hover:tw-text-prim-white  tw-w-32 tw-text-center tw-py-2 tw-rounded-lg  tw-transition-all">

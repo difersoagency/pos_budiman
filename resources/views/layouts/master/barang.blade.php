@@ -72,7 +72,7 @@
                                 <table id="table_barang" class="table table-bordered responsive nowrap" style="width:100%">
                                     <thead class="tw-bg-prim-blue">
                                         <tr>
-                                            <th class="tw-text-prim-white">Kode Barang</th>
+                                            <th class="tw-text-prim-white">Kode </th>
                                             <th class="tw-text-prim-white">Nama Barang</th>
                                             <th class="tw-text-prim-white">Merk</th>
                                             <th class="tw-text-prim-white">Tipe</th>
