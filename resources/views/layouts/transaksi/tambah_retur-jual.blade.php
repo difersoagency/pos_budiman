@@ -6,84 +6,50 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="transaksi">Transaksi</a></li>
-                <li class="breadcrumb-item"><a href="beli">Penjualan</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Tambah Penjualan</li>
+                <li class="breadcrumb-item"><a href="{{route('retur-penjualan')}}">Retur Penjualan</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Tambah Retur Penjualan</li>
             </ol>
         </nav>
         <div class="tw-grid tw-grid-cols-3 tw-px-4">
             <div class="mx-2">
-                <label for="booking_id">No Booking</label>
-                <div class="dropdown" style="width:100%;">
-                    <select class="custom-select select-user tw-text-prim-white" id="booking_id" name="booking_id">
+                <label for="no_retur_jual">No Retur Jual</label>
+                <input type="text" placeholder="Masukkan No Retur" class="form-control no_retur_jual" name="no_retur_jual" id="no_retur_jual">
+            </div>
+            <div class="mx-2 tw-col-span-2">
+                <label for="htrans_jual_id">Ref Transaksi Penjualan</label>
+                <div class="dropdown" style="width:50%;">
+                    <select class="custom-select select-user tw-text-prim-white" id="htrans_jual_id" name="htrans_jual_id">
                         <option value="0">Semua</option>
                     </select>
-                </div>
-
-            </div>
-            <div class="mx-2">
-                <label for="no_trans_jual">No Transaksi Penjualan</label>
-                <input type="text" placeholder="No Transaksi" class="form-control no_trans_jual" name="no_trans_jual" id="no_trans_jual">
-            </div>
-            <div class="mx-2">
-                <label for="tgl_trans_jual">Tgl Transaksi</label>
-                <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_trans_jual" name="tgl_trans_jual" id="tgl_trans_jual">
-            </div>
-            <div class="my-4 mx-2 tw-row-span-2">
-                <label for="user_beli">Customer</label>
-                <div>
-                    <div>Prima Sakti Nugraha</div>
-                    <div>Jl Ade Irma Suryani Nasution V No. 5, Tlogobendung Gresik</div>
-                    <div>0838312222290</div>
-                </div>
-            </div>
-            <div class="my-4 mx-2 tw-row-span-2">
-                <label for="user_beli">Dibuat Oleh</label>
-                <div>
-                    <div>Sulistiani</div>
-                    <div>Kasir - K001</div>
                 </div>
             </div>
             <div class="my-4 mx-2">
-                <label for="user_beli">Batas Garansi</label>
-                <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_retur_beli" name="tgl_retur_beli" id="tgl_retur_beli">
+                <label for="user_beli">Tgl Retur Jual</label>
+                <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_max_garansi" name="tgl_max_garansi" id="tgl_max_garansi">
             </div>
-            <div class="mb-4 mx-2 float-right">
-                <label for="user_beli">Pembayaran</label>
-                <div class="dropdown">
-                    <select class="custom-select select-user tw-text-prim-white" id="pembayaran_id" name="pembayaran_id">
-                        <option value="0">Semua</option>
-                    </select>
-                </div>
+            <div class="my-4">
+            <label for="user_beli" class="mx-2">Info Penjualan</label>
+            <dl class="row mx-2">
+                <dd>Nomor SO/V/2022/001</dd>
+                <dd>Transaksi Pada 23 Mei 2022</dd>
+                <dd>Garansi Hingga 23 November 2022</dd>
+                <dd>Petugas Sulistiani</dd>
+            </dl>
             </div>
-        </div>
-        <div class="tw-rounded-lg promobox mb-4 tw-py-2 tw-px-4">
-            <h2 class="tw-text-md tw-text-prim-white">Promo</h2>
-            <div class="tw-grid tw-grid-cols-4 tw-gap-7">
-                <div class="my-2  tw-text-white">
-                    <label for="user_beli">Nama Promo</label>
-                    <div class="form-check tw-text-white">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckCheckedDisabled" checked>
-                        <label class="tw-text-white tw-text-[12px]" for="flexCheckCheckedDisabled">
-                            Diskon 50% untuk Pembelian 2 Oli
-                        </label>
-                    </div>
-                </div>
-                <div class="my-2  tw-text-white">
-                    <label for="user_beli">Nama Promo</label>
-                    <div class="form-check tw-text-white">
-                        <input class="form-check-input" type="checkbox" value="" id="flexCheckCheckedDisabled" checked>
-                        <label class="tw-text-white tw-text-[12px]" for="flexCheckCheckedDisabled">
-                            Diskon 50% untuk Pembelian 2 Oli
-                        </label>
-                    </div>
-                </div>
+            <div class="my-4">
+                <label for="user_beli" class="mx-2">Customer</label>
+                <dl class="row mx-2">
+                    <dd>Prima Sakti Nugraha</dd>
+                    <dd>Jl Ade Irma Suryani Nasution V No. 5, Tlogobendung Gresik</dd>
+                    <dd>0838312222290</dd>
+                </dl>
             </div>
 
         </div>
         <div class="tw-grid pb-4">
-            <button class="tw-w-48 tw-bg-prim-red tw-border-0  tw-text-center tw-text-white tw-py-2 tw-rounded-lg hover:tw-bg-red-700 tw-transition-all float-right" onclick="addRow('tbody2')">
-                + Tambah Barang
-            </button>
+        <button class="tw-w-48 tw-bg-prim-red tw-border-0  tw-text-center tw-text-white tw-py-2 tw-rounded-lg hover:tw-bg-red-700 tw-transition-all float-right" onclick="addRow('tbody2')">
+            + Tambah Barang Retur
+        </button>
         </div>
         <div class="tw-bg-white tw-px-5 tw-py-3 ">
             <div class="tw-overflow-x-hidden tw-overflow-y-auto tw-h-52">
@@ -139,8 +105,8 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="4">Total Harga</td>
-                            <td colspan="2">Rp. 0</td>
+                        <td colspan="4">Total Harga</td>
+                        <td colspan="2">Rp. 0</td>
                         </tr>
                     </tfoot>
                 </table>

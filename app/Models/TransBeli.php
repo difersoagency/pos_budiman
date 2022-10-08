@@ -26,4 +26,9 @@ class TransBeli extends Model
     {
         return $this->hasMany(DTransBeli::class);
     }
+
+    public function ReturBeli()
+    {
+        return $this->hasMany(ReturBeli::class);
+    }
 }

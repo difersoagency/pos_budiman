@@ -1182,4 +1182,32 @@ class HomeController extends Controller
     {
         return view('layouts.transaksi.tambah_jual');
     }
+
+    public function transaksi_retur_jual()
+    {
+        return view('layouts.transaksi.retur-jual');
+    }
+
+    public function data_transaksi_retur_jual(){
+        
+    }
+
+    public function tambah_retur_jual()
+    {
+        return view('layouts.transaksi.tambah_retur-jual');
+    }
+
+    public function transaksi_retur_beli()
+    {
+        return view('layouts.transaksi.retur-beli');
+    }
+
+    public function data_transaksi_retur_beli(){
+        
+    }
+
+    public function tambah_retur_beli()
+    {
+        return view('layouts.transaksi.tambah_retur-beli');
+    }
 }

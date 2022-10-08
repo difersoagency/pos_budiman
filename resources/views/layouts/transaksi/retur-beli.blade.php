@@ -8,7 +8,7 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="transaksi">Transaksi</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Penjualan</li>
+                    <li class="breadcrumb-item active" aria-current="page">Retur Pembelian</li>
                 </ol>
             </nav>
             <div class="row">
@@ -27,13 +27,13 @@
                     </div>
                     <div class="card tw-w-full tw-px-6 tw-py-5 tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-items-center">
                         <div class="tw-w-full tw-col-span-2 md:tw-col-span-1">
-                            <h1 class="tw-m-0 tw-text-2xl tw-font-bold">Daftar Penjualan</h1>
+                            <h1 class="tw-m-0 tw-text-2xl tw-font-bold">Daftar Retur Pembelian</h1>
                         </div>
                         <div class="tw-text-right tw-grid tw-grid-cols-1 md:tw-flex tw-mx-auto md:tw-mx-0 md:tw-ml-auto tw-w-full md:tw-w-fit tw-mt-4 md:tw-mt-0">
 
                             <div class="dropdown tw-mb-4 tw-w-full md:tw-w-fit">
-                                <button class="btn tw-text-prim-white tw-bg-prim-red tw-text-sm tw-w-full md:tw-w-fit" type="button" id="addItemButton" onclick="location.href = `{{route('tambah-jual')}}`">
-                                    + Tambah Penjualan
+                                <button class="btn tw-text-prim-white tw-bg-prim-red tw-text-sm tw-w-full md:tw-w-fit" type="button" id="addItemButton" onclick="location.href = `{{route('tambah-retur-beli')}}`">
+                                    + Tambah Retur Pembelian
                                 </button>
                             </div>
                         </div>
@@ -42,11 +42,12 @@
                             <table id="example" class="table table-bordered responsive nowrap" style="width:100%">
                                 <thead class="tw-bg-prim-blue">
                                     <tr>
-                                        <th class="tw-text-prim-white">Tanggal</th>
-                                        <th class="tw-text-prim-white">No.Penjualan</th>
-                                        <th class="tw-text-prim-white">Customer</th>
-                                        <th class="tw-text-prim-white">Kasir</th>
-                                        <th class="tw-text-prim-white tw-w-28">Status Pembayaran</th>
+                                        <th class="tw-text-prim-white">No</th>
+                                        <th class="tw-text-prim-white">Tgl Retur</th>
+                                        <th class="tw-text-prim-white">Supplier</th>
+                                        <th class="tw-text-prim-white">No PO</th>
+                                        <th class="tw-text-prim-white">Tgl PO</th>
+                                        <th class="tw-text-prim-white">Total</th>
                                         <th class="tw-text-prim-white">Action</th>
                                     </tr>
                                 </thead>
