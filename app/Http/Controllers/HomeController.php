@@ -328,11 +328,18 @@ class HomeController extends Controller
     {
         return view('layouts.transaksi.master-hutang');
     }
+    public function master_piutang()
+    {
+        return view('layouts.transaksi.master-piutang');
+    }
     public function bayar_hutang()
     {
         return view('layouts.transaksi.bayar-hutang');
     }
-
+    public function bayar_piutang()
+    {
+        return view('layouts.transaksi.bayar-piutang');
+    }
     //Store
     public function master_barang_store(Request $request)
     {
