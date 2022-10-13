@@ -14,8 +14,8 @@
             <div class="mx-2">
                 <label for="booking_id">No Booking</label>
                 <div class="dropdown" style="width:100%;">
-                    <select class="custom-select select-user tw-text-prim-white" id="booking_id" name="booking_id">
-                        <option value="0">Semua</option>
+                    <select class="custom-select booking_id tw-text-prim-white" id="booking_id" name="booking_id">
+                        <option value=""></option>
                     </select>
                 </div>
 
@@ -28,20 +28,20 @@
                 <label for="tgl_trans_jual">Tgl Transaksi</label>
                 <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_trans_jual" name="tgl_trans_jual" id="tgl_trans_jual">
             </div>
-            <div class="my-4 mx-2 tw-row-span-2">
-                <label for="user_beli">Customer</label>
-                <div>
-                    <div>Prima Sakti Nugraha</div>
-                    <div>Jl Ade Irma Suryani Nasution V No. 5, Tlogobendung Gresik</div>
-                    <div>0838312222290</div>
-                </div>
+            <div class="my-4 tw-row-span-2">
+                <label for="user_beli" class="mx-2">Customer</label>
+                <dl class="mx-2">
+                    <dl id="customer_id">-</dl>
+                    <dl id="customer_alamat">-</dl>
+                    <dl id="customer_telp">-</dl>
+                </dl>
             </div>
-            <div class="my-4 mx-2 tw-row-span-2">
-                <label for="user_beli">Dibuat Oleh</label>
-                <div>
-                    <div>Sulistiani</div>
-                    <div>Kasir - K001</div>
-                </div>
+            <div class="my-4 tw-row-span-2">
+                <label for="user_beli" class="mx-2">Dibuat Oleh</label>
+                <dl class="mx-2">
+                    <dd>{{Auth::user()->pegawai->nama_pegawai}}</dd>
+                    <dd>{{Auth::user()->LevelUSer->nama_level}} - {{Auth::user()->pegawai->kode_pegawai}}</dd>
+                </dl>
             </div>
             <div class="my-4 mx-2">
                 <label for="user_beli">Batas Garansi</label>
@@ -50,8 +50,7 @@
             <div class="mb-4 mx-2 float-right">
                 <label for="user_beli">Pembayaran</label>
                 <div class="dropdown">
-                    <select class="custom-select select-user tw-text-prim-white" id="pembayaran_id" name="pembayaran_id">
-                        <option value="0">Semua</option>
+                    <select class="custom-select pembayaran_id tw-text-prim-white" id="pembayaran_id" name="pembayaran_id">
                     </select>
                 </div>
             </div>
@@ -103,8 +102,7 @@
                             <td>
                                 <!-- Dropdown -->
                                 <div class="dropdown ">
-                                    <select class="custom-select select-trans tw-text-prim-white" name="barang_id[]">
-                                        <option value="0">Semua</option>
+                                    <select class="custom-select barang_id tw-text-prim-white" name="barang_id[]">
                                     </select>
                                 </div>
                                 <!-- End Dropdown  -->
@@ -158,3 +156,84 @@
     </section>
 </div>
 @endsection
+@section('script')
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+$(function(){
+    $('.barang_id').prepend('<option selected=""></option>').select2({
+        placeholder: "Pilih Barang",
+        delay: 250,
+                ajax: {
+                    dataType: 'json',
+                    type: 'GET',
+                    url: '/api/barang_select',
+                    data: function(params) {
+                        return {
+                            term: params.term
+                        }
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(obj) {
+                                return {
+                                    id: obj.id,
+                                    text: obj.kode_barang+' - '+obj.nama_barang
+                                };
+                            })
+                        };
+                    },
+                }
+    });
+
+    $('.booking_id').prepend('<option selected=""></option>').select2({
+        placeholder: "Pilih No Booking",
+        delay: 250,
+                ajax: {
+                    dataType: 'json',
+                    type: 'GET',
+                    url: '/api/booking_select',
+                    data: function(params) {
+                        return {
+                            term: params.term
+                        }
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(obj) {
+                                return {
+                                    id: obj.id,
+                                    text: obj.no_booking+' - '+obj.customer.nama_customer
+                                };
+                            })
+                        };
+                    },
+                }
+    });
+
+    $('.pembayaran_id').prepend('<option selected=""></option>').select2({
+        placeholder: "Pilih Pembayaran",
+        delay: 250,
+                ajax: {
+                    dataType: 'json',
+                    type: 'GET',
+                    url: '/api/pembayaran_select',
+                    data: function(params) {
+                        return {
+                            term: params.term
+                        }
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(obj) {
+                                return {
+                                    id: obj.id,
+                                    text: obj.nama_bayar
+                                };
+                            })
+                        };
+                    },
+                }
+    });
+})
+</script>
+@stop
