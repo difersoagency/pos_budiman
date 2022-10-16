@@ -43,6 +43,7 @@ Route::group(['prefix' => '/home'], function () {
     Route::get('/tambah-beli', [App\Http\Controllers\HomeController::class, 'tambah_beli'])->name('tambah-beli');
     Route::get('/jual', [App\Http\Controllers\HomeController::class, 'transaksi_jual'])->name('penjualan');
     Route::get('/tambah-jual', [App\Http\Controllers\HomeController::class, 'tambah_jual'])->name('tambah-jual');
+    Route::post('/store_jual', [App\Http\Controllers\HomeController::class, 'store_jual'])->name('store_jual');
     Route::get('/retur-jual', [App\Http\Controllers\HomeController::class, 'transaksi_retur_jual'])->name('retur-penjualan');
     Route::get('/tambah-retur-jual', [App\Http\Controllers\HomeController::class, 'tambah_retur_jual'])->name('tambah-retur-jual');
     Route::get('/retur-beli', [App\Http\Controllers\HomeController::class, 'transaksi_retur_beli'])->name('retur-pembelian');
@@ -51,6 +52,10 @@ Route::group(['prefix' => '/home'], function () {
     Route::get('/bayar-hutang', [App\Http\Controllers\HomeController::class, 'bayar_hutang'])->name('bayar_hutang');
     Route::get('/piutang', [App\Http\Controllers\HomeController::class, 'master_piutang'])->name('master_piutang');
     Route::get('/bayar-piutang', [App\Http\Controllers\HomeController::class, 'bayar_piutang'])->name('bayar_piutang');
+    Route::get('/booking', [App\Http\Controllers\HomeController::class, 'master_booking'])->name('master_booking');
+    Route::post('/data-booking', [App\Http\Controllers\HomeController::class, 'data_master_booking'])->name('data_booking');
+    Route::get('/tambah-booking', [App\Http\Controllers\HomeController::class, 'tambah_booking'])->name('tambah_booking');
+    Route::post('/store-booking', [App\Http\Controllers\HomeController::class, 'store_booking'])->name('store_booking');
 });
 
 Route::group(['prefix' => '/customer'], function () {

@@ -14,6 +14,8 @@ use App\Models\Supplier;
 use App\Models\Pegawai;
 use App\Models\LevelUser;
 use App\Models\User;
+use App\Models\Booking;
+use App\Models\DBooking;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -1183,6 +1185,63 @@ class HomeController extends Controller
         return view('layouts.transaksi.tambah_jual');
     }
 
+    public function store_jual(Request $r){
+        $validator = Validator::make($r->all(), [
+            'booking_id' => ['required'],
+            'no_trans_jual' => ['required', 'unique:htrans_jual,no_trans_jual'],
+            'tgl_trans_jual' => ['required'],
+            'tgl_max_garansi' => ['required'],
+            'total_jual' => ['required'],
+            'bayar_jual' => ['required'],
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', "Gagal menambahkan, periksa kembali form anda");
+        } else {
+            $c = TransJual::create([
+                'booking_id' => $r->booking_id,
+                'no_trans_jual' => $r->no_trans_jual, 
+                'tgl_trans_jual' => $r->tgl_trans_jual,
+                'tgl_max_garansi' => $r->tgl_max_garansi,
+                'total_jual' => $r->total_jual,
+                'bayar_jual' => $r->bayar_jual,
+                'kembali_jual' => $r->kembali_jual,
+                'promo_id' => $r->promo_id
+            ]);
+            $bool = true;
+            $dc = NULL;
+            $jb = '';
+            if ($c) {
+                for($i = 0; $i < count($r->barang_id); $i++){
+                    if($r->jenis_brg[$i] == "jasa"){
+                        $dc = DTransJualJasa::create([
+                            'htrans_jual_id' => $c->id,
+                            'jasa_id' => $r->barang_id[$i],
+                            'harga' => $r->harga[$i],
+                            'disc' => $r->disc[$i]
+                        ]);
+                    }else if($r->jenis_brg == "barang"){
+                        $dc = DTransJual::create([
+                            'htrans_jual_id' => $c->id,
+                            'jasa_id' => $r->barang_id[$i],
+                            'harga' => $r->harga[$i],
+                            'jumlah' => $r->jumlah[$i],
+                            'disc' => $r->disc[$i]
+                        ]);
+                    }
+                    if(!$dc){
+                        $bool = false;
+                    }
+                    
+                }
+            }
+            if($bool == true){
+                return redirect()->back()->with('success', "Data berhasil di tambah");
+            } else {
+                return redirect()->back()->with('error', "Gagal Menambahkan, periksa kembali");
+            }
+        }
+    }
+
     public function transaksi_retur_jual()
     {
         return view('layouts.transaksi.retur-jual');
@@ -1209,5 +1268,94 @@ class HomeController extends Controller
     public function tambah_retur_beli()
     {
         return view('layouts.transaksi.tambah_retur-beli');
+    }
+
+    public function master_booking()
+    {
+        return view('layouts.transaksi.master_booking');
+    }
+
+    public function data_master_booking(){
+        $data = Booking::with('Customer', 'TransJual')->get();
+        return datatables()->of($data)
+            ->addIndexColumn()
+            ->addColumn('customer_nama', function($data){
+                return $data->Customer->nama_customer;
+            })
+            ->addColumn('status', function($data){
+                if($data->TransJual != NULL){
+                    return '<span class="badge badge-success">Selesai</span>';
+                }else{
+                    return '<span class="badge badge-warning">Belum Proses</span>';
+                }
+            })
+            ->addColumn('action', function ($data) {
+                return  '<div class="grid grid-cols-2">
+                <button id="btnedit" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->no_booking . '" >
+                                                        <i class="fa fa-pen tw-text-prim-blue"></i>
+                                                    </button>
+                                                    <button id="btndelete" data-id="' . $data->id . '" data-nama="' . $data->no_booking . '"
+                                                        class="tw-bg-transparent tw-border-none">
+                                                        <i class="fa fa-trash tw-text-prim-red"></i>
+                                                    </button>
+            </div>';
+            })
+            ->rawColumns(['status', 'action'])
+            ->make(true);
+
+    }
+
+    public function tambah_booking()
+    {
+        return view('layouts.transaksi.tambah_booking');
+    }
+
+    public function store_booking(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'customer_id' => ['required'],
+            'no_booking' => ['required', 'unique:booking,no_booking'],
+            'tgl_booking' => ['required']
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', "Gagal menambahkan, periksa kembali form anda");
+        } else {
+            $c = Booking::create([
+                'customer_id' => $request->customer_id,
+                'no_booking' => $request->no_booking,
+                'tgl_booking' => $request->tgl_booking
+            ]);
+            $bool = true;
+            $dc = NULL;
+            $jb = '';
+            if ($c) {
+                for($i = 0; $i < count($request->barang_id); $i++){
+                    if($request->jenis_brg[$i] == "jasa"){
+                        $dc = DBooking::create([
+                            'booking_id' => $c->id,
+                            'barang_id' => NULL,
+                            'jasa_id' => $request->barang_id[$i],
+                            'jumlah' => $request->jumlah[$i]
+                        ]);
+                    }else if($request->jenis_brg == "barang"){
+                        $dc = DBooking::create([
+                            'booking_id' => $c->id,
+                            'jasa_id' => NULL,
+                            'barang_id' => $request->barang_id[$i],
+                            'jumlah' => $request->jumlah[$i]
+                        ]);
+                    }
+                    if(!$dc){
+                        $bool = false;
+                    }
+                    
+                }
+            }
+            if($bool == true){
+                return redirect()->back()->with('success', "Data berhasil di tambah");
+            } else {
+                return redirect()->back()->with('error', "Gagal Menambahkan, periksa kembali");
+            }
+        }
     }
 }

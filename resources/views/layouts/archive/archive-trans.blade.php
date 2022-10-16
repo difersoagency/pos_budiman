@@ -11,6 +11,7 @@
             <button class='two piutang' onclick="location.href = 'piutang'">Piutang</button>
             <button class='two retur-jual' onclick="location.href = `{{route('retur-penjualan')}}`">Retur Jual</button>
             <button class='two retur-beli' onclick="location.href = `{{route('retur-pembelian')}}`">Retur Beli</button>
+            <button class='two book' onclick="location.href = `{{route('master_booking')}}`">Booking</button>
     </section>
     <!-- /.content -->
 </div>

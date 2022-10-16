@@ -251,8 +251,7 @@
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: '{{ route('
-                        customer.delete ') }}',
+                        url: '{{ route("customer.delete") }}',
                         type: 'DELETE',
                         dataType: 'json',
                         data: {
