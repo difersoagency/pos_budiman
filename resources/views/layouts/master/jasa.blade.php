@@ -91,16 +91,16 @@
             processing: true,
             serverSide: true,
             ajax: {
-                'url': '/jasa/data',
+                'url': '/master/jasa/data',
                 'method': 'POST',
                 'datatype': 'JSON',
                 'headers': {
                     'X-CSRF-TOKEN': '{{csrf_token()}}'
                 }
             },
-            language: {
-                processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
-            },
+            // language: {
+            //     processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
+            // },
             columns: [{
                 data: 'DT_RowIndex',
                 className: 'nowrap-text align-center',
@@ -155,7 +155,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: "/jasa/edit/" + data_id,
+                        url: "/master/jasa/edit/" + data_id,
                         beforeSend: function() {
                             $('#loader').show();
                         },

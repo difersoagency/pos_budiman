@@ -12,7 +12,8 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class MasterController extends Controller
 {
-    public function data_barang(){
+    public function data_barang()
+    {
         $data = Barang::with('Tipe', 'Merek', 'Satuan')->get();
         return datatables()->of($data)
             ->addIndexColumn()
@@ -27,26 +28,26 @@ class MasterController extends Controller
             })
             ->addColumn('action', function ($data) {
                 return  '<div class="grid grid-cols-2">
-                <a href="/api/barang/edit/'.$data->kode_barang.'" class="mr-4">
+                <a href="/api/barang/edit/' . $data->kode_barang . '" class="mr-4">
                     <i class="fa fa-pen tw-text-prim-blue"></i>
                 </a>
-                <a href="/api/barang/delete/'.$data->kode_barang.'">
+                <a href="/api/barang/delete/' . $data->kode_barang . '">
                     <i class="fa fa-trash tw-text-prim-red"></i>
                 </a>
             </div>';
             })
             ->rawColumns(['action'])
             ->make(true);
-
     }
 
-    
 
-    public function data_customer(){
+
+    public function data_customer()
+    {
         $data = Customer::with('Kota')->get();
         return datatables()->of($data)
             ->addIndexColumn()
-            ->editColumn('kota_id', function($data){
+            ->editColumn('kota_id', function ($data) {
                 return $data->Kota->nama_kota;
             })
             ->addColumn('action', function ($data) {
@@ -61,8 +62,5 @@ class MasterController extends Controller
             })
             ->rawColumns(['action'])
             ->make(true);
-
     }
-
-    
 }

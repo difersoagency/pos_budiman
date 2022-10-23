@@ -5,7 +5,7 @@
     <section class="tambahBeli">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="transaksi">Transaksi</a></li>
+                <li class="breadcrumb-item"><a href="\transaksi">Transaksi</a></li>
                 <li class="breadcrumb-item"><a href="{{route('retur-pembelian')}}">Retur Pembelian</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Tambah Retur Pembelian</li>
             </ol>

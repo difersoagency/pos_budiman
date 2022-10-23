@@ -6,8 +6,8 @@
         <form id="trans_beli">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="transaksi">Transaksi</a></li>
-                <li class="breadcrumb-item"><a href="beli">Pembelian</a></li>
+                <li class="breadcrumb-item"><a href="\transaksi\">Transaksi</a></li>
+                <li class="breadcrumb-item"><a href="\transaksi\beli">Pembelian</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Pengajuan Pembelian</li>
             </ol>
         </nav>

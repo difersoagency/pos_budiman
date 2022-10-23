@@ -303,16 +303,17 @@ class HomeController extends Controller
         return view('layouts.master.satuan');
     }
 
-    public function transaksi_beli()
-    {
-        return view('layouts.transaksi.master-beli');
-    }
+
 
     public function archive_master()
     {
         return view('layouts.archive.archive_master');
     }
 
+    public function transaksi_beli()
+    {
+        return view('layouts.transaksi.master-beli');
+    }
     public function tambah_beli()
     {
         $supplier = Supplier::all();

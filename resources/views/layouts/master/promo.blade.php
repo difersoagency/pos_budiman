@@ -162,7 +162,7 @@
             ajax: {
                 'type': 'POST',
                 'datatype': 'JSON',
-                'url': '/promo/data',
+                'url': '/master/promo/data',
                 'headers': {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 }
@@ -209,7 +209,7 @@
     function edit(id) {
         event.preventDefault();
         $.ajax({
-            url: "/promo/edit/" + id,
+            url: "/master/promo/edit/" + id,
             beforeSend: function() {
                 $('#loader').show();
             },

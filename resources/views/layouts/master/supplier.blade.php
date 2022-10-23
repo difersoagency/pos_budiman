@@ -119,7 +119,7 @@
             processing: true,
             serverSide: true,
             ajax: {
-                'url': '/supplier/data',
+                'url': '/master/supplier/data',
                 'method': 'POST',
                 'headers': {
                     'X-CSRF-TOKEN': '{{csrf_token()}}'
@@ -210,7 +210,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: "/supplier/edit/" + data_id,
+                        url: "/master/supplier/edit/" + data_id,
                         beforeSend: function() {
                             $('#loader').show();
                         },

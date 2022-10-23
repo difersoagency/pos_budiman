@@ -103,14 +103,11 @@
             processing: true,
             serverSide: true,
             ajax: {
-                'url': '/pegawai/data',
+                'url': '/master/pegawai/data',
                 'method': 'POST',
                 'headers': {
                     'X-CSRF-TOKEN': '{{csrf_token()}}'
                 }
-            },
-            language: {
-                processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
             },
             columns: [{
                 data: 'DT_RowIndex',
@@ -173,7 +170,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: "/pegawai/edit/" + data_id,
+                        url: "/master/pegawai/edit/" + data_id,
                         beforeSend: function() {
                             $('#loader').show();
                         },

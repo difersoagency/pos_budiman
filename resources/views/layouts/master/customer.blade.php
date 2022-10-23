@@ -136,7 +136,7 @@
     function edit(id) {
         event.preventDefault();
         $.ajax({
-            url: "/customer/edit/" + id,
+            url: "/master/customer/edit/" + id,
             beforeSend: function() {
                 $('#loader').show();
             },
@@ -179,7 +179,7 @@
             ajax: {
                 'type': 'POST',
                 'datatype': 'JSON',
-                'url': '/customer/data/0',
+                'url': '/master/customer/data/0',
                 'headers': {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 }
@@ -240,7 +240,7 @@
 
         $('#kota_id').change(function() {
             var merek_id = $(this).val();
-            $('#table_customer').DataTable().ajax.url('/customer/data/' + merek_id).load();
+            $('#table_customer').DataTable().ajax.url('/master/customer/data/' + merek_id).load();
         });
 
 
@@ -259,7 +259,7 @@
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: '/customer/delete',
+                        url: '/master/customer/delete',
                         type: 'DELETE',
                         dataType: 'json',
                         data: {
