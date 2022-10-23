@@ -13,6 +13,8 @@ use App\Models\Jasa;
 use App\Models\Supplier;
 use App\Models\Pegawai;
 use App\Models\LevelUser;
+use App\Models\TransBeli;
+use App\Models\TransJual;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -313,7 +315,10 @@ class HomeController extends Controller
 
     public function tambah_beli()
     {
-        return view('layouts.transaksi.tambah_beli');
+        $supplier = Supplier::all();
+        $barang = Barang::all();
+        $satuan = Satuan::all();
+        return view('layouts.transaksi.tambah_beli', ['supplier' => $supplier, 'barang' => $barang, 'satuan' => $satuan]);
     }
 
     public function archive_trans()
@@ -633,6 +638,18 @@ class HomeController extends Controller
         return view('layouts.modal.promo-modal-edit', ['data' => $data, 'barang' => $barang]);
     }
 
+    public function transaksi_store(Request $request)
+    {
+        TransBeli::create([
+            'supplier_id' => $request->supplier,
+            'pembayaran_id' => $request->pembayaran_id,
+            'nomor_po' => $request->no_beli,
+            'tgl_trans_beli' => $request->tgl_beli,
+            'tgl_max_garansi' => $request->tgl_max_garansi,
+            'disc' => $request->disc,
+            'total_bayar' => $request->total_bayar,
+        ]);
+    }
     public function promo_store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -1188,8 +1205,8 @@ class HomeController extends Controller
         return view('layouts.transaksi.retur-jual');
     }
 
-    public function data_transaksi_retur_jual(){
-        
+    public function data_transaksi_retur_jual()
+    {
     }
 
     public function tambah_retur_jual()
@@ -1202,8 +1219,8 @@ class HomeController extends Controller
         return view('layouts.transaksi.retur-beli');
     }
 
-    public function data_transaksi_retur_beli(){
-        
+    public function data_transaksi_retur_beli()
+    {
     }
 
     public function tambah_retur_beli()

@@ -27,16 +27,6 @@ Route::group(['prefix' => '/home'], function () {
     Route::get('/admin', [App\Http\Controllers\HomeController::class, 'home_admin'])->name('home_admin')->middleware('role:admin');
     Route::get('/kasir', [App\Http\Controllers\HomeController::class, 'home_kasir'])->name('home_kasir')->middleware('role:kasir');
     Route::get('/barang', [App\Http\Controllers\HomeController::class, 'master_barang'])->name('barang')->middleware('admin');
-    Route::get('/customer', [App\Http\Controllers\HomeController::class, 'master_customer'])->name('customer')->middleware('owner');
-    Route::get('/supplier', [App\Http\Controllers\HomeController::class, 'master_supplier'])->name('supplier')->middleware('owner');
-    Route::get('/user', [App\Http\Controllers\HomeController::class, 'master_user'])->name('user')->middleware('owner');
-    Route::get('/promo', [App\Http\Controllers\HomeController::class, 'master_promo'])->name('promo');
-    Route::get('/merk', [App\Http\Controllers\HomeController::class, 'master_merk'])->name('merk')->middleware('owner');
-    Route::get('/tipe', [App\Http\Controllers\HomeController::class, 'master_tipe'])->name('tipe')->middleware('owner');
-    Route::get('/jasa', [App\Http\Controllers\HomeController::class, 'master_jasa'])->name('jasa')->middleware('owner');
-    Route::get('/pegawai', [App\Http\Controllers\HomeController::class, 'master_pegawai'])->name('pegawai')->middleware('owner');
-    Route::get('/satuan', [App\Http\Controllers\HomeController::class, 'master_satuan'])->name('satuan')->middleware('owner');
-    Route::get('/master', [App\Http\Controllers\HomeController::class, 'archive_master'])->name('master');
     Route::get('/transaksi', [App\Http\Controllers\HomeController::class, 'archive_trans'])->name('transaksi');
     Route::get('/laporan', [App\Http\Controllers\HomeController::class, 'archive_laporan'])->name('laporan');
     Route::get('/beli', [App\Http\Controllers\HomeController::class, 'transaksi_beli'])->name('pembelian');
@@ -53,7 +43,11 @@ Route::group(['prefix' => '/home'], function () {
     Route::get('/bayar-piutang', [App\Http\Controllers\HomeController::class, 'bayar_piutang'])->name('bayar_piutang');
 });
 
+
+Route::get('/master', [App\Http\Controllers\HomeController::class, 'archive_master'])->name('master');
+
 Route::group(['prefix' => '/customer'], function () {
+    Route::get('/', [App\Http\Controllers\HomeController::class, 'master_customer'])->name('customer');
     Route::get('/create', [App\Http\Controllers\HomeController::class, 'customer_create'])->name('customer.create');
     Route::post('/store', [App\Http\Controllers\HomeController::class, 'customer_store'])->name('customer.store');
     Route::post('/data/{id}', [App\Http\Controllers\HomeController::class, 'customer_data'])->name('customer.data');
@@ -82,6 +76,7 @@ Route::group(['prefix' => '/kota'], function () {
 });
 
 Route::group(['prefix' => '/user'], function () {
+    Route::get('/', [App\Http\Controllers\HomeController::class, 'master_user'])->name('user');
     Route::post('/store', [App\Http\Controllers\HomeController::class, 'master_user_store'])->name('user.store');
     Route::post('/data', [App\Http\Controllers\HomeController::class, 'master_user_data'])->name('user.data');
     Route::get('/create', [App\Http\Controllers\HomeController::class, 'master_user_create'])->name('user.create');
@@ -93,6 +88,7 @@ Route::group(['prefix' => '/user'], function () {
 
 
 Route::group(['prefix' => '/merek'], function () {
+    Route::get('/', [App\Http\Controllers\HomeController::class, 'master_merk'])->name('merk');
     Route::post('/store', [App\Http\Controllers\HomeController::class, 'master_merek_store'])->name('merek.store');
     Route::post('/data', [App\Http\Controllers\HomeController::class, 'master_merek_data'])->name('merek.data');
     Route::get('/create', [App\Http\Controllers\HomeController::class, 'master_merek_create'])->name('merek.create');
@@ -102,6 +98,7 @@ Route::group(['prefix' => '/merek'], function () {
 });
 
 Route::group(['prefix' => '/satuan'], function () {
+    Route::get('/', [App\Http\Controllers\HomeController::class, 'master_satuan'])->name('satuan');
     Route::post('/store', [App\Http\Controllers\HomeController::class, 'master_satuan_store'])->name('satuan.store');
     Route::post('/data', [App\Http\Controllers\HomeController::class, 'master_satuan_data'])->name('satuan.data');
     Route::get('/create', [App\Http\Controllers\HomeController::class, 'master_satuan_create'])->name('satuan.create');
@@ -111,6 +108,7 @@ Route::group(['prefix' => '/satuan'], function () {
 });
 
 Route::group(['prefix' => '/tipe'], function () {
+    Route::get('/', [App\Http\Controllers\HomeController::class, 'master_tipe'])->name('tipe');
     Route::post('/store', [App\Http\Controllers\HomeController::class, 'master_tipe_store'])->name('tipe.store');
     Route::post('/data', [App\Http\Controllers\HomeController::class, 'master_tipe_data'])->name('tipe.data');
     Route::get('/create', [App\Http\Controllers\HomeController::class, 'master_tipe_create'])->name('tipe.create');
@@ -120,6 +118,7 @@ Route::group(['prefix' => '/tipe'], function () {
 });
 
 Route::group(['prefix' => '/jasa'], function () {
+    Route::get('/', [App\Http\Controllers\HomeController::class, 'master_jasa'])->name('jasa');
     Route::post('/store', [App\Http\Controllers\HomeController::class, 'master_jasa_store'])->name('jasa.store');
     Route::post('/data', [App\Http\Controllers\HomeController::class, 'master_jasa_data'])->name('jasa.data');
     Route::get('/create', [App\Http\Controllers\HomeController::class, 'master_jasa_create'])->name('jasa.create');
@@ -129,6 +128,7 @@ Route::group(['prefix' => '/jasa'], function () {
 });
 
 Route::group(['prefix' => '/supplier'], function () {
+    Route::get('/', [App\Http\Controllers\HomeController::class, 'master_supplier'])->name('supplier');
     Route::post('/store', [App\Http\Controllers\HomeController::class, 'master_supplier_store'])->name('supplier.store');
     Route::post('/data', [App\Http\Controllers\HomeController::class, 'master_supplier_data'])->name('supplier.data');
     Route::get('/create', [App\Http\Controllers\HomeController::class, 'master_supplier_create'])->name('supplier.create');
@@ -138,6 +138,7 @@ Route::group(['prefix' => '/supplier'], function () {
 });
 
 Route::group(['prefix' => '/pegawai'], function () {
+    Route::get('/', [App\Http\Controllers\HomeController::class, 'master_pegawai'])->name('pegawai');
     Route::post('/store', [App\Http\Controllers\HomeController::class, 'master_pegawai_store'])->name('pegawai.store');
     Route::post('/data', [App\Http\Controllers\HomeController::class, 'master_pegawai_data'])->name('pegawai.data');
     Route::get('/create', [App\Http\Controllers\HomeController::class, 'master_pegawai_create'])->name('pegawai.create');
@@ -148,6 +149,7 @@ Route::group(['prefix' => '/pegawai'], function () {
 
 
 Route::group(['prefix' => '/promo'], function () {
+    Route::get('/', [App\Http\Controllers\HomeController::class, 'master_promo'])->name('promo');
     Route::post('/data', [App\Http\Controllers\HomeController::class, 'promo_data'])->name('promo.data');
     Route::get('/create', [App\Http\Controllers\HomeController::class, 'promo_create'])->name('promo.create');
     Route::post('/store', [App\Http\Controllers\HomeController::class, 'promo_store'])->name('promo.store');
@@ -155,5 +157,3 @@ Route::group(['prefix' => '/promo'], function () {
     Route::post('/update/{id}', [App\Http\Controllers\HomeController::class, 'promo_update'])->name('promo.update');
     Route::delete('/delete', [App\Http\Controllers\HomeController::class, 'promo_delete'])->name('promo.delete');
 });
-
-

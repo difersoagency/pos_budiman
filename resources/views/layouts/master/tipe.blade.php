@@ -2,6 +2,12 @@
 
 @section('content')
 <div class="content-wrapper tw-py-6 tw-px-5">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/master">Master</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Daftar Tipe Barang</li>
+        </ol>
+    </nav>
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
@@ -22,7 +28,8 @@
                         <!-- START: Table Mobile View -->
                         <div class="table-barang-mobile tw-mt-5 md:tw-hidden">
                             <div class="list-barang" data-current-page="1">
-
+                            </div>
+                        </div>
                                 <!-- START: Table Tablet + Desktop -->
                                 <div class="table-barang tw-mt-5 tw-col-span-2" data-current-page="1">
                                     <table id="showtable" class="table table-bordered responsive nowrap" style="width:100%">
@@ -88,8 +95,7 @@
                                 </div>
                                 <!-- END : Tabel Tablet + Desktop -->
 
-                            </div>
-                        </div>
+                          
                         <!-- /.col-md-6 -->
                     </div>
                     <!-- /.row -->
