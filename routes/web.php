@@ -27,21 +27,11 @@ Route::group(['prefix' => '/home'], function () {
     Route::get('/admin', [App\Http\Controllers\HomeController::class, 'home_admin'])->name('home_admin')->middleware('role:admin');
     Route::get('/kasir', [App\Http\Controllers\HomeController::class, 'home_kasir'])->name('home_kasir')->middleware('role:kasir');
     Route::get('/barang', [App\Http\Controllers\HomeController::class, 'master_barang'])->name('barang')->middleware('admin');
-    Route::get('/transaksi', [App\Http\Controllers\HomeController::class, 'archive_trans'])->name('transaksi');
+
     Route::get('/laporan', [App\Http\Controllers\HomeController::class, 'archive_laporan'])->name('laporan');
-    Route::get('/beli', [App\Http\Controllers\HomeController::class, 'transaksi_beli'])->name('pembelian');
-    Route::get('/tambah-beli', [App\Http\Controllers\HomeController::class, 'tambah_beli'])->name('tambah-beli');
-    Route::get('/jual', [App\Http\Controllers\HomeController::class, 'transaksi_jual'])->name('penjualan');
-    Route::get('/tambah-jual', [App\Http\Controllers\HomeController::class, 'tambah_jual'])->name('tambah-jual');
-    Route::get('/retur-jual', [App\Http\Controllers\HomeController::class, 'transaksi_retur_jual'])->name('retur-penjualan');
-    Route::get('/tambah-retur-jual', [App\Http\Controllers\HomeController::class, 'tambah_retur_jual'])->name('tambah-retur-jual');
-    Route::get('/retur-beli', [App\Http\Controllers\HomeController::class, 'transaksi_retur_beli'])->name('retur-pembelian');
-    Route::get('/tambah-retur-beli', [App\Http\Controllers\HomeController::class, 'tambah_retur_beli'])->name('tambah-retur-beli');
-    Route::get('/hutang', [App\Http\Controllers\HomeController::class, 'master_hutang'])->name('master_hutang');
-    Route::get('/bayar-hutang', [App\Http\Controllers\HomeController::class, 'bayar_hutang'])->name('bayar_hutang');
-    Route::get('/piutang', [App\Http\Controllers\HomeController::class, 'master_piutang'])->name('master_piutang');
-    Route::get('/bayar-piutang', [App\Http\Controllers\HomeController::class, 'bayar_piutang'])->name('bayar_piutang');
 });
+
+
 
 
 Route::get('/master', [App\Http\Controllers\HomeController::class, 'archive_master'])->name('master');
@@ -156,4 +146,40 @@ Route::group(['prefix' => '/promo'], function () {
     Route::get('/edit/{id}', [App\Http\Controllers\HomeController::class, 'promo_edit'])->name('promo.edit');
     Route::post('/update/{id}', [App\Http\Controllers\HomeController::class, 'promo_update'])->name('promo.update');
     Route::delete('/delete', [App\Http\Controllers\HomeController::class, 'promo_delete'])->name('promo.delete');
+});
+
+Route::group(['prefix' => '/transaksi'], function () {
+    Route::get('/', [App\Http\Controllers\HomeController::class, 'archive_trans'])->name('transaksi');
+
+
+    Route::group(['prefix' => '/beli'], function () {
+        Route::get('/', [App\Http\Controllers\HomeController::class, 'transaksi_beli'])->name('pembelian');
+        Route::get('/tambah', [App\Http\Controllers\HomeController::class, 'tambah_beli'])->name('tambah-beli');
+    });
+
+    Route::group(['prefix' => '/jual'], function () {
+        Route::get('/', [App\Http\Controllers\HomeController::class, 'transaksi_jual'])->name('penjualan');
+        Route::get('/tambah', [App\Http\Controllers\HomeController::class, 'tambah_jual'])->name('tambah-jual');
+    });
+
+
+    Route::group(['prefix' => '/hutang'], function () {
+        Route::get('/bayar', [App\Http\Controllers\HomeController::class, 'bayar_hutang'])->name('bayar_hutang');
+        Route::get('/', [App\Http\Controllers\HomeController::class, 'master_hutang'])->name('master_hutang');
+    });
+
+    Route::group(['prefix' => '/piutang'], function () {
+        Route::get('/bayar', [App\Http\Controllers\HomeController::class, 'bayar_piutang'])->name('bayar_piutang');
+        Route::get('/', [App\Http\Controllers\HomeController::class, 'master_piutang'])->name('master_piutang');
+    });
+
+    Route::group(['prefix' => '/retur-jual'], function () {
+        Route::get('/tambah', [App\Http\Controllers\HomeController::class, 'tambah_retur_jual'])->name('tambah-retur-jual');
+        Route::get('/', [App\Http\Controllers\HomeController::class, 'transaksi_retur_jual'])->name('retur-penjualan');
+    });
+
+    Route::group(['prefix' => '/retur-beli'], function () {
+        Route::get('/tambah', [App\Http\Controllers\HomeController::class, 'tambah_retur_beli'])->name('tambah-retur-beli');
+        Route::get('/', [App\Http\Controllers\HomeController::class, 'transaksi_retur_beli'])->name('retur-pembelian');
+    });
 });

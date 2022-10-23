@@ -7,7 +7,7 @@
         <div class="container-fluid">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="transaksi">Transaksi</a></li>
+                    <li class="breadcrumb-item"><a href="/transaksi">Transaksi</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Daftar Piutang</li>
                 </ol>
             </nav>
@@ -20,7 +20,7 @@
                         <div class="tw-text-right tw-grid tw-grid-cols-1 md:tw-flex tw-mx-auto md:tw-mx-0 md:tw-ml-auto tw-w-full md:tw-w-fit tw-mt-4 md:tw-mt-0">
 
                             <div class="dropdown tw-mb-4 tw-w-full md:tw-w-fit">
-                                <button class="btn tw-text-prim-white tw-bg-prim-red tw-text-sm tw-w-full md:tw-w-fit" type="button" id="addItemButton" onclick="location.href = 'bayar-piutang'">
+                                <button class="btn tw-text-prim-white tw-bg-prim-red tw-text-sm tw-w-full md:tw-w-fit" type="button" id="addItemButton" onclick="location.href =  `{{route('bayar_piutang')}}`">
                                     + Pembayaran Piutang
                                 </button>
                             </div>
