@@ -7,7 +7,7 @@
         <div class="container-fluid">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="transaksi">Transaksi</a></li>
+                    <li class="breadcrumb-item"><a href="/transaksi">Transaksi</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Penjualan</li>
                 </ol>
             </nav>
@@ -39,13 +39,13 @@
                         </div>
 
                         <div class="table_master_beli tw-mt-5 tw-col-span-2" data-current-page="1">
-                            <table id="example" class="table table-bordered responsive nowrap" style="width:100%">
+                            <table id="transjual" class="table table-bordered responsive nowrap" style="width:100%">
                                 <thead class="tw-bg-prim-blue">
                                     <tr>
                                         <th class="tw-text-prim-white">Tanggal</th>
                                         <th class="tw-text-prim-white">No.Penjualan</th>
                                         <th class="tw-text-prim-white">Customer</th>
-                                        <th class="tw-text-prim-white">Kasir</th>
+                                        <th class="tw-text-prim-white">Total Penjualan</th>
                                         <th class="tw-text-prim-white tw-w-28">Status Pembayaran</th>
                                         <th class="tw-text-prim-white">Action</th>
                                     </tr>
@@ -64,4 +64,39 @@
         </div>
     </section>
 </div>
+@endsection
+@section('script')
+<script>
+$(document).ready(function() {
+        $('#transjual').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                'url': '{{route("data_jual")}}',
+                'method': 'POST',
+                'headers': {
+                    'X-CSRF-TOKEN': '{{csrf_token()}}'
+                }
+            },
+            language: {
+                processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
+            },
+            columns: [{
+                data: 'tgl_trans_jual',
+            }, {
+                data: 'no_trans_jual',
+            }, {
+                data: 'booking.customer.nama_customer',
+            },{
+                data: 'total_jual',
+            }, {
+                data: 'pembayaran.nama_bayar',
+            }, {
+                data: 'action',
+                orderable: false,
+                searchable: false
+            }]
+        });
+    });
+</script>
 @endsection

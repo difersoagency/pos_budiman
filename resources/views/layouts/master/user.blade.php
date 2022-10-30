@@ -2,6 +2,12 @@
 
 @section('content')
 <div class="content-wrapper tw-py-6 tw-px-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/master">Master</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Daftar User</li>
+        </ol>
+    </nav>
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
@@ -85,15 +91,13 @@
             processing: true,
             serverSide: true,
             ajax: {
-                'url': '/user/data',
+                'url': '/master/user/data',
                 'method': 'POST',
                 'headers': {
                     'X-CSRF-TOKEN': '{{csrf_token()}}'
                 }
             },
-            language: {
-                processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
-            },
+        
             columns: [{
                 data: 'username',
 
@@ -152,7 +156,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: "/user/edit/"+data_id,
+                        url: "/master/user/edit/"+data_id,
                         beforeSend: function() {
                             $('#loader').show();
                         },

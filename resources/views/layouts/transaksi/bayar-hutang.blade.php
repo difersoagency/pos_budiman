@@ -5,8 +5,8 @@
     <section class="tambahBeli">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="transaksi">Transaksi</a></li>
-                <li class="breadcrumb-item"><a href="hutang">Daftar Hutang</a></li>
+                <li class="breadcrumb-item"><a href="\transaksi">Transaksi</a></li>
+                <li class="breadcrumb-item"><a href="\transaksi\hutang">Daftar Hutang</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Pembayaran Hutang</li>
             </ol>
         </nav>

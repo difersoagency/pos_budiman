@@ -1,7 +1,14 @@
 @extends('layouts.admin.master')
 
 @section('content')
+
 <div class="content-wrapper tw-py-6 tw-px-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/master">Master</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Data Customer</li>
+        </ol>
+    </nav>
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
@@ -129,7 +136,7 @@
     function edit(id) {
         event.preventDefault();
         $.ajax({
-            url: "/customer/edit/" + id,
+            url: "/master/customer/edit/" + id,
             beforeSend: function() {
                 $('#loader').show();
             },
@@ -172,7 +179,7 @@
             ajax: {
                 'type': 'POST',
                 'datatype': 'JSON',
-                'url': '/customer/data/0',
+                'url': '/master/customer/data/0',
                 'headers': {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 }
@@ -207,6 +214,7 @@
                     searchable: false
                 }
             ]
+        })
         });
 
 
@@ -228,11 +236,11 @@
                 }
             })
 
-        })
+        });
 
         $('#kota_id').change(function() {
             var merek_id = $(this).val();
-            $('#table_customer').DataTable().ajax.url('/customer/data/' + merek_id).load();
+            $('#table_customer').DataTable().ajax.url('/master/customer/data/' + merek_id).load();
         });
 
 
@@ -280,51 +288,10 @@
             })
 
         })
-    });
+   
 </script>
 @stop
 @endsection
 
-<!-- @section('script')
-<script>
-    $(document).ready(function(){
-        $('#showtable').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: {
-                'url': '/customer',
-                'method': 'GET',
-                'headers': {
-                    'X-CSRF-TOKEN': '{{csrf_token()}}'
-                }
-            },
-            language: {
-                processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
-            },
-            columns: [{
-                data: 'DT_RowIndex',
-                className: 'nowrap-text align-center',
-                orderable: false,
-                searchable: false
-            },{
-                data: 'nama_customer',
 
-            },{
-                data: 'kota_id',
 
-            },{
-                data: 'alamat',
-
-            },
-            {
-                data: 'telepon',
-
-            },{
-                data: 'action',
-                orderable: false,
-                searchable: false
-            } ]
-        });
-    })
-</script>
-@endsection -->

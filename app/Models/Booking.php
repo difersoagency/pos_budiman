@@ -19,7 +19,7 @@ class Booking extends Model
 
     public function TransJual()
     {
-        return $this->hasMany(TransJual::class);
+        return $this->hasOne(TransJual::class);
     }
 
     public function DBooking()

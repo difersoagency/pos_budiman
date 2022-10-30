@@ -6,7 +6,7 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="transaksi">Transaksi</a></li>
-                <li class="breadcrumb-item"><a href="jual">Penjualan</a></li>
+                <li class="breadcrumb-item"><a href="{{route('penjualan')}}">Penjualan</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Tambah Penjualan</li>
             </ol>
         </nav>
@@ -47,7 +47,7 @@
             </div>
             <div class="my-4 mx-2">
                 <label for="user_beli">Batas Garansi</label>
-                <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_retur_beli" name="tgl_retur_beli" id="tgl_retur_beli">
+                <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_max_garansi" name="tgl_max_garansi" id="tgl_max_garansi">
             </div>
             <div class="mb-4 mx-2 float-right">
                 <label for="user_beli">Pembayaran</label>
@@ -82,7 +82,7 @@
 
         </div>
         <div class="tw-grid pb-4">
-            <button  disabled="true" class="tw-w-48 tw-bg-prim-red tw-border-0  tw-text-center tw-text-white tw-py-2 tw-rounded-lg hover:tw-bg-red-700 tw-transition-all float-right" onclick="addRow('tbody2')" id="btntambah">
+            <button  disabled="true" type="button" class="tw-w-48 tw-bg-prim-red tw-border-0  tw-text-center tw-text-white tw-py-2 tw-rounded-lg hover:tw-bg-red-700 tw-transition-all float-right" onclick="addRow('tbody2')" id="btntambah">
                 + Tambah Barang
             </button>
         </div>
@@ -145,6 +145,18 @@
                     </tbody>
                     <tfoot>
                         <tr>
+                            <td class="tw-border-none" colspan="4">Total sebelum Diskon</td>
+                            <td class="tw-border-none" colspan="2">
+                                    <input type="number" class="form-control total_kotor" name="total_kotor" readonly="false">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tw-border-none" colspan="4">Diskon</td>
+                            <td class="tw-border-none" colspan="2">
+                                    <input type="number" class="form-control diskon_jual" name="diskon_jual" readonly="false">
+                            </td>
+                        </tr>
+                        <tr>
                             <td class="tw-border-none" colspan="4">Total Harga</td>
                             <td class="tw-border-none" colspan="2">
                                     <input type="number" class="form-control total_jual" name="total_jual" readonly="true">
@@ -171,7 +183,7 @@
             <button class="tw-bg-white tw-border-2 tw-mr-5 tw-text-prim-blue  tw-border-prim-blue hover:tw-bg-prim-blue hover:tw-text-prim-white  tw-w-32 tw-text-center tw-py-2 tw-rounded-lg  tw-transition-all">
                 <p class="tw-m-0 tw-font-bold">Batal</p>
             </button>
-            <button class="tw-bg-prim-black tw-border-0 tw-w-32 tw-text-center tw-py-2 tw-rounded-lg hover:tw-bg-gray-600 tw-transition-all float-right">
+            <button class="tw-bg-prim-black tw-border-0 tw-w-32 tw-text-center tw-py-2 tw-rounded-lg hover:tw-bg-gray-600 tw-transition-all float-right" type="submit">
                 <p class="tw-m-0 tw-text-white">Simpan</p>
             </button>
         </div>
@@ -182,10 +194,21 @@
 @section('script')
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    @if(Session::has('error'))
+    Swal.fire({
+        title: 'Gagal',
+        text: "{{ Session::get('error') }}",
+        icon: 'error',
+    });
+    @endif
+    @if(Session::has('success'))
+    Swal.fire({
+        title: 'Berhasil',
+        text: "{{ Session::get('success') }}",
+        icon: 'success',
+    });
+    @endif
 $(function(){
-    function d_booking($id){
-        
-    }
     function select_barang(){
     $('.barang_id').prepend('<option selected=""></option>').select2({
         placeholder: "Pilih Barang",
@@ -247,13 +270,39 @@ $(function(){
                 }
     });
 
+    function sum_total_harga(){
+        var sum = 0;
+        $("#barang_beli .subtotal").each(function(){
+            sum += parseFloat($(this).val());
+        });
+        $('#barang_beli .total_kotor').val(sum);
+        var bayar = sum - parseFloat($('#barang_beli .diskon_jual').val());
+        $('#barang_beli .total_jual').val(bayar);
+        sum_bayar_jual();
+    }
+
+    function sum_bayar_jual(){
+        if($('#barang_beli .bayar_jual').val() != ""){
+        var total_jual = parseFloat($('#barang_beli .total_jual').val());
+        var bayar_jual = parseFloat($('#barang_beli .bayar_jual').val());
+        if(bayar_jual >= total_jual){
+            $("#barang_beli .kembali_jual").val(bayar_jual - total_jual);
+        }
+        else{
+            $("#barang_beli .kembali_jual").val("0");
+        }
+        }
+    }
+
     $(document).on('change', '#barang_beli .barang_id', function(){
         $(this).closest('tr').find('.jenis_brg').val($(this).select2('data')[0].jenis);
         $(this).closest('tr').find('.harga').val($(this).select2('data')[0].harga);
+        sum_total_harga();
     });
 
-    $(document).on('change', '#barang_beli .jumlah', function(){
+    $(document).on('keyup change', '#barang_beli .jumlah', function(){
         $(this).closest('tr').find('.subtotal').val($(this).closest('tr').find('.harga').val() * $(this).val());
+        sum_total_harga();
     });
 
     $(document).on('change', '.booking_id', function(){
@@ -320,6 +369,7 @@ $(function(){
                 $('.barang_id').val($(".barang_id option:contains('"+namas+"')").val()).change();
             }
         }
+        sum_total_harga();
     });
 
     $('.pembayaran_id').prepend('<option selected=""></option>').select2({
@@ -345,6 +395,11 @@ $(function(){
                         };
                     },
                 }
+    });
+
+    $(document).on('keyup change', '#barang_beli .bayar_jual', function(){
+        sum_bayar_jual();
+        // sum_total_harga();
     });
 
     
