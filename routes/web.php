@@ -175,6 +175,10 @@ Route::group(['prefix' => '/transaksi'], function () {
         Route::get('/bayar', [App\Http\Controllers\TransaksiController::class, 'bayar_piutang'])->name('bayar_piutang');
         Route::get('/', [App\Http\Controllers\TransaksiController::class, 'master_piutang'])->name('master_piutang');
         Route::post('/data', [App\Http\Controllers\TransaksiController::class, 'data_piutang'])->name('data_piutang');
+        Route::get('/detail/{id}', [App\Http\Controllers\TransaksiController::class, 'detail_piutang'])->name('detail_piutang');
+        Route::post('/data_detail/{id}', [App\Http\Controllers\TransaksiController::class, 'data_detail_piutang'])->name('data_detail_piutang');
+        Route::get('/tambah_detail/{id}', [App\Http\Controllers\TransaksiController::class, 'tambah_detail_piutang'])->name('tambah_detail_piutang');
+        Route::post('/store_detail/{id}', [App\Http\Controllers\TransaksiController::class, 'store_detail_piutang'])->name('store_detail_piutang');
     });
 
     Route::group(['prefix' => '/retur-jual'], function () {

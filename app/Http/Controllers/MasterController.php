@@ -65,7 +65,7 @@ class MasterController extends Controller
     }
     public function customer_create()
     {
-        $kota = Kota::all();
+          $kota = Kota::all();
         return view('layouts.modal.customer-modal-create', ['kota' => $kota]);
     }
     public function customer_edit($id)

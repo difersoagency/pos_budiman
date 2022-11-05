@@ -20,11 +20,6 @@ class Piutang extends Model
         return $this->belongsTo(TransJual::class, 'htrans_jual_id');
     }
 
-    public function Pembayaran()
-    {
-        return $this->belongsTo(Pembayaran::class, 'pembayaran_id');
-    }
-
     public function DPiutang()
     {
         return $this->hasMany(DPiutang::class, 'h_piutang_id');

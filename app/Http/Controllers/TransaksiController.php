@@ -8,6 +8,7 @@ use App\Models\Supplier;
 use App\Models\TransBeli;
 use App\Models\DTransJualJasa;
 use App\Models\DTransJual;
+use App\Models\DPiutang;
 use App\Models\TransJual;
 use App\Models\Piutang;
 use Illuminate\Http\Request;
@@ -49,7 +50,7 @@ class TransaksiController extends Controller
         $data = Piutang::with('TransJual')->addSelect(['sum_total ' => function($q){
             $q->selectRaw('coalesce(SUM(total_bayar), 0)')
             ->from('d_piutang')
-            ->whereColumn('d_piutang.id', 'h_piutang.id');
+            ->whereColumn('d_piutang.h_piutang_id', 'h_piutang.id');
         }])->get();
         return datatables()->of($data)
             ->addIndexColumn()
@@ -63,9 +64,12 @@ class TransaksiController extends Controller
                 return $data->total_piutang - $data->sum_total;
             })
             ->addColumn('action', function ($data) {
-                return  '<div class="grid grid-cols-2">
-                <button id="btnedit" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->id . '" >
-                                                        <i class="fa fa-pen tw-text-prim-blue"></i>
+                return  '<div class="grid grid-cols-3">
+                <button id="btndetail" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->id . '" >
+                                                        <i class="fas fa-eye tw-text-prim-blue"></i>
+                                                    </button>
+                <button id="btnbayar" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->id . '" >
+                                                        <i class="fas fa-money-check-alt tw-text-prim-blue"></i>
                                                     </button>
                                                     <button id="btndelete" data-id="' . $data->id . '" data-nama="' . $data->id . '"
                                                         class="tw-bg-transparent tw-border-none">
@@ -76,6 +80,49 @@ class TransaksiController extends Controller
             ->rawColumns(['action'])
             ->make(true);
     }
+
+    public function detail_piutang($id)
+    {
+        $data = Piutang::where('id', $id)->with('TransJual.Booking.Customer')->first();
+        return view('layouts.modal.piutang-modal-detail', ['id' => $id, 'data' => $data]);
+    }
+
+    public function data_detail_piutang($id){
+        $data = DPiutang::where('h_piutang_id', $id)->get();
+        return datatables()->of($data)
+            ->addIndexColumn()
+            ->make(true);
+    }
+
+    public function tambah_detail_piutang($id){
+
+        return view('layouts.modal.piutang-modal-create', ['id' => $id]);
+    }
+
+    public function store_detail_piutang(Request $r, $id)
+    {
+        $validator = Validator::make($r->all(), [
+            'tgl_piutang' => ['required'],
+            'total_bayar' => ['required']
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', "Gagal menambahkan, periksa kembali form anda");
+        } else {
+            $d = DPiutang::create([
+                'h_piutang_id' => $id,
+                'tgl_piutang' => $r->tgl_piutang,
+                'total_bayar' => $r->total_bayar
+            ]);
+
+            if($d){
+                return redirect()->back()->with('success', "Data berhasil disimpan");
+            }
+            else{
+                return redirect()->back()->with('error', "Data gagal disimpan");
+            }
+        }
+    }
+
     public function bayar_hutang()
     {
         return view('layouts.transaksi.bayar-hutang');
