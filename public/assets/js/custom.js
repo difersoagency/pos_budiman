@@ -74,11 +74,8 @@ function addRow(tableID) {
 
 $(function() {
   $(document).on('submit', '#trans_beli', function(e) {
-    alert('ok');
-     $('#trans_beli_submit').attr('disabled', true);
      e.preventDefault();
      var $form = $(this);
-    var $inputs = $form.find("input, select, button, textarea");
     var serializedData = $form.serialize();
     var action = $(this).attr('action');
     $.ajax({
@@ -90,30 +87,30 @@ $(function() {
         data: serializedData,
         dataType: 'JSON',
         success: function(response) {
-            // if (response['data'] == "success") {
-            //     $("#tabel_penyakit > tbody").empty();
-            //     numberRow_penyakit($("#tabel_penyakit"));
-            //     $('#tabel_penyakit tbody').append(
-            //         '<tr><td colspan="6">Data tidak tersedia</td></tr>');
-            //     swal.fire(
-            //         'Berhasil',
-            //         'Data berhasil diupdate',
-            //         'success'
-            //     );
-            // } else {
-            //     swal.fire(
-            //         'Error',
-            //         'Data gagal di update',
-            //         'warning'
-            //     );
-            // }
+           if (response['data'] == "success") {
+                swal.fire(
+                    'Berhasil',
+                    'Transaksi berhasil ditambahkan',
+                    'success'
+                );
+                $( '#trans_beli' ).each(function(){
+                  this.reset();
+              });
+           } else {
+                swal.fire(
+                    'Gagal',
+                    'Lengkapi Form',
+                    'warning'
+                );
+           }
+       
         },
         error: function(xhr, status, error) {
-            swal.fire(
-                'Gagal',
-                'Lengkapi form',
-                'warning'
-            );
+          swal.fire(
+            'Gagal',
+            'Lengkapi Form',
+            'warning'
+        );
         }
     });
     return false;

@@ -38,19 +38,19 @@
                         </div>
 
                         <div class="table_master_beli tw-mt-5 tw-col-span-2" data-current-page="1">
-                            <table id="example" class="table table-bordered responsive nowrap" style="width:100%">
+                            <table id="trans_beli" class="table table-bordered responsive nowrap" style="width:100%">
                                 <thead class="tw-bg-prim-blue">
                                     <tr>
-                                        <th class="tw-text-prim-white">Tanggal</th>
                                         <th class="tw-text-prim-white">No.Pembelian</th>
-                                        <th class="tw-text-prim-white">Di Buat Oleh</th>
-                                        <th class="tw-text-prim-white tw-w-48">Deskripsi</th>
+                                        <th class="tw-text-prim-white">Supplier</th>
+                                        <th class="tw-text-prim-white">Tgl Pembelian</th>
+                                        <th class="tw-text-prim-white tw-w-48">Pembayaran</th>
                                         <th class="tw-text-prim-white tw-w-28">Total Harga</th>
                                         <th class="tw-text-prim-white">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
+                                    {{-- <tr>
                                         <td>LM001</td>
                                         <td>Lampu Motor</td>
                                         <td>Asep</td>
@@ -72,7 +72,7 @@
                                             </div>
                                         </td>
 
-                                    </tr>
+                                    </tr> --}}
 
 
                                 </tbody>
@@ -88,4 +88,49 @@
         </div>
     </section>
 </div>
+@section('script')
+<script>
+     $(document).ready(function() {
+        var table_promo = $('#trans_beli').DataTable({
+            destroy: true,
+            processing: true,
+            serverSide: true,
+            ajax: {
+                'type': 'POST',
+                'datatype': 'JSON',
+                'url': '{{route("pembelian.data")}}',
+                'headers': {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            },
+            columns: [{
+                    data: 'nomor_po',
+                    className: 'nowrap-text align-center',
+                },{
+                    data: 'supplier',
+                    className: 'nowrap-text align-center',
+                },
+                
+                {
+                    data: 'tgl_trans_beli',
+                    className: 'nowrap-text align-center',
+                }, {
+                    data: 'pembayaran',
+                    className: 'nowrap-text align-center',
+                }
+                , {
+                    data: 'total_bayar',
+                    className: 'nowrap-text align-center',
+                },
+                {
+                    data: 'action',
+                    className: 'nowrap-text align-center',
+                },
+                
+              
+            ]
+        });
+    });
+    </script>
+@stop
 @endsection

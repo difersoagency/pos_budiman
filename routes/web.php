@@ -157,6 +157,8 @@ Route::group(['prefix' => '/transaksi'], function () {
     Route::group(['prefix' => '/beli'], function () {
         Route::get('/', [App\Http\Controllers\TransaksiController::class, 'transaksi_beli'])->name('pembelian');
         Route::get('/tambah', [App\Http\Controllers\TransaksiController::class, 'tambah_beli'])->name('tambah-beli');
+        Route::post('/store', [App\Http\Controllers\TransaksiController::class, 'store_beli'])->name('store-beli');
+        Route::post('/data', [App\Http\Controllers\TransaksiController::class, 'data_transaksi_beli'])->name('pembelian.data');
     });
 
     Route::group(['prefix' => '/jual'], function () {

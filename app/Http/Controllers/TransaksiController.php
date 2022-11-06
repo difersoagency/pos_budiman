@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Barang;
+use App\Models\DTransBeli;
 use App\Models\Satuan;
 use App\Models\Supplier;
 use App\Models\TransBeli;
@@ -89,17 +90,45 @@ class TransaksiController extends Controller
         return view('layouts.archive.archive-trans');
     }
 
-    public function transaksi_store(Request $request)
+    public function store_beli(Request $request)
     {
-        TransBeli::create([
-            'supplier_id' => $request->supplier,
-            'pembayaran_id' => $request->pembayaran_id,
-            'nomor_po' => $request->no_beli,
-            'tgl_trans_beli' => $request->tgl_beli,
-            'tgl_max_garansi' => $request->tgl_max_garansi,
-            'disc' => $request->disc,
-            'total_bayar' => $request->total_bayar,
-        ]);
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'tgl_beli' => 'required',
+                'supplier' => 'required',
+                'no_beli' => 'required',
+                'tgl_beli_garansi' => 'required',
+                'barang.*' => 'required',
+                'jumlah_beli.*' => 'required',
+                'harga_satuan.*' => 'required'
+            ]
+        );
+
+        if ($validator->fails()) {
+            return response()->json(['data' => 'error']);
+        } else {
+            $header =  TransBeli::create([
+                'supplier_id' => $request->supplier,
+                'pembayaran_id' => 1,
+                'nomor_po' => $request->no_beli,
+                'tgl_trans_beli' => $request->tgl_beli,
+                'tgl_max_garansi' => $request->tgl_beli_garansi,
+                'disc' => $request->disc,
+                'total_bayar' => '2222'
+            ]);
+
+            for ($i = 0; $i < count($request->barang); $i++) {
+                DTransBeli::create([
+                    'htrans_beli_id' => $header->id,
+                    'barang_id' => $request->barang[$i],
+                    'jumlah' => $request->jumlah_beli[$i],
+                    'harga' => $request->harga_satuan[$i],
+                    'disc' => '0'
+                ]);
+            }
+            return response()->json(['data' => 'success']);
+        }
     }
 
 
@@ -118,6 +147,46 @@ class TransaksiController extends Controller
                                                      <i class="fa fa-trash tw-text-prim-red"></i>
                                                  </button>
          </div>';
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+    }
+
+    public function data_transaksi_beli()
+    {
+        $data = TransBeli::with('Supplier', 'Pembayaran')->orderBy('tgl_trans_beli', 'desc')->get();
+        return datatables()->of($data)
+            ->addIndexColumn()
+            ->addColumn('tgl_trans_beli', function ($data) {
+                return  $data->tgl_trans_beli;
+            })
+            ->addColumn('tgl_max_garansi', function ($data) {
+                return  $data->tgl_max_garansi;
+            })
+            ->addColumn('total_bayar', function ($data) {
+                return  $data->nomor_po;
+            })
+            ->addColumn('nomor_po', function ($data) {
+                return  $data->nomor_po;
+            })
+            ->addColumn('supplier', function ($data) {
+                return  $data->Supplier->nama_supplier;
+            })
+            ->addColumn('pembayaran', function ($data) {
+                return  $data->Pembayaran->nama_bayar;
+            })
+            ->addColumn('action', function ($data) {
+                return '<div class="grid grid-cols-3 tw-contents">
+                                                <button href="" class="mr-4 tw-bg-transparent tw-border-none" data-toggle="tooltip" title="Edit">
+                                                    <i class="fa fa-pen tw-text-prim-blue"></i>
+                                                </button>
+                                                <button data-toggle="tooltip" title="Detail" class="tw-mr-4 tw-bg-transparent tw-border-none">
+                                                    <i class="fa fa-info tw-text-prim-black"></i>
+                                                </button>
+                                                <button data-toggle="tooltip" title="Hapus" class="tw-bg-transparent tw-border-none">
+                                                    <i class="fa fa-trash tw-text-prim-red"></i>
+                                                </button>
+                                            </div>';
             })
             ->rawColumns(['action'])
             ->make(true);

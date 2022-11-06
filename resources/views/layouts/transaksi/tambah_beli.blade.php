@@ -3,7 +3,8 @@
 @section('content')
 <div class="content-wrapper tw-py-6 tw-px-5">
     <section class="tambahBeli">
-        <form id="trans_beli">
+        <form id="trans_beli" action="{{route('store-beli')}}" method="POST">
+            @csrf
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="\transaksi\">Transaksi</a></li>
@@ -16,7 +17,7 @@
                 <label for="user_beli">Tgl Pembelian</label>
                 <!-- Dropdown -->
                 <div class="dropdown tw-mb-7 md:tw-mb-0 md:tw-w-3/4">
-                    <input type="date" class="form-control tw-mr-3" id="tgl_beli" onclick="date()" name="tgl_beli">
+                    <input type="date" class="form-control tw-mr-3" id="tgl_beli"  name="tgl_beli">
                 </div>
                 <!-- End Dropdown  -->
             </div>
@@ -35,10 +36,10 @@
         </div>
         <div class="tw-grid tw-grid-cols-2 md:tw-flex tw-gap-7 tw-mb-5">
             <div>
-                <label for="tgl_beli">Tanggal Max Garansi</label>
+                <label for="tgl_beli_garansi">Tanggal Max Garansi</label>
                 <div class="tw-items-center tw-mb-4">
                     <div class="input-group input-daterange tw-items-center">
-                        <input type="date" class="form-control tw-mr-3" id="tgl_beli" onclick="date()" name="tgl_beli">
+                        <input type="date" class="form-control tw-mr-3" id="tgl_beli_garansi"  name="tgl_beli_garansi">
                     </div>
                     <!-- End Date Picker  -->
                 </div>
@@ -79,7 +80,7 @@
                             <td data-label="Jenis Barang / Jasa" scope="row">
                                 <!-- Dropdown -->
                                 <div class="dropdown tw-mb-7 md:tw-mb-0 ">
-                                    <select  name="state">
+                                    <select  name="barang[]">
                                        @foreach ($barang as $b)
                                        <option value="{{$b->id}}">{{$b->nama_barang}}</option>
                                        @endforeach
@@ -90,12 +91,12 @@
                             </td>
                             <td data-label="Jumlah">
                                 <div class="form-group">
-                                    <input type="number" class="form-control" name="jumlah-beli" min="0">
+                                    <input type="number" class="form-control" name="jumlah_beli[]" min="0">
                                 </div>
                             </td>
                             <td data-label="Satuan">
                                 <div class="dropdown tw-mb-7 md:tw-mb-0 ">
-                                    <select  name="state">
+                                    <select  name="satuan[]">
                                        @foreach ($satuan as $s)
                                        <option value="{{$s->id}}">{{$s->nama_satuan}}</option>
                                        @endforeach
@@ -105,14 +106,14 @@
                             </td>
                             <td data-label="Harga Satuan">
                                 <div class="form-group">
-                                    <input type="number" class="form-control" name="jumlah-beli" min="0">
+                                    <input type="number" class="form-control" name="harga_satuan[]" min="0">
                                 </div>
                             </td>
                             <td data-label="Total">
                                 <p>Rp.</p>
                             </td>
                             <td data-label="#">
-                                <button class="tw-bg-transparent tw-border-none" onclick="deleteRow('tbody2')">
+                                <button class="tw-bg-transparent tw-border-none" onclick="deleteRow('tbody2')" type="button">
                                     <i class="fa fa-trash tw-text-prim-red"></i>
                                 </button>
                             </td>
@@ -206,7 +207,7 @@
             </div>
         </div>
         <div class="tw-flex tw-mb-40 tw-mt-10">
-            <button class="tw-bg-white tw-border-2 tw-mr-5 tw-text-prim-blue  tw-border-prim-blue hover:tw-bg-prim-blue hover:tw-text-prim-white  tw-w-32 tw-text-center tw-py-2 tw-rounded-lg  tw-transition-all" type="button">
+            <button onclick="location.href='/transaksi/beli'"  class="tw-bg-white tw-border-2 tw-mr-5 tw-text-prim-blue  tw-border-prim-blue hover:tw-bg-prim-blue hover:tw-text-prim-white  tw-w-32 tw-text-center tw-py-2 tw-rounded-lg  tw-transition-all" type="button">
                 <p class="tw-m-0 tw-font-bold">Batal</p>
             </button>
             <button class="tw-bg-prim-black tw-border-0 tw-w-32 tw-text-center tw-py-2 tw-rounded-lg hover:tw-bg-gray-600 tw-transition-all" type="submit" id="trans_beli_submit">
@@ -217,3 +218,6 @@
     </section>
 </div>
 @endsection
+@section('script')
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@stop
