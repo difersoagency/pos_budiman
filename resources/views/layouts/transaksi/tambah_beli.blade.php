@@ -3,21 +3,20 @@
 @section('content')
 <div class="content-wrapper tw-py-6 tw-px-5">
     <section class="tambahBeli">
+        <form id="trans_beli">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="transaksi">Transaksi</a></li>
-                <li class="breadcrumb-item"><a href="beli">Pembelian</a></li>
+                <li class="breadcrumb-item"><a href="\transaksi\">Transaksi</a></li>
+                <li class="breadcrumb-item"><a href="\transaksi\beli">Pembelian</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Pengajuan Pembelian</li>
             </ol>
         </nav>
         <div class="tw-grid tw-grid-cols-2 tw-mb-7 tw-gap-7">
             <div>
-                <label for="user_beli">Di Buat oleh</label>
+                <label for="user_beli">Tgl Pembelian</label>
                 <!-- Dropdown -->
                 <div class="dropdown tw-mb-7 md:tw-mb-0 md:tw-w-3/4">
-                    <select class="custom-select select-user tw-text-prim-white" id="user_beli" name="state">
-                        <option value="0">Semua</option>
-                    </select>
+                    <input type="date" class="form-control tw-mr-3" id="tgl_beli" onclick="date()" name="tgl_beli">
                 </div>
                 <!-- End Dropdown  -->
             </div>
@@ -25,8 +24,10 @@
                 <label for="user_beli">Supplier</label>
                 <!-- Dropdown -->
                 <div class="dropdown tw-mb-7 md:tw-mb-0 md:tw-w-3/4">
-                    <select class="custom-select select-user tw-text-prim-white" id="pembelian_beli" name="state">
-                        <option value="0">Semua</option>
+                    <select class="custom-select select-user tw-text-prim-white" id="pembelian_beli" name="supplier">
+                     @foreach ($supplier as $s)
+                     <option value="{{$s->id}}">{{$s->nama_supplier}}</option> 
+                        @endforeach
                     </select>
                 </div>
                 <!-- End Dropdown  -->
@@ -34,10 +35,10 @@
         </div>
         <div class="tw-grid tw-grid-cols-2 md:tw-flex tw-gap-7 tw-mb-5">
             <div>
-                <label for="tgl_beli">Tanggal Pembelian</label>
+                <label for="tgl_beli">Tanggal Max Garansi</label>
                 <div class="tw-items-center tw-mb-4">
                     <div class="input-group input-daterange tw-items-center">
-                        <input type="date" class="form-control tw-mr-3" id="tgl_beli" onclick="date()">
+                        <input type="date" class="form-control tw-mr-3" id="tgl_beli" onclick="date()" name="tgl_beli">
                     </div>
                     <!-- End Date Picker  -->
                 </div>
@@ -56,7 +57,7 @@
             <div class="tw-col-span-2 md:tw-flex-auto">
                 <div class="form-group">
                     <label for="desc_beli" class="col-form-label tw-pt-0">Deskripsi</label>
-                    <input type="text" class="form-control " id="desc_beli" name="nama_barang">
+                    <input type="text" class="form-control " id="desc_beli" name="deskripsi">
                 </div>
             </div>
         </div>
@@ -78,8 +79,11 @@
                             <td data-label="Jenis Barang / Jasa" scope="row">
                                 <!-- Dropdown -->
                                 <div class="dropdown tw-mb-7 md:tw-mb-0 ">
-                                    <select class="custom-select select-trans tw-text-prim-white" name="state">
-                                        <option value="0">Semua</option>
+                                    <select  name="state">
+                                       @foreach ($barang as $b)
+                                       <option value="{{$b->id}}">{{$b->nama_barang}}</option>
+                                       @endforeach
+                                        
                                     </select>
                                 </div>
                                 <!-- End Dropdown  -->
@@ -91,8 +95,11 @@
                             </td>
                             <td data-label="Satuan">
                                 <div class="dropdown tw-mb-7 md:tw-mb-0 ">
-                                    <select class="custom-select select-trans tw-text-prim-white" name="state">
-                                        <option value="0">Kg</option>
+                                    <select  name="state">
+                                       @foreach ($satuan as $s)
+                                       <option value="{{$s->id}}">{{$s->nama_satuan}}</option>
+                                       @endforeach
+                                       
                                     </select>
                                 </div>
                             </td>
@@ -113,7 +120,7 @@
                     </tbody>
                 </table>
             </div>
-            <button class="tw-bg-prim-red  tw-border-0 tw-w-full tw-text-center tw-py-2 tw-rounded-lg hover:tw-bg-red-700 tw-transition-all" onclick="addRow('tbody2')">
+            <button class="tw-bg-prim-red  tw-border-0 tw-w-full tw-text-center tw-py-2 tw-rounded-lg hover:tw-bg-red-700 tw-transition-all" onclick="addRow('tbody2')" type="button">
                 <p class="tw-m-0 tw-text-white">+ Tambah Barang</p>
             </button>
             <div class="totalPrice tw-mt-9">
@@ -121,7 +128,7 @@
                     <tbody>
                         <tr>
                             <td colspan="3">Total Item : 5 Item</td>
-                            <td>Biaya Lain</td>
+                            {{-- <td>Biaya Lain</td>
                             <td>
                                 <div class="input-group">
                                     <div class="input-group-prepend">
@@ -129,21 +136,21 @@
                                     </div>
                                     <input type="number" class="form-control tw-w-1" aria-label="Amount" id="harga-jual" name="harga_jual" placeholder="0">
                                 </div>
-                            </td>
+                            </td> --}}
                         </tr>
                         <tr>
                             <td class="tw-border-none" colspan="3"></td>
                             <td class="tw-border-none">Diskon %</td>
                             <td class="tw-border-none">
                                 <div class="input-group">
-                                    <input type="number" class="form-control tw-w-1" aria-label="Amount" id="harga-jual" name="harga_jual" placeholder="0">
+                                    <input type="number" class="form-control tw-w-1" aria-label="Amount" id="harga-jual" name="disc" placeholder="0">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">%</span>
                                     </div>
                                 </div>
                             </td>
                         </tr>
-                        <tr>
+                        {{-- <tr>
                             <td class="tw-border-none" colspan="3"></td>
                             <td class="tw-border-none">Pajak (11%)</td>
                             <td class="tw-border-none">
@@ -154,7 +161,7 @@
                                     <input type="number" class="form-control tw-w-1 tw-bg-transparent tw-border-transparent" aria-label="Amount" id="harga-jual" name="harga_jual" value="0" disabled>
                                 </div>
                             </td>
-                        </tr>
+                        </tr> --}}
                         <tr>
                             <td class="tw-border-none"></td>
                         </tr>
@@ -170,7 +177,7 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr>
+                        {{-- <tr>
                             <td class="tw-border-none" colspan="3"></td>
                             <td class="tw-border-none">Uang Muka</td>
                             <td class="tw-border-none">
@@ -181,7 +188,7 @@
                                     <input type="number" class="form-control tw-w-1" aria-label="Amount" id="harga-jual" name="harga_jual" value="0">
                                 </div>
                             </td>
-                        </tr>
+                        </tr> --}}
                         <tr>
                             <td class="tw-border-none" colspan="3"></td>
                             <td class="tw-border-none">Total</td>
@@ -190,7 +197,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text tw-bg-transparent tw-border-transparent">Rp.</span>
                                     </div>
-                                    <input type="number" class="form-control tw-w-1 tw-bg-transparent tw-border-transparent" aria-label="Amount" id="harga-jual" name="harga_jual" value="0" disabled>
+                                    <input type="number" class="form-control tw-w-1 tw-bg-transparent tw-border-transparent" aria-label="Amount" id="harga-jual" name="total_bayar" value="0" disabled>
                                 </div>
                             </td>
                         </tr>
@@ -199,13 +206,14 @@
             </div>
         </div>
         <div class="tw-flex tw-mb-40 tw-mt-10">
-            <button class="tw-bg-white tw-border-2 tw-mr-5 tw-text-prim-blue  tw-border-prim-blue hover:tw-bg-prim-blue hover:tw-text-prim-white  tw-w-32 tw-text-center tw-py-2 tw-rounded-lg  tw-transition-all">
+            <button class="tw-bg-white tw-border-2 tw-mr-5 tw-text-prim-blue  tw-border-prim-blue hover:tw-bg-prim-blue hover:tw-text-prim-white  tw-w-32 tw-text-center tw-py-2 tw-rounded-lg  tw-transition-all" type="button">
                 <p class="tw-m-0 tw-font-bold">Batal</p>
             </button>
-            <button class="tw-bg-prim-black tw-border-0 tw-w-32 tw-text-center tw-py-2 tw-rounded-lg hover:tw-bg-gray-600 tw-transition-all">
+            <button class="tw-bg-prim-black tw-border-0 tw-w-32 tw-text-center tw-py-2 tw-rounded-lg hover:tw-bg-gray-600 tw-transition-all" type="submit" id="trans_beli_submit">
                 <p class="tw-m-0 tw-text-white">Simpan</p>
             </button>
         </div>
+    </form>
     </section>
 </div>
 @endsection

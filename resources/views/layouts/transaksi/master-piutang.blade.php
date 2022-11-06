@@ -8,49 +8,40 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="/transaksi">Transaksi</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Penjualan</li>
+                    <li class="breadcrumb-item active" aria-current="page">Daftar Piutang</li>
                 </ol>
             </nav>
             <div class="row">
                 <div class="col-lg-12">
-
-                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-items-end tw-mb-4">
-                        <!-- Dropdown -->
-                        <div class="dropdown tw-mb-7 md:tw-mb-0 tw-w-2/4">
-
-                            <select class="custom-select select-2 tw-bg-prim-blue tw-text-prim-white" id="merk_id" name="state">
-                                <option value="0">Semua</option>
-                            </select>
-                        </div>
-                        <!-- End Dropdown  -->
-
-                    </div>
                     <div class="card tw-w-full tw-px-6 tw-py-5 tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-items-center">
                         <div class="tw-w-full tw-col-span-2 md:tw-col-span-1">
-                            <h1 class="tw-m-0 tw-text-2xl tw-font-bold">Daftar Penjualan</h1>
+                            <h1 class="tw-m-0 tw-text-2xl tw-font-bold">Daftar Piutang Usaha</h1>
                         </div>
                         <div class="tw-text-right tw-grid tw-grid-cols-1 md:tw-flex tw-mx-auto md:tw-mx-0 md:tw-ml-auto tw-w-full md:tw-w-fit tw-mt-4 md:tw-mt-0">
 
                             <div class="dropdown tw-mb-4 tw-w-full md:tw-w-fit">
-                                <button class="btn tw-text-prim-white tw-bg-prim-red tw-text-sm tw-w-full md:tw-w-fit" type="button" id="addItemButton" onclick="location.href = `{{route('tambah-jual')}}`">
-                                    + Tambah Penjualan
+                                <button class="btn tw-text-prim-white tw-bg-prim-red tw-text-sm tw-w-full md:tw-w-fit" type="button" id="addItemButton" onclick="location.href =  `{{route('bayar_piutang')}}`">
+                                    + Pembayaran Piutang
                                 </button>
                             </div>
                         </div>
 
                         <div class="table_master_beli tw-mt-5 tw-col-span-2" data-current-page="1">
-                            <table id="transjual" class="table table-bordered responsive nowrap" style="width:100%">
+                            <table id="piutang" class="table table-bordered responsive nowrap" style="width:100%">
                                 <thead class="tw-bg-prim-blue">
                                     <tr>
-                                        <th class="tw-text-prim-white">Tanggal</th>
-                                        <th class="tw-text-prim-white">No.Penjualan</th>
-                                        <th class="tw-text-prim-white">Customer</th>
-                                        <th class="tw-text-prim-white">Total Penjualan</th>
-                                        <th class="tw-text-prim-white tw-w-28">Status Pembayaran</th>
-                                        <th class="tw-text-prim-white">Action</th>
+                                        <th class="tw-text-prim-white tw-w-24">No</th>
+                                        <th class="tw-text-prim-white tw-w-24">Nama Pelanggan</th>
+                                        <th class="tw-text-prim-white tw-w-48">Total Piutang Usaha</th>
+                                        <th class="tw-text-prim-white tw-w-48">Lunas</th>
+                                        <th class="tw-text-prim-white tw-w-48">Sisa Hutang</th>
+                                        <th class="tw-text-prim-white">#</th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    
+
+
                                 </tbody>
 
                             </table>
@@ -79,15 +70,31 @@
     </section>
 </div>
 @endsection
+
 @section('script')
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    @if(Session::has('error'))
+    Swal.fire({
+        title: 'Gagal',
+        text: "{{ Session::get('error') }}",
+        icon: 'error',
+    });
+    @endif
+    @if(Session::has('success'))
+    Swal.fire({
+        title: 'Berhasil',
+        text: "{{ Session::get('success') }}",
+        icon: 'success',
+    });
+    @endif
 $(document).ready(function() {
-    function data_detail(id){
-            $('#transjualdetail').DataTable({
+        function data_detail(id){
+            $('#piutangtable').DataTable({
             processing: true,
             serverSide: true,
             ajax: {
-                'url': '/transaksi/jual/data_detail/'+id,
+                'url': '/transaksi/piutang/data_detail/'+id,
                 'method': 'POST',
                 'headers': {
                     'X-CSRF-TOKEN': '{{csrf_token()}}'
@@ -102,13 +109,9 @@ $(document).ready(function() {
                     orderable: false,
                     searchable: false
                 }, {
-                    data: 'nama',
+                    data: 'tgl_piutang',
                 }, {
-                    data: 'jumlah',
-                }, {
-                    data: 'disc',
-                }, {
-                    data: 'harga',
+                    data: 'total_bayar',
                 }]
             });
         }
@@ -116,25 +119,44 @@ $(document).ready(function() {
         $(document).on('click', '#btndetail', function(event) {
             var id = $(this).attr('data-id');
             $.ajax({
-                url: "/transaksi/jual/detail/"+id,
+                url: "/transaksi/piutang/detail/"+id,
                 beforeSend: function() {
                     $('#loader').show();
                 },
                 // return the result
                 success: function(result) {
                     $('#modal').modal("show");
-                    $('.modal-title').html("Informasi Penjualan");
+                    $('.modal-title').html("Detail Pembayaran Piutang");
                     $('.modal-body').html(result).show();
 
                     data_detail(id);
                 },
             })
         });
-        $('#transjual').DataTable({
+
+        $(document).on('click', '#btnbayar', function(event) {
+            var id = $(this).attr('data-id');
+            $.ajax({
+                url: "/transaksi/piutang/tambah_detail/"+id,
+                beforeSend: function() {
+                    $('#loader').show();
+                },
+                // return the result
+                success: function(result) {
+                    $('#modal').modal("show");
+                    $('.modal-title').html("Detail Pembayaran Piutang");
+                    $('.modal-body').html(result).show();
+
+                    data_detail(id);
+                },
+            })
+        });
+
+        $('#piutang').DataTable({
             processing: true,
             serverSide: true,
             ajax: {
-                'url': '{{route("data_jual")}}',
+                'url': '{{route("data_piutang")}}',
                 'method': 'POST',
                 'headers': {
                     'X-CSRF-TOKEN': '{{csrf_token()}}'
@@ -144,15 +166,18 @@ $(document).ready(function() {
                 processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
             },
             columns: [{
-                data: 'tgl_trans_jual',
+                data: 'DT_RowIndex',
+                className: 'nowrap-text align-center',
+                orderable: false,
+                searchable: false
             }, {
                 data: 'no_trans_jual',
             }, {
-                data: 'booking.customer.nama_customer',
-            },{
-                data: 'total_jual',
+                data: 'total_piutang',
             }, {
-                data: 'pembayaran.nama_bayar',
+                data: 'sum_total',
+            },{
+                data: 'sisa_hutang',
             }, {
                 data: 'action',
                 orderable: false,

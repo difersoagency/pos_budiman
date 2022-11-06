@@ -71,3 +71,52 @@ function addRow(tableID) {
   }
 }
 
+
+$(function() {
+  $(document).on('submit', '#trans_beli', function(e) {
+    alert('ok');
+     $('#trans_beli_submit').attr('disabled', true);
+     e.preventDefault();
+     var $form = $(this);
+    var $inputs = $form.find("input, select, button, textarea");
+    var serializedData = $form.serialize();
+    var action = $(this).attr('action');
+    $.ajax({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        type: "POST",
+        url: action,
+        data: serializedData,
+        dataType: 'JSON',
+        success: function(response) {
+            // if (response['data'] == "success") {
+            //     $("#tabel_penyakit > tbody").empty();
+            //     numberRow_penyakit($("#tabel_penyakit"));
+            //     $('#tabel_penyakit tbody').append(
+            //         '<tr><td colspan="6">Data tidak tersedia</td></tr>');
+            //     swal.fire(
+            //         'Berhasil',
+            //         'Data berhasil diupdate',
+            //         'success'
+            //     );
+            // } else {
+            //     swal.fire(
+            //         'Error',
+            //         'Data gagal di update',
+            //         'warning'
+            //     );
+            // }
+        },
+        error: function(xhr, status, error) {
+            swal.fire(
+                'Gagal',
+                'Lengkapi form',
+                'warning'
+            );
+        }
+    });
+    return false;
+})
+});
+

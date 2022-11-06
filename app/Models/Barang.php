@@ -34,4 +34,21 @@ class Barang extends Model
     {
         return $this->hasMany(Promo::class);
     }
+    public function DTransJual()
+    {
+        return $this->hasMany(DTransJual::class);
+    }
+    public function DReturJual()
+    {
+        return $this->hasMany(DReturJual::class);
+    }
+    public function DReturBeli()
+    {
+        return $this->hasMany(DReturBeli::class);
+    }
+
+    public function DBooking()
+    {
+        return $this->hasMany(DBooking::class);
+    }
 }
