@@ -131,7 +131,7 @@
                             </td>
 
                             <td>
-                                <button data-toggle="modal" data-target="#deleteModal" class="tw-bg-transparent tw-border-none">
+                                <button data-toggle="modal" onclick="deleteRow(this,'tbody2')" class="tw-bg-transparent tw-border-none">
                                     <i class="fa fa-trash tw-text-prim-red"></i>
                                 </button>
                             </td>

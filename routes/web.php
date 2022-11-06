@@ -47,6 +47,7 @@ Route::group(['prefix' => '/home'], function () {
     Route::get('/bayar-hutang', [App\Http\Controllers\HomeController::class, 'bayar_hutang'])->name('bayar_hutang');
     Route::get('/piutang', [App\Http\Controllers\HomeController::class, 'master_piutang'])->name('master_piutang');
     Route::get('/bayar-piutang', [App\Http\Controllers\HomeController::class, 'bayar_piutang'])->name('bayar_piutang');
+    Route::get('/kasir', [App\Http\Controllers\HomeController::class, 'kasir'])->name('kasir');
 });
 
 Route::group(['prefix' => '/customer'], function () {

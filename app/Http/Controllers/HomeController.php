@@ -340,6 +340,10 @@ class HomeController extends Controller
     {
         return view('layouts.transaksi.bayar-piutang');
     }
+    public function kasir()
+    {
+        return view('kasir');
+    }
     //Store
     public function master_barang_store(Request $request)
     {

@@ -10,57 +10,53 @@
                 <li class="breadcrumb-item active" aria-current="page">Pengajuan Pembelian</li>
             </ol>
         </nav>
-        <div class="tw-grid tw-grid-cols-2 tw-mb-7 tw-gap-7">
-            <div>
-                <label for="user_beli">Di Buat oleh</label>
-                <!-- Dropdown -->
-                <div class="dropdown tw-mb-7 md:tw-mb-0 md:tw-w-3/4">
-                    <select class="custom-select select-user tw-text-prim-white" id="user_beli" name="state">
+        <div class="tw-grid tw-grid-cols-3 ">
+            <div class="mx-2">
+                <label for="booking_id">Pilih Supplier</label>
+                <div class="dropdown">
+                    <select class="custom-select select-user tw-text-prim-white" id="booking_id" name="booking_id">
                         <option value="0">Semua</option>
                     </select>
                 </div>
-                <!-- End Dropdown  -->
+
             </div>
-            <div>
+            <div class="mx-2">
+                <label for="no_trans_jual">No Transaksi Pembelian</label>
+                <input type="text" placeholder="No Transaksi" class="form-control no_trans_jual" name="no_trans_jual" id="no_trans_jual">
+            </div>
+            <div class="mx-2">
+                <label for="tgl_trans_jual">Tgl Transaksi</label>
+                <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_trans_jual" name="tgl_trans_jual" id="tgl_trans_jual">
+            </div>
+            <div class="my-4 mx-2 tw-row-span-2">
                 <label for="user_beli">Supplier</label>
-                <!-- Dropdown -->
-                <div class="dropdown tw-mb-7 md:tw-mb-0 md:tw-w-3/4">
-                    <select class="custom-select select-user tw-text-prim-white" id="pembelian_beli" name="state">
+                <div>
+                    <div>Prima Sakti Nugraha</div>
+                    <div>Jl Ade Irma Suryani Nasution V No. 5, Tlogobendung Gresik</div>
+                    <div>0838312222290</div>
+                </div>
+            </div>
+            <div class="my-4 mx-2 tw-row-span-2">
+                <label for="user_beli">Dibuat Oleh</label>
+                <div>
+                    <div>Suparjo</div>
+                    <div>Marketing - M001</div>
+                </div>
+            </div>
+            <div class="my-4 mx-2">
+                <label for="user_beli">Batas Garansi</label>
+                <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_max_garansi" name="tgl_max_garansi" id="tgl_max_garansi">
+            </div>
+            <div class="mb-4 mx-2 float-right">
+                <label for="user_beli">Pembuat</label>
+                <div class="dropdown">
+                    <select class="custom-select select-user tw-text-prim-white" id="pembayaran_id" name="pembayaran_id">
                         <option value="0">Semua</option>
                     </select>
                 </div>
-                <!-- End Dropdown  -->
             </div>
         </div>
-        <div class="tw-grid tw-grid-cols-2 md:tw-flex tw-gap-7 tw-mb-5">
-            <div>
-                <label for="tgl_beli">Tanggal Pembelian</label>
-                <div class="tw-items-center tw-mb-4">
-                    <div class="input-group input-daterange tw-items-center">
-                        <input type="date" class="form-control tw-mr-3" id="tgl_beli" onclick="date()">
-                    </div>
-                    <!-- End Date Picker  -->
-                </div>
-            </div>
-            <div>
-                <div class="form-group">
-                    <label for="no_beli" class="col-form-label tw-pt-0">No. Pengajuan</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">#</span>
-                        </div>
-                        <input type="text" class="form-control" aria-label="Amount" id="no_beli" name="no_beli">
-                    </div>
-                </div>
-            </div>
-            <div class="tw-col-span-2 md:tw-flex-auto">
-                <div class="form-group">
-                    <label for="desc_beli" class="col-form-label tw-pt-0">Deskripsi</label>
-                    <input type="text" class="form-control " id="desc_beli" name="nama_barang">
-                </div>
-            </div>
-        </div>
-        <div class="tw-bg-white tw-px-5 tw-py-3 ">
+        < <div class="tw-bg-white tw-px-5 tw-py-3 ">
             <div class="md:tw-overflow-x-hidden tw-overflow-y-auto tw-h-52">
                 <table id="barang_beli" class="tw-w-full table table-striped ">
                     <thead class="tw-border-b tw-border-b-black">
@@ -69,6 +65,7 @@
                             <th scope="row" class="tw-text-left tw-border-t-0 tw-w-24">Jumlah</th>
                             <th scope="row" class="tw-text-left tw-border-t-0 tw-w-24">Satuan</th>
                             <th scope="row" class="tw-text-left tw-border-t-0 tw-w-36">Harga Satuan</th>
+                            <th scope="row" class="tw-text-left tw-border-t-0 tw-w-24">Diskon</th>
                             <th scope="row" class="tw-text-left tw-border-t-0 tw-w-36">Total</th>
                             <th scope="row" class="tw-text-left tw-border-t-0 tw-w-20">#</th>
                         </tr>
@@ -101,11 +98,16 @@
                                     <input type="number" class="form-control" name="jumlah-beli" min="0">
                                 </div>
                             </td>
+                            <td data-label="diskon-beli">
+                                <div class="form-group">
+                                    <input type="number" class="form-control" name="diskon-beli" min="0">
+                                </div>
+                            </td>
                             <td data-label="Total">
                                 <p>Rp.</p>
                             </td>
                             <td data-label="#">
-                                <button class="tw-bg-transparent tw-border-none" onclick="deleteRow('tbody2')">
+                                <button class="tw-bg-transparent tw-border-none" onclick="deleteRow(this,'tbody2')">
                                     <i class="fa fa-trash tw-text-prim-red"></i>
                                 </button>
                             </td>
@@ -133,7 +135,7 @@
                         </tr>
                         <tr>
                             <td class="tw-border-none" colspan="3"></td>
-                            <td class="tw-border-none">Diskon %</td>
+                            <td class="tw-border-none">Diskon Transaksi %</td>
                             <td class="tw-border-none">
                                 <div class="input-group">
                                     <input type="number" class="form-control tw-w-1" aria-label="Amount" id="harga-jual" name="harga_jual" placeholder="0">
@@ -197,15 +199,15 @@
                     </tbody>
                 </table>
             </div>
-        </div>
-        <div class="tw-flex tw-mb-40 tw-mt-10">
-            <button class="tw-bg-white tw-border-2 tw-mr-5 tw-text-prim-blue  tw-border-prim-blue hover:tw-bg-prim-blue hover:tw-text-prim-white  tw-w-32 tw-text-center tw-py-2 tw-rounded-lg  tw-transition-all">
-                <p class="tw-m-0 tw-font-bold">Batal</p>
-            </button>
-            <button class="tw-bg-prim-black tw-border-0 tw-w-32 tw-text-center tw-py-2 tw-rounded-lg hover:tw-bg-gray-600 tw-transition-all">
-                <p class="tw-m-0 tw-text-white">Simpan</p>
-            </button>
-        </div>
-    </section>
+</div>
+<div class="tw-flex tw-mb-40 tw-mt-10">
+    <button class="tw-bg-white tw-border-2 tw-mr-5 tw-text-prim-blue  tw-border-prim-blue hover:tw-bg-prim-blue hover:tw-text-prim-white  tw-w-32 tw-text-center tw-py-2 tw-rounded-lg  tw-transition-all">
+        <p class="tw-m-0 tw-font-bold">Batal</p>
+    </button>
+    <button class="tw-bg-prim-black tw-border-0 tw-w-32 tw-text-center tw-py-2 tw-rounded-lg hover:tw-bg-gray-600 tw-transition-all">
+        <p class="tw-m-0 tw-text-white">Simpan</p>
+    </button>
+</div>
+</section>
 </div>
 @endsection
