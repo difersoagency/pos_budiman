@@ -174,6 +174,9 @@ class TransaksiController extends Controller
             ->addIndexColumn()
             ->addColumn('action', function ($data) {
                 return  '<div class="grid grid-cols-2">
+                <button id="btndetail" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->no_trans_jual . '" >
+                                                        <i class="fas fa-eye tw-text-prim-blue"></i>
+                                                    </button>
                 <button id="btnedit" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->no_trans_jual . '" >
                                                         <i class="fa fa-pen tw-text-prim-blue"></i>
                                                     </button>
@@ -187,6 +190,30 @@ class TransaksiController extends Controller
             ->make(true);
     }
 
+    public function detail_jual($id){
+        $data = TransJual::where('id', $id)->with('Booking.Customer')->first();
+        return view('layouts.modal.jual-modal-detail', ['id' => $id, 'data' => $data]);
+    }
+
+    public function data_detail_jual($id){
+        $databrg = DTransJual::where('htrans_jual_id', $id)->addSelect(['nama' => function($q){
+            $q->selectRaw('CONCAT(kode_barang, " - ", nama_merek, " ", nama_barang)')
+            ->from('barang')
+            ->join('merek', 'merek.id', '=', 'barang.merek_id')
+            ->whereColumn('barang.id', 'dtrans_jual.barang_id');
+        }])->select('jumlah', 'harga', 'disc')->get();
+
+        $datajasa = DTransJualJasa::where('htrans_jual_id', $id)->addSelect(['nama' => function($q){
+            $q->selectRaw('nama_jasa')
+            ->from('jasa')
+            ->whereColumn('jasa.id', 'dtrans_jual_jasa.jasa_id');
+        }])->selectRaw('IF(id IS NULL, "", "1") as jumlah, harga, disc')->get();
+
+        $data = $databrg->merge($datajasa);
+        return datatables()->of($data)
+            ->addIndexColumn()
+            ->make(true);
+    }
 
     public function tambah_jual()
     {

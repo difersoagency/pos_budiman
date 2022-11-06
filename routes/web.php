@@ -163,6 +163,8 @@ Route::group(['prefix' => '/transaksi'], function () {
         Route::post('/data', [App\Http\Controllers\TransaksiController::class, 'data_transaksi_jual'])->name('data_jual');
         Route::get('/tambah', [App\Http\Controllers\TransaksiController::class, 'tambah_jual'])->name('tambah-jual');
         Route::post('/store', [App\Http\Controllers\TransaksiController::class, 'store_jual'])->name('store_jual');
+        Route::get('/detail/{id}', [App\Http\Controllers\TransaksiController::class, 'detail_jual'])->name('detail_jual');
+        Route::post('/data_detail/{id}', [App\Http\Controllers\TransaksiController::class, 'data_detail_jual'])->name('data_detail_jual');
     });
 
 

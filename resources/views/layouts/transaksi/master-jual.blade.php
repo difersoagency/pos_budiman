@@ -62,12 +62,74 @@
             </div>
             <!-- /.row -->
         </div>
+        <div class="modal fade w-full" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modal_title"></h5>
+                        <button type="button" class="close tw-text-prim-red" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 </div>
 @endsection
 @section('script')
 <script>
 $(document).ready(function() {
+    function data_detail(id){
+            $('#transjualdetail').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                'url': '/transaksi/jual/data_detail/'+id,
+                'method': 'POST',
+                'headers': {
+                    'X-CSRF-TOKEN': '{{csrf_token()}}'
+                }
+            },
+            language: {
+                processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
+            },
+            columns: [{
+                    data: 'DT_RowIndex',
+                    className: 'nowrap-text align-center',
+                    orderable: false,
+                    searchable: false
+                }, {
+                    data: 'nama',
+                }, {
+                    data: 'jumlah',
+                }, {
+                    data: 'disc',
+                }, {
+                    data: 'harga',
+                }]
+            });
+        }
+
+        $(document).on('click', '#btndetail', function(event) {
+            var id = $(this).attr('data-id');
+            $.ajax({
+                url: "/transaksi/jual/detail/"+id,
+                beforeSend: function() {
+                    $('#loader').show();
+                },
+                // return the result
+                success: function(result) {
+                    $('#modal').modal("show");
+                    $('.modal-title').html("Informasi Penjualan");
+                    $('.modal-body').html(result).show();
+
+                    data_detail(id);
+                },
+            })
+        });
         $('#transjual').DataTable({
             processing: true,
             serverSide: true,
