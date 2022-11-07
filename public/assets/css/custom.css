@@ -157,6 +157,18 @@
    font-weight: 900;
 }
 
+.retur-beli:after, .retur-beli:before {
+  font-family: "Font Awesome 5 Free";
+   content: "\f2ea";
+   font-weight: 900;
+}
+
+.retur-jual:after, .retur-jual:before {
+  font-family: "Font Awesome 5 Free";
+   content: "\f218";
+   font-weight: 900;
+}
+
 .lapbeli:after, .lapbeli:before {
   font-family: "Font Awesome 5 Free";
    content: "\f56e";

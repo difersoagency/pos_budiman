@@ -56,7 +56,6 @@ function addRow(tableID) {
   }
 }
 
-// Delete Row Table
 function deleteRow(btn, tableId) {
   var table = document.getElementById(tableId);
   var rowCount = table.rows.length;
@@ -67,4 +66,49 @@ function deleteRow(btn, tableId) {
   }
  
 }
+
+$(function() {
+  $(document).on('submit', '#trans_beli', function(e) {
+     e.preventDefault();
+     var $form = $(this);
+    var serializedData = $form.serialize();
+    var action = $(this).attr('action');
+    $.ajax({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        type: "POST",
+        url: action,
+        data: serializedData,
+        dataType: 'JSON',
+        success: function(response) {
+           if (response['data'] == "success") {
+                swal.fire(
+                    'Berhasil',
+                    'Transaksi berhasil ditambahkan',
+                    'success'
+                );
+                $( '#trans_beli' ).each(function(){
+                  this.reset();
+              });
+           } else {
+                swal.fire(
+                    'Gagal',
+                    'Lengkapi Form',
+                    'warning'
+                );
+           }
+       
+        },
+        error: function(xhr, status, error) {
+          swal.fire(
+            'Gagal',
+            'Lengkapi Form',
+            'warning'
+        );
+        }
+    });
+    return false;
+})
+});
 

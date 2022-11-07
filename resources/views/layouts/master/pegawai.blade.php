@@ -2,6 +2,12 @@
 
 @section('content')
 <div class="content-wrapper tw-py-6 tw-px-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/master">Master</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Data Pegawai</li>
+        </ol>
+    </nav>
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
@@ -97,14 +103,11 @@
             processing: true,
             serverSide: true,
             ajax: {
-                'url': '/pegawai/data',
+                'url': '/master/pegawai/data',
                 'method': 'POST',
                 'headers': {
                     'X-CSRF-TOKEN': '{{csrf_token()}}'
                 }
-            },
-            language: {
-                processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
             },
             columns: [{
                 data: 'DT_RowIndex',
@@ -167,7 +170,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: "/pegawai/edit/" + data_id,
+                        url: "/master/pegawai/edit/" + data_id,
                         beforeSend: function() {
                             $('#loader').show();
                         },

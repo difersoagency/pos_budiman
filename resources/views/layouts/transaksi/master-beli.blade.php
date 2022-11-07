@@ -7,7 +7,7 @@
         <div class="container-fluid">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="transaksi">Transaksi</a></li>
+                    <li class="breadcrumb-item"><a href="/transaksi">Transaksi</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Pembelian</li>
                 </ol>
             </nav>
@@ -31,26 +31,26 @@
                         <div class="tw-text-right tw-grid tw-grid-cols-1 md:tw-flex tw-mx-auto md:tw-mx-0 md:tw-ml-auto tw-w-full md:tw-w-fit tw-mt-4 md:tw-mt-0">
 
                             <div class="dropdown tw-mb-4 tw-w-full md:tw-w-fit">
-                                <button class="btn tw-text-prim-white tw-bg-prim-red tw-text-sm tw-w-full md:tw-w-fit" type="button" id="addItemButton" onclick="location.href = 'tambah-beli'">
+                                <button class="btn tw-text-prim-white tw-bg-prim-red tw-text-sm tw-w-full md:tw-w-fit" type="button" id="addItemButton" onclick="location.href = `{{route('tambah-beli')}}`">
                                     + Buat Pengajuan
                                 </button>
                             </div>
                         </div>
 
                         <div class="table_master_beli tw-mt-5 tw-col-span-2" data-current-page="1">
-                            <table id="example" class="table table-bordered responsive nowrap" style="width:100%">
+                            <table id="trans_beli" class="table table-bordered responsive nowrap" style="width:100%">
                                 <thead class="tw-bg-prim-blue">
                                     <tr>
-                                        <th class="tw-text-prim-white">Tanggal</th>
                                         <th class="tw-text-prim-white">No.Pembelian</th>
-                                        <th class="tw-text-prim-white">Di Buat Oleh</th>
-                                        <th class="tw-text-prim-white tw-w-48">Deskripsi</th>
+                                        <th class="tw-text-prim-white">Supplier</th>
+                                        <th class="tw-text-prim-white">Tgl Pembelian</th>
+                                        <th class="tw-text-prim-white tw-w-48">Pembayaran</th>
                                         <th class="tw-text-prim-white tw-w-28">Total Harga</th>
                                         <th class="tw-text-prim-white">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
+                                    {{-- <tr>
                                         <td>LM001</td>
                                         <td>Lampu Motor</td>
                                         <td>Asep</td>
@@ -72,7 +72,7 @@
                                             </div>
                                         </td>
 
-                                    </tr>
+                                    </tr> --}}
 
 
                                 </tbody>
@@ -88,4 +88,49 @@
         </div>
     </section>
 </div>
+@section('script')
+<script>
+     $(document).ready(function() {
+        var table_promo = $('#trans_beli').DataTable({
+            destroy: true,
+            processing: true,
+            serverSide: true,
+            ajax: {
+                'type': 'POST',
+                'datatype': 'JSON',
+                'url': '{{route("pembelian.data")}}',
+                'headers': {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            },
+            columns: [{
+                    data: 'nomor_po',
+                    className: 'nowrap-text align-center',
+                },{
+                    data: 'supplier',
+                    className: 'nowrap-text align-center',
+                },
+                
+                {
+                    data: 'tgl_trans_beli',
+                    className: 'nowrap-text align-center',
+                }, {
+                    data: 'pembayaran',
+                    className: 'nowrap-text align-center',
+                }
+                , {
+                    data: 'total_bayar',
+                    className: 'nowrap-text align-center',
+                },
+                {
+                    data: 'action',
+                    className: 'nowrap-text align-center',
+                },
+                
+              
+            ]
+        });
+    });
+    </script>
+@stop
 @endsection
