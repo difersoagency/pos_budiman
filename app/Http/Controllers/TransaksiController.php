@@ -177,9 +177,9 @@ class TransaksiController extends Controller
             })
             ->addColumn('action', function ($data) {
                 return '<div class="grid grid-cols-3 tw-contents">
-                                                <button href="" class="mr-4 tw-bg-transparent tw-border-none" data-toggle="tooltip" title="Edit">
+                                                <a href="' . route('edit-beli', $data->id) . '" class="mr-4 tw-bg-transparent tw-border-none" data-toggle="tooltip" title="Edit">
                                                     <i class="fa fa-pen tw-text-prim-blue"></i>
-                                                </button>
+                                                </a>
                                                 <button data-toggle="tooltip" title="Detail" class="tw-mr-4 tw-bg-transparent tw-border-none">
                                                     <i class="fa fa-info tw-text-prim-black"></i>
                                                 </button>
@@ -190,5 +190,15 @@ class TransaksiController extends Controller
             })
             ->rawColumns(['action'])
             ->make(true);
+    }
+
+
+    public function edit_beli($id)
+    {
+        $data = TransBeli::find($id);
+        $supplier = Supplier::whereNotIN('id', [$data->supplier_id])->get();
+        $barang = Barang::all();
+        $satuan = Satuan::all();
+        return view('layouts.transaksi.edit_beli', ['supplier' => $supplier, 'barang' => $barang, 'satuan' => $satuan, 'data' => $data]);
     }
 }

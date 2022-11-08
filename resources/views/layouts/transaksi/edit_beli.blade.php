@@ -9,7 +9,7 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="\transaksi\">Transaksi</a></li>
                 <li class="breadcrumb-item"><a href="\transaksi\beli">Pembelian</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Tambah Pengajuan Pembelian</li>
+                <li class="breadcrumb-item active" aria-current="page">Edit Pengajuan Pembelian</li>
             </ol>
         </nav>
         <div class="tw-grid tw-grid-cols-2 tw-mb-7 tw-gap-7">
@@ -17,7 +17,7 @@
                 <label for="user_beli">Tgl Pembelian</label>
                 <!-- Dropdown -->
                 <div class="dropdown tw-mb-7 md:tw-mb-0 md:tw-w-3/4">
-                    <input type="date" class="form-control tw-mr-3" id="tgl_beli"  name="tgl_beli">
+                    <input type="date" class="form-control tw-mr-3" id="tgl_beli"  name="tgl_beli" value="{{$data->tgl_trans_beli}}">
                 </div>
                 <!-- End Dropdown  -->
             </div>
@@ -25,8 +25,9 @@
                 <label for="user_beli">Supplier</label>
                 <!-- Dropdown -->
                 <div class="dropdown tw-mb-7 md:tw-mb-0 md:tw-w-3/4">
-                    <select class="custom-select select-user tw-text-prim-white" id="pembelian_beli" name="supplier">
-                     @foreach ($supplier as $s)
+                    <select class="custom-select selects tw-text-prim-white" id="pembelian_beli" name="supplier">
+                        <option value="{{$data->supplier_id}}">{{$data->Supplier->nama_supplier}}</option> 
+                        @foreach ($supplier as $s)
                      <option value="{{$s->id}}">{{$s->nama_supplier}}</option> 
                         @endforeach
                     </select>
@@ -39,7 +40,7 @@
                 <label for="tgl_beli_garansi">Tanggal Max Garansi</label>
                 <div class="tw-items-center tw-mb-4">
                     <div class="input-group input-daterange tw-items-center">
-                        <input type="date" class="form-control tw-mr-3" id="tgl_beli_garansi"  name="tgl_beli_garansi">
+                        <input type="date" class="form-control tw-mr-3" id="tgl_beli_garansi"  name="tgl_beli_garansi"  value="{{$data->tgl_max_garansi}}">
                     </div>
                     <!-- End Date Picker  -->
                 </div>
@@ -51,7 +52,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text">#</span>
                         </div>
-                        <input type="text" class="form-control" aria-label="Amount" id="no_beli" name="no_beli">
+                        <input type="text" class="form-control" aria-label="Amount" id="no_beli" name="no_beli"  value="{{$data->nomor_po}}">
                     </div>
                 </div>
             </div>
@@ -76,10 +77,12 @@
                         </tr>
                     </thead>
                     <tbody id="tbody2">
+                      @foreach( $data->DTransBeli as $d ) 
                         <tr>
                             <td data-label="Jenis Barang / Jasa" scope="row">
                                 <!-- Dropdown -->
                                 <div class="dropdown tw-mb-7 md:tw-mb-0 ">
+                                    
                                     <select  name="barang[]">
                                        @foreach ($barang as $b)
                                        <option value="{{$b->id}}">{{$b->nama_barang}}</option>
@@ -118,6 +121,7 @@
                                 </button>
                             </td>
                         </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
