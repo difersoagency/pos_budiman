@@ -147,6 +147,8 @@ Route::group(['prefix' => '/barang'], function () {
     Route::get('/edit/{id}', [App\Http\Controllers\MasterController::class, 'master_barang_edit'])->name('barang.edit');
     Route::post('/update/{id}', [App\Http\Controllers\MasterController::class, 'master_barang_update'])->name('barang.update');
     Route::delete('/delete', [App\Http\Controllers\MasterController::class, 'master_barang_delete'])->name('barang.delete');
+    Route::get('/selectdata', [App\Http\Controllers\MasterController::class, 'master_barang_select_data'])->name('barang.selectdata');
+    Route::get('/selectdata/{id}', [App\Http\Controllers\MasterController::class, 'master_barang_select_data_detail'])->name('barang.selectdatadetail');
 });
 
 
@@ -191,4 +193,8 @@ Route::group(['prefix' => '/transaksi'], function () {
 
 Route::group(['prefix' => '/laporan'], function () {
     Route::get('/', [App\Http\Controllers\LaporanController::class, 'archive_laporan'])->name('laporan');
+    Route::get('/keuangan', [App\Http\Controllers\LaporanController::class, 'laporan_keuangan'])->name('keuangan');
+    Route::get('/pembelian', [App\Http\Controllers\LaporanController::class, 'laporan_pembelian'])->name('pembelian');
+    Route::get('/penjualan', [App\Http\Controllers\LaporanController::class, 'laporan_penjualan'])->name('penjualan');
+    Route::get('/produk', [App\Http\Controllers\LaporanController::class, 'laporan_produk'])->name('produk');
 });

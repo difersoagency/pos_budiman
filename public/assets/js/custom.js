@@ -48,30 +48,27 @@ function addRow(tableID) {
   var row = table.insertRow(rowCount);
   var colCount = table.rows[0].cells.length;
   for(var i=0; i<colCount; i++) {
+    $('.select-trans').prepend('<option selected=""></option>').select2({placeholder: "Pilih Barang"});
+    $('.select-trans').last().next().next().remove();
       var newcell = row.insertCell(i);
       newcell.innerHTML = table.rows[0].cells[i].innerHTML;
       var child = newcell.children;
       for(var i2=0; i2<child.length; i2++) {
           var test = newcell.children[i2].tagName;
-          switch(test) {
-              case "INPUT":
-                  if(newcell.children[i2].type=='checkbox'){
-                      newcell.children[i2].value = "";
-                      newcell.children[i2].checked = false;
-                  }else{
-                      newcell.children[i2].value = "";
-                  }
-              break;
-              case "SELECT":
-                  newcell.children[i2].value = "";
-              break;
-              default:
-              break;
-          }
       }
   }
 }
 
+function deleteRow(btn, tableId) {
+  var table = document.getElementById(tableId);
+  var rowCount = table.rows.length;
+  var row = btn.parentNode.parentNode;
+  if(rowCount > 1){
+    
+    row.parentNode.removeChild(row);  
+  }
+ 
+}
 
 $(function() {
   $(document).on('submit', '#trans_beli', function(e) {
