@@ -122,7 +122,7 @@
                             </td>
                             <td>
                                 <div class="form-group">
-                                    <input type="number" class="form-control harga" name="harga[]" min="0">
+                                    <input type="text" class="form-control harga" name="harga[]">
                                 </div>
                             </td>
                             <td>
@@ -132,7 +132,7 @@
                             </td>
                             <td>
                                 <div class="form-group">
-                                    <input type="number" class="form-control subtotal" name="subtotal[]" min="0">
+                                    <input type="text" class="form-control subtotal" name="subtotal[]">
                                 </div>
                             </td>
 
@@ -147,31 +147,31 @@
                         <tr>
                             <td class="tw-border-none" colspan="4">Total sebelum Diskon</td>
                             <td class="tw-border-none" colspan="2">
-                                    <input type="number" class="form-control total_kotor" name="total_kotor" readonly="false">
+                                    <input type="text" class="form-control total_kotor" name="total_kotor" readonly="false">
                             </td>
                         </tr>
                         <tr>
                             <td class="tw-border-none" colspan="4">Diskon</td>
                             <td class="tw-border-none" colspan="2">
-                                    <input type="number" class="form-control diskon_jual" name="diskon_jual" readonly="false">
+                                    <input type="text" class="form-control diskon_jual" name="diskon_jual" readonly="false">
                             </td>
                         </tr>
                         <tr>
                             <td class="tw-border-none" colspan="4">Total Harga</td>
                             <td class="tw-border-none" colspan="2">
-                                    <input type="number" class="form-control total_jual" name="total_jual" readonly="true">
+                                    <input type="text" class="form-control total_jual" name="total_jual" readonly="true">
                             </td>
                         </tr>
                         <tr>
                             <td class="tw-border-none" colspan="4">Jumlah Bayar</td>
                             <td class="tw-border-none" colspan="2">
-                                    <input type="number" class="form-control bayar_jual" name="bayar_jual">
+                                    <input type="text" class="form-control bayar_jual" name="bayar_jual">
                             </td>
                         </tr>
                         <tr>
                             <td class="tw-border-none" colspan="4">Kembali</td>
                             <td class="tw-border-none" colspan="2">
-                                    <input type="number" class="form-control kembali_jual" name="kembali_jual" readonly="true">
+                                    <input type="text" class="form-control kembali_jual" name="kembali_jual" readonly="true">
                             </td>
                         </tr>
                     </tfoot>
@@ -209,6 +209,17 @@
     });
     @endif
 $(function(){
+    function number_format(angka){
+        return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function number_unformat(angka){
+        return parseFloat(angka.toString().replace(',',''));
+    }
+
+    $(document).on('keyup change', '.harga', function(){
+        number_format($(this.val()));
+    })
     function select_barang(){
     $('.barang_id').prepend('<option selected=""></option>').select2({
         placeholder: "Pilih Barang",
@@ -273,20 +284,20 @@ $(function(){
     function sum_total_harga(){
         var sum = 0;
         $("#barang_beli .subtotal").each(function(){
-            sum += parseFloat($(this).val());
+            sum += parseFloat(number_unformat($(this).val()));
         });
-        $('#barang_beli .total_kotor').val(sum);
-        var bayar = sum - parseFloat($('#barang_beli .diskon_jual').val());
-        $('#barang_beli .total_jual').val(bayar);
+        $('#barang_beli .total_kotor').val(number_format(sum));
+        var bayar = number_unformat(sum) - parseFloat(number_unformat($('#barang_beli .diskon_jual').val()));
+        $('#barang_beli .total_jual').val(number_format(bayar));
         sum_bayar_jual();
     }
 
     function sum_bayar_jual(){
         if($('#barang_beli .bayar_jual').val() != ""){
-        var total_jual = parseFloat($('#barang_beli .total_jual').val());
-        var bayar_jual = parseFloat($('#barang_beli .bayar_jual').val());
+        var total_jual = parseFloat(number_unformat($('#barang_beli .total_jual').val()));
+        var bayar_jual = parseFloat(number_unformat($('#barang_beli .bayar_jual').val()));
         if(bayar_jual >= total_jual){
-            $("#barang_beli .kembali_jual").val(bayar_jual - total_jual);
+            $("#barang_beli .kembali_jual").val(number_format(bayar_jual - total_jual));
         }
         else{
             $("#barang_beli .kembali_jual").val("0");
@@ -296,12 +307,12 @@ $(function(){
 
     $(document).on('change', '#barang_beli .barang_id', function(){
         $(this).closest('tr').find('.jenis_brg').val($(this).select2('data')[0].jenis);
-        $(this).closest('tr').find('.harga').val($(this).select2('data')[0].harga);
+        $(this).closest('tr').find('.harga').val(number_format($(this).select2('data')[0].harga));
         sum_total_harga();
     });
 
     $(document).on('keyup change', '#barang_beli .jumlah', function(){
-        $(this).closest('tr').find('.subtotal').val($(this).closest('tr').find('.harga').val() * $(this).val());
+        $(this).closest('tr').find('.subtotal').val(number_format(number_unformat($(this).closest('tr').find('.harga').val()) * $(this).val()));
         sum_total_harga();
     });
 
