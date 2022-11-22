@@ -35,39 +35,50 @@
                 </div>
                 <div class="mx-2">
                     <label for="no_trans_jual">No Transaksi Pembelian</label>
-                    <input type="text" placeholder="No Transaksi" class="form-control no_trans_jual" name="no_trans_jual" id="no_trans_jual">
+                    <input type="text" placeholder="No Transaksi" class="form-control no_trans_jual" name="no_beli" id="no_trans_jual">
                 </div>
                 <div class="mx-2">
                     <label for="tgl_trans_jual">Tgl Transaksi</label>
-                    <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_trans_jual" name="tgl_trans_jual" id="tgl_trans_jual">
+                    <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_trans_jual" name="tgl_beli" id="tgl_trans_jual">
                 </div>
                 <div class="my-4 mx-2 tw-row-span-2">
-                    <label for="user_beli">Supplier</label>
+                    {{-- <label for="user_beli">Supplier</label>
                     <div>
                         <div>Prima Sakti Nugraha</div>
                         <div>Jl Ade Irma Suryani Nasution V No. 5, Tlogobendung Gresik</div>
                         <div>0838312222290</div>
-                    </div>
+                    </div> --}}
+                    <label for="user_beli">Batas Garansi</label>
+                    <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_garansi" name="tgl_beli_garansi" id="tgl_retur_beli">
+           
                 </div>
                 <div class="my-4 mx-2 tw-row-span-2">
-                    <label for="user_beli">Dibuat Oleh</label>
+                    {{-- <label for="user_beli">Dibuat Oleh</label>
                     <div>
                         <div>Suparjo</div>
                         <div>Tim Marketing - M001</div>
+                    </div> --}}
+                    <label for="user_beli">Pembayaran</label>
+                    <div class="dropdown">
+                        <select class="custom-select select-user tw-text-prim-white tw-w-full" id="pembayaran_id" name="pembayaran_id">
+                            @foreach ($bayar as $b)
+                            <option value="{{$b->id}}">{{$b->nama_bayar}}</option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
-                <div class="my-4 mx-2">
+                {{-- <div class="my-4 mx-2">
                     <label for="user_beli">Batas Garansi</label>
-                    <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_retur_beli" name="tgl_retur_beli" id="tgl_retur_beli">
-                </div>
-                <div class="mb-4 mx-2 float-right">
+                    <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_garansi" name="tgl_beli_garansi" id="tgl_retur_beli">
+                </div> --}}
+                {{-- <div class="mb-4 mx-2 float-right">
                     <label for="user_beli">Dibuat Oleh</label>
                     <div class="dropdown">
                         <select class="custom-select select-user tw-text-prim-white tw-w-full" id="pembayaran_id" name="pembayaran_id">
                             <option value="0">Semua</option>
                         </select>
                     </div>
-                </div>
+                </div> --}}
             </div>
 
             <div class="tw-bg-white tw-px-5 tw-py-3 ">
@@ -78,7 +89,7 @@
                                 <th scope="row" class="tw-text-left tw-border-t-0 d-none ">No</th>
                                 <th scope="row" class="tw-text-left tw-border-t-0 ">Jenis Barang / Jasa</th>
                                 <th scope="row" class="tw-text-left tw-border-t-0 tw-w-24">Jumlah</th>
-                                <th scope="row" class="tw-text-left tw-border-t-0 tw-w-30">Satuan</th>
+                                {{-- <th scope="row" class="tw-text-left tw-border-t-0 tw-w-30">Satuan</th> --}}
                                 <th scope="row" class="tw-text-left tw-border-t-0 tw-w-36">Harga Satuan</th>
                                 <th scope="row" class="tw-text-left tw-border-t-0 tw-w-24">Diskon(%)</th>
                                 <th scope="row" class="tw-text-left tw-border-t-0 tw-w-36">Total</th>
@@ -101,7 +112,7 @@
                                         <input type="number" class="form-control jumlah_beli" name="jumlah_beli[]" id="jumlah_beli0" min="0">
                                     </div>
                                 </td>
-                                <td data-label="Satuan">
+                                {{-- <td data-label="Satuan">
                                     <div class="dropdown tw-mb-7 md:tw-mb-0 ">
                                         <select name="satuan[]" id="satuan0" class="custom-select select-satuan tw-text-prim-white satuan"  style="width: 100%">
                                             @foreach ($satuan as $s)
@@ -110,10 +121,10 @@
 
                                         </select>
                                     </div>
-                                </td>
+                                </td> --}}
                                 <td data-label="Harga Satuan">
                                     <div class="form-group">
-                                        <input type="number" class="form-control harga_satuan" name="harga_satuan[]" id="harga_satuan0" min="0">
+                                        <input type="text" class="form-control harga_satuan" name="harga_satuan[]" id="harga_satuan0" min="0">
                                     </div>
                                 </td>
                                 <td data-label="diskon-beli">
@@ -157,7 +168,7 @@
                                 <td class="">Diskon Transaksi %</td>
                                 <td class="">
                                     <div class="input-group">
-                                        <input type="number" class="form-control tw-w-1" aria-label="Amount" id="harga-jual" name="disc" placeholder="0">
+                                        <input type="number" class="form-control tw-w-1 diskon_total" aria-label="Amount" id="diskon_total" name="diskon_total" placeholder="0">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">%</span>
                                         </div>
@@ -191,18 +202,18 @@
                                     </div>
                                 </td>
                             </tr> --}}
-                            {{-- <tr>
+                            <tr>
                                 <td class="tw-border-none" colspan="3"></td>
-                                <td class="tw-border-none">Uang Muka</td>
+                                <td class="tw-border-none">Total Bayar</td>
                                 <td class="tw-border-none">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp.</span>
                                         </div>
-                                        <input type="number" class="form-control tw-w-1" aria-label="Amount" id="harga-jual" name="harga_jual" value="0">
+                                        <input type="text" class="form-control tw-w-1 total_dibayar" aria-label="Amount" id="total_dibayar" name="total_dibayar" value=""  >
                                     </div>
                                 </td>
-                            </tr> --}}
+                            </tr>
                             <tr>
                                 <td class="tw-border-none" colspan="3"></td>
                                 <td class="tw-border-none">Total</td>
@@ -220,10 +231,10 @@
                 </div>
             </div>
             <div class="tw-flex tw-mb-40 tw-mt-10">
-                <button class="tw-bg-white tw-border-2 tw-mr-5 tw-text-prim-blue  tw-border-prim-blue hover:tw-bg-prim-blue hover:tw-text-prim-white  tw-w-32 tw-text-center tw-py-2 tw-rounded-lg  tw-transition-all">
+                <button onclick="location.href='/transaksi/beli'" type="button" class="tw-bg-white tw-border-2 tw-mr-5 tw-text-prim-blue  tw-border-prim-blue hover:tw-bg-prim-blue hover:tw-text-prim-white  tw-w-32 tw-text-center tw-py-2 tw-rounded-lg  tw-transition-all">
                     <p class="tw-m-0 tw-font-bold">Batal</p>
                 </button>
-                <button class="tw-bg-prim-black tw-border-0 tw-w-32 tw-text-center tw-py-2 tw-rounded-lg hover:tw-bg-gray-600 tw-transition-all">
+                <button class="tw-bg-prim-black tw-border-0 tw-w-32 tw-text-center tw-py-2 tw-rounded-lg hover:tw-bg-gray-600 tw-transition-all" type="submit">
                     <p class="tw-m-0 tw-text-white">Simpan</p>
                 </button>
             </div>
@@ -239,24 +250,39 @@
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
    select_barang();
-   select_satuan()
+ //  select_satuan();
+   function replaceAll(string, search, replace) {
+                return string.split(search).join(replace);
+            }
 
    function total() {
                 var totalharga = 0;
                 $('#barang_beli').find('tr .subtotal').each(function() {
-                    totalharga = parseInt(totalharga) + parseInt($(this).val());
-                    $("#total_bayar").val(totalharga);
+                    var subtotal = replaceAll($(this).val(), '.', '');
+                    var dis_tot =  $('#diskon_total').val();
+                    totalharga = parseInt(totalharga) + parseInt(subtotal);
+                    $("#total_bayar").val(formatmoney(totalharga - (totalharga * dis_tot/100)));
                 })
             }
+
+            $("#diskon_total").on('keyup', function() {
+           total();
+            });
+
+            $("#total_dibayar").on('keyup change', function() {
+                var result =  $(this).val().replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                 $(this).val(result);
+            });
 
             $("#barang_beli").on('keyup change', '.diskon_beli', function() {
                $(this).val();
                 var diskon = $(this).closest('tr').find('.diskon_beli').val();
                 var jumlah = $(this).closest('tr').find('.jumlah_beli').val();
-                var harga = $(this).closest('tr').find('.harga_satuan').val();
+                var harga = replaceAll($(this).closest('tr').find('.harga_satuan').val(), '.', '');
+
                 var subtotal = $(this).closest('tr').find('.subtotal');
                 if (jumlah != "" && harga != "") {
-                    subtotal.val((jumlah * parseInt(harga)) - (harga * diskon/100));
+                    subtotal.val(formatmoney((jumlah * parseInt(harga)) - (harga * diskon/100)));
                     total();
                 }else{
                     total();
@@ -264,13 +290,14 @@
                 }
             });
             $("#barang_beli").on('keyup change', '.harga_satuan', function() {
-               $(this).val();
+                var result = $(this).val().replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                $(this).val(result);
                 var diskon = $(this).closest('tr').find('.diskon_beli').val();
                 var jumlah = $(this).closest('tr').find('.jumlah_beli').val();
-                var harga = $(this).closest('tr').find('.harga_satuan').val();
+                 var harga = replaceAll($(this).closest('tr').find('.harga_satuan').val(), '.', '');
                 var subtotal = $(this).closest('tr').find('.subtotal');
                 if (jumlah != "" && harga != "") {
-                    subtotal.val((jumlah * parseInt(harga)) - (harga * diskon/100));
+                    subtotal.val(formatmoney((jumlah * parseInt(harga)) - (harga * diskon/100)));
                     total();
                 }else{
                     total();
@@ -282,10 +309,10 @@
                $(this).val();
                var diskon = $(this).closest('tr').find('.diskon_beli').val();
                 var jumlah = $(this).closest('tr').find('.jumlah_beli').val();
-                var harga = $(this).closest('tr').find('.harga_satuan').val();
+                var harga = replaceAll($(this).closest('tr').find('.harga_satuan').val(), '.', '');
                 var subtotal = $(this).closest('tr').find('.subtotal');
                 if (jumlah != "" && harga != "") {
-                    subtotal.val((jumlah * parseInt(harga)) - (harga * diskon/100));
+                    subtotal.val(formatmoney((jumlah * parseInt(harga)) - (harga * diskon/100)));
                     total();
                 }else{
                     total();
@@ -297,7 +324,7 @@
                 $("#"+table+"").find("tr").each(function(ind, el) {
                     $(el).find("td:eq(0)").html(++c);
                     var j = c;
-                    $(el).find('.barang').attr('name', j);
+                    $(el).find('.barang').attr('name', 'barang[' + j + ']');
                     $(el).find('.barang').attr('id', j);
                     $(el).find('.jumlah_beli').attr('name', 'jumlah_beli[' + j + ']');
                     $(el).find('.jumlah_beli').attr('id', 'jumlah_beli' + j);
@@ -311,7 +338,7 @@
                     $(el).find('.subtotal').attr('id', 'subtotal' + j);
                   
                     select_barang();
-                    select_satuan();
+                    //select_satuan();
                    $("#prices").find(".item").html('Total Item : '+(c+1)+' Item');
                 });
               
@@ -353,19 +380,10 @@ function addrow(table){
                                         <input type="number" class="form-control jumlah_beli" name="jumlah_beli[]" id="jumlah_beli0" min="0">
                                     </div>
                                 </td>
-                                <td data-label="Satuan">
-                                    <div class="dropdown tw-mb-7 md:tw-mb-0 ">
-                                        <select name="satuan[]" id="satuan0" class="custom-select select-satuan tw-text-prim-white satuan"  style="width: 100%">
-                                            @foreach ($satuan as $s)
-                                            <option value="{{$s->id}}">{{$s->nama_satuan}}</option>
-                                            @endforeach
-
-                                        </select>
-                                    </div>
-                                </td>
+                            
                                 <td data-label="Harga Satuan">
                                     <div class="form-group">
-                                        <input type="number" class="form-control harga_satuan" name="harga_satuan[]" id="harga_satuan0" min="0">
+                                        <input type="text" class="form-control harga_satuan" name="harga_satuan[]" id="harga_satuan0" min="0">
                                     </div>
                                 </td>
                                 <td data-label="diskon-beli">
@@ -387,9 +405,9 @@ function addrow(table){
      numberRows(table);
 }
 
-function select_satuan(){
-    $('.select-satuan').select2({placeholder: "Pilih Satuan"});
-}
+// function select_satuan(){
+//     $('.select-satuan').select2({placeholder: "Pilih Satuan"});
+// }
 function select_barang() {
                 $('.barang').select2({
                     placeholder: "Pilih Barang",
@@ -428,10 +446,10 @@ function select_barang() {
                     type: 'GET',
                     dataType: 'json',
                     success: function(res) {
-                        $('#harga_satuan'+index).val(res.harga_jual);
+                        $('#harga_satuan'+index).val(formatmoney(res.harga_jual));
                         $('#jumlah_beli'+index).val(1);
                         $('#diskon_beli'+index).val(0);
-                        $('#subtotal'+index).val( $('#harga_satuan'+index).val() * 1);
+                        $('#subtotal'+index).val(formatmoney(res.harga_jual * 1));
                         total();
                     }
                 });

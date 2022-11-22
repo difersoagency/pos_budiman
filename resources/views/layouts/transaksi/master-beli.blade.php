@@ -89,8 +89,57 @@
     </section>
 </div>
 @section('script')
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
      $(document).ready(function() {
+
+        $(document).on('click', '#btndelete', function(event) {
+            event.preventDefault();
+            var data_id = $(this).attr('data-id');
+            var data_nama = $(this).attr('data-nama');
+            Swal.fire({
+                title: 'Hapus Data',
+                text: "Apakah anda ingin menghapus data " + data_nama + "?",
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonColor: 'grey',
+                confirmButtonColor: '#d33',
+
+                confirmButtonText: 'Hapus',
+                cancelButtonText: 'Batal',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '{{ route("delete-beli") }}',
+                        type: 'DELETE',
+                        dataType: 'json',
+                        data: {
+                            "id": data_id,
+                            "_method": "DELETE",
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(result) {
+                            if (result.info == "success") {
+                                Swal.fire({
+                                    title: 'Berhasil',
+                                    text: 'Data berhasil di hapus',
+                                    icon: 'success',
+                                });
+                               
+                                $('#trans_beli').DataTable().ajax.reload();
+                            } else {
+                                Swal.fire({
+                                    title: 'Gagal',
+                                    text: 'Data gagal di hapus',
+                                    icon: 'error',
+                                });
+                            }
+                        }
+                    });
+                }
+            })
+        });
+
         var table_promo = $('#trans_beli').DataTable({
             destroy: true,
             processing: true,

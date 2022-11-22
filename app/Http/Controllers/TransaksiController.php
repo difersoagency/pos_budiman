@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Barang;
 use App\Models\DTransBeli;
+use App\Models\Pembayaran;
 use App\Models\Satuan;
 use App\Models\Supplier;
 use App\Models\TransBeli;
@@ -75,8 +76,8 @@ class TransaksiController extends Controller
     {
         $supplier = Supplier::all();
         $barang = Barang::all();
-        $satuan = Satuan::all();
-        return view('layouts.transaksi.tambah_beli', ['supplier' => $supplier, 'barang' => $barang, 'satuan' => $satuan]);
+        $bayar = Pembayaran::all();
+        return view('layouts.transaksi.tambah_beli', ['supplier' => $supplier, 'barang' => $barang, 'bayar' => $bayar]);
     }
 
     public function transaksi_jual()
@@ -89,45 +90,111 @@ class TransaksiController extends Controller
     {
         return view('layouts.archive.archive-trans');
     }
+    public function update_beli(Request $request, $id)
+    {
+
+        //dd($request);
+        $validator = Validator::make($request->all(), [
+            'tgl_beli' => 'required',
+            'supplier' => 'required',
+            'no_beli' => 'required|unique:htrans_beli,nomor_po,' . $id,
+            'tgl_beli_garansi' => 'required',
+            'total_bayar' => 'required',
+            'total_dibayar' => 'required',
+            'barang.*' => 'required',
+            'jumlah_beli.*' => 'required',
+            'harga_satuan.*' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['data' => 'error']);
+        } else {
+            if (str_replace('.', "", $request->total_dibayar) > str_replace('.', "", $request->total_bayar)) {
+                return response()->json(['data' => 'dibayar']);
+            } else {
+                $trans_beli = TransBeli::find($id);
+                $trans_beli->supplier_id = $request->supplier;
+                $trans_beli->pembayaran_id = $request->pembayaran_id;
+                $trans_beli->nomor_po = $request->no_beli;
+                $trans_beli->tgl_trans_beli = $request->tgl_beli;
+                $trans_beli->tgl_max_garansi = $request->tgl_beli_garansi;
+                $trans_beli->disc = $request->disc;
+                $trans_beli->total_bayar = str_replace('.', "", $request->total_bayar);
+                $trans_beli->save();
+
+
+
+                $tb = DTransBeli::where('trans_beli_id', $id)->get();
+
+
+                if (count($tb) > 0) {
+                    DTransBeli::where('trans_beli_id', $id)->delete();
+                }
+
+
+                for ($i = 0; $i < count($request->barang); $i++) {
+                    DTransBeli::create([
+                        'trans_beli_id' =>  $trans_beli->id,
+                        'barang_id' => $request->barang[$i],
+                        'jumlah' => $request->jumlah_beli[$i],
+                        'harga' =>  str_replace('.', "", $request->harga_satuan[$i]),
+                        'disc' => $request->diskon_beli[$i]
+                    ]);
+                }
+
+                return response()->json(['data' => 'success']);
+            }
+        }
+    }
 
     public function store_beli(Request $request)
     {
+        //dd($request);
         $validator = Validator::make(
             $request->all(),
             [
                 'tgl_beli' => 'required',
                 'supplier' => 'required',
-                'no_beli' => 'required',
+                'no_beli' => 'required|unique:htrans_beli,nomor_po',
                 'tgl_beli_garansi' => 'required',
+                'total_bayar' => 'required',
+                'total_dibayar' => 'required',
                 'barang.*' => 'required',
                 'jumlah_beli.*' => 'required',
-                'harga_satuan.*' => 'required'
+                'harga_satuan.*' => 'required',
             ]
         );
 
         if ($validator->fails()) {
             return response()->json(['data' => 'error']);
         } else {
-            $header =  TransBeli::create([
-                'supplier_id' => $request->supplier,
-                'pembayaran_id' => 1,
-                'nomor_po' => $request->no_beli,
-                'tgl_trans_beli' => $request->tgl_beli,
-                'tgl_max_garansi' => $request->tgl_beli_garansi,
-                'disc' => $request->disc,
-                'total_bayar' => '2222'
-            ]);
-
-            for ($i = 0; $i < count($request->barang); $i++) {
-                DTransBeli::create([
-                    'htrans_beli_id' => $header->id,
-                    'barang_id' => $request->barang[$i],
-                    'jumlah' => $request->jumlah_beli[$i],
-                    'harga' => $request->harga_satuan[$i],
-                    'disc' => '0'
+            if (str_replace('.', "", $request->total_dibayar) > str_replace('.', "", $request->total_bayar)) {
+                return response()->json(['data' => 'dibayar']);
+            } else {
+                $header =  TransBeli::create([
+                    'supplier_id' => $request->supplier,
+                    'pembayaran_id' => $request->pembayaran_id,
+                    'nomor_po' => $request->no_beli,
+                    'tgl_trans_beli' => $request->tgl_beli,
+                    'tgl_max_garansi' => $request->tgl_beli_garansi,
+                    'disc' => $request->diskon_total,
+                    'total_bayar' =>  str_replace('.', "", $request->total_bayar)
                 ]);
+
+                for ($i = 0; $i < count($request->barang); $i++) {
+                    DTransBeli::create([
+                        'trans_beli_id' => $header->id,
+                        'barang_id' => $request->barang[$i],
+                        'jumlah' => $request->jumlah_beli[$i],
+                        'harga' =>  str_replace('.', "", $request->harga_satuan[$i]),
+                        'disc' => $request->diskon_beli[$i]
+                    ]);
+                }
+
+                if (str_replace('.', "", $request->total_dibayar) != str_replace('.', "", $request->total_bayar)) {
+                }
+                return response()->json(['data' => 'success']);
             }
-            return response()->json(['data' => 'success']);
         }
     }
 
@@ -164,7 +231,7 @@ class TransaksiController extends Controller
                 return  $data->tgl_max_garansi;
             })
             ->addColumn('total_bayar', function ($data) {
-                return  $data->nomor_po;
+                return  number_format($data->total_bayar);
             })
             ->addColumn('nomor_po', function ($data) {
                 return  $data->nomor_po;
@@ -183,7 +250,7 @@ class TransaksiController extends Controller
                                                 <button data-toggle="tooltip" title="Detail" class="tw-mr-4 tw-bg-transparent tw-border-none">
                                                     <i class="fa fa-info tw-text-prim-black"></i>
                                                 </button>
-                                                <button data-toggle="tooltip" title="Hapus" class="tw-bg-transparent tw-border-none">
+                                                <button data-nama="' . $data->nomor_po . '" data-id="' . $data->id . '" data-toggle="tooltip" title="Hapus" class="tw-bg-transparent tw-border-none" id="btndelete">
                                                     <i class="fa fa-trash tw-text-prim-red"></i>
                                                 </button>
                                             </div>';
@@ -192,13 +259,25 @@ class TransaksiController extends Controller
             ->make(true);
     }
 
-
+    public function delete_beli(Request $request)
+    {
+        $dtb = DTransBeli::where('trans_beli_id', $request->id)->get();
+        if (count($dtb) > 0) {
+            DTransBeli::where('trans_beli_id', $request->id)->delete();
+        }
+        $tb = TransBeli::find($request->id)->delete();
+        if ($tb) {
+            return response()->json(['info' => 'success', 'msg' => 'Data berhasil di hapus']);
+        } else {
+            return response()->json(['info' => 'error', 'msg' => 'Hapus Gagal, periksa kembali']);
+        }
+    }
     public function edit_beli($id)
     {
         $data = TransBeli::find($id);
-        $supplier = Supplier::whereNotIN('id', [$data->supplier_id])->get();
+        $supplier = Supplier::all();
         $barang = Barang::all();
-        $satuan = Satuan::all();
-        return view('layouts.transaksi.edit_beli', ['supplier' => $supplier, 'barang' => $barang, 'satuan' => $satuan, 'data' => $data]);
+        $bayar = Pembayaran::all();
+        return view('layouts.transaksi.edit_beli', ['supplier' => $supplier, 'barang' => $barang, 'bayar' => $bayar, 'data' => $data]);
     }
 }

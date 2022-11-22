@@ -29,8 +29,9 @@ $(document).ready(function () {
 
 // Select 2
 $(document).ready(function() {
+  $('.select-edit').select2();
   $('.select-2').prepend('<option selected=""></option>').select2({placeholder: "Pilih Data"});
-  $('.select-user').prepend('<option selected=""></option>').select2({placeholder: "Pilih User"});
+  $('.select-user').prepend('<option selected=""></option>').select2({placeholder: "Pilih Data"});
   $('.select-trans').prepend('<option selected=""></option>').select2({placeholder: "Pilih Barang"});
   $(".input-select2").select2({
     dropdownParent: $("#modalPop")
@@ -92,8 +93,14 @@ $(function() {
                     'success'
                 );
                 $( '#trans_beli' ).each(function(){
-                  this.reset();
+                  location.reload();
               });
+           } else if(response['data'] == "dibayar"){
+                swal.fire(
+                    'Gagal',
+                    'Total dibayar harus lebih kecil dari total transaksi',
+                    'warning'
+                );
            } else {
                 swal.fire(
                     'Gagal',
