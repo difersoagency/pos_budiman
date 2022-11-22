@@ -17,4 +17,9 @@ class Jasa extends Model
         return $this->hasMany(DTransJualJasa::class);
     }
 
+    public function DBooking()
+    {
+        return $this->hasMany(DBooking::class);
+    }
+
 }

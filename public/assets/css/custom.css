@@ -190,6 +190,12 @@
    content: "\f571";
    font-weight: 900;
 }
+.book:after, .book:before {
+  font-family: "Font Awesome 5 Free";
+   content: "\f518";
+   font-weight: 900;
+}
+
 
 .promobox {
   background: linear-gradient(90deg, rgba(3,3,61,1) 0%, rgba(53,116,129,1) 100%);

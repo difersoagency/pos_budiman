@@ -259,7 +259,7 @@
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: '/master/customer/delete',
+                        url: '{{ route("customer.delete") }}',
                         type: 'DELETE',
                         dataType: 'json',
                         data: {

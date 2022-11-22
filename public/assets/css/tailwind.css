@@ -138,7 +138,9 @@
   --tw-backdrop-saturate:  ;
   --tw-backdrop-sepia:  
 }
-
+.tw-align-middle {
+  vertical-align: middle !important
+}
 .tw-z-40 {
   z-index: 40 !important
 }
@@ -359,6 +361,8 @@
   grid-template-columns: repeat(4, minmax(0, 1fr)) !important
 }
 
+
+
 .tw-items-end {
   align-items: flex-end !important
 }
@@ -369,6 +373,9 @@
 
 .tw-justify-between {
   justify-content: space-between !important
+}
+.tw-gap-20 {
+  gap: 5rem !important
 }
 
 .tw-gap-7 {

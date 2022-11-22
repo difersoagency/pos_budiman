@@ -49,7 +49,7 @@
                         </p>
                     </a>
                 </li>
-                @if (in_array(Auth::user()->LevelUser->nama_level, ['admin']))
+                @if (in_array(Auth::user()->LevelUser->nama_level, ['admin', 'owner']))
                 <li class="nav-item has-submenu">
                     <a href="/master" class="tw-cursor-pointer nav-link">
                         <i class="nav-icon fa fa-globe tw-text-prim-white"></i>

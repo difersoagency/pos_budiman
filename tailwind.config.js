@@ -17,6 +17,8 @@ module.exports = {
         'prim-red' : '#F05454',
         'prim-blue' : '#30475E',
         'prim-black' : '#222831',
+        'prim-grey-light' : '#9ca3af',
+        'prim-grey-dark': '#111827',
       }
     },
   },

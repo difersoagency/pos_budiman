@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Barang;
+use App\Models\Jasa;
+use App\Models\Booking;
+use App\Models\Customer;
+use App\Models\Pembayaran;
+
 use App\Models\Pegawai;
 use App\Models\LevelUser;
-use App\Models\Customer;
-use App\Models\Jasa;
 use App\Models\Kota;
 use App\Models\Merek;
 use App\Models\Promo;
@@ -22,6 +25,28 @@ use Illuminate\Support\Facades\Validator;
 
 class MasterController extends Controller
 {
+    public function barang_select(Request $r){
+        $d1 = Barang::where('nama_barang', 'LIKE', '%' . $r->input('term', '') . '%')->selectRaw('id as id, nama_barang as nama, IF(id IS NULL, "", "barang") as jenis, harga_jual as harga')->get();
+        $d2 = Jasa::where('nama_jasa', 'LIKE', '%' . $r->input('term', '') . '%')->selectRaw('id as id, nama_jasa as nama, IF(id IS NULL, "", "jasa") as jenis, harga as harga')->get();
+        $data = $d1->merge($d2);
+        echo json_encode($data);
+    }
+
+    public function customer_select(Request $r){
+        $data = Customer::where('nama_customer', 'LIKE', '%' . $r->input('term', '') . '%')->select('id', 'nama_customer')->get();
+        echo json_encode($data);
+    }
+
+    public function booking_select(Request $r){
+        $data = Booking::doesntHave('TransJual')->with('Customer', 'DBooking.Barang', 'DBooking.Jasa')->where('no_booking', 'LIKE', '%' . $r->input('term', '') . '%')->get();
+        echo json_encode($data);
+    }
+
+    public function pembayaran_select(Request $r){
+        $data = Pembayaran::where('nama_bayar', 'LIKE', '%' . $r->input('term', '') . '%')->get();
+        echo json_encode($data);
+    }
+    
     public function master_barang()
     {
         $merek = Merek::all();
@@ -40,7 +65,7 @@ class MasterController extends Controller
     }
     public function customer_create()
     {
-        $kota = Kota::all();
+          $kota = Kota::all();
         return view('layouts.modal.customer-modal-create', ['kota' => $kota]);
     }
     public function customer_edit($id)
