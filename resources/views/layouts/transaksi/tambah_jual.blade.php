@@ -291,7 +291,9 @@ $(function(){
         $('#barang_beli .total_jual').val(number_format(bayar));
         sum_bayar_jual();
     }
-
+    $(document).on('keyup change','.bayar_jual', function(){
+        number_format($(this.val()));
+    })
     function sum_bayar_jual(){
         if($('#barang_beli .bayar_jual').val() != ""){
         var total_jual = parseFloat(number_unformat($('#barang_beli .total_jual').val()));
