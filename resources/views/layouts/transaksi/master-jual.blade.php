@@ -109,6 +109,7 @@ $(document).ready(function() {
                     data: 'disc',
                 }, {
                     data: 'harga',
+                    render: DataTable.render.number('.', ',', 2, '')
                 }]
             });
         }
@@ -151,6 +152,7 @@ $(document).ready(function() {
                 data: 'booking.customer.nama_customer',
             },{
                 data: 'total_jual',
+                render: DataTable.render.number('.', ',', 2, '')
             }, {
                 data: 'pembayaran.nama_bayar',
             }, {

@@ -82,13 +82,13 @@
 
         </div>
         <div class="tw-grid pb-4">
-            <button  disabled="true" type="button" class="tw-w-48 tw-bg-prim-red tw-border-0  tw-text-center tw-text-white tw-py-2 tw-rounded-lg hover:tw-bg-red-700 tw-transition-all float-right" onclick="addRow('tbody2')" id="btntambah">
+            <button  disabled="true" type="button" class="tw-w-48 tw-bg-prim-red tw-border-0  tw-text-center tw-text-white tw-py-2 tw-rounded-lg hover:tw-bg-red-700 tw-transition-all float-right" onclick="addRow('')" id="btntambah">
                 + Tambah Barang
             </button>
         </div>
         <div class="tw-bg-white tw-px-5 tw-py-3 ">
             <div class="tw-overflow-x-hidden tw-overflow-y-auto tw-h-52">
-                <table id="barang_beli" class="tw-w-full table table-striped">
+                <table id="barangtable" class="tw-w-full table table-striped">
                     <thead class="tw-border-b tw-border-b-black">
                         <tr class="tw-border-transparent ">
                             <th class="tw-text-center tw-border-t-0" style="width:35%">Jenis Barang / Jasa</th>
@@ -132,7 +132,7 @@
                             </td>
                             <td>
                                 <div class="form-group">
-                                    <input type="text" class="form-control subtotal" name="subtotal[]">
+                                    <input type="text" class="form-control subtotal" readonly="true" name="subtotal[]">
                                 </div>
                             </td>
 
@@ -209,17 +209,29 @@
     });
     @endif
 $(function(){
-    function number_format(angka){
-        return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    }
+
+    function number_format(bilangan) {
+                var number_string = bilangan.toString(),
+                    sisa = number_string.length % 3,
+                    rupiah = number_string.substr(0, sisa),
+                    ribuan = number_string.substr(sisa).match(/\d{3}/g);
+
+                if (ribuan) {
+                    separator = sisa ? '.' : '';
+                    rupiah += separator + ribuan.join('.');
+                }
+                return rupiah;
+            }
+
 
     function number_unformat(angka){
-        return parseFloat(angka.toString().replace(',',''));
+        return parseFloat(angka.toString().replace('.',''));
     }
 
     $(document).on('keyup change', '.harga', function(){
         number_format($(this.val()));
     })
+
     function select_barang(){
     $('.barang_id').prepend('<option selected=""></option>').select2({
         placeholder: "Pilih Barang",
@@ -283,37 +295,43 @@ $(function(){
 
     function sum_total_harga(){
         var sum = 0;
-        $("#barang_beli .subtotal").each(function(){
-            sum += parseFloat(number_unformat($(this).val()));
+        $("#barangtable .subtotal").each(function(){
+            if($(this).val() != ""){
+                sum += parseFloat(number_unformat($(this).val()));
+            }
         });
-        $('#barang_beli .total_kotor').val(number_format(sum));
-        var bayar = number_unformat(sum) - parseFloat(number_unformat($('#barang_beli .diskon_jual').val()));
-        $('#barang_beli .total_jual').val(number_format(bayar));
+        $('#barangtable .total_kotor').val(number_format(sum));
+
+        var diskon = 0;
+        if($('#barangtable .diskon_jual').val() != ""){
+            diskon = parseFloat(number_unformat($('#barangtable .diskon_jual').val()));
+        }
+        var bayar = sum - diskon;
+        $('#barangtable .total_jual').val(number_format(bayar));
+
         sum_bayar_jual();
     }
-    $(document).on('keyup change','.bayar_jual', function(){
-        number_format($(this.val()));
-    })
     function sum_bayar_jual(){
-        if($('#barang_beli .bayar_jual').val() != ""){
-        var total_jual = parseFloat(number_unformat($('#barang_beli .total_jual').val()));
-        var bayar_jual = parseFloat(number_unformat($('#barang_beli .bayar_jual').val()));
+        if($('#barangtable .bayar_jual').val() != ""){
+        var total_jual = parseFloat(number_unformat($('#barangtable .total_jual').val()));
+        var bayar_jual = parseFloat(number_unformat($('#barangtable .bayar_jual').val()));
+        console.log(bayar_jual);
         if(bayar_jual >= total_jual){
-            $("#barang_beli .kembali_jual").val(number_format(bayar_jual - total_jual));
+            $("#barangtable .kembali_jual").val(number_format(bayar_jual - total_jual));
         }
         else{
-            $("#barang_beli .kembali_jual").val("0");
+            $("#barangtable .kembali_jual").val("0");
         }
         }
     }
 
-    $(document).on('change', '#barang_beli .barang_id', function(){
+    $(document).on('change', '#barangtable .barang_id', function(){
         $(this).closest('tr').find('.jenis_brg').val($(this).select2('data')[0].jenis);
         $(this).closest('tr').find('.harga').val(number_format($(this).select2('data')[0].harga));
         sum_total_harga();
     });
 
-    $(document).on('keyup change', '#barang_beli .jumlah', function(){
+    $(document).on('keyup change', '#barangtable .jumlah', function(){
         $(this).closest('tr').find('.subtotal').val(number_format(number_unformat($(this).closest('tr').find('.harga').val()) * $(this).val()));
         sum_total_harga();
     });
@@ -323,20 +341,21 @@ $(function(){
         $('#customer_alamat').html($(this).select2('data')[0].alamat);
         $('#customer_telp').html($(this).select2('data')[0].telp);
         var d_booking = $(this).select2('data')[0].detail;
-        
+
         if($(this).val() != ""){
+            console.log(d_booking);
             $('#btntambah').removeAttr('disabled');
             $('.barang_id').removeAttr('disabled');
             for(var i = 0; i < d_booking.length; i++){
                 if($('.barang_id').val() == ""){
-                    $('#barang_beli tbody').empty();
+                    $('#barangtable tbody').empty();
                 }
                 var ids = d_booking[i].barang_id != null ? d_booking[i].barang_id : d_booking[i].jasa_id;
                 var namas = d_booking[i].barang_id != null ? d_booking[i].barang.nama_barang : d_booking[i].jasa.nama_jasa;
                 var jumlah = d_booking[i].jumlah;
                 var harga = d_booking[i].barang_id != null ? d_booking[i].barang.harga_jual : d_booking[i].jasa.harga;
                 var jenis = d_booking[i].barang_id != null ? "barang" : "jenis";
-                $('#barang_beli tbody').append(`<tr>
+                $('#barangtable tbody').append(`<tr>
                 <td>
                                 <!-- Dropdown -->
                                 <div class="dropdown ">
@@ -368,7 +387,7 @@ $(function(){
                             </td>
                             <td>
                                 <div class="form-group">
-                                    <input type="number" class="form-control subtotal" name="subtotal[]" min="0" value="`+(harga * jumlah)+`">
+                                    <input type="number" readonly="true" class="form-control subtotal" name="subtotal[]" min="0" value="`+(harga * jumlah)+`">
                                 </div>
                             </td>
 
@@ -410,12 +429,15 @@ $(function(){
                 }
     });
 
-    $(document).on('keyup change', '#barang_beli .bayar_jual', function(){
+    $(document).on('keyup change', '#barangtable .bayar_jual', function(){
+        var tes = $(this).val();
+        var conv = tes.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        $(this).val(conv);
         sum_bayar_jual();
         // sum_total_harga();
     });
 
-    
+
 })
 </script>
 @stop

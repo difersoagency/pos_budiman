@@ -198,7 +198,7 @@ Route::group(['prefix' => '/transaksi'], function () {
         Route::post('/data', [App\Http\Controllers\TransaksiController::class, 'data_master_booking'])->name('data_booking');
         Route::get('/tambah', [App\Http\Controllers\TransaksiController::class, 'tambah_booking'])->name('tambah_booking');
         Route::post('/store', [App\Http\Controllers\TransaksiController::class, 'store_booking'])->name('store_booking');
-        Route::get('/', [App\Http\Controllers\MasterController::class, 'master_booking'])->name('master_booking');
+        Route::get('/', [App\Http\Controllers\TransaksiController::class, 'master_booking'])->name('master_booking');
     });
 });
 
