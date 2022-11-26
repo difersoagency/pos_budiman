@@ -176,8 +176,15 @@ Route::group(['prefix' => '/transaksi'], function () {
 
 
     Route::group(['prefix' => '/hutang'], function () {
+        Route::get('/selectdata/{id}', [App\Http\Controllers\TransaksiController::class, 'selectdata_hutang'])->name('selectdata-hutang');
         Route::get('/bayar', [App\Http\Controllers\TransaksiController::class, 'bayar_hutang'])->name('bayar_hutang');
+        Route::post('/data', [App\Http\Controllers\TransaksiController::class, 'data_hutang'])->name('data.hutang');
+        Route::post('/data/{id}', [App\Http\Controllers\TransaksiController::class, 'detail_data_hutang'])->name('detail.data.hutang');
+        Route::get('/edit/{id}', [App\Http\Controllers\TransaksiController::class, 'edit_hutang'])->name('edit.hutang');
         Route::get('/', [App\Http\Controllers\TransaksiController::class, 'master_hutang'])->name('master_hutang');
+        Route::post('/store', [App\Http\Controllers\TransaksiController::class, 'store_hutang'])->name('store_hutang');
+        Route::post('/update/{id}', [App\Http\Controllers\TransaksiController::class, 'update_hutang'])->name('update_hutang');
+        Route::get('/detail/{id}', [App\Http\Controllers\TransaksiController::class, 'detail_hutang'])->name('detail_hutang');
     });
 
     Route::group(['prefix' => '/piutang'], function () {

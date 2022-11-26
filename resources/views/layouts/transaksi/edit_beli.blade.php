@@ -226,7 +226,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text tw-bg-transparent tw-border-transparent">Rp.</span>
                                         </div>
-                                        <input type="text" class="form-control tw-w-1 tw-bg-transparent tw-border-transparent total_bayar" aria-label="Amount" id="total_bayar" name="total_bayar" value="{{ number_format($data->total_bayar, 0, ',', '.') }}">
+                                        <input type="text" class="form-control tw-w-1 tw-bg-transparent tw-border-transparent total_bayar" aria-label="Amount" id="total_bayar" name="total_bayar" value="{{ number_format($data->total, 0, ',', '.') }}">
                                     </div>
                                 </td>
                             </tr>

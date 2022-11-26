@@ -274,7 +274,7 @@
                  $(this).val(result);
             });
 
-            $("#barang_beli").on('keyup change', '.diskon_beli', function() {
+             $("#barang_beli").on('keyup change', '.diskon_beli', function() {
                $(this).val();
                 var diskon = $(this).closest('tr').find('.diskon_beli').val();
                 var jumlah = $(this).closest('tr').find('.jumlah_beli').val();
@@ -288,8 +288,8 @@
                     total();
                     subtotal.val(0);
                 }
-            });
-            $("#barang_beli").on('keyup change', '.harga_satuan', function() {
+             });
+             $("#barang_beli").on('keyup change', '.harga_satuan', function() {
                 var result = $(this).val().replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
                 $(this).val(result);
                 var diskon = $(this).closest('tr').find('.diskon_beli').val();
@@ -303,9 +303,9 @@
                     total();
                     subtotal.val(0);
                 }
-            });
+             });
 
-            $("#barang_beli").on('keyup change', '.jumlah_beli', function() {
+             $("#barang_beli").on('keyup change', '.jumlah_beli', function() {
                $(this).val();
                var diskon = $(this).closest('tr').find('.diskon_beli').val();
                 var jumlah = $(this).closest('tr').find('.jumlah_beli').val();
@@ -318,8 +318,8 @@
                     total();
                     subtotal.val(0);
                 }
-            });
-       function numberRows(table) {
+             });
+                      function numberRows(table) {
                 var c = 0 - 2;
                 $("#"+table+"").find("tr").each(function(ind, el) {
                     $(el).find("td:eq(0)").html(++c);

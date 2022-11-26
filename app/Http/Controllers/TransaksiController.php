@@ -13,12 +13,11 @@ use App\Models\TransBeli;
 use App\Models\DTransJualJasa;
 use App\Models\DTransJual;
 use App\Models\DPiutang;
+use App\Models\DTransHutang;
 use App\Models\TransJual;
 use App\Models\Piutang;
+use App\Models\TransHutang;
 use Illuminate\Http\Request;
-use Yajra\DataTables\Facades\DataTables;
-use Illuminate\Database\Eloquent\Relations\Pivot;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class TransaksiController extends Controller
@@ -105,6 +104,73 @@ class TransaksiController extends Controller
         return view('layouts.modal.piutang-modal-create', ['id' => $id]);
     }
 
+    public function update_hutang(Request $request, $id)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'tgl_beli.*' => 'required',
+            'pembayaran_hutang.*' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['data' => 'error']);
+        } else {
+
+            if (str_replace('.', "", $request->total_dibayar) > str_replace('.', "", $request->sisa_hutang)) {
+                return response()->json(['data' => 'total_gagal']);
+            } else {
+                $tb = DTransHutang::where('h_hutang_id', $id)->get();
+                if (count($tb) > 0) {
+                    DTransHutang::where('h_hutang_id', $id)->delete();
+                }
+
+                for ($i = 0; $i < count($request->tgl_beli); $i++) {
+                    DTransHutang::create([
+                        'h_hutang_id' =>  $id,
+                        'tgl_bayar' => $request->tgl_beli[$i],
+                        'total_bayar' =>  str_replace('.', "", $request->pembayaran_hutang[$i]),
+                    ]);
+                }
+                $trans_hutang  = TransHutang::find($id);
+                $trans_hutang->bayar_hutang = str_replace('.', "", $request->total_dibayar);
+                $trans_hutang->save();
+                return response()->json(['data' => 'success']);
+            }
+        }
+    }
+
+    public function store_hutang(Request $request)
+    {
+        //dd($request);
+        $validator = Validator::make($request->all(), [
+            'tgl_beli.*' => 'required',
+            'pembayaran_hutang.*' => 'required',
+            'beli_id' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['data' => 'error']);
+        } else {
+            if (str_replace('.', "", $request->total_dibayar) > str_replace('.', "", $request->sisa_hutang)) {
+                return response()->json(['data' => 'total_gagal']);
+            } else {
+
+                for ($i = 0; $i < count($request->tgl_beli); $i++) {
+                    DTransHutang::create([
+                        'h_hutang_id' =>  $request->hutang_id,
+                        'tgl_bayar' => $request->tgl_beli[$i],
+                        'total_bayar' =>  str_replace('.', "", $request->pembayaran_hutang[$i]),
+                    ]);
+                }
+
+                $trans_hutang  = TransHutang::find($request->hutang_id);
+                $trans_hutang->bayar_hutang = $trans_hutang->bayar_hutang + str_replace('.', "", $request->total_dibayar);
+                $trans_hutang->save();
+                return response()->json(['data' => 'success']);
+            }
+        }
+    }
+
     public function store_detail_piutang(Request $r, $id)
     {
         $validator = Validator::make($r->all(), [
@@ -182,8 +248,10 @@ class TransaksiController extends Controller
                 $trans_beli->tgl_trans_beli = $request->tgl_beli;
                 $trans_beli->tgl_max_garansi = $request->tgl_beli_garansi;
                 $trans_beli->disc = $request->disc;
-                $trans_beli->total_bayar = str_replace('.', "", $request->total_bayar);
+                $trans_beli->total_bayar = str_replace('.', "", $request->total_dibayar);
+                $trans_beli->total = str_replace('.', "", $request->total_bayar);
                 $trans_beli->save();
+
 
 
 
@@ -241,7 +309,8 @@ class TransaksiController extends Controller
                     'tgl_trans_beli' => $request->tgl_beli,
                     'tgl_max_garansi' => $request->tgl_beli_garansi,
                     'disc' => $request->diskon_total,
-                    'total_bayar' =>  str_replace('.', "", $request->total_bayar)
+                    'total_bayar' =>  str_replace('.', "", $request->total_dibayar),
+                    'total' =>  str_replace('.', "", $request->total_bayar)
                 ]);
 
                 for ($i = 0; $i < count($request->barang); $i++) {
@@ -255,6 +324,13 @@ class TransaksiController extends Controller
                 }
 
                 if (str_replace('.', "", $request->total_dibayar) != str_replace('.', "", $request->total_bayar)) {
+                    TransHutang::create([
+                        'pembayaran_id' => $request->pembayaran_id,
+                        'trans_beli_id' =>  $header->id,
+                        'tgl_hutang' =>  $request->tgl_beli,
+                        'total_hutang' => str_replace('.', "", $request->total_bayar) - str_replace('.', "", $request->total_dibayar),
+                        'bayar_hutang' => 0
+                    ]);
                 }
                 return response()->json(['data' => 'success']);
             }
@@ -289,6 +365,54 @@ class TransaksiController extends Controller
             ->make(true);
     }
 
+    public function detail_data_hutang($id)
+    {
+        $data = DTransHutang::where('h_hutang_id', $id)->get();
+        return datatables()->of($data)
+            ->addIndexColumn()
+            ->addColumn('tgl_bayar', function ($data) {
+                return  $data->tgl_bayar;
+            })
+            ->addColumn('total_bayar', function ($data) {
+                return number_format(($data->total_bayar), 0, ',', '.');
+            })
+            ->make(true);
+    }
+    public function data_hutang()
+    {
+        $data = TransHutang::all();
+        return datatables()->of($data)
+            ->addIndexColumn()
+            ->addColumn('no_pembelian', function ($data) {
+                return  $data->TransBeli->nomor_po;
+            })
+            ->addColumn('supplier', function ($data) {
+                return  $data->TransBeli->Supplier->nama_supplier;
+            })
+            ->addColumn('total_hutang', function ($data) {
+                return  number_format($data->TransBeli->total - $data->TransBeli->total_bayar);
+            })
+            ->addColumn('lunas', function ($data) {
+                return  number_format($data->bayar_hutang);
+            })
+            ->addColumn('sisa_hutang', function ($data) {
+                return  number_format(($data->TransBeli->total - $data->TransBeli->total_bayar) - $data->bayar_hutang);
+            })
+            ->addColumn('action', function ($data) {
+                return  '<div class="grid grid-cols-2">
+                <button id="btndetail" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '"  >
+                                                        <i class="fas fa-eye tw-text-prim-blue"></i>
+                                                    </button>
+                <a id="btnedit" href="/transaksi/hutang/edit/' . $data->id . '" class="mr-4 tw-bg-transparent tw-border-none" >
+                                                        <i class="fa fa-pen tw-text-prim-blue"></i>
+                                                    </a>
+                                                  
+            </div>';
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+    }
+
     public function data_transaksi_beli()
     {
         $data = TransBeli::with('Supplier', 'Pembayaran')->orderBy('tgl_trans_beli', 'desc')->get();
@@ -301,7 +425,7 @@ class TransaksiController extends Controller
                 return  $data->tgl_max_garansi;
             })
             ->addColumn('total_bayar', function ($data) {
-                return  number_format($data->total_bayar);
+                return  number_format($data->total);
             })
             ->addColumn('nomor_po', function ($data) {
                 return  $data->nomor_po;
@@ -449,10 +573,11 @@ class TransaksiController extends Controller
         }
     }
 
-
-
-
-
+    public function detail_hutang($id)
+    {
+        $data = TransHutang::find($id);
+        return view('layouts.modal.hutang-modal-detail', ['data' => $data]);
+    }
 
     public function transaksi_retur_beli()
     {
@@ -496,6 +621,30 @@ class TransaksiController extends Controller
             })
             ->rawColumns(['status', 'action'])
             ->make(true);
+    }
+
+    public function selectdata_hutang(Request $r, $id)
+    {
+        if ($id == 0) {
+            $data = TransBeli::whereHas('TransHutang')->where('nomor_po', 'LIKE', '%' . $r->input('term', '') . '%')->select('id', 'nomor_po')->get();
+            echo json_encode($data);
+        } else {
+            $data = TransBeli::find($id);
+            echo json_encode([
+                'hutang_id' => $data->TransHutang->id,
+                'supplier' => $data->Supplier->nama_supplier,
+                'total' =>  number_format($data->total, 0, ',', '.'),
+                'tgl_transaksi' => $data->tgl_trans_beli,
+                'sisa_hutang' =>  number_format(($data->total - $data->total_bayar) - $data->TransHutang->bayar_hutang, 0, ',', '.')
+            ]);
+        }
+    }
+
+    public function edit_hutang($id)
+
+    {
+        $data = TransHutang::find($id);
+        return view('layouts.transaksi.edit-hutang', ['data' => $data]);
     }
 
     public function tambah_booking()

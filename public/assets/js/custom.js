@@ -120,5 +120,54 @@ $(function() {
     });
     return false;
 })
+  $(document).on('submit', '#trans_hutang', function(e) {
+     e.preventDefault();
+     var $form = $(this);
+    var serializedData = $form.serialize();
+    var action = $(this).attr('action');
+    $.ajax({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        type: "POST",
+        url: action,
+        data: serializedData,
+        dataType: 'JSON',
+        success: function(response) {
+           if (response['data'] == "success") {
+                swal.fire(
+                    'Berhasil',
+                    'Transaksi berhasil ditambahkan',
+                    'success'
+                );
+                $( '#hutang' ).each(function(){
+                  location.reload();
+              });
+         
+           } else if( response['data'] == "total_gagal"){
+                swal.fire(
+                    'Gagal',
+                    'Total di bayar lebih besar dari total hutang',
+                    'warning'
+                );
+           } else {
+                swal.fire(
+                    'Gagal',
+                    'Lengkapi Form',
+                    'warning'
+                );
+           }
+       
+        },
+        error: function(xhr, status, error) {
+          swal.fire(
+            'Gagal',
+            'Lengkapi Form',
+            'warning'
+        );
+        }
+    });
+    return false;
+})
 });
 
