@@ -39,13 +39,13 @@
                         </div>
 
                         <div class="table_master_beli tw-mt-5 tw-col-span-2" data-current-page="1">
-                            <table id="example" class="table table-bordered responsive nowrap" style="width:100%">
+                            <table id="transjual" class="table table-bordered responsive nowrap" style="width:100%">
                                 <thead class="tw-bg-prim-blue">
                                     <tr>
                                         <th class="tw-text-prim-white">Tanggal</th>
                                         <th class="tw-text-prim-white">No.Penjualan</th>
                                         <th class="tw-text-prim-white">Customer</th>
-                                        <th class="tw-text-prim-white">Kasir</th>
+                                        <th class="tw-text-prim-white">Total Penjualan</th>
                                         <th class="tw-text-prim-white tw-w-28">Status Pembayaran</th>
                                         <th class="tw-text-prim-white">Action</th>
                                     </tr>
@@ -62,6 +62,103 @@
             </div>
             <!-- /.row -->
         </div>
+        <div class="modal fade w-full" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modal_title"></h5>
+                        <button type="button" class="close tw-text-prim-red" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 </div>
+@endsection
+@section('script')
+<script>
+$(document).ready(function() {
+    function data_detail(id){
+            $('#transjualdetail').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                'url': '/transaksi/jual/data_detail/'+id,
+                'method': 'POST',
+                'headers': {
+                    'X-CSRF-TOKEN': '{{csrf_token()}}'
+                }
+            },
+            language: {
+                processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
+            },
+            columns: [{
+                    data: 'DT_RowIndex',
+                    className: 'nowrap-text align-center',
+                    orderable: false,
+                    searchable: false
+                }, {
+                    data: 'nama',
+                }, {
+                    data: 'jumlah',
+                }, {
+                    data: 'disc',
+                }, {
+                    data: 'harga',
+                }]
+            });
+        }
+
+        $(document).on('click', '#btndetail', function(event) {
+            var id = $(this).attr('data-id');
+            $.ajax({
+                url: "/transaksi/jual/detail/"+id,
+                beforeSend: function() {
+                    $('#loader').show();
+                },
+                // return the result
+                success: function(result) {
+                    $('#modal').modal("show");
+                    $('.modal-title').html("Informasi Penjualan");
+                    $('.modal-body').html(result).show();
+
+                    data_detail(id);
+                },
+            })
+        });
+        $('#transjual').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                'url': '{{route("data_jual")}}',
+                'method': 'POST',
+                'headers': {
+                    'X-CSRF-TOKEN': '{{csrf_token()}}'
+                }
+            },
+            language: {
+                processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
+            },
+            columns: [{
+                data: 'tgl_trans_jual',
+            }, {
+                data: 'no_trans_jual',
+            }, {
+                data: 'booking.customer.nama_customer',
+            },{
+                data: 'total_jual',
+            }, {
+                data: 'pembayaran.nama_bayar',
+            }, {
+                data: 'action',
+                orderable: false,
+                searchable: false
+            }]
+        });
+    });
+</script>
 @endsection

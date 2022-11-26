@@ -147,34 +147,56 @@ Route::group(['prefix' => '/barang'], function () {
     Route::get('/edit/{id}', [App\Http\Controllers\MasterController::class, 'master_barang_edit'])->name('barang.edit');
     Route::post('/update/{id}', [App\Http\Controllers\MasterController::class, 'master_barang_update'])->name('barang.update');
     Route::delete('/delete', [App\Http\Controllers\MasterController::class, 'master_barang_delete'])->name('barang.delete');
+    Route::get('/selectdata', [App\Http\Controllers\MasterController::class, 'master_barang_select_data'])->name('barang.selectdata');
+    Route::get('/selectdata/{id}', [App\Http\Controllers\MasterController::class, 'master_barang_select_data_detail'])->name('barang.selectdatadetail');
 });
 
 
 Route::group(['prefix' => '/transaksi'], function () {
     Route::get('/', [App\Http\Controllers\TransaksiController::class, 'archive_trans'])->name('transaksi');
 
-
     Route::group(['prefix' => '/beli'], function () {
         Route::get('/', [App\Http\Controllers\TransaksiController::class, 'transaksi_beli'])->name('pembelian');
         Route::get('/tambah', [App\Http\Controllers\TransaksiController::class, 'tambah_beli'])->name('tambah-beli');
         Route::post('/store', [App\Http\Controllers\TransaksiController::class, 'store_beli'])->name('store-beli');
         Route::post('/data', [App\Http\Controllers\TransaksiController::class, 'data_transaksi_beli'])->name('pembelian.data');
+        Route::post('/data/{id}', [App\Http\Controllers\TransaksiController::class, 'detail_data_transaksi_beli'])->name('pembelian.data.detail');
+        Route::get('/edit/{id}', [App\Http\Controllers\TransaksiController::class, 'edit_beli'])->name('edit-beli');
+        Route::get('/detail/{id}', [App\Http\Controllers\TransaksiController::class, 'detail_beli'])->name('detail-beli');
+        Route::post('/update/{id}', [App\Http\Controllers\TransaksiController::class, 'update_beli'])->name('update-beli');
+        Route::delete('/delete', [App\Http\Controllers\TransaksiController::class, 'delete_beli'])->name('delete-beli');
     });
 
     Route::group(['prefix' => '/jual'], function () {
         Route::get('/', [App\Http\Controllers\TransaksiController::class, 'transaksi_jual'])->name('penjualan');
+        Route::post('/data', [App\Http\Controllers\TransaksiController::class, 'data_transaksi_jual'])->name('data_jual');
         Route::get('/tambah', [App\Http\Controllers\TransaksiController::class, 'tambah_jual'])->name('tambah-jual');
+        Route::post('/store', [App\Http\Controllers\TransaksiController::class, 'store_jual'])->name('store_jual');
+        Route::get('/detail/{id}', [App\Http\Controllers\TransaksiController::class, 'detail_jual'])->name('detail_jual');
+        Route::post('/data_detail/{id}', [App\Http\Controllers\TransaksiController::class, 'data_detail_jual'])->name('data_detail_jual');
     });
 
 
     Route::group(['prefix' => '/hutang'], function () {
+        Route::get('/selectdata/{id}', [App\Http\Controllers\TransaksiController::class, 'selectdata_hutang'])->name('selectdata-hutang');
         Route::get('/bayar', [App\Http\Controllers\TransaksiController::class, 'bayar_hutang'])->name('bayar_hutang');
+        Route::post('/data', [App\Http\Controllers\TransaksiController::class, 'data_hutang'])->name('data.hutang');
+        Route::post('/data/{id}', [App\Http\Controllers\TransaksiController::class, 'detail_data_hutang'])->name('detail.data.hutang');
+        Route::get('/edit/{id}', [App\Http\Controllers\TransaksiController::class, 'edit_hutang'])->name('edit.hutang');
         Route::get('/', [App\Http\Controllers\TransaksiController::class, 'master_hutang'])->name('master_hutang');
+        Route::post('/store', [App\Http\Controllers\TransaksiController::class, 'store_hutang'])->name('store_hutang');
+        Route::post('/update/{id}', [App\Http\Controllers\TransaksiController::class, 'update_hutang'])->name('update_hutang');
+        Route::get('/detail/{id}', [App\Http\Controllers\TransaksiController::class, 'detail_hutang'])->name('detail_hutang');
     });
 
     Route::group(['prefix' => '/piutang'], function () {
         Route::get('/bayar', [App\Http\Controllers\TransaksiController::class, 'bayar_piutang'])->name('bayar_piutang');
         Route::get('/', [App\Http\Controllers\TransaksiController::class, 'master_piutang'])->name('master_piutang');
+        Route::post('/data', [App\Http\Controllers\TransaksiController::class, 'data_piutang'])->name('data_piutang');
+        Route::get('/detail/{id}', [App\Http\Controllers\TransaksiController::class, 'detail_piutang'])->name('detail_piutang');
+        Route::post('/data_detail/{id}', [App\Http\Controllers\TransaksiController::class, 'data_detail_piutang'])->name('data_detail_piutang');
+        Route::get('/tambah_detail/{id}', [App\Http\Controllers\TransaksiController::class, 'tambah_detail_piutang'])->name('tambah_detail_piutang');
+        Route::post('/store_detail/{id}', [App\Http\Controllers\TransaksiController::class, 'store_detail_piutang'])->name('store_detail_piutang');
     });
 
     Route::group(['prefix' => '/retur-jual'], function () {
@@ -185,6 +207,14 @@ Route::group(['prefix' => '/transaksi'], function () {
     Route::group(['prefix' => '/retur-beli'], function () {
         Route::get('/tambah', [App\Http\Controllers\TransaksiController::class, 'tambah_retur_beli'])->name('tambah-retur-beli');
         Route::get('/', [App\Http\Controllers\TransaksiController::class, 'transaksi_retur_beli'])->name('retur-pembelian');
+    });
+
+    Route::group(['prefix' => '/booking'], function () {
+        Route::get('/', [App\Http\Controllers\TransaksiController::class, 'master_booking'])->name('master_booking');
+        Route::post('/data', [App\Http\Controllers\TransaksiController::class, 'data_master_booking'])->name('data_booking');
+        Route::get('/tambah', [App\Http\Controllers\TransaksiController::class, 'tambah_booking'])->name('tambah_booking');
+        Route::post('/store', [App\Http\Controllers\TransaksiController::class, 'store_booking'])->name('store_booking');
+        Route::get('/', [App\Http\Controllers\MasterController::class, 'master_booking'])->name('master_booking');
     });
 });
 

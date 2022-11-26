@@ -10,6 +10,7 @@ class Booking extends Model
     use HasFactory;
     protected $table = 'booking';
     protected $fillable = ['no_booking', 'customer_id', 'tgl_booking'];
+    public $timestamps = false;
 
     public function Customer()
     {
@@ -18,6 +19,11 @@ class Booking extends Model
 
     public function TransJual()
     {
-        return $this->hasMany(TransJual::class);
+        return $this->hasOne(TransJual::class);
+    }
+
+    public function DBooking()
+    {
+        return $this->hasMany(DBooking::class);
     }
 }

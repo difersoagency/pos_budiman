@@ -42,4 +42,9 @@ class TransJual extends Model
     {
         return $this->hasMany(ReturJual::class);
     }
+
+    public function Piutang()
+    {
+        return $this->hasOne(Piutang::class);
+    }
 }

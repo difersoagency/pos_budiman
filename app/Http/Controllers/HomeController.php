@@ -15,6 +15,8 @@ use App\Models\Supplier;
 use App\Models\TransBeli;
 use App\Models\TransJual;
 use App\Models\User;
+use App\Models\Booking;
+use App\Models\DBooking;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;

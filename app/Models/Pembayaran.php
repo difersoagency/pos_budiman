@@ -21,4 +21,13 @@ class Pembayaran extends Model
     {
         return $this->hasMany(TransBeli::class);
     }
+
+    public function Piutang()
+    {
+        return $this->hasMany(Piutang::class);
+    }
+    public function TransHutang()
+    {
+        return $this->hasMany(TransHutang::class);
+    }
 }
