@@ -160,7 +160,9 @@ Route::group(['prefix' => '/transaksi'], function () {
         Route::get('/tambah', [App\Http\Controllers\TransaksiController::class, 'tambah_beli'])->name('tambah-beli');
         Route::post('/store', [App\Http\Controllers\TransaksiController::class, 'store_beli'])->name('store-beli');
         Route::post('/data', [App\Http\Controllers\TransaksiController::class, 'data_transaksi_beli'])->name('pembelian.data');
+        Route::post('/data/{id}', [App\Http\Controllers\TransaksiController::class, 'detail_data_transaksi_beli'])->name('pembelian.data.detail');
         Route::get('/edit/{id}', [App\Http\Controllers\TransaksiController::class, 'edit_beli'])->name('edit-beli');
+        Route::get('/detail/{id}', [App\Http\Controllers\TransaksiController::class, 'detail_beli'])->name('detail-beli');
         Route::post('/update/{id}', [App\Http\Controllers\TransaksiController::class, 'update_beli'])->name('update-beli');
         Route::delete('/delete', [App\Http\Controllers\TransaksiController::class, 'delete_beli'])->name('delete-beli');
     });

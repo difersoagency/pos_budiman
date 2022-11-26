@@ -24,7 +24,7 @@ class TransBeli extends Model
 
     public function DTransBeli()
     {
-        return $this->hasMany(DTransBeli::class);
+        return $this->hasMany(DTransBeli::class, 'htrans_beli_id', 'id');
     }
 
     public function ReturBeli()

@@ -87,11 +87,76 @@
             <!-- /.row -->
         </div>
     </section>
+
+
+    <div class="modal fade" id="modalPop" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Detail Pengajuan Pembelian</h5>
+                    <button type="button" class="close tw-text-prim-red" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modal-body">
+                    <!-- END:Modal -->
+                    <!-- /.content -->
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 @section('script')
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
      $(document).ready(function() {
+                    $(document).on('click', '#btndetail', function(event) {
+                        var id = $(this).attr('data-id');
+                        // var nama = $(this).attr('data-nama');
+                    $.ajax({
+                        url: "/transaksi/beli/detail/" + id,
+                        beforeSend: function() {
+                            $('#loader').show();
+                        },
+                        // return the result
+                        success: function(result) {
+                            $('#modalPop').modal("show");
+                            $('#modal-body').html(result).show();
+                            detail_beli_table(id)
+                        },
+                    })
+                });
+
+            function detail_beli_table(id){
+                $('#belitable').DataTable({
+                        destroy: true,
+                        processing: true,
+                        serverSide: true,
+                        ajax: {
+                            'type': 'POST',
+                            'datatype': 'JSON',
+                            'url': '/transaksi/beli/data/'+id,
+                            'headers': {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            }
+                        },
+                        columns: [{
+                                data: 'DT_RowIndex',
+                                className: 'nowrap-text align-center',
+                                orderable: false,
+                                searchable: false
+                            }, {
+                                data: 'barang',
+                            }, {
+                                data: 'jumlah',
+                            }, {
+                                data: 'harga',
+                            }, {
+                                data: 'disc',
+                            }]
+                    });
+            }
 
         $(document).on('click', '#btndelete', function(event) {
             event.preventDefault();

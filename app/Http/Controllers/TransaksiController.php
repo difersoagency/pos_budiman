@@ -255,17 +255,17 @@ class TransaksiController extends Controller
 
 
 
-                $tb = DTransBeli::where('trans_beli_id', $id)->get();
+                $tb = DTransBeli::where('htrans_beli_id', $id)->get();
 
 
                 if (count($tb) > 0) {
-                    DTransBeli::where('trans_beli_id', $id)->delete();
+                    DTransBeli::where('htrans_beli_id', $id)->delete();
                 }
 
 
                 for ($i = 0; $i < count($request->barang); $i++) {
                     DTransBeli::create([
-                        'trans_beli_id' =>  $trans_beli->id,
+                        'htrans_beli_id' =>  $trans_beli->id,
                         'barang_id' => $request->barang[$i],
                         'jumlah' => $request->jumlah_beli[$i],
                         'harga' =>  str_replace('.', "", $request->harga_satuan[$i]),
@@ -315,7 +315,7 @@ class TransaksiController extends Controller
 
                 for ($i = 0; $i < count($request->barang); $i++) {
                     DTransBeli::create([
-                        'trans_beli_id' => $header->id,
+                        'htrans_beli_id' => $header->id,
                         'barang_id' => $request->barang[$i],
                         'jumlah' => $request->jumlah_beli[$i],
                         'harga' =>  str_replace('.', "", $request->harga_satuan[$i]),
@@ -326,7 +326,7 @@ class TransaksiController extends Controller
                 if (str_replace('.', "", $request->total_dibayar) != str_replace('.', "", $request->total_bayar)) {
                     TransHutang::create([
                         'pembayaran_id' => $request->pembayaran_id,
-                        'trans_beli_id' =>  $header->id,
+                        'htrans_beli_id' =>  $header->id,
                         'tgl_hutang' =>  $request->tgl_beli,
                         'total_hutang' => str_replace('.', "", $request->total_bayar) - str_replace('.', "", $request->total_dibayar),
                         'bayar_hutang' => 0
@@ -413,6 +413,28 @@ class TransaksiController extends Controller
             ->make(true);
     }
 
+    public function detail_data_transaksi_beli($id)
+    {
+        $data = DTransBeli::where('htrans_beli_id', $id)->get();
+        return datatables()->of($data)
+            ->addIndexColumn()
+            ->addColumn('barang', function ($data) {
+                return  $data->Barang->nama_barang;
+            })
+            ->addColumn('jumlah', function ($data) {
+                return  $data->jumlah;
+            })
+            ->addColumn('harga', function ($data) {
+                return number_format($data->harga, 0, ',', '.');
+            })
+            ->addColumn('disc', function ($data) {
+                return  $data->disc . ' %';
+            })
+            ->addColumn('total', function ($data) {
+                return number_format(($data->harga * $data->jumlah) - (($data->harga * $data->jumlah) * $data->disc / 100), 0, ',', '.');
+            })
+            ->make(true);
+    }
     public function data_transaksi_beli()
     {
         $data = TransBeli::with('Supplier', 'Pembayaran')->orderBy('tgl_trans_beli', 'desc')->get();
@@ -441,7 +463,7 @@ class TransaksiController extends Controller
                                                 <a href="' . route('edit-beli', $data->id) . '" class="mr-4 tw-bg-transparent tw-border-none" data-toggle="tooltip" title="Edit">
                                                     <i class="fa fa-pen tw-text-prim-blue"></i>
                                                 </a>
-                                                <button data-toggle="tooltip" title="Detail" class="tw-mr-4 tw-bg-transparent tw-border-none">
+                                                <button data-toggle="tooltip" title="Detail"  data-id="' . $data->id . '" id="btndetail" class="tw-mr-4 tw-bg-transparent tw-border-none">
                                                     <i class="fa fa-info tw-text-prim-black"></i>
                                                 </button>
                                                 <button data-nama="' . $data->nomor_po . '" data-id="' . $data->id . '" data-toggle="tooltip" title="Hapus" class="tw-bg-transparent tw-border-none" id="btndelete">
@@ -455,9 +477,9 @@ class TransaksiController extends Controller
 
     public function delete_beli(Request $request)
     {
-        $dtb = DTransBeli::where('trans_beli_id', $request->id)->get();
+        $dtb = DTransBeli::where('htrans_beli_id', $request->id)->get();
         if (count($dtb) > 0) {
-            DTransBeli::where('trans_beli_id', $request->id)->delete();
+            DTransBeli::where('htrans_beli_id', $request->id)->delete();
         }
         $tb = TransBeli::find($request->id)->delete();
         if ($tb) {
@@ -466,6 +488,13 @@ class TransaksiController extends Controller
             return response()->json(['info' => 'error', 'msg' => 'Hapus Gagal, periksa kembali']);
         }
     }
+
+    public function detail_beli($id)
+    {
+        $data = TransBeli::find($id);
+        return view('layouts.modal.beli-modal-detail', ['data' => $data]);
+    }
+
     public function edit_beli($id)
     {
         $data = TransBeli::find($id);
