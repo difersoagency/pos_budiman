@@ -194,4 +194,5 @@ Route::group(['prefix' => '/laporan'], function () {
     Route::get('/pembelian', [App\Http\Controllers\LaporanController::class, 'laporan_pembelian'])->name('pembelian');
     Route::get('/penjualan', [App\Http\Controllers\LaporanController::class, 'laporan_penjualan'])->name('penjualan');
     Route::get('/produk', [App\Http\Controllers\LaporanController::class, 'laporan_produk'])->name('produk');
+    Route::get('/kasir', [App\Http\Controllers\LaporanController::class, 'kasir'])->name('kasir');
 });
