@@ -38,19 +38,19 @@
                         </div>
 
                         <div class="table_master_beli tw-mt-5 tw-col-span-2" data-current-page="1">
-                            <table id="example" class="table table-bordered responsive nowrap" style="width:100%">
+                            <table id="trans_beli" class="table table-bordered responsive nowrap" style="width:100%">
                                 <thead class="tw-bg-prim-blue">
                                     <tr>
-                                        <th class="tw-text-prim-white">Tanggal</th>
                                         <th class="tw-text-prim-white">No.Pembelian</th>
-                                        <th class="tw-text-prim-white">Di Buat Oleh</th>
-                                        <th class="tw-text-prim-white tw-w-48">Deskripsi</th>
+                                        <th class="tw-text-prim-white">Supplier</th>
+                                        <th class="tw-text-prim-white">Tgl Pembelian</th>
+                                        <th class="tw-text-prim-white tw-w-48">Pembayaran</th>
                                         <th class="tw-text-prim-white tw-w-28">Total Harga</th>
                                         <th class="tw-text-prim-white">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
+                                    {{-- <tr>
                                         <td>LM001</td>
                                         <td>Lampu Motor</td>
                                         <td>Asep</td>
@@ -72,7 +72,7 @@
                                             </div>
                                         </td>
 
-                                    </tr>
+                                    </tr> --}}
 
 
                                 </tbody>
@@ -87,5 +87,164 @@
             <!-- /.row -->
         </div>
     </section>
+
+
+    <div class="modal fade" id="modalPop" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Detail Pengajuan Pembelian</h5>
+                    <button type="button" class="close tw-text-prim-red" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modal-body">
+                    <!-- END:Modal -->
+                    <!-- /.content -->
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
+@section('script')
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+     $(document).ready(function() {
+                    $(document).on('click', '#btndetail', function(event) {
+                        var id = $(this).attr('data-id');
+                        // var nama = $(this).attr('data-nama');
+                    $.ajax({
+                        url: "/transaksi/beli/detail/" + id,
+                        beforeSend: function() {
+                            $('#loader').show();
+                        },
+                        // return the result
+                        success: function(result) {
+                            $('#modalPop').modal("show");
+                            $('#modal-body').html(result).show();
+                            detail_beli_table(id)
+                        },
+                    })
+                });
+
+            function detail_beli_table(id){
+                $('#belitable').DataTable({
+                        destroy: true,
+                        processing: true,
+                        serverSide: true,
+                        ajax: {
+                            'type': 'POST',
+                            'datatype': 'JSON',
+                            'url': '/transaksi/beli/data/'+id,
+                            'headers': {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            }
+                        },
+                        columns: [{
+                                data: 'DT_RowIndex',
+                                className: 'nowrap-text align-center',
+                                orderable: false,
+                                searchable: false
+                            }, {
+                                data: 'barang',
+                            }, {
+                                data: 'jumlah',
+                            }, {
+                                data: 'harga',
+                            }, {
+                                data: 'disc',
+                            }]
+                    });
+            }
+
+        $(document).on('click', '#btndelete', function(event) {
+            event.preventDefault();
+            var data_id = $(this).attr('data-id');
+            var data_nama = $(this).attr('data-nama');
+            Swal.fire({
+                title: 'Hapus Data',
+                text: "Apakah anda ingin menghapus data " + data_nama + "?",
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonColor: 'grey',
+                confirmButtonColor: '#d33',
+
+                confirmButtonText: 'Hapus',
+                cancelButtonText: 'Batal',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '{{ route("delete-beli") }}',
+                        type: 'DELETE',
+                        dataType: 'json',
+                        data: {
+                            "id": data_id,
+                            "_method": "DELETE",
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(result) {
+                            if (result.info == "success") {
+                                Swal.fire({
+                                    title: 'Berhasil',
+                                    text: 'Data berhasil di hapus',
+                                    icon: 'success',
+                                });
+                               
+                                $('#trans_beli').DataTable().ajax.reload();
+                            } else {
+                                Swal.fire({
+                                    title: 'Gagal',
+                                    text: 'Data gagal di hapus',
+                                    icon: 'error',
+                                });
+                            }
+                        }
+                    });
+                }
+            })
+        });
+
+        var table_promo = $('#trans_beli').DataTable({
+            destroy: true,
+            processing: true,
+            serverSide: true,
+            ajax: {
+                'type': 'POST',
+                'datatype': 'JSON',
+                'url': '{{route("pembelian.data")}}',
+                'headers': {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            },
+            columns: [{
+                    data: 'nomor_po',
+                    className: 'nowrap-text align-center',
+                },{
+                    data: 'supplier',
+                    className: 'nowrap-text align-center',
+                },
+                
+                {
+                    data: 'tgl_trans_beli',
+                    className: 'nowrap-text align-center',
+                }, {
+                    data: 'pembayaran',
+                    className: 'nowrap-text align-center',
+                }
+                , {
+                    data: 'total_bayar',
+                    className: 'nowrap-text align-center',
+                },
+                {
+                    data: 'action',
+                    className: 'nowrap-text align-center',
+                },
+                
+              
+            ]
+        });
+    });
+    </script>
+@stop
 @endsection

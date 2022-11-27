@@ -1188,4 +1188,16 @@ class MasterController extends Controller
         $merek = Merek::all();
         return view('layouts.modal.barang-modal-edit', ['tipe' => $tipe, 'merek' => $merek, 'data' => $data]);
     }
+    public function master_barang_select_data(Request $request)
+    {
+        $data = Barang::where('nama_barang', 'LIKE', '%' . $request->input('term', '') . '%')
+            ->orderby('nama_barang', 'ASC')->get();
+        echo json_encode($data);
+    }
+
+    public function master_barang_select_data_detail($id)
+    {
+        $data = Barang::find($id);
+        echo json_encode($data);
+    }
 }

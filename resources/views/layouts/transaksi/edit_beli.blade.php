@@ -11,13 +11,13 @@
 @section('content')
 <div class="content-wrapper tw-py-6 tw-px-5">
     <section class="tambahBeli">
-        <form id="trans_beli" action="{{route('store-beli')}}" method="POST">
+        <form id="trans_beli" action="{{route('update-beli',['id' => $data->id])}}" method="POST">
             @csrf
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="\transaksi\">Transaksi</a></li>
                     <li class="breadcrumb-item"><a href="\transaksi\beli">Pembelian</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Pengajuan Pembelian</li>
+                    <li class="breadcrumb-item active" aria-current="page">Edit Pengajuan Pembelian</li>
                 </ol>
             </nav>
 
@@ -25,9 +25,9 @@
                 <div class="mx-2">
                     <label for="booking_id">Supplier</label>
                     <div class="dropdown" style="width:100%;">
-                        <select class="custom-select select-user tw-text-prim-white" id="suuplier" name="supplier">
+                        <select class="custom-select select-edit tw-text-prim-white" id="suuplier" name="supplier">
                             @foreach ($supplier as $s)
-                            <option value="{{$s->id}}">{{$s->nama_supplier}}</option>
+                            <option value="{{$s->id}}" @if($s->id == $s->supplier_id) selected @endif >{{$s->nama_supplier}}</option>
                             @endforeach
                         </select>
                     </div>
@@ -35,11 +35,11 @@
                 </div>
                 <div class="mx-2">
                     <label for="no_trans_jual">No Transaksi Pembelian</label>
-                    <input type="text" placeholder="No Transaksi" class="form-control no_trans_jual" name="no_beli" id="no_trans_jual">
+                    <input type="text" placeholder="No Transaksi" class="form-control no_trans_jual" name="no_beli" id="no_trans_jual" value="{{$data->nomor_po}}">
                 </div>
                 <div class="mx-2">
                     <label for="tgl_trans_jual">Tgl Transaksi</label>
-                    <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_trans_jual" name="tgl_beli" id="tgl_trans_jual">
+                    <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_trans_jual" name="tgl_beli" id="tgl_trans_jual" value="{{$data->tgl_trans_beli}}">
                 </div>
                 <div class="my-4 mx-2 tw-row-span-2">
                     {{-- <label for="user_beli">Supplier</label>
@@ -49,7 +49,7 @@
                         <div>0838312222290</div>
                     </div> --}}
                     <label for="user_beli">Batas Garansi</label>
-                    <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_garansi" name="tgl_beli_garansi" id="tgl_retur_beli">
+                    <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_garansi" name="tgl_beli_garansi" id="tgl_retur_beli" value="{{$data->tgl_max_garansi}}">
            
                 </div>
                 <div class="my-4 mx-2 tw-row-span-2">
@@ -60,9 +60,9 @@
                     </div> --}}
                     <label for="user_beli">Pembayaran</label>
                     <div class="dropdown">
-                        <select class="custom-select select-user tw-text-prim-white tw-w-full" id="pembayaran_id" name="pembayaran_id">
+                        <select class="custom-select select-edit tw-text-prim-white tw-w-full" id="pembayaran_id" name="pembayaran_id">
                             @foreach ($bayar as $b)
-                            <option value="{{$b->id}}">{{$b->nama_bayar}}</option>
+                            <option value="{{$b->id}}" @if($b->id == $data->pembayaran_id) selected @endif  >{{$b->nama_bayar}}</option>
                             @endforeach
                         </select>
                     </div>
@@ -97,19 +97,22 @@
                             </tr>
                         </thead>
                         <tbody >
+                            @foreach($data->DTransBeli as $d)
                             <tr>
-                                <td class="d-none">1</td>
+                                <td class="d-none"></td>
                                 <td data-label="Jenis Barang / Jasa" scope="row">
                                     <!-- Dropdown -->
                                     <div class="dropdown tw-mb-7 md:tw-mb-0 ">
-                                        <select name="barang[]" id="0" class="custom-select  tw-text-prim-white barang" style="width: 100%">
+                                        <select name="barang[]" id="{{ $loop->iteration - 1 }}" class="custom-select  tw-text-prim-white barang" style="width: 100%">
+                                            <option value="{{ $d->barang->id }}"  selected >
+                                                {{ $d->Barang->nama_barang }}</option>
                                         </select>
                                     </div>
                                     <!-- End Dropdown  -->
                                 </td>
                                 <td data-label="Jumlah">
                                     <div class="form-group">
-                                        <input type="number" class="form-control jumlah_beli" name="jumlah_beli[]" id="jumlah_beli0" min="0">
+                                        <input type="number" class="form-control jumlah_beli" name="jumlah_beli[]" id="jumlah_beli0" min="0" value="{{$d->jumlah}}">
                                     </div>
                                 </td>
                                 {{-- <td data-label="Satuan">
@@ -124,16 +127,16 @@
                                 </td> --}}
                                 <td data-label="Harga Satuan">
                                     <div class="form-group">
-                                        <input type="text" class="form-control harga_satuan" name="harga_satuan[]" id="harga_satuan0" min="0">
+                                        <input type="text" class="form-control harga_satuan" name="harga_satuan[]" id="harga_satuan0" min="0" value="{{ number_format($d->harga, 0, ',', '.') }}">
                                     </div>
                                 </td>
                                 <td data-label="diskon-beli">
                                     <div class="form-group">
-                                        <input type="number" class="form-control diskon_beli" name="diskon_beli[]" id="diskon_beli0" min="0" max="100">
+                                        <input type="number" class="form-control diskon_beli" name="diskon_beli[]" id="diskon_beli0" min="0" max="100" value="{{$d->disc}}">
                                     </div>
                                 </td>
                                 <td data-label="Total">
-                                    <input type="text" readonly class="form-control subtotal" name="subtotal[]" id="subtotal0" min="0">
+                                    <input type="text" readonly class="form-control subtotal" name="subtotal[]" id="subtotal0" min="0" value="{{number_format($d->harga * $d->jumlah - ($d->harga * $d->disc / 100),0, ',', '.' )}}">
                                 </td>
                                 <td data-label="#">
                                     <button class="tw-bg-transparent tw-border-none">
@@ -142,6 +145,7 @@
                                         </button>
                                 </td>
                             </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -164,11 +168,11 @@
                                 </td>
                             </tr> --}}
                             <tr>
-                                <td class="item" colspan="3">Total Item : 1 Item</td>
+                                <td class="item" colspan="3">Total Item : {{count($data->DTransBeli)}} Item</td>
                                 <td class="">Diskon Transaksi %</td>
                                 <td class="">
                                     <div class="input-group">
-                                        <input type="number" class="form-control tw-w-1 diskon_total" aria-label="Amount" id="diskon_total" name="diskon_total" placeholder="0">
+                                        <input type="number" class="form-control tw-w-1 diskon_total" aria-label="Amount" id="diskon_total" name="diskon_total" placeholder="0" value="{{$data->disc}}">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">%</span>
                                         </div>
@@ -210,7 +214,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp.</span>
                                         </div>
-                                        <input type="text" class="form-control tw-w-1 total_dibayar" aria-label="Amount" id="total_dibayar" name="total_dibayar" value=""  >
+                                        <input type="number" class="form-control tw-w-1 total_dibayar" aria-label="Amount" id="total_dibayar" name="total_dibayar" value="{{number_format($data->total_bayar, 0, ',', '.')}}" >
                                     </div>
                                 </td>
                             </tr>
@@ -222,7 +226,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text tw-bg-transparent tw-border-transparent">Rp.</span>
                                         </div>
-                                        <input type="text" class="form-control tw-w-1 tw-bg-transparent tw-border-transparent total_bayar" aria-label="Amount" id="total_bayar" name="total_bayar" value="0" >
+                                        <input type="text" class="form-control tw-w-1 tw-bg-transparent tw-border-transparent total_bayar" aria-label="Amount" id="total_bayar" name="total_bayar" value="{{ number_format($data->total, 0, ',', '.') }}">
                                     </div>
                                 </td>
                             </tr>
@@ -270,11 +274,10 @@
             });
 
             $("#total_dibayar").on('keyup change', function() {
-                var result =  $(this).val().replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-                 $(this).val(result);
+                 $(this).val().replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
             });
 
-             $("#barang_beli").on('keyup change', '.diskon_beli', function() {
+            $("#barang_beli").on('keyup change', '.diskon_beli', function() {
                $(this).val();
                 var diskon = $(this).closest('tr').find('.diskon_beli').val();
                 var jumlah = $(this).closest('tr').find('.jumlah_beli').val();
@@ -288,10 +291,11 @@
                     total();
                     subtotal.val(0);
                 }
-             });
-             $("#barang_beli").on('keyup change', '.harga_satuan', function() {
+            });
+            $("#barang_beli").on('keyup change', '.harga_satuan', function() {
                 var result = $(this).val().replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
                 $(this).val(result);
+              // $(this).val();
                 var diskon = $(this).closest('tr').find('.diskon_beli').val();
                 var jumlah = $(this).closest('tr').find('.jumlah_beli').val();
                  var harga = replaceAll($(this).closest('tr').find('.harga_satuan').val(), '.', '');
@@ -303,9 +307,9 @@
                     total();
                     subtotal.val(0);
                 }
-             });
+            });
 
-             $("#barang_beli").on('keyup change', '.jumlah_beli', function() {
+            $("#barang_beli").on('keyup change', '.jumlah_beli', function() {
                $(this).val();
                var diskon = $(this).closest('tr').find('.diskon_beli').val();
                 var jumlah = $(this).closest('tr').find('.jumlah_beli').val();
@@ -318,8 +322,8 @@
                     total();
                     subtotal.val(0);
                 }
-             });
-                      function numberRows(table) {
+            });
+       function numberRows(table) {
                 var c = 0 - 2;
                 $("#"+table+"").find("tr").each(function(ind, el) {
                     $(el).find("td:eq(0)").html(++c);
@@ -356,7 +360,7 @@
                 );
                 }
                 numberRows("barang_beli");
-               
+                total();
             });
              
           

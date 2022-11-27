@@ -11,7 +11,7 @@
                 <li class="breadcrumb-item active" aria-current="page">Pembayaran Hutang</li>
             </ol>
         </nav>
-        <form action="{{route('store_hutang')}}" id="trans_hutang">
+        <form action="{{route('update_hutang',['id' => $data->id])}}" id="trans_hutang">
             @csrf
             <input type="number" class="form-control tw-w-1 tw-bg-transparent tw-border-transparent d-none" aria-label="Amount" id="hutang_id" name="hutang_id"  >             
         <div class="tw-grid tw-grid-cols-2 tw-mb-7 tw-gap-7">
@@ -19,9 +19,7 @@
                 <label for="user_beli">No Pengajuan</label>
                 <!-- Dropdown -->
                 <div class="dropdown tw-mb-7 md:tw-mb-0 md:tw-w-3/4">
-                    <select class="custom-select  tw-text-prim-white" id="no_po" name="beli_id">
-                       
-                    </select>
+                    <input type="text" class="form-control " id="desc_hutang" disabled value="{{$data->TransBeli->nomor_po}}">
                 </div>
                 <!-- End Dropdown  -->
             </div>
@@ -29,7 +27,7 @@
                 <label for="tgl_beli">Tanggal Transaksi</label>
                 <div class="tw-items-center tw-mb-4">
                     <div class="input-group input-daterange tw-items-center">
-                        <input type="date" class="form-control tw-mr-3" id="tgl_beli" readonly>
+                        <input type="date" class="form-control tw-mr-3" id="tgl_beli" disabled value="{{$data->TransBeli->tgl_trans_beli}}">
                     </div>
                     <!-- End Date Picker  -->
                 </div>
@@ -40,7 +38,7 @@
             <div class="tw-col-span-2 md:tw-flex-auto">
                 <div class="form-group">
                     <label for="desc_beli" class="col-form-label tw-pt-0">Supplier</label>
-                    <input type="text" class="form-control " id="desc_hutang" readonly>
+                    <input type="text" class="form-control " id="desc_hutang" disabled value="Pembelian dari {{$data->TransBeli->Supplier->nama_supplier}}" >
                 </div>
             </div>
         </div>
@@ -58,12 +56,13 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @if(count($data->DtransHutang)>0)
+                        @foreach($data->DtransHutang as $d)
                         <tr>
                             <td scope="row" class="d-none ">1</td>
-                               
                             <td data-label="Tanggal Beli">
                                 <div class="form-group">
-                                    <input type="date" class="form-control tgl_beli" id="tgl_beli0" name="tgl_beli[]" >
+                                    <input type="date" class="form-control tgl_beli" id="tgl_beli0" name="tgl_beli[]" value="{{$d->tgl_bayar}}">
                                 </div>
                             </td>
                             <td data-label="Pembayaran Hutang">
@@ -71,7 +70,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Rp.</span>
                                     </div>
-                                    <input type="text" class="form-control pembayaran_hutang" aria-label="Amount" id="pembayaran_hutang0" name="pembayaran_hutang[]" placeholder="0">
+                                    <input type="text" class="form-control pembayaran_hutang" aria-label="Amount" id="pembayaran_hutang0" name="pembayaran_hutang[]" placeholder="0" value="{{ number_format($d->total_bayar, 0, ',', '.') }}">
                                 </div>
                             </td>
                             <td data-label="#">
@@ -96,6 +95,30 @@
                                 </div>
                             </td> --}}
                         </tr>
+                        @endforeach
+                        @else
+                        <tr>
+                            <td scope="row" class="d-none ">1</td>
+                            <td data-label="Tanggal Beli">
+                                <div class="form-group">
+                                    <input type="date" class="form-control tgl_beli" id="tgl_beli0" name="tgl_beli[]" >
+                                </div>
+                            </td>
+                            <td data-label="Pembayaran Hutang">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Rp.</span>
+                                    </div>
+                                    <input type="text" class="form-control pembayaran_hutang" aria-label="Amount" id="pembayaran_hutang0" name="pembayaran_hutang[]" placeholder="0">
+                                </div>
+                            </td>
+                            <td data-label="#">
+                                <button class="tw-bg-transparent tw-border-none"  id="removerow" type="button">
+                                    <i class="fa fa-trash tw-text-prim-red"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        @endif
                     </tbody>
                 </table>
             </div>
@@ -113,7 +136,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text tw-bg-transparent tw-border-transparent">Rp.</span>
                                     </div>
-                                    <input type="number" class="form-control tw-w-1 tw-bg-transparent tw-border-transparent" aria-label="Amount" id="total" value="0" disabled>
+                                    <input type="number" class="form-control tw-w-1 tw-bg-transparent tw-border-transparent" aria-label="Amount" id="total" value="{{ number_format($data->TransBeli->total, 0, ',', '.') }}" disabled>
                                 </div>
                             </td>
                         </tr>
@@ -125,7 +148,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text tw-bg-transparent tw-border-transparent">Rp.</span>
                                     </div>
-                                    <input type="text" class="form-control tw-w-1 tw-bg-transparent tw-border-transparent" aria-label="Amount" id="total_dibayar" name="total_dibayar" value="0" readonly>
+                                    <input type="text" class="form-control tw-w-1 tw-bg-transparent tw-border-transparent" aria-label="Amount" id="total_dibayar" name="total_dibayar" value="{{ number_format($data->bayar_hutang, 0, ',', '.') }}" readonly>
                                 </div>
                             </td>
                         </tr>
@@ -138,8 +161,8 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text tw-bg-transparent tw-border-transparent">Rp.</span>
                                     </div>
-                                    <input type="number" class="form-control tw-w-1 tw-bg-transparent tw-border-transparent d-none" aria-label="Amount" id="sisa_hutang"  value="0" name="sisa_hutang" readonly>
-                                    <input type="number" class="form-control tw-w-1 tw-bg-transparent tw-border-transparent" aria-label="Amount" id="total_sisa_hutang"  value="0" disabled>
+                                    <input type="number" class="form-control tw-w-1 tw-bg-transparent tw-border-transparent d-none" aria-label="Amount" id="sisa_hutang"  value="{{  number_format(($data->TransBeli->total - $data->TransBeli->total_bayar) - $data->bayar_hutang, 0, ',', '.') }}"  name="sisa_hutang" readonly>
+                                    <input type="number" class="form-control tw-w-1 tw-bg-transparent tw-border-transparent" aria-label="Amount" id="total_sisa_hutang"  value="{{ number_format($data->total_hutang - $data->bayar_hutang, 0, ',', '.') }}" name="total_sisa_hutang"  readonly>
                              
                                 </div>
                             </td>
@@ -162,7 +185,6 @@
 @section('script')
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    select_data();
     function replaceAll(string, search, replace) {
                 return string.split(search).join(replace);
             }
@@ -252,51 +274,7 @@ $("#hutang").on('keyup change', '.pembayaran_hutang', function() {
                 total();
              });
 
-    function select_data() {
-                $('#no_po').select2({
-                    placeholder: "Pilih Data",
-                    ajax: {
-                        minimumResultsForSearch: 20,
-                        dataType: 'json',
-                        theme: "bootstrap",
-                        delay: 250,
-                        type: 'GET',
-                        url: '/transaksi/hutang/selectdata/0',
-                        data: function(params) {
-                            return {
-                                term: params.term
-                            }
-                        },
-                        processResults: function(data) {
-                            return {
-                                results: $.map(data, function(obj) {
-                                    return {
-                                        id: obj.id,
-                                        text: obj.nomor_po
-                                    };
-                                })
-                            };
-                        },
-                    }
-                }).change(function() {
-                    var value = $(this).val();
-                    $.ajax({
-                        url: '/transaksi/hutang/selectdata/' + value,
-                        type: 'GET',
-                        dataType: 'json',
-                        success: function(data) {
-                            console.log(data);
-                          $('#tgl_beli').val(data.tgl_transaksi);
-                          $('#total').val(data.total);
-                          $('#desc_hutang').val('Pembelian dari ' + data.supplier);
-                          $('#sisa_hutang').val(data.sisa_hutang);
-                          $('#total_sisa_hutang').val(data.sisa_hutang);
-                          $('#hutang_id').val(data.hutang_id);
-                        }
-                    });
-                 
-                });
-            }
+   
 </script>
 @stop
 @endsection

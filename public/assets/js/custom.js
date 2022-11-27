@@ -29,12 +29,14 @@ $(document).ready(function () {
 
 // Select 2
 $(document).ready(function() {
+  $('.select-edit').select2();
   $('.select-2').prepend('<option selected=""></option>').select2({placeholder: "Pilih Data"});
-  $('.select-user').prepend('<option selected=""></option>').select2({placeholder: "Pilih User"});
+  $('.select-user').prepend('<option selected=""></option>').select2({placeholder: "Pilih Data"});
   $('.select-trans').prepend('<option selected=""></option>').select2({placeholder: "Pilih Barang"});
   $(".input-select2").select2({
     dropdownParent: $("#modalPop")
   });
+  $('.selects').select2();
 
   $(".kota").select2({
     dropdownParent: $("#suppliermodal")
@@ -99,38 +101,32 @@ function addRow(tableID) {
   var row = table.insertRow(rowCount);
   var colCount = table.rows[0].cells.length;
   for(var i=0; i<colCount; i++) {
+    $('.select-trans').prepend('<option selected=""></option>').select2({placeholder: "Pilih Barang"});
+    $('.select-trans').last().next().next().remove();
       var newcell = row.insertCell(i);
       newcell.innerHTML = table.rows[0].cells[i].innerHTML;
       var child = newcell.children;
       for(var i2=0; i2<child.length; i2++) {
           var test = newcell.children[i2].tagName;
-          switch(test) {
-              case "INPUT":
-                  if(newcell.children[i2].type=='checkbox'){
-                      newcell.children[i2].value = "";
-                      newcell.children[i2].checked = false;
-                  }else{
-                      newcell.children[i2].value = "";
-                  }
-              break;
-              case "SELECT":
-                  newcell.children[i2].value = "";
-              break;
-              default:
-              break;
-          }
       }
   }
 }
 
+function deleteRow(btn, tableId) {
+  var table = document.getElementById(tableId);
+  var rowCount = table.rows.length;
+  var row = btn.parentNode.parentNode;
+  if(rowCount > 1){
+    
+    row.parentNode.removeChild(row);  
+  }
+ 
+}
 
 $(function() {
   $(document).on('submit', '#trans_beli', function(e) {
-    alert('ok');
-     $('#trans_beli_submit').attr('disabled', true);
      e.preventDefault();
      var $form = $(this);
-    var $inputs = $form.find("input, select, button, textarea");
     var serializedData = $form.serialize();
     var action = $(this).attr('action');
     $.ajax({
@@ -142,30 +138,85 @@ $(function() {
         data: serializedData,
         dataType: 'JSON',
         success: function(response) {
-            // if (response['data'] == "success") {
-            //     $("#tabel_penyakit > tbody").empty();
-            //     numberRow_penyakit($("#tabel_penyakit"));
-            //     $('#tabel_penyakit tbody').append(
-            //         '<tr><td colspan="6">Data tidak tersedia</td></tr>');
-            //     swal.fire(
-            //         'Berhasil',
-            //         'Data berhasil diupdate',
-            //         'success'
-            //     );
-            // } else {
-            //     swal.fire(
-            //         'Error',
-            //         'Data gagal di update',
-            //         'warning'
-            //     );
-            // }
+           if (response['data'] == "success") {
+                swal.fire(
+                    'Berhasil',
+                    'Transaksi berhasil ditambahkan',
+                    'success'
+                );
+                $( '#trans_beli' ).each(function(){
+                  location.reload();
+              });
+           } else if(response['data'] == "dibayar"){
+                swal.fire(
+                    'Gagal',
+                    'Total dibayar harus lebih kecil dari total transaksi',
+                    'warning'
+                );
+           } else {
+                swal.fire(
+                    'Gagal',
+                    'Lengkapi Form',
+                    'warning'
+                );
+           }
+       
         },
         error: function(xhr, status, error) {
-            swal.fire(
-                'Gagal',
-                'Lengkapi form',
-                'warning'
-            );
+          swal.fire(
+            'Gagal',
+            'Lengkapi Form',
+            'warning'
+        );
+        }
+    });
+    return false;
+})
+  $(document).on('submit', '#trans_hutang', function(e) {
+     e.preventDefault();
+     var $form = $(this);
+    var serializedData = $form.serialize();
+    var action = $(this).attr('action');
+    $.ajax({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        type: "POST",
+        url: action,
+        data: serializedData,
+        dataType: 'JSON',
+        success: function(response) {
+           if (response['data'] == "success") {
+                swal.fire(
+                    'Berhasil',
+                    'Transaksi berhasil ditambahkan',
+                    'success'
+                );
+                $( '#hutang' ).each(function(){
+                  location.reload();
+              });
+         
+           } else if( response['data'] == "total_gagal"){
+                swal.fire(
+                    'Gagal',
+                    'Total di bayar lebih besar dari total hutang',
+                    'warning'
+                );
+           } else {
+                swal.fire(
+                    'Gagal',
+                    'Lengkapi Form',
+                    'warning'
+                );
+           }
+       
+        },
+        error: function(xhr, status, error) {
+          swal.fire(
+            'Gagal',
+            'Lengkapi Form',
+            'warning'
+        );
         }
     });
     return false;
