@@ -17,19 +17,43 @@ use App\Models\Satuan;
 use App\Models\Supplier;
 use App\Models\Tipe;
 use App\Models\User;
+use App\Models\TransJual;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 class MasterController extends Controller
 {
     public function barang_select(Request $r){
         $d1 = Barang::where('nama_barang', 'LIKE', '%' . $r->input('term', '') . '%')->selectRaw('id as id, nama_barang as nama, IF(id IS NULL, "", "barang") as jenis, harga_jual as harga')->get();
         $d2 = Jasa::where('nama_jasa', 'LIKE', '%' . $r->input('term', '') . '%')->selectRaw('id as id, nama_jasa as nama, IF(id IS NULL, "", "jasa") as jenis, harga as harga')->get();
-        $data = $d1->merge($d2);
-        echo json_encode($data);
+        $data = array();
+        $count = 0;
+        if(count($d1) > 0){
+            $count = count($d1);
+            foreach($d1 as $key => $d){
+                $data[$key] = array(
+                    'id' => $d->id,
+                    'nama' => $d->nama,
+                    'jenis' => $d->jenis,
+                    'harga' => $d->harga
+                );
+            }
+        }
+        if(count($d2) > 0){
+            foreach($d2 as $key => $d){
+                $data[$count + $key] = array(
+                    'id' => $d->id,
+                    'nama' => $d->nama,
+                    'jenis' => $d->jenis,
+                    'harga' => $d->harga
+                );
+            }
+        }
+        return response()->json($data);
     }
 
     public function customer_select(Request $r){
@@ -45,6 +69,52 @@ class MasterController extends Controller
     public function pembayaran_select(Request $r){
         $data = Pembayaran::where('nama_bayar', 'LIKE', '%' . $r->input('term', '') . '%')->get();
         echo json_encode($data);
+    }
+
+    public function satuan_select(Request $r){
+        Satuan::where('nama_satuan', 'LIKE', '%' . $r->input('term', '') . '%')->get();
+        echo json_encode($data);
+    }
+
+    public function supplier_select(Request $r){
+        Supplier::where('nama_supplier', 'LIKE', '%' . $r->input('term', '') . '%')->get();
+        echo json_encode($data);
+    }
+
+    public function promo_select(){
+        $date = Carbon::now()->toDateString();
+        $data = Promo::where('tgl_mulai', '<=', $date)->where('tgl_selesai', '>=', $date)->get();
+        return response()->json($data);
+    }
+
+    public function garansi_transaksi_jual_select(){
+        $date = Carbon::now()->toDateString();
+        $res = TransJual::where('tgl_max_garansi', '>=', $date)->with('Booking.Customer', 'DTransJual.Barang')->has('DTransJual')->get();
+        $data = array();
+
+        foreach($res as $i => $p){
+            $data[$i] = array(
+                'id' => $p->id,
+                'no_trans_jual' => $p->no_trans_jual,
+                'tgl_trans_jual' => $p->tgl_trans_jual,
+                'tgl_max_garansi' => $p->tgl_max_garansi,
+                'customer' => $p->Booking->Customer->nama_customer,
+                'alamat' => $p->Booking->Customer->alamat,
+                'telepon' => $p->Booking->Customer->telepon,
+                'detail' => array()
+            );
+            foreach($p->DTransJual as $key => $d){
+                $data[$i]['detail'][$key] = array(
+                    'id' => $d->barang_id,
+                    'text' => $d->Barang->nama_barang,
+                    'jumlah' => $d->jumlah,
+                    'harga' => $d->harga,
+                    'disc' => $d->disc
+                );
+            }
+        }
+
+        return response()->json($data);
     }
     
     public function master_barang()
@@ -989,23 +1059,26 @@ class MasterController extends Controller
             'kode_barang' => ['required', 'unique:barang,kode_barang'],
             'nama_barang' => ['required'],
             'tipe' => ['required'],
-            'merek' => ['required'],
+            'merk' => ['required'],
+            'satuan' => ['required'],
+            'supplier' => ['required'],
             'harga_jual' => ['required'],
             'harga_beli' => ['required'],
             'stok' => ['required'],
         ]);
         if ($validator->fails()) {
-            return redirect()->back()->with('error', "Update Gagal, periksa kembali");
+            return redirect()->back()->with('error', "Update Gagal, periksa form");
         } else {
             $c = Barang::create([
                 'kode_barang' => $request->kode_barang,
                 'nama_barang' => $request->nama_barang,
                 'tipe_id' => $request->tipe,
-                'merek_id' => $request->merek,
+                'merek_id' => $request->merk,
+                'satuan_id' => $request->satuan,
+                'supplier_id' => $request->supplier,
                 'harga_jual' => $request->harga_jual,
                 'harga_beli' => $request->harga_beli,
-                'stok' => $request->stok,
-                'satuan_id' => 1,
+                'stok' => $request->stok
             ]);
 
             if ($c) {
@@ -1093,7 +1166,9 @@ class MasterController extends Controller
     {
         $tipe = Tipe::all();
         $merek = Merek::all();
-        return view('layouts.modal.barang-modal-create', ['tipe' => $tipe, 'merek' => $merek]);
+        $satuan = Satuan::all();
+        $supplier = Supplier::all();
+        return view('layouts.modal.barang-modal-create', ['tipe' => $tipe, 'merek' => $merek, 'satuan' => $satuan, 'supplier' => $supplier]);
     }
 
     public function master_barang_delete(Request $request)

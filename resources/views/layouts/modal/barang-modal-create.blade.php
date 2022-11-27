@@ -38,9 +38,9 @@
         <div class="form-group tw-mr-3">
             <label for="satuan" class="col-form-label">Satuan:</label>
             <div class="dropdown tw-mb-4">
-                <select class="custom-select input-select2" id="satuan" name="satuan">
-                    @foreach ($tipe as $t)
-                    <option value="{{ $t->id }}">{{ Str::ucfirst($t->nama_tipe) }}</option>
+                <select class="custom-select input-select2 satuan" id="satuan" name="satuan">
+                    @foreach ($satuan as $m)
+                    <option value="{{ $m->id }}">{{ Str::ucfirst($m->nama_satuan) }}</option>
                     @endforeach
                 </select>
             </div>
@@ -48,9 +48,9 @@
         <div class="form-group">
             <label for="supplier" class="col-form-label">Supplier:</label>
             <div class="dropdown tw-mb-4">
-                <select class="custom-select input-select2" id="supplier" name="supplier">
-                    @foreach ($merek as $m)
-                    <option value="{{ $m->id }}">{{ Str::ucfirst($m->nama_merek) }}</option>
+                <select class="custom-select input-select2 supplier" id="supplier" name="supplier">
+                @foreach ($supplier as $m)
+                    <option value="{{ $m->id }}">{{ Str::ucfirst($m->nama_supplier) }}</option>
                     @endforeach
                 </select>
             </div>

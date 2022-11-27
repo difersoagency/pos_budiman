@@ -39,6 +39,58 @@ $(document).ready(function() {
   $(".kota").select2({
     dropdownParent: $("#suppliermodal")
   });
+
+    $('.supplier_id').prepend('<option selected=""></option>').select2({
+        placeholder: "Pilih Supplier",
+        delay: 250,
+        ajax: {
+            dataType: 'json',
+            type: 'GET',
+            url: '/api/supplier_select',
+            data: function(params) {
+              return {
+                  term: params.term
+              }
+            },
+            processResults: function(data) {
+              return {
+                results: $.map(data, function(obj) {
+                    return {
+                        id: obj.id,
+                        text: obj.nama_supplier,
+                    };
+                })
+              };
+            },
+        }
+      });
+
+        $('.satuan_id').prepend('<option selected=""></option>').select2({
+          placeholder: "Pilih Satuan",
+          delay: 250,
+                  ajax: {
+                      dataType: 'json',
+                      type: 'GET',
+                      url: '/api/satuan_select',
+                      data: function(params) {
+                          return {
+                              term: params.term
+                          }
+                      },
+                      processResults: function(data) {
+                          return {
+                              results: $.map(data, function(obj) {
+                                  return {
+                                      id: obj.id,
+                                      text: obj.kode_satuan,
+                                  };
+                              })
+                          };
+                      },
+                  }
+        });
+    
+
 });
 
 function addRow(tableID) {

@@ -60,29 +60,22 @@
         <div class="tw-rounded-lg promobox mb-4 tw-py-2 tw-px-4">
             <h2 class="tw-text-md tw-text-prim-white">Promo</h2>
             <div class="tw-grid tw-grid-cols-4 tw-gap-7">
-                <div class="my-2  tw-text-white">
-                    <label for="user_beli">Nama Promo</label>
+                @foreach($promo as $key => $promo)
+                <div class="my-2 tw-text-white">
+                    <label for="user_beli">{{$promo->kode_promo}}</label>
                     <div class="form-check tw-text-white">
-                        <input class="form-check-input" type="radio" value="" id="promo_id1" name="promo_id" checked>
-                        <label class="tw-text-white tw-text-[12px]" for="promo_id1">
-                            Diskon 50% untuk Pembelian 2 Oli
+                        <input class="form-check-input" type="radio" value="{{$promo->id}}" id="promo_id{{$key}}" name="promo_id[{{$key}}]" data-barang="{{$promo->barang_id}}" data-disc="{{$promo->disc}}" data-min="{{$promo->qty_sk}} " disabled="true">
+                        <label class="tw-text-white tw-text-[12px]" for="promo_id{{$key}}">
+                        {{$promo->nama_promo}}
                         </label>
                     </div>
                 </div>
-                <div class="my-2  tw-text-white">
-                    <label for="user_beli">Nama Promo</label>
-                    <div class="form-check tw-text-white">
-                        <input class="form-check-input" type="radio" value="" id="promo_id2" name="promo_id">
-                        <label class="tw-text-white tw-text-[12px]" for="promo_id2">
-                            Diskon 50% untuk Pembelian 2 Oli
-                        </label>
-                    </div>
-                </div>
+                @endforeach
             </div>
 
         </div>
         <div class="tw-grid pb-4">
-            <button  disabled="true" type="button" class="tw-w-48 tw-bg-prim-red tw-border-0  tw-text-center tw-text-white tw-py-2 tw-rounded-lg hover:tw-bg-red-700 tw-transition-all float-right" onclick="addRow('')" id="btntambah">
+            <button  disabled="true" type="button" class="tw-w-48 tw-bg-prim-red tw-border-0  tw-text-center tw-text-white tw-py-2 tw-rounded-lg hover:tw-bg-red-700 tw-transition-all float-right" id="btntambah">
                 + Tambah Barang
             </button>
         </div>
@@ -100,7 +93,7 @@
                             <th class="tw-text-center tw-border-t-0" style="width:5%">Action</th>
                         </tr>
                     </thead>
-                    <tbody id="tbody2">
+                    <tbody>
                         <tr>
                             <td>
                                 <!-- Dropdown -->
@@ -127,7 +120,7 @@
                             </td>
                             <td>
                                 <div class="form-group">
-                                    <input type="number" class="form-control" name="disc[]" step="0.00" min="0">
+                                    <input type="number" class="form-control disc" name="disc[]" step="0.00" min="0">
                                 </div>
                             </td>
                             <td>
@@ -137,7 +130,7 @@
                             </td>
 
                             <td>
-                                <button data-toggle="modal" data-target="#deleteModal" class="tw-bg-transparent tw-border-none">
+                                <button type="button" id="removerow" class="tw-bg-transparent tw-border-none">
                                     <i class="fa fa-trash tw-text-prim-red"></i>
                                 </button>
                             </td>
@@ -210,30 +203,125 @@
     @endif
 $(function(){
 
-    function number_format(bilangan) {
-                var number_string = bilangan.toString(),
-                    sisa = number_string.length % 3,
-                    rupiah = number_string.substr(0, sisa),
-                    ribuan = number_string.substr(sisa).match(/\d{3}/g);
+    function replaceAll(string, search, replace) {
+        return string.split(search).join(replace);
+    }
 
-                if (ribuan) {
-                    separator = sisa ? '.' : '';
-                    rupiah += separator + ribuan.join('.');
-                }
-                return rupiah;
-            }
+    function number_format(angka) {
+        return angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
 
 
     function number_unformat(angka){
-        return parseFloat(angka.toString().replace('.',''));
+        return parseFloat(replaceAll(angka, ',', ''));
     }
 
-    $(document).on('keyup change', '.harga', function(){
-        number_format($(this.val()));
+    function numberRows($t) {
+                var c = 0 - 1;
+                $t.find("tr").each(function(ind, el) {
+                    var j = c;
+                    $(el).find('.barang_id').attr('name', 'barang_id[' + j + ']');
+                    $(el).find('.jenis_brg').attr('name', 'jenis_brg[' + j + ']');
+                    $(el).find('.jumlah').attr('name', 'jumlah[' + j + ']');
+                    $(el).find('.harga').attr('name', 'harga[' + j + ']');
+                    $(el).find('.subtotal').attr('name', 'subtotal[' + j + ']');
+                    $(el).find('.disc').attr('name', 'disc[' + j + ']');
+                    select_barang();
+                    c++;
+                });
+            }
+    
+    $(document).on('click', '#barangtable #removerow', function(e) {
+                if ($('#barangtable > tbody > tr').length > 1) {
+                    $(this).closest('tr').remove();
+                    numberRows($("#barangtable"));
+                    sum_total_harga();
+                    sum_bayar_jual();
+                }
+            });
+
+            
+    $('#btntambah').on('click', function(){
+        $('#barangtable > tbody > tr:last').after(`<tr>
+                            <td>
+                                <!-- Dropdown -->
+                                <div class="dropdown ">
+                                    <select class="custom-select barang_id tw-text-prim-white" name="barang_id[]" disabled="true">
+                                    </select>
+                                </div>
+                                <!-- End Dropdown  -->
+                            </td>
+                            <td class="d-none">
+                                <div class="form-group">
+                                    <input type="text" class="form-control jenis_brg" name="jenis_brg[]">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <input type="number" class="form-control jumlah" name="jumlah[]" min="0">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <input type="text" class="form-control harga" name="harga[]">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <input type="number" class="form-control disc" name="disc[]" step="0.00" min="0">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <input type="text" class="form-control subtotal" readonly="true" name="subtotal[]">
+                                </div>
+                            </td>
+
+                            <td>
+                                <button type="button" id="removerow" class="tw-bg-transparent tw-border-none">
+                                    <i class="fa fa-trash tw-text-prim-red"></i>
+                                </button>
+                            </td></tr>`);
+        numberRows($('#barangtable'));
     })
 
+    $(document).on('keyup change', '.harga', function(){
+        var tes = $(this).val().replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        $(this).val(tes);
+        sum_subtotal_harga($(this).closest('tr'));
+    })
+
+    $('.booking_id').select2({
+        placeholder: "Pilih No Booking",
+        delay: 250,
+                ajax: {
+                    dataType: 'json',
+                    type: 'GET',
+                    url: '/api/booking_select',
+                    data: function(params) {
+                        return {
+                            term: params.term
+                        }
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(obj) {
+                                return {
+                                    id: obj.id,
+                                    text: obj.no_booking+' - '+obj.customer.nama_customer,
+                                    cust: obj.customer.nama_customer,
+                                    alamat: obj.customer.alamat,
+                                    telp: obj.customer.telepon,
+                                    detail: obj.d_booking
+                                };
+                            })
+                        };
+                    },
+                }
+    });
+
     function select_barang(){
-    $('.barang_id').prepend('<option selected=""></option>').select2({
+    $('.barang_id').select2({
         placeholder: "Pilih Barang",
         delay: 250,
                 ajax: {
@@ -264,34 +352,24 @@ $(function(){
 
     select_barang();
 
-    $('.booking_id').prepend('<option selected=""></option>').select2({
-        placeholder: "Pilih No Booking",
-        delay: 250,
-                ajax: {
-                    dataType: 'json',
-                    type: 'GET',
-                    url: '/api/booking_select',
-                    data: function(params) {
-                        return {
-                            term: params.term
-                        }
-                    },
-                    processResults: function(data) {
-                        return {
-                            results: $.map(data, function(obj) {
-                                return {
-                                    id: obj.id,
-                                    text: obj.no_booking+' - '+obj.customer.nama_customer,
-                                    cust: obj.customer.nama_customer,
-                                    alamat: obj.customer.alamat,
-                                    telp: obj.customer.telepon,
-                                    detail: obj.d_booking
-                                };
-                            })
-                        };
-                    },
-                }
-    });
+    
+
+    function sum_subtotal_harga(table){
+        var jumlah = table.find('.jumlah').val();
+        var disc = table.find('.disc').val();
+        if(jumlah == null){
+            jumlah = 0;
+        }
+        if(disc == ""){
+            disc = 0;
+        }
+
+        var harga = number_unformat(table.find('.harga').val());
+        var subtotal = ((jumlah * harga) - ((jumlah * harga) * (disc/100)));
+        table.find('.subtotal').val(subtotal);
+        sum_total_harga();
+        sum_bayar_jual();
+    }
 
     function sum_total_harga(){
         var sum = 0;
@@ -332,22 +410,25 @@ $(function(){
     });
 
     $(document).on('keyup change', '#barangtable .jumlah', function(){
-        $(this).closest('tr').find('.subtotal').val(number_format(number_unformat($(this).closest('tr').find('.harga').val()) * $(this).val()));
-        sum_total_harga();
+        sum_subtotal_harga($(this).closest('tr'));
     });
+
+    $(document).on('keyup change', '#barangtable .disc', function(){
+            sum_subtotal_harga($(this).closest('tr'))
+        });
 
     $(document).on('change', '.booking_id', function(){
         $('#customer_id').html($(this).select2('data')[0].cust);
         $('#customer_alamat').html($(this).select2('data')[0].alamat);
         $('#customer_telp').html($(this).select2('data')[0].telp);
         var d_booking = $(this).select2('data')[0].detail;
-
+        console.log(d_booking)
         if($(this).val() != ""){
             console.log(d_booking);
             $('#btntambah').removeAttr('disabled');
             $('.barang_id').removeAttr('disabled');
             for(var i = 0; i < d_booking.length; i++){
-                if($('.barang_id').val() == ""){
+                if($('#barangtable .barang_id').val() == null){
                     $('#barangtable tbody').empty();
                 }
                 var ids = d_booking[i].barang_id != null ? d_booking[i].barang_id : d_booking[i].jasa_id;
@@ -359,7 +440,7 @@ $(function(){
                 <td>
                                 <!-- Dropdown -->
                                 <div class="dropdown ">
-                                    <select class="custom-select barang_id tw-text-prim-white" name="barang_id[]">
+                                    <select class="custom-select barang_id tw-text-prim-white" name="barang_id[`+i+`]">
                                         <option value="`+ids+`" selected>`+namas+`</option>
                                     </select>
                                 </div>
@@ -367,38 +448,38 @@ $(function(){
                             </td>
                             <td class="d-none">
                                 <div class="form-group">
-                                    <input type="text" class="form-control jenis_brg" name="jenis_brg[]" value="`+jenis+`">
+                                    <input type="text" class="form-control jenis_brg" name="jenis_brg[`+i+`]" value="`+jenis+`">
                                 </div>
                             </td>
                             <td>
                                 <div class="form-group">
-                                    <input type="number" class="form-control jumlah" name="jumlah[]" min="0" value="`+jumlah+`">
+                                    <input type="number" class="form-control jumlah" name="jumlah[`+i+`]" min="0" value="`+jumlah+`">
                                 </div>
                             </td>
                             <td>
                                 <div class="form-group">
-                                    <input type="number" class="form-control harga" name="harga[]" min="0"  value="`+harga+`">
+                                    <input type="text" class="form-control harga" name="harga[`+i+`]" min="0"  value="`+number_format(harga)+`">
                                 </div>
                             </td>
                             <td>
                                 <div class="form-group">
-                                    <input type="number" class="form-control disc" name="disc[]" step="0.00" min="0">
+                                    <input type="number" class="form-control disc" name="disc[`+i+`]" step="0.00" min="0">
                                 </div>
                             </td>
                             <td>
                                 <div class="form-group">
-                                    <input type="number" readonly="true" class="form-control subtotal" name="subtotal[]" min="0" value="`+(harga * jumlah)+`">
+                                    <input type="text" readonly="true" class="form-control subtotal" name="subtotal[`+i+`]" min="0" value="`+number_format(harga * jumlah)+`">
                                 </div>
                             </td>
 
                             <td>
-                                <button data-toggle="modal" data-target="#deleteModal" class="tw-bg-transparent tw-border-none">
+                                <button type="button" id="removerow" class="tw-bg-transparent tw-border-none">
                                     <i class="fa fa-trash tw-text-prim-red"></i>
                                 </button>
                             </td>
                 </tr>`);
                 select_barang();
-                $('.barang_id').val($(".barang_id option:contains('"+namas+"')").val()).change();
+                // $('select[name="barang_id['+i+']').val($(".barang_id option:contains('"+namas+"')").val()).change();
             }
         }
         sum_total_harga();
@@ -430,9 +511,8 @@ $(function(){
     });
 
     $(document).on('keyup change', '#barangtable .bayar_jual', function(){
-        var tes = $(this).val();
-        var conv = tes.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-        $(this).val(conv);
+        var tes = $(this).val().replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        $(this).val(tes);
         sum_bayar_jual();
         // sum_total_harga();
     });

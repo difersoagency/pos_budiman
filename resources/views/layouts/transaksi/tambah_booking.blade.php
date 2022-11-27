@@ -31,13 +31,13 @@
 
         </div>
         <div class="tw-grid py-4">
-        <button class="tw-w-48 tw-bg-prim-red tw-border-0  tw-text-center tw-text-white tw-py-2 tw-rounded-lg hover:tw-bg-red-700 tw-transition-all float-right" onclick="addRow('tbody2')">
-            + Tambah Barang Retur
+        <button id="tambahbarang" type="button" class="tw-w-48 tw-bg-prim-red tw-border-0  tw-text-center tw-text-white tw-py-2 tw-rounded-lg hover:tw-bg-red-700 tw-transition-all float-right">
+            + Tambah Barang
         </button>
         </div>
         <div class="tw-bg-white tw-px-5 tw-py-3 ">
             <div class="tw-overflow-x-hidden tw-overflow-y-auto tw-h-52">
-                <table id="barang_beli" class="tw-w-full table table-striped">
+                <table id="barang_booking" class="tw-w-full table table-striped">
                     <thead class="tw-border-b tw-border-b-black">
                         <tr class="tw-border-transparent ">
                             <th class="tw-text-center tw-border-t-0" style="width:70%">Jenis Barang / Jasa</th>
@@ -49,12 +49,12 @@
                             <th class="tw-text-center tw-border-t-0" style="width:10%">Action</th>
                         </tr>
                     </thead>
-                    <tbody id="tbody2">
+                    <tbody>
                         <tr>
                             <td>
                                 <!-- Dropdown -->
                                 <div class="dropdown ">
-                                    <select class="custom-select barang_id tw-text-prim-white" name="barang_id[]">
+                                    <select class="custom-select barang_id tw-text-prim-white barang_id" name="barang_id[]">
                                     </select>
                                 </div>
                                 <!-- End Dropdown  -->
@@ -71,7 +71,7 @@
                             </td>
 
                             <td>
-                                <button data-toggle="modal" data-target="#deleteModal" class="tw-bg-transparent tw-border-none">
+                                <button type="button" id="removerow" class="tw-bg-transparent tw-border-none">
                                     <i class="fa fa-trash tw-text-prim-red"></i>
                                 </button>
                             </td>
@@ -111,35 +111,89 @@ $(function(){
         icon: 'success',
     });
     @endif
+    
+    function select_data(){
+        $('.barang_id').select2({
+            placeholder: "Pilih Barang",
+            delay: 250,
+                    ajax: {
+                        dataType: 'json',
+                        type: 'GET',
+                        url: '/api/barang_select',
+                        data: function(params) {
+                            return {
+                                term: params.term
+                            }
+                        },
+                        processResults: function(data) {
+                            return {
+                                results: $.map(data, function(obj) {
+                                    return {
+                                        id: obj.id,
+                                        text: obj.nama,
+                                        jenis: obj.jenis,
+                                        harga: obj.harga
+                                    };
+                                })
+                            };
+                        },
+                    }
+        });
+    }
 
-    $('.barang_id').prepend('<option selected=""></option>').select2({
-        placeholder: "Pilih Barang",
-        delay: 250,
-                ajax: {
-                    dataType: 'json',
-                    type: 'GET',
-                    url: '/api/barang_select',
-                    data: function(params) {
-                        return {
-                            term: params.term
-                        }
-                    },
-                    processResults: function(data) {
-                        return {
-                            results: $.map(data, function(obj) {
-                                return {
-                                    id: obj.id,
-                                    text: obj.nama,
-                                    jenis: obj.jenis,
-                                    harga: obj.harga
-                                };
-                            })
-                        };
-                    },
+    function numberRows($t) {
+                var c = 0 - 1;
+                $t.find("tr").each(function(ind, el) {
+                    var j = c;
+                    $(el).find('.barang_id').attr('name', 'barang_id[' + j + ']');
+                    $(el).find('.jenis_brg').attr('name', 'jenis_brg[' + j + ']');
+                    $(el).find('.jumlah').attr('name', 'jumlah[' + j + ']');
+                    select_data();
+                    c++;
+                });
+            }
+    
+    select_data();
+
+    $(document).on('click', '#barang_booking #removerow', function(e) {
+                if ($('#barang_booking > tbody > tr').length > 1) {
+                    $(this).closest('tr').remove();
+                    numberRows($("#barang_booking"));
                 }
-    });
+            });
 
-    $(document).on('change', '#barang_beli .barang_id', function(){
+    $(document).on('click', '#tambahbarang', function(){
+        $('#barang_booking tbody tr:last').after(`
+        <tr>
+                            <td>
+                                <!-- Dropdown -->
+                                <div class="dropdown ">
+                                    <select class="custom-select barang_id tw-text-prim-white barang_id" name="barang_id[]">
+                                    </select>
+                                </div>
+                                <!-- End Dropdown  -->
+                            </td>
+                            <td class="d-none">
+                                <div class="form-group">
+                                    <input type="text" class="form-control jenis_brg" name="jenis_brg[]" id="jenis_brg">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <input type="number" class="form-control jumlah" name="jumlah[]" min="0">
+                                </div>
+                            </td>
+
+                            <td>
+                                <button type="button" id="removerow" class="tw-bg-transparent tw-border-none">
+                                    <i class="fa fa-trash tw-text-prim-red"></i>
+                                </button>
+                            </td>
+                        </tr>`);
+
+        numberRows($("#barang_booking"));
+    })
+    $(document).on('change', '#barang_booking .barang_id', function(){
         var val = $(this).select2('data')[0].jenis;
         $(this).closest('tr').find('#jenis_brg').val(val);
     })

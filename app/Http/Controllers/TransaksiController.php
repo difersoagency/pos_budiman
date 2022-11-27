@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 use App\Models\Booking;
+use App\Models\DBooking;
 use App\Models\Barang;
 use App\Models\Satuan;
+use App\Models\Promo;
 use App\Models\Supplier;
 use App\Models\TransBeli;
 use App\Models\DTransJualJasa;
@@ -11,11 +13,14 @@ use App\Models\DTransJual;
 use App\Models\DPiutang;
 use App\Models\TransJual;
 use App\Models\Piutang;
+use App\Models\ReturJual;
+use App\Models\DReturJual;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 class TransaksiController extends Controller
 {
@@ -24,13 +29,102 @@ class TransaksiController extends Controller
         return view('layouts.transaksi.retur-jual');
     }
 
-    public function data_transaksi_retur_jual()
+    public function data_retur_jual()
     {
+        $data = ReturJual::with('TransJual.Booking.Customer')->get();
+        return datatables()->of($data)
+            ->addIndexColumn()
+            ->addColumn('no_trans_jual', function($data){
+                return $data->TransJual->no_trans_jual;
+            })
+            ->addColumn('customer', function($data){
+                return $data->TransJual->Booking->Customer->nama_customer;
+            })
+            ->addColumn('action', function ($data) {
+                return  '<div class="grid grid-cols-3">
+                <button id="btndetail" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->id . '" >
+                                                        <i class="fas fa-eye tw-text-prim-blue"></i>
+                                                    </button>
+                                                    <button id="btndelete" data-id="' . $data->id . '" data-nama="' . $data->id . '"
+                                                        class="tw-bg-transparent tw-border-none">
+                                                        <i class="fa fa-trash tw-text-prim-red"></i>
+                                                    </button>
+            </div>';
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+    }
+
+    public function detail_retur_jual($id)
+    {
+        $data = ReturJual::where('id', $id)->with('TransJual.Booking.Customer')->first();
+        return view('layouts.modal.retur_jual-modal-detail', ['id' => $id, 'data' => $data]);
+    }
+
+    public function data_detail_retur_jual($id){
+        $data = DReturJual::where('hretur_jual_id', $id)->get();
+        return datatables()->of($data)
+            ->addIndexColumn()
+            ->addColumn('barang_id', function($data){
+                return $data->Barang->nama_barang;
+            })
+            ->addColumn('subtotal', function($data){
+                return $data->jumlah * $data->harga;
+            })
+            ->make(true);
     }
 
     public function tambah_retur_jual()
     {
         return view('layouts.transaksi.tambah_retur-jual');
+    }
+
+    public function store_retur_jual(Request $r){
+        $validator = Validator::make($r->all(), [
+            'htrans_jual_id' => ['required'],
+            'no_retur_jual' => ['required', 'unique:hretur_jual,no_retur_jual'],
+            'tgl_retur_jual' => ['required'],
+            'total_retur_jual' => ['required'],
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', "Gagal menambahkan, periksa kembali form anda");
+        } else {
+            $c = ReturJual::create([
+                'htrans_jual_id' => $r->htrans_jual_id,
+                'no_retur_jual' => $r->no_retur_jual, 
+                'tgl_retur_jual' => $r->tgl_retur_jual,
+                'total_retur_jual' => str_replace(",", "", $r->total_retur_jual)
+            ]);
+            $bool = true;
+            $dc = NULL;
+            $jb = '';
+            if ($c) {
+                for($i = 0; $i < count($r->barang_id); $i++){
+                        $dc = DReturJual::create([
+                            'hretur_jual_id' => $c->id,
+                            'barang_id' => $r->barang_id[$i],
+                            'harga' => str_replace(",", "", $r->harga[$i]),
+                            'jumlah' => $r->jumlah[$i]
+                        ]);
+                    if(!$dc){
+                        $bool = false;
+                    }
+                    else{
+                        $b = Barang::find($r->barang_id[$i]);
+                        $b->stok = $b->stok + $r->jumlah[$i];
+                        $b->save();
+                    }
+                    
+                }
+
+                
+            }
+            if($bool == true){
+                return redirect()->back()->with('success', "Data berhasil di tambah");
+            } else {
+                return redirect()->back()->with('error', "Gagal Menambahkan, periksa kembali".$r->jenis_brg[0]);
+            }
+        }
     }
 
     public function tambah_retur_beli()
@@ -217,7 +311,9 @@ class TransaksiController extends Controller
 
     public function tambah_jual()
     {
-        return view('layouts.transaksi.tambah_jual');
+        $date = Carbon::now()->toDateString();
+        $promo = Promo::where('tgl_mulai', '<=', $date)->where('tgl_selesai', '>=', $date)->get();
+        return view('layouts.transaksi.tambah_jual', ['promo' => $promo]);
     }
 
     public function store_jual(Request $r){
@@ -237,9 +333,9 @@ class TransaksiController extends Controller
                 'no_trans_jual' => $r->no_trans_jual, 
                 'tgl_trans_jual' => $r->tgl_trans_jual,
                 'tgl_max_garansi' => $r->tgl_max_garansi,
-                'total_jual' => $r->total_jual,
-                'bayar_jual' => $r->bayar_jual,
-                'kembali_jual' => $r->kembali_jual,
+                'total_jual' => str_replace(",", "", $r->total_jual),
+                'bayar_jual' => str_replace(",", "", $r->bayar_jual),
+                'kembali_jual' => str_replace(",", "", $r->kembali_jual),
                 'promo_id' => $r->promo_id,
                 'pembayaran_id' => $r->pembayaran_id,
             ]);
@@ -252,17 +348,21 @@ class TransaksiController extends Controller
                         $dc = DTransJualJasa::create([
                             'htrans_jual_id' => $c->id,
                             'jasa_id' => $r->barang_id[$i],
-                            'harga' => $r->harga[$i],
+                            'harga' => str_replace(",", "", $r->harga[$i]),
                             'disc' => $r->disc[$i]
                         ]);
                     }else if($r->jenis_brg[$i] == "barang"){
                         $dc = DTransJual::create([
                             'htrans_jual_id' => $c->id,
-                            'jasa_id' => $r->barang_id[$i],
-                            'harga' => $r->harga[$i],
+                            'barang_id' => $r->barang_id[$i],
+                            'harga' => str_replace(",", "", $r->harga[$i]),
                             'jumlah' => $r->jumlah[$i],
                             'disc' => $r->disc[$i]
                         ]);
+
+                            $b = Barang::find($r->barang_id[$i]);
+                            $b->stok = $b->stok - $r->jumlah[$i];
+                            $b->save();
                     }
                     if(!$dc){
                         $bool = false;
@@ -368,7 +468,7 @@ class TransaksiController extends Controller
                             'jasa_id' => $request->barang_id[$i],
                             'jumlah' => $request->jumlah[$i]
                         ]);
-                    }else if($request->jenis_brg == "barang"){
+                    }else if($request->jenis_brg[$i] == "barang"){
                         $dc = DBooking::create([
                             'booking_id' => $c->id,
                             'jasa_id' => NULL,

@@ -39,15 +39,14 @@
                         </div>
 
                         <div class="table_master_beli tw-mt-5 tw-col-span-2" data-current-page="1">
-                            <table id="example" class="table table-bordered responsive nowrap" style="width:100%">
+                            <table id="returjualtable" class="table table-bordered responsive nowrap" style="width:100%">
                                 <thead class="tw-bg-prim-blue">
                                     <tr>
                                         <th class="tw-text-prim-white">No</th>
                                         <th class="tw-text-prim-white">No Retur</th>
                                         <th class="tw-text-prim-white">Tgl Retur</th>
-                                        <th class="tw-text-prim-white">Customer</th>
                                         <th class="tw-text-prim-white">No Penjualan</th>
-                                        <th class="tw-text-prim-white">Tgl Penjualan</th>
+                                        <th class="tw-text-prim-white">Customer</th>
                                         <th class="tw-text-prim-white">Total</th>
                                         <th class="tw-text-prim-white">Action</th>
                                     </tr>
@@ -64,6 +63,109 @@
             </div>
             <!-- /.row -->
         </div>
+        <div class="modal fade w-full" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modal_title"></h5>
+                        <button type="button" class="close tw-text-prim-red" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 </div>
 @endsection
+
+@section('script')
+<script>
+    $(function(){
+        $('#returjualtable').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                'url': '/transaksi/retur-jual/data',
+                'method': 'POST',
+                'headers': {
+                    'X-CSRF-TOKEN': '{{csrf_token()}}'
+                }
+            },
+            language: {
+                processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
+            },
+            columns: [{
+                    data: 'DT_RowIndex',
+                    className: 'nowrap-text align-center',
+                    orderable: false,
+                    searchable: false
+                }, {
+                    data: 'no_retur_jual',
+                }, {
+                    data: 'tgl_retur_jual',
+                }, {
+                    data: 'no_trans_jual',
+                }, {
+                    data: 'customer',
+                }, {
+                    data: 'total_retur_jual',
+                }, {
+                    data: 'action',
+                }]
+        })
+        function data_detail(id){
+            $('#dreturjualtable').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                'url': '/transaksi/retur-jual/data_detail/'+id,
+                'method': 'POST',
+                'headers': {
+                    'X-CSRF-TOKEN': '{{csrf_token()}}'
+                }
+            },
+            language: {
+                processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
+            },
+            columns: [{
+                    data: 'DT_RowIndex',
+                    className: 'nowrap-text align-center',
+                    orderable: false,
+                    searchable: false
+                }, {
+                    data: 'barang_id',
+                }, 
+                {
+                    data: 'jumlah',
+                }, {
+                    data: 'harga',
+                },
+                {
+                    data: 'subtotal',
+                }]
+            });
+        }
+
+        $(document).on('click', '#btndetail', function(event) {
+            var id = $(this).attr('data-id');
+            $.ajax({
+                url: "/transaksi/retur-jual/detail/"+id,
+                beforeSend: function() {
+                    $('#loader').show();
+                },
+                // return the result
+                success: function(result) {
+                    $('#modal').modal("show");
+                    $('.modal-title').html("Detail Pembayaran Piutang");
+                    $('.modal-body').html(result).show();
+
+                    data_detail(id);
+                },
+            })
+        });
+    })
+</script>
+@stop
