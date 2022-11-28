@@ -9,12 +9,12 @@ class TransHutang extends Model
 {
     use HasFactory;
     protected $table = 'h_hutang';
-    protected $fillable = ['pembayaran_id', 'trans_beli_id', 'tgl_hutang', 'total_hutang', 'bayar_hutang'];
+    protected $fillable = ['pembayaran_id', 'htrans_beli_id', 'tgl_hutang', 'total_hutang', 'bayar_hutang'];
     public $timestamps = false;
 
     public function TransBeli()
     {
-        return $this->belongsTo(TransBeli::class);
+        return $this->belongsTo(TransBeli::class, 'htrans_beli_id', 'id');
     }
     public function DTransHutang()
     {

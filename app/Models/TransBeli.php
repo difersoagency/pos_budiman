@@ -33,6 +33,6 @@ class TransBeli extends Model
     }
     public function TransHutang()
     {
-        return $this->hasOne(TransHutang::class);
+        return $this->hasOne(TransHutang::class, 'htrans_beli_id', 'id');
     }
 }
