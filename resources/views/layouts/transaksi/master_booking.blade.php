@@ -66,7 +66,7 @@
 @endsection
 @section('script')
 <script>
-$(document).ready(function() {
+    $(document).ready(function() {
         $('#showtable').DataTable({
             processing: true,
             serverSide: true,
@@ -91,7 +91,7 @@ $(document).ready(function() {
                 data: 'tgl_booking',
             }, {
                 data: 'customer_nama',
-            },{
+            }, {
                 data: 'status',
             }, {
                 data: 'action',
@@ -102,4 +102,3 @@ $(document).ready(function() {
     });
 </script>
 @endsection
-    

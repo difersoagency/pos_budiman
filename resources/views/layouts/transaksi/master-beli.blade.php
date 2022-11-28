@@ -90,7 +90,7 @@
 
 
     <div class="modal fade" id="modalPop" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog tw-min-w-[60%]" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Detail Pengajuan Pembelian</h5>
@@ -110,53 +110,53 @@
 @section('script')
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-     $(document).ready(function() {
-                    $(document).on('click', '#btndetail', function(event) {
-                        var id = $(this).attr('data-id');
-                        // var nama = $(this).attr('data-nama');
-                    $.ajax({
-                        url: "/transaksi/beli/detail/" + id,
-                        beforeSend: function() {
-                            $('#loader').show();
-                        },
-                        // return the result
-                        success: function(result) {
-                            $('#modalPop').modal("show");
-                            $('#modal-body').html(result).show();
-                            detail_beli_table(id)
-                        },
-                    })
-                });
+    $(document).ready(function() {
+        $(document).on('click', '#btndetail', function(event) {
+            var id = $(this).attr('data-id');
+            // var nama = $(this).attr('data-nama');
+            $.ajax({
+                url: "/transaksi/beli/detail/" + id,
+                beforeSend: function() {
+                    $('#loader').show();
+                },
+                // return the result
+                success: function(result) {
+                    $('#modalPop').modal("show");
+                    $('#modal-body').html(result).show();
+                    detail_beli_table(id)
+                },
+            })
+        });
 
-            function detail_beli_table(id){
-                $('#belitable').DataTable({
-                        destroy: true,
-                        processing: true,
-                        serverSide: true,
-                        ajax: {
-                            'type': 'POST',
-                            'datatype': 'JSON',
-                            'url': '/transaksi/beli/data/'+id,
-                            'headers': {
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            }
-                        },
-                        columns: [{
-                                data: 'DT_RowIndex',
-                                className: 'nowrap-text align-center',
-                                orderable: false,
-                                searchable: false
-                            }, {
-                                data: 'barang',
-                            }, {
-                                data: 'jumlah',
-                            }, {
-                                data: 'harga',
-                            }, {
-                                data: 'disc',
-                            }]
-                    });
-            }
+        function detail_beli_table(id) {
+            $('#belitable').DataTable({
+                destroy: true,
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    'type': 'POST',
+                    'datatype': 'JSON',
+                    'url': '/transaksi/beli/data/' + id,
+                    'headers': {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                },
+                columns: [{
+                    data: 'DT_RowIndex',
+                    className: 'nowrap-text align-center',
+                    orderable: false,
+                    searchable: false
+                }, {
+                    data: 'barang',
+                }, {
+                    data: 'jumlah',
+                }, {
+                    data: 'harga',
+                }, {
+                    data: 'disc',
+                }]
+            });
+        }
 
         $(document).on('click', '#btndelete', function(event) {
             event.preventDefault();
@@ -190,7 +190,7 @@
                                     text: 'Data berhasil di hapus',
                                     icon: 'success',
                                 });
-                               
+
                                 $('#trans_beli').DataTable().ajax.reload();
                             } else {
                                 Swal.fire({
@@ -220,19 +220,18 @@
             columns: [{
                     data: 'nomor_po',
                     className: 'nowrap-text align-center',
-                },{
+                }, {
                     data: 'supplier',
                     className: 'nowrap-text align-center',
                 },
-                
+
                 {
                     data: 'tgl_trans_beli',
                     className: 'nowrap-text align-center',
                 }, {
                     data: 'pembayaran',
                     className: 'nowrap-text align-center',
-                }
-                , {
+                }, {
                     data: 'total_bayar',
                     className: 'nowrap-text align-center',
                 },
@@ -240,11 +239,11 @@
                     data: 'action',
                     className: 'nowrap-text align-center',
                 },
-                
-              
+
+
             ]
         });
     });
-    </script>
+</script>
 @stop
 @endsection

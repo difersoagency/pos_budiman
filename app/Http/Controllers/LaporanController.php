@@ -31,4 +31,9 @@ class LaporanController extends Controller
     {
         return view('layouts.laporan.produk');
     }
+
+    public function kasir()
+    {
+        return view('kasir');
+    }
 }
