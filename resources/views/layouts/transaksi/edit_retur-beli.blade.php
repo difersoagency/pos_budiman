@@ -16,27 +16,26 @@
             <div class="mx-2 ">
                 <label for="htrans_jual_id">Nomor Pembelian</label>
                 <div class="dropdown" style="width:50%;">
-                    <select class="custom-select  tw-text-prim-white" id="no_po" name="no_po">
-                    </select>
+                    <input type="text" class="form-control tgl_retur_beli tw-w-48" name="no_po" value="{{$data->TransBeli->nomor_po}}" readonly>
                 </div>
             </div>
             <div class="mx-2">
                 <label for="user_beli">Tgl Retur Beli</label>
-                <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_retur_beli tw-w-48" name="tgl_retur_beli" id="tgl_retur_beli">
+                <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_retur_beli tw-w-48" name="tgl_retur_beli" value="{{$data->tgl_retur_beli}}" id="tgl_retur_beli" readonly>
             </div>
             <div class="my-4">
             <label for="user_beli" class="mx-2">Info Pembelian</label>
             <dl class="mx-2">
-                <dd id="tgl_beli">-</dd>
-                <dd id="tgl_garansi">-</dd>
+                <dd id="tgl_beli">{{$data->TransBeli->tgl_trans_beli}}</dd>
+                <dd id="tgl_garansi">{{$data->TransBeli->tgl_max_garansi}}</dd>
             </dl>
             </div>
             <div class="my-4">
                 <label for="user_beli" class="mx-2">Supplier</label>
                 <dl class="mx-2">
-                    <dd id="supplier">-</dd>
-                    <dd id="alamat_supplier">-</dd>
-                    <dd id="telp_supplier">-</dd>
+                    <dd id="supplier">{{$data->TransBeli->Supplier->nama_supplier}}</dd>
+                    <dd id="alamat_supplier">{{$data->TransBeli->Supplier->alamat}}</dd>
+                    <dd id="telp_supplier">{{$data->TransBeli->Supplier->telepon}}</dd>
                 </dl>
             </div>
 
@@ -60,12 +59,14 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @foreach($data->DReturbeli as $d)
                         <tr>
-                            <td scope="row" class="d-none "   style="width:100%;">1</td>
+                            <td scope="row" class="d-none" style="width:100%;">1</td>
                             <td>
-                              
                                 <div class="dropdown ">
-                                    <select class="custom-select  tw-text-prim-white barang" id="0" name="barang_id[]"  width="100%">
+                                    <select class="custom-select  tw-text-prim-white barang" id="{{ $loop->iteration - 1 }}" name="barang_id[]"  width="100%">
+                                        <option value="{{ $d->barang->id }}"  selected >
+                                            {{ $d->Barang->nama_barang }}</option>   
                                     </select>
                                 </div>
                                
@@ -92,6 +93,7 @@
                                 </button>
                             </td>
                         </tr>
+                        @endforeach
                     </tbody>
                     {{-- <tfoot>
                         <tr>

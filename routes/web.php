@@ -149,6 +149,7 @@ Route::group(['prefix' => '/barang'], function () {
     Route::delete('/delete', [App\Http\Controllers\MasterController::class, 'master_barang_delete'])->name('barang.delete');
     Route::get('/selectdata', [App\Http\Controllers\MasterController::class, 'master_barang_select_data'])->name('barang.selectdata');
     Route::get('/selectdata/{id}', [App\Http\Controllers\MasterController::class, 'master_barang_select_data_detail'])->name('barang.selectdatadetail');
+    Route::get('/selectdata/po/{id}', [App\Http\Controllers\MasterController::class, 'master_barang_select_data_po'])->name('barang.selectdatapo');
 });
 
 
@@ -165,6 +166,7 @@ Route::group(['prefix' => '/transaksi'], function () {
         Route::get('/detail/{id}', [App\Http\Controllers\TransaksiController::class, 'detail_beli'])->name('detail-beli');
         Route::post('/update/{id}', [App\Http\Controllers\TransaksiController::class, 'update_beli'])->name('update-beli');
         Route::delete('/delete', [App\Http\Controllers\TransaksiController::class, 'delete_beli'])->name('delete-beli');
+        Route::get('/selectdata/{id}', [App\Http\Controllers\TransaksiController::class, 'selectdata_beli'])->name('selectdata-beli');
     });
 
     Route::group(['prefix' => '/jual'], function () {
@@ -205,7 +207,10 @@ Route::group(['prefix' => '/transaksi'], function () {
     });
 
     Route::group(['prefix' => '/retur-beli'], function () {
+        Route::post('/data', [App\Http\Controllers\TransaksiController::class, 'data_retur_beli'])->name('data-retur-beli');
         Route::get('/tambah', [App\Http\Controllers\TransaksiController::class, 'tambah_retur_beli'])->name('tambah-retur-beli');
+        Route::get('/edit/{id}', [App\Http\Controllers\TransaksiController::class, 'edit_retur_beli'])->name('edit-retur-beli');
+        Route::post('/store', [App\Http\Controllers\TransaksiController::class, 'store_retur_beli'])->name('store-retur-beli');
         Route::get('/', [App\Http\Controllers\TransaksiController::class, 'transaksi_retur_beli'])->name('retur-pembelian');
     });
 
