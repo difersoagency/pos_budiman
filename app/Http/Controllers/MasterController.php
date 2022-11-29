@@ -16,37 +16,43 @@ use App\Models\Promo;
 use App\Models\Satuan;
 use App\Models\Supplier;
 use App\Models\Tipe;
+use App\Models\TransBeli;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class MasterController extends Controller
 {
-    public function barang_select(Request $r){
+    public function barang_select(Request $r)
+    {
         $d1 = Barang::where('nama_barang', 'LIKE', '%' . $r->input('term', '') . '%')->selectRaw('id as id, nama_barang as nama, IF(id IS NULL, "", "barang") as jenis, harga_jual as harga')->get();
         $d2 = Jasa::where('nama_jasa', 'LIKE', '%' . $r->input('term', '') . '%')->selectRaw('id as id, nama_jasa as nama, IF(id IS NULL, "", "jasa") as jenis, harga as harga')->get();
         $data = $d1->merge($d2);
         echo json_encode($data);
     }
 
-    public function customer_select(Request $r){
+    public function customer_select(Request $r)
+    {
         $data = Customer::where('nama_customer', 'LIKE', '%' . $r->input('term', '') . '%')->select('id', 'nama_customer')->get();
         echo json_encode($data);
     }
 
-    public function booking_select(Request $r){
+    public function booking_select(Request $r)
+    {
         $data = Booking::doesntHave('TransJual')->with('Customer', 'DBooking.Barang', 'DBooking.Jasa')->where('no_booking', 'LIKE', '%' . $r->input('term', '') . '%')->get();
         echo json_encode($data);
     }
 
-    public function pembayaran_select(Request $r){
+    public function pembayaran_select(Request $r)
+    {
         $data = Pembayaran::where('nama_bayar', 'LIKE', '%' . $r->input('term', '') . '%')->get();
         echo json_encode($data);
     }
-    
+
     public function master_barang()
     {
         $merek = Merek::all();
@@ -65,7 +71,7 @@ class MasterController extends Controller
     }
     public function customer_create()
     {
-          $kota = Kota::all();
+        $kota = Kota::all();
         return view('layouts.modal.customer-modal-create', ['kota' => $kota]);
     }
     public function customer_edit($id)
@@ -1123,6 +1129,15 @@ class MasterController extends Controller
     public function master_barang_select_data_detail($id)
     {
         $data = Barang::find($id);
+        echo json_encode($data);
+    }
+    public function master_barang_select_data_po(Request $request, $id)
+    {
+
+        $data = Barang::whereHas('DTransBeli', function ($q) use ($id) {
+            $q->where('htrans_beli_id', $id);
+        })->where('nama_barang', 'LIKE', '%' . $request->input('term', '') . '%')->get();
+
         echo json_encode($data);
     }
 }

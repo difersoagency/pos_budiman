@@ -65,4 +65,59 @@
         </div>
     </section>
 </div>
+@section('script')
+<script>
+    var table_retur = $('#example').DataTable({
+            destroy: true,
+            processing: true,
+            serverSide: true,
+            ajax: {
+                'type': 'POST',
+                'datatype': 'JSON',
+                'url': '{{route("data-retur-beli")}}',
+                'headers': {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            },
+            columns: [
+                {
+                data: 'DT_RowIndex',
+                    className: 'nowrap-text align-center',
+                    orderable: false,
+                    searchable: false
+                },
+                {
+                    data: 'tgl_retur',
+                    className: 'nowrap-text align-center',
+                }
+              ,
+                {
+                    data: 'supplier',
+                    className: 'nowrap-text align-center',
+                }
+              ,
+                {
+                    data: 'no_pembelian',
+                    className: 'nowrap-text align-center',
+                }
+              ,
+                {
+                    data: 'tgl_pembelian',
+                    className: 'nowrap-text align-center',
+                }
+              ,
+                {
+                    data: 'total',
+                    className: 'nowrap-text align-center',
+                }
+        ,
+                {
+                    data: 'action',
+                    className: 'nowrap-text align-center',
+                }
+              
+            ]
+        });
+</script>
+@stop
 @endsection

@@ -38,6 +38,10 @@ class Barang extends Model
     {
         return $this->hasMany(DTransJual::class);
     }
+    public function DTransBeli()
+    {
+        return $this->hasMany(DTransBeli::class);
+    }
     public function DReturJual()
     {
         return $this->hasMany(DReturJual::class);

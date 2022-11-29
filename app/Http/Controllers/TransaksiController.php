@@ -13,11 +13,14 @@ use App\Models\TransBeli;
 use App\Models\DTransJualJasa;
 use App\Models\DTransJual;
 use App\Models\DPiutang;
+use App\Models\DReturBeli;
 use App\Models\DTransHutang;
 use App\Models\TransJual;
 use App\Models\Piutang;
+use App\Models\ReturBeli;
 use App\Models\TransHutang;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
 
 class TransaksiController extends Controller
@@ -39,6 +42,11 @@ class TransaksiController extends Controller
     public function tambah_retur_beli()
     {
         return view('layouts.transaksi.tambah_retur-beli');
+    }
+    public function edit_retur_beli($id)
+    {
+        $data = ReturBeli::find($id);
+        return view('layouts.transaksi.edit_retur-beli', ['data' => $data]);
     }
     public function master_hutang()
     {
@@ -278,6 +286,45 @@ class TransaksiController extends Controller
         }
     }
 
+    public function store_retur_beli(Request $request)
+    {
+
+        $validator = Validator::make(
+            $request->all(),
+            [
+
+                'no_po' => 'required',
+                'tgl_retur_beli' => 'required',
+                'barang_id.*' => 'required',
+                'jumlah.*' => 'required',
+                'harga.*' => 'required',
+            ]
+        );
+
+        if ($validator->fails()) {
+            return response()->json(['data' => 'error']);
+        } else {
+            $h = ReturBeli::create([
+                'htrans_beli_id' => $request->no_po,
+                'tgl_retur_beli' => $request->tgl_retur_beli,
+                'total_retur_beli' => str_replace('.', "", $request->total)
+            ]);
+
+
+            for ($i = 0; $i < count($request->barang_id); $i++) {
+                DReturBeli::create([
+                    'hretur_beli_id' =>  $h->id,
+                    'barang_id' => $request->barang_id[$i],
+                    'jumlah' => $request->jumlah[$i],
+                    'harga' => $request->harga[$i],
+                ]);
+            }
+
+
+            return response()->json(['data' => 'success']);
+        }
+    }
+
     public function store_beli(Request $request)
     {
         //dd($request);
@@ -341,7 +388,41 @@ class TransaksiController extends Controller
     {
         return view('layouts.transaksi.master-jual');
     }
+    public function data_retur_beli()
+    {
+        $data = ReturBeli::orderBy('tgl_retur_beli', 'desc')->get();
+        return datatables()->of($data)
+            ->addIndexColumn()
+            ->addColumn('no_pembelian', function ($data) {
+                return  $data->TransBeli->nomor_po;
+            })
+            ->addColumn('tgl_pembelian', function ($data) {
+                return  $data->TransBeli->tgl_trans_beli;
+            })
+            ->addColumn('tgl_retur', function ($data) {
+                return  $data->tgl_retur_beli;
+            })
+            ->addColumn('supplier', function ($data) {
+                return  $data->TransBeli->Supplier->nama_supplier;
+            })
+            ->addColumn('total', function ($data) {
+                return  number_format($data->total_retur_beli);
+            })
 
+            ->addColumn('action', function ($data) {
+                return  '<div class="grid grid-cols-2">
+                <button id="btndetail" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '"  >
+                                                        <i class="fas fa-eye tw-text-prim-blue"></i>
+                                                    </button>
+                <a id="btnedit" href="/transaksi/retur-beli/edit/' . $data->id . '" class="mr-4 tw-bg-transparent tw-border-none" >
+                                                        <i class="fa fa-pen tw-text-prim-blue"></i>
+                                                    </a>
+                                                  
+            </div>';
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+    }
     public function data_transaksi_jual()
     {
         $data = TransJual::with('Booking.Customer', 'Pembayaran')->orderBy('tgl_trans_jual', 'desc')->get();
@@ -665,6 +746,27 @@ class TransaksiController extends Controller
                 'total' =>  number_format($data->total, 0, ',', '.'),
                 'tgl_transaksi' => $data->tgl_trans_beli,
                 'sisa_hutang' =>  number_format(($data->total - $data->total_bayar) - $data->TransHutang->bayar_hutang, 0, ',', '.')
+            ]);
+        }
+    }
+    public function selectdata_beli(Request $r, $id)
+    {
+        if ($id == 0) {
+            $data = TransBeli::where('nomor_po', 'LIKE', '%' . $r->input('term', '') . '%')->select('id', 'nomor_po')->get();
+            echo json_encode($data);
+        } else {
+            $data = TransBeli::find($id);
+            $tgl_trans_beli_short = Carbon::createFromFormat('Y-m-d', $data->tgl_trans_beli)->isoFormat('D MMMM Y');
+            $tgl_max_garansi_short = Carbon::createFromFormat('Y-m-d', $data->tgl_max_garansi)->isoFormat('D MMMM Y');
+
+            echo json_encode([
+                'poid' => $data->id,
+                'supplier' => $data->Supplier->nama_supplier,
+                'alamat' => $data->Supplier->alamat,
+                'telp' => $data->Supplier->telepon,
+                'total' =>  number_format($data->total, 0, ',', '.'),
+                'tgl_transaksi' => $tgl_trans_beli_short,
+                'tgl_max_garansi' =>  $tgl_max_garansi_short
             ]);
         }
     }
