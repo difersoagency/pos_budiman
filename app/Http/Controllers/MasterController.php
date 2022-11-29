@@ -1001,6 +1001,10 @@ class MasterController extends Controller
     {
         return view('layouts.master.satuan');
     }
+    public function master_koreksi()
+    {
+        return view('layouts.master.koreksi');
+    }
 
 
 

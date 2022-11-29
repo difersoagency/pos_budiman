@@ -30,7 +30,7 @@ Route::group(['prefix' => '/home'], function () {
 
 Route::group(['prefix' => '/master'], function () {
     Route::get('/', [App\Http\Controllers\MasterController::class, 'archive_master'])->name('master');
-
+    Route::get('/koreksi', [App\Http\Controllers\MasterController::class, 'master_koreksi'])->name('koreksi');
     Route::group(['prefix' => '/customer'], function () {
         Route::get('/', [App\Http\Controllers\MasterController::class, 'master_customer'])->name('customer');
         Route::get('/create', [App\Http\Controllers\MasterController::class, 'customer_create'])->name('customer.create');

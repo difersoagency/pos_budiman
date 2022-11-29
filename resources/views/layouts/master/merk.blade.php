@@ -26,15 +26,15 @@
                         </div>
 
                         <!-- START: Table Mobile View -->
-                        <div class="table-barang-mobile tw-mt-5 md:tw-hidden">
-                            <div class="list-barang" data-current-page="1">
+                        <div class="table-merk-mobile tw-mt-5 md:tw-hidden">
+                            <div class="list-merk" data-current-page="1">
 
                             </div>
                         </div>
                         <!-- END: Table Mobile View -->
 
                         <!-- START: Table Tablet + Desktop -->
-                        <div class="table-barang tw-mt-5 tw-col-span-2" data-current-page="1">
+                        <div class="table-merk tw-mt-5 tw-col-span-2" data-current-page="1">
                             <table id="showtable" class="table table-bordered responsive nowrap" style="width:100%">
                                 <thead class="tw-bg-prim-blue">
                                     <tr>
@@ -113,7 +113,7 @@
                     'X-CSRF-TOKEN': '{{csrf_token()}}'
                 }
             },
-           
+
             columns: [{
                     data: 'DT_RowIndex',
                     className: 'nowrap-text align-center',
