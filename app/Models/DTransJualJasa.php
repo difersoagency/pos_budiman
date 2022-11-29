@@ -14,7 +14,7 @@ class DTransJualJasa extends Model
 
     public function TransJual()
     {
-        return $this->belongsTo(TransJual::class);
+        return $this->belongsTo(TransJual::class, 'htrans_jual_id');
     }
 
     public function Jasa()

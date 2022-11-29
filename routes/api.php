@@ -23,4 +23,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('/booking_select', [App\Http\Controllers\MasterController::class, 'booking_select'])->name('booking.select'); 
     Route::get('/barang_select', [App\Http\Controllers\MasterController::class, 'barang_select'])->name('barang.select');
     Route::get('/customer_select', [App\Http\Controllers\MasterController::class, 'customer_select'])->name('customer.select'); 
-    Route::get('/pembayaran_select', [App\Http\Controllers\MasterController::class, 'pembayaran_select'])->name('pembayaran.select'); 
+    Route::get('/pembayaran_select', [App\Http\Controllers\MasterController::class, 'pembayaran_select'])->name('pembayaran.select');
+    Route::get('/supplier_select', [App\Http\Controllers\MasterController::class, 'supplier_select'])->name('supplier.select'); 
+    Route::get('/satuan_select', [App\Http\Controllers\MasterController::class, 'satuan_select'])->name('satuan.select'); 
+    Route::get('/promo_select', [App\Http\Controllers\MasterController::class, 'promo_select'])->name('promo.select'); 
+    Route::get('/garansi_transjual_select', [App\Http\Controllers\MasterController::class, 'garansi_transaksi_jual_select'])->name('garansi_transjual_select');

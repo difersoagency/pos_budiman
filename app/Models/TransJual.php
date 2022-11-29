@@ -30,12 +30,12 @@ class TransJual extends Model
     
     public function DTransJual()
     {
-        return $this->hasMany(DTransJual::class);
+        return $this->hasMany(DTransJual::class, 'htrans_jual_id');
     }
 
     public function DTransJualJasa()
     {
-        return $this->hasMany(DTransJualJasa::class);
+        return $this->hasMany(DTransJualJasa::class, 'htrans_jual_id');
     }
 
     public function ReturJual()
