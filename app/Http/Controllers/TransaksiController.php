@@ -47,10 +47,13 @@ class TransaksiController extends Controller
             })
             ->addColumn('action', function ($data) {
                 return  '<div class="grid grid-cols-3">
-                <button id="btndetail" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->id . '" >
+                <button id="btndetail" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->no_retur_jual . '" >
                                                         <i class="fas fa-eye tw-text-prim-blue"></i>
                                                     </button>
-                                                    <button id="btndelete" data-id="' . $data->id . '" data-nama="' . $data->id . '"
+                                                    <a href="/transaksi/retur-jual/edit/'.$data->id.'"><button id="btnedit" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->no_retur_jual . '" >
+                                                        <i class="fas fa-eye tw-text-prim-blue"></i>
+                                                    </button></a>
+                                                    <button id="btndelete" data-id="' . $data->id . '" data-nama="' . $data->no_retur_jual . '"
                                                         class="tw-bg-transparent tw-border-none">
                                                         <i class="fa fa-trash tw-text-prim-red"></i>
                                                     </button>
@@ -130,6 +133,19 @@ class TransaksiController extends Controller
         }
     }
 
+    public function delete_retur_jual(Request $r){
+        $drj = DReturJual::where('hretur_jual_id', $r->id)->count();
+        if($drj > 0){
+            $drjd = DReturJual::where('hretur_jual_id', $r->id)->delete();
+        }
+        $del = ReturJual::where('id', $r->id)->delete();
+        if ($del) {
+            return response()->json(['info' => 'success', 'msg' => 'Data berhasil di hapus']);
+        } else {
+            return response()->json(['info' => 'error', 'msg' => 'Hapus Gagal, periksa kembali']);
+        }
+    }
+
     public function tambah_retur_beli()
     {
         return view('layouts.transaksi.tambah_retur-beli');
@@ -149,8 +165,8 @@ class TransaksiController extends Controller
     }
     public function data_piutang()
     {
-        $data = Piutang::with('TransJual')->addSelect(['sum_total ' => function ($q) {
-            $q->selectRaw('coalesce(SUM(total_bayar), 0)')
+        $data = Piutang::with('TransJual')->addSelect(['sum_total' => function ($q) {
+            $q->selectRaw('coalesce(SUM(d_piutang.total_bayar), 0)')
                 ->from('d_piutang')
                 ->whereColumn('d_piutang.h_piutang_id', 'h_piutang.id');
         }])->get();
@@ -159,25 +175,31 @@ class TransaksiController extends Controller
             ->addColumn('no_trans_jual', function ($data) {
                 return $data->TransJual->no_trans_jual;
             })
-            ->addColumn('sum_total', function ($data) {
-                return $data->sum_total;
+            ->editColumn('sum_total', function ($data) {
+                return strval($data->sum_total);
             })
             ->addColumn('sisa_hutang', function ($data) {
-                return $data->total_piutang - $data->sum_total;
+                return (float)$data->total_piutang - (float)$data->sum_total;
             })
             ->addColumn('action', function ($data) {
-                return  '<div class="grid grid-cols-3">
+                $sisahutang = (float)$data->total_piutang - (float)$data->sum_total;
+                $res = '<div class="grid grid-cols-3">
                 <button id="btndetail" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->id . '" >
                                                         <i class="fas fa-eye tw-text-prim-blue"></i>
-                                                    </button>
-                <button id="btnbayar" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->id . '" >
+                                                    </button>';
+                if($sisahutang > 0){
+                $res .= '<button id="btnbayar" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->id . '" >
                                                         <i class="fas fa-money-check-alt tw-text-prim-blue"></i>
-                                                    </button>
-                                                    <button id="btndelete" data-id="' . $data->id . '" data-nama="' . $data->id . '"
+                                                    </button>';
+                }
+                if($data->sum_total <= 0){
+                $res .= '<button id="btndelete" data-id="' . $data->id . '" data-nama="' . $data->id . '"
                                                         class="tw-bg-transparent tw-border-none">
                                                         <i class="fa fa-trash tw-text-prim-red"></i>
-                                                    </button>
-            </div>';
+                                                    </button>';
+                }
+            $res .= '</div>';
+            return $res;
             })
             ->rawColumns(['action'])
             ->make(true);
@@ -206,6 +228,15 @@ class TransaksiController extends Controller
     {
 
         return view('layouts.modal.piutang-modal-create', ['id' => $id]);
+    }
+
+    public function delete_piutang(Request $r){
+        $del = Piutang::where('id', $r->id)->delete();
+        if ($del) {
+            return response()->json(['info' => 'success', 'msg' => 'Data berhasil di hapus']);
+        } else {
+            return response()->json(['info' => 'error', 'msg' => 'Hapus Gagal, periksa kembali']);
+        }
     }
 
     public function update_hutang(Request $request, $id)
@@ -609,22 +640,27 @@ class TransaksiController extends Controller
     }
     public function data_transaksi_jual()
     {
-        $data = TransJual::with('Booking.Customer', 'Pembayaran')->orderBy('tgl_trans_jual', 'desc')->get();
+        $data = TransJual::with('Booking.Customer', 'Pembayaran', 'Piutang.DPiutang', 'ReturJual')->orderBy('tgl_trans_jual', 'desc')->get();
         return datatables()->of($data)
             ->addIndexColumn()
             ->addColumn('action', function ($data) {
-                return  '<div class="grid grid-cols-2">
+                $res = '<div class="grid grid-cols-2">
                 <button id="btndetail" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->no_trans_jual . '" >
                                                         <i class="fas fa-eye tw-text-prim-blue"></i>
-                                                    </button>
-                <button id="btnedit" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->no_trans_jual . '" >
+                                                    </button>';
+                if(!isset($data->Piutang->DPiutang)){
+                    if(count($data->ReturJual) <= 0){
+                    $res .= '<a href="/transaksi/jual/edit/'.$data->id.'"><button id="btnedit" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->no_trans_jual . '" >
                                                         <i class="fa fa-pen tw-text-prim-blue"></i>
-                                                    </button>
+                                                    </button></a>
                                                     <button id="btndelete" data-id="' . $data->id . '" data-nama="' . $data->no_trans_jual . '"
                                                         class="tw-bg-transparent tw-border-none">
                                                         <i class="fa fa-trash tw-text-prim-red"></i>
-                                                    </button>
-            </div>';
+                                                    </button>';}
+                }
+                $res .= '</div>';
+                return $res;
+
             })
             ->rawColumns(['action'])
             ->make(true);
@@ -855,13 +891,14 @@ class TransaksiController extends Controller
                         $bool = false;
                     }
                 }
-
-                if ($r->bayar_jual < $r->total_jual) {
+                $byrjual = (float)str_replace(",", "", $r->bayar_jual);
+                $totaljual = (float)str_replace(",", "", $r->total_jual);
+                if ($byrjual < $totaljual) {
                     Piutang::create([
                         'htrans_jual_id' => $c->id,
                         'pembayaran_id' => $r->pembayaran_id,
                         'tgl_piutang' => $r->tgl_trans_jual,
-                        'total_piutang' => ($r->total_jual - $r->bayar_jual)
+                        'total_piutang' => $totaljual - $byrjual
                     ]);
                 }
             }
@@ -870,6 +907,27 @@ class TransaksiController extends Controller
             } else {
                 return redirect()->back()->with('error', "Gagal Menambahkan, periksa kembali" . $r->jenis_brg[0]);
             }
+        }
+    }
+
+    public function delete_jual(Request $r){
+        $pu = Piutang::where('htrans_jual_id', $r->id)->count();
+        if($pu > 0){
+            $pud = Piutang::where('htrans_jual_id', $r->id)->delete();
+        }
+        $dtjj = DTransJualJasa::where('htrans_jual_id', $r->id)->count();
+        if($dtjj > 0){
+            $dtjjd = DTransJualJasa::where('htrans_jual_id', $r->id)->delete();
+        }
+        $dtj = DTransJual::where('htrans_jual_id', $r->id)->count();
+        if($dtj > 0){
+            $dtjd = DTransJual::where('htrans_jual_id', $r->id)->delete();
+        }
+        $del = TransJual::where('id', $r->id)->delete();
+        if ($del) {
+            return response()->json(['info' => 'success', 'msg' => 'Data berhasil di hapus']);
+        } else {
+            return response()->json(['info' => 'error', 'msg' => 'Hapus Gagal, periksa kembali']);
         }
     }
 

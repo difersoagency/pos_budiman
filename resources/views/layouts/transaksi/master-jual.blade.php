@@ -80,6 +80,7 @@
 </div>
 @endsection
 @section('script')
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function() {
     function data_detail(id){
@@ -109,7 +110,7 @@ $(document).ready(function() {
                     data: 'disc',
                 }, {
                     data: 'harga',
-                    render: DataTable.render.number('.', ',', 2, '')
+                    render: DataTable.render.number(',', '.', 2, '')
                 }]
             });
         }
@@ -131,6 +132,51 @@ $(document).ready(function() {
                 },
             })
         });
+
+        $(document).on('click', '#btndelete', function() {
+            var id = $(this).attr('data-id');
+            var nama = $(this).attr('data-nama');
+            Swal.fire({
+                title: 'Hapus',
+                text: "Hapus " + nama,
+                icon: "warning",
+                showCancelButton: true,
+                cancelButtonText: 'Tidak',
+                confirmButtonText: 'Iya',
+
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/transaksi/jual/delete',
+                        type: 'DELETE',
+                        dataType: 'json',
+                        data: {
+                            "id": id,
+                            "_method": "DELETE",
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(result) {
+                            if (result.info == "success") {
+                                Swal.fire({
+                                    title: 'Berhasil',
+                                    text: 'Data berhasil di hapus',
+                                    icon: 'success',
+                                });
+                                window.location.reload();
+                            } else {
+                                Swal.fire({
+                                    title: 'Gagal',
+                                    text: 'Data gagal di hapus',
+                                    icon: 'error',
+                                });
+                            }
+                        }
+                    });
+                }
+            })
+
+        })
         $('#transjual').DataTable({
             processing: true,
             serverSide: true,
@@ -152,7 +198,7 @@ $(document).ready(function() {
                 data: 'booking.customer.nama_customer',
             },{
                 data: 'total_jual',
-                render: DataTable.render.number('.', ',', 2, '')
+                render: DataTable.render.number(',', '.', 2, '')
             }, {
                 data: 'pembayaran.nama_bayar',
             }, {

@@ -6,7 +6,7 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="transaksi">Transaksi</a></li>
-                <li class="breadcrumb-item"><a href="{{route('penjualan')}}">Penjualan</a></li>
+                <li class="breadcrumb-item"><a href="{{route('trans-jual')}}">Penjualan</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Tambah Penjualan</li>
             </ol>
         </nav>
@@ -230,7 +230,7 @@ $(function(){
                     c++;
                 });
             }
-    
+
     $(document).on('click', '#barangtable #removerow', function(e) {
                 if ($('#barangtable > tbody > tr').length > 1) {
                     $(this).closest('tr').remove();
@@ -240,7 +240,7 @@ $(function(){
                 }
             });
 
-            
+
     $('#btntambah').on('click', function(){
         $('#barangtable > tbody > tr:last').after(`<tr>
                             <td>
@@ -352,7 +352,7 @@ $(function(){
 
     select_barang();
 
-    
+
 
     function sum_subtotal_harga(table){
         var jumlah = table.find('.jumlah').val();

@@ -82,6 +82,7 @@
 @endsection
 
 @section('script')
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     $(function(){
         $('#returjualtable').DataTable({
@@ -112,6 +113,7 @@
                     data: 'customer',
                 }, {
                     data: 'total_retur_jual',
+                    render: DataTable.render.number(',', '.', 2, '')
                 }, {
                     data: 'action',
                 }]
@@ -137,18 +139,65 @@
                     searchable: false
                 }, {
                     data: 'barang_id',
-                }, 
+                },
                 {
                     data: 'jumlah',
-                }, {
+                },
+                {
                     data: 'harga',
+                    render: DataTable.render.number(',', '.', 2, '')
                 },
                 {
                     data: 'subtotal',
+                    render: DataTable.render.number(',', '.', 2, '')
                 }]
             });
         }
 
+        $(document).on('click', '#btndelete', function() {
+            var id = $(this).attr('data-id');
+            var nama = $(this).attr('data-nama');
+            Swal.fire({
+                title: 'Hapus',
+                text: "Hapus " + nama,
+                icon: "warning",
+                showCancelButton: true,
+                cancelButtonText: 'Tidak',
+                confirmButtonText: 'Iya',
+
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/transaksi/retur-jual/delete',
+                        type: 'DELETE',
+                        dataType: 'json',
+                        data: {
+                            "id": id,
+                            "_method": "DELETE",
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(result) {
+                            if (result.info == "success") {
+                                Swal.fire({
+                                    title: 'Berhasil',
+                                    text: 'Data berhasil di hapus',
+                                    icon: 'success',
+                                });
+                                window.location.reload();
+                            } else {
+                                Swal.fire({
+                                    title: 'Gagal',
+                                    text: 'Data gagal di hapus',
+                                    icon: 'error',
+                                });
+                            }
+                        }
+                    });
+                }
+            })
+
+        })
         $(document).on('click', '#btndetail', function(event) {
             var id = $(this).attr('data-id');
             $.ajax({

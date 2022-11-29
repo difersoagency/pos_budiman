@@ -30,7 +30,7 @@
             </div>
             <div class="my-4">
             <label for="user_beli" class="mx-2">Info Penjualan</label>
-            <dl class="row mx-2">
+            <dl class="mx-2">
                 <dd id="no_trans_jual"></dd>
                 <dd>Transaksi Pada <span id="tgl_trans_jual">-</span></dd>
                 <dd>Garansi Hingga <span id="tgl_max_garansi">-</span></dd>
@@ -38,7 +38,7 @@
             </div>
             <div class="my-4">
                 <label for="user_beli" class="mx-2">Customer</label>
-                <dl class="row mx-2">
+                <dl class="mx-2">
                     <dd id="customer">-</dd>
                     <dd id="alamat">-</dd>
                     <dd id="telepon">-</dd>
@@ -204,7 +204,7 @@
 
         $('.htrans_jual_id').select2({
         placeholder: "Pilih No Transaksi",
-        
+
                 ajax: {
                     dataType: 'json',
                     type: 'GET',
@@ -305,7 +305,7 @@
             }
             brg_arr = d_barang;
         }
-        
+
         sum_total_harga();
     });
 
@@ -334,7 +334,7 @@
                 }
             });
 
-            
+
     $('#btntambah').on('click', function(){
         $('#barangtable > tbody > tr:last').after(`<tr>
                             <td>
@@ -381,7 +381,7 @@
                     c++;
                 });
             }
-    
+
     })
 </script>
 @stop

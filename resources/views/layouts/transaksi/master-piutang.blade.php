@@ -39,7 +39,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    
+
 
 
                                 </tbody>
@@ -112,6 +112,7 @@ $(document).ready(function() {
                     data: 'tgl_piutang',
                 }, {
                     data: 'total_bayar',
+                    render: DataTable.render.number(',', '.', 2, '')
                 }]
             });
         }
@@ -133,6 +134,51 @@ $(document).ready(function() {
                 },
             })
         });
+
+        $(document).on('click', '#btndelete', function() {
+            var id = $(this).attr('data-id');
+            var nama = $(this).attr('data-nama');
+            Swal.fire({
+                title: 'Hapus',
+                text: "Hapus " + nama,
+                icon: "warning",
+                showCancelButton: true,
+                cancelButtonText: 'Tidak',
+                confirmButtonText: 'Iya',
+
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/transaksi/piutang/delete',
+                        type: 'DELETE',
+                        dataType: 'json',
+                        data: {
+                            "id": id,
+                            "_method": "DELETE",
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(result) {
+                            if (result.info == "success") {
+                                Swal.fire({
+                                    title: 'Berhasil',
+                                    text: 'Data berhasil di hapus',
+                                    icon: 'success',
+                                });
+                                window.location.reload();
+                            } else {
+                                Swal.fire({
+                                    title: 'Gagal',
+                                    text: 'Data gagal di hapus',
+                                    icon: 'error',
+                                });
+                            }
+                        }
+                    });
+                }
+            })
+
+        })
 
         $(document).on('click', '#btnbayar', function(event) {
             var id = $(this).attr('data-id');
@@ -174,10 +220,13 @@ $(document).ready(function() {
                 data: 'no_trans_jual',
             }, {
                 data: 'total_piutang',
+                render: DataTable.render.number(',', '.', 2, '')
             }, {
                 data: 'sum_total',
+                render: DataTable.render.number(',', '.', 2, '')
             },{
                 data: 'sisa_hutang',
+                render: DataTable.render.number(',', '.', 2, '')
             }, {
                 data: 'action',
                 orderable: false,

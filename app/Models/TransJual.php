@@ -27,7 +27,7 @@ class TransJual extends Model
         return $this->belongsTo(Pembayaran::class);
     }
 
-    
+
     public function DTransJual()
     {
         return $this->hasMany(DTransJual::class, 'htrans_jual_id');
@@ -40,11 +40,11 @@ class TransJual extends Model
 
     public function ReturJual()
     {
-        return $this->hasMany(ReturJual::class);
+        return $this->hasMany(ReturJual::class,'htrans_jual_id');
     }
 
     public function Piutang()
     {
-        return $this->hasOne(Piutang::class);
+        return $this->hasOne(Piutang::class, 'htrans_jual_id');
     }
 }
