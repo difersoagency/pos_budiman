@@ -97,6 +97,11 @@ class TransaksiController extends Controller
         $data = Piutang::where('id', $id)->with('TransJual.Booking.Customer')->first();
         return view('layouts.modal.piutang-modal-detail', ['id' => $id, 'data' => $data]);
     }
+    public function detail_retur_beli($id)
+    {
+        $data = ReturBeli::find($id);
+        return view('layouts.modal.retur-beli-modal-detail', ['data' => $data]);
+    }
 
     public function data_detail_piutang($id)
     {
@@ -213,6 +218,7 @@ class TransaksiController extends Controller
 
     public function transaksi_beli()
     {
+
         return view('layouts.transaksi.master-beli');
     }
     public function tambah_beli()
@@ -286,13 +292,75 @@ class TransaksiController extends Controller
         }
     }
 
-    public function store_retur_beli(Request $request)
+    public function delete_retur_beli(Request $request)
+    {
+
+
+
+        $tb = DReturBeli::where('hretur_beli_id', $request->id)->get();
+
+        if (count($tb) > 0) {
+            DReturBeli::where('hretur_beli_id', $request->id)->delete();
+        }
+
+        $retur_beli =  ReturBeli::find($request->id)->delete();
+
+
+
+
+        if ($retur_beli) {
+            return response()->json(['info' => 'success', 'msg' => 'Data berhasil di hapus']);
+        } else {
+            return response()->json(['info' => 'error', 'msg' => 'Hapus Gagal, periksa kembali']);
+        }
+    }
+    public function update_retur_beli(Request $request, $id)
     {
 
         $validator = Validator::make(
             $request->all(),
             [
+                'tgl_retur_beli' => 'required',
+                'barang_id.*' => 'required',
+                'jumlah.*' => 'required',
+                'harga.*' => 'required',
+            ]
+        );
 
+        if ($validator->fails()) {
+            return response()->json(['data' => 'error']);
+        } else {
+
+            $retur_beli = ReturBeli::find($id);
+            $retur_beli->tgl_retur_beli = $request->tgl_retur_beli;
+            $retur_beli->total_retur_beli = str_replace('.', "", $request->total);
+            $retur_beli->save();
+
+            $tb = DReturBeli::where('hretur_beli_id', $id)->get();
+
+
+            if (count($tb) > 0) {
+                DReturBeli::where('hretur_beli_id', $id)->delete();
+            }
+
+
+            for ($i = 0; $i < count($request->barang_id); $i++) {
+                DReturBeli::create([
+                    'hretur_beli_id' =>  $id,
+                    'barang_id' => $request->barang_id[$i],
+                    'jumlah' => $request->jumlah[$i],
+                    'harga' =>  str_replace('.', "", $request->harga[$i]),
+                ]);
+            }
+
+            return response()->json(['data' => 'success']);
+        }
+    }
+    public function store_retur_beli(Request $request)
+    {
+        $validator = Validator::make(
+            $request->all(),
+            [
                 'no_po' => 'required',
                 'tgl_retur_beli' => 'required',
                 'barang_id.*' => 'required',
@@ -316,7 +384,7 @@ class TransaksiController extends Controller
                     'hretur_beli_id' =>  $h->id,
                     'barang_id' => $request->barang_id[$i],
                     'jumlah' => $request->jumlah[$i],
-                    'harga' => $request->harga[$i],
+                    'harga' =>  str_replace('.', "", $request->harga[$i]),
                 ]);
             }
 
@@ -388,6 +456,27 @@ class TransaksiController extends Controller
     {
         return view('layouts.transaksi.master-jual');
     }
+    public function detail_data_retur_beli($id)
+    {
+        $data = DReturBeli::where('hretur_beli_id', $id)->get();
+        return datatables()->of($data)
+            ->addIndexColumn()
+            ->addColumn('produk', function ($data) {
+                return  $data->Barang->nama_barang;
+            })
+            ->addColumn('jumlah', function ($data) {
+                return  $data->jumlah;
+            })
+            ->addColumn('harga', function ($data) {
+                return number_format($data->harga);
+            })
+            ->addColumn('total', function ($data) {
+                return  number_format($data->total_retur_beli * $data->jumlah);
+            })
+
+            ->rawColumns(['action'])
+            ->make(true);
+    }
     public function data_retur_beli()
     {
         $data = ReturBeli::orderBy('tgl_retur_beli', 'desc')->get();
@@ -417,7 +506,11 @@ class TransaksiController extends Controller
                 <a id="btnedit" href="/transaksi/retur-beli/edit/' . $data->id . '" class="mr-4 tw-bg-transparent tw-border-none" >
                                                         <i class="fa fa-pen tw-text-prim-blue"></i>
                                                     </a>
-                                                  
+                                                    <button id="btndelete" data-id="' . $data->id . '" data-nama="' . $data->TransBeli->nomor_po . '"
+                                                            class="tw-bg-transparent tw-border-none">
+                                                            <i class="fa fa-trash tw-text-prim-red"></i>
+                                                        </button>
+
             </div>';
             })
             ->rawColumns(['action'])
@@ -487,7 +580,7 @@ class TransaksiController extends Controller
                 <a id="btnedit" href="/transaksi/hutang/edit/' . $data->id . '" class="mr-4 tw-bg-transparent tw-border-none" >
                                                         <i class="fa fa-pen tw-text-prim-blue"></i>
                                                     </a>
-                                                  
+
             </div>';
             })
             ->rawColumns(['action'])

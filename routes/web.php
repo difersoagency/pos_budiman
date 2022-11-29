@@ -208,10 +208,14 @@ Route::group(['prefix' => '/transaksi'], function () {
 
     Route::group(['prefix' => '/retur-beli'], function () {
         Route::post('/data', [App\Http\Controllers\TransaksiController::class, 'data_retur_beli'])->name('data-retur-beli');
+        Route::post('/data/{id}', [App\Http\Controllers\TransaksiController::class, 'detail_data_retur_beli'])->name('detail-data-retur-beli');
         Route::get('/tambah', [App\Http\Controllers\TransaksiController::class, 'tambah_retur_beli'])->name('tambah-retur-beli');
         Route::get('/edit/{id}', [App\Http\Controllers\TransaksiController::class, 'edit_retur_beli'])->name('edit-retur-beli');
         Route::post('/store', [App\Http\Controllers\TransaksiController::class, 'store_retur_beli'])->name('store-retur-beli');
         Route::get('/', [App\Http\Controllers\TransaksiController::class, 'transaksi_retur_beli'])->name('retur-pembelian');
+        Route::post('/update/{id}', [App\Http\Controllers\TransaksiController::class, 'update_retur_beli'])->name('update-retur-beli');
+        Route::get('/detail/{id}', [App\Http\Controllers\TransaksiController::class, 'detail_retur_beli'])->name('detail-retur-beli');
+        Route::delete('/delete', [App\Http\Controllers\TransaksiController::class, 'delete_retur_beli'])->name('delete-retur-beli');
     });
 
     Route::group(['prefix' => '/booking'], function () {
