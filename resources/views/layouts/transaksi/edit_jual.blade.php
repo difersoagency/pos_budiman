@@ -11,33 +11,27 @@
             </ol>
         </nav>
         <form action="{{route('update_jual', ['id' => $id])}}" method="POST">
+        @method('PUT')
         @csrf
         <div class="tw-grid tw-grid-cols-3 tw-px-4">
-            <div class="mx-2">
-                <label for="booking_id">No Booking</label>
-                <div class="dropdown" style="width:100%;">
-                    <select class="custom-select booking_id tw-text-prim-white" id="booking_id" name="booking_id">
-                        <option value=""></option>
-                    </select>
-                </div>
-
+            <div class="mx-2 tw-row-span-2">
+                <label for="user_beli" class="mx-2">Customer</label>
+                <dl class="mx-2">
+                    <dl id="customer_id">{{$d->Booking->Customer->nama_customer}}</dl>
+                    <dl id="customer_alamat">{{$d->Booking->Customer->alamat}}</dl>
+                    <dl id="customer_telp">{{$d->Booking->Customer->telepon}}</dl>
+                    <dl>No Booking: {{$d->Booking->no_booking}}</dl>
+                </dl>
             </div>
             <div class="mx-2">
                 <label for="no_trans_jual">No Transaksi Penjualan</label>
-                <input type="text" placeholder="No Transaksi" class="form-control no_trans_jual" name="no_trans_jual" id="no_trans_jual">
+                <input type="text" placeholder="No Transaksi" class="form-control no_trans_jual" name="no_trans_jual" id="no_trans_jual" value="{{$d->no_trans_jual}}">
             </div>
             <div class="mx-2">
                 <label for="tgl_trans_jual">Tgl Transaksi</label>
-                <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_trans_jual" name="tgl_trans_jual" id="tgl_trans_jual">
+                <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_trans_jual" name="tgl_trans_jual" id="tgl_trans_jual" value="{{$d->tgl_trans_jual}}">
             </div>
-            <div class="my-4 tw-row-span-2">
-                <label for="user_beli" class="mx-2">Customer</label>
-                <dl class="mx-2">
-                    <dl id="customer_id">-</dl>
-                    <dl id="customer_alamat">-</dl>
-                    <dl id="customer_telp">-</dl>
-                </dl>
-            </div>
+
             <div class="my-4 tw-row-span-2">
                 <label for="user_beli" class="mx-2">Dibuat Oleh</label>
                 <dl class="mx-2">
@@ -47,12 +41,13 @@
             </div>
             <div class="my-4 mx-2">
                 <label for="user_beli">Batas Garansi</label>
-                <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_max_garansi" name="tgl_max_garansi" id="tgl_max_garansi">
+                <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_max_garansi" name="tgl_max_garansi" id="tgl_max_garansi" value="{{$d->tgl_max_garansi}}">
             </div>
             <div class="mb-4 mx-2 float-right">
                 <label for="user_beli">Pembayaran</label>
                 <div class="dropdown">
                     <select class="custom-select pembayaran_id tw-text-prim-white" id="pembayaran_id" name="pembayaran_id">
+                        <option value="{{$d->Pembayaran->id}}" selected>{{$d->Pembayaran->nama_bayar}}</option>
                     </select>
                 </div>
             </div>
@@ -94,38 +89,42 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <?php $count = 0 ?>
+                        @if($b != null)
+                        <?php $count = count($b) ?>
+                        @foreach ($b as $kb => $brg)
                         <tr>
                             <td>
-                                <!-- Dropdown -->
                                 <div class="dropdown ">
-                                    <select class="custom-select barang_id tw-text-prim-white" name="barang_id[]" disabled="true">
+                                    <select class="custom-select barang_id tw-text-prim-white" name="barang_id[{{$kb}}]">
+                                        <option value="{{$brg->Barang->id}}" selected>{{$brg->Barang->nama}}</option>
                                     </select>
                                 </div>
                                 <!-- End Dropdown  -->
                             </td>
                             <td class="d-none">
                                 <div class="form-group">
-                                    <input type="text" class="form-control jenis_brg" name="jenis_brg[]">
+                                    <input type="text" class="form-control jenis_brg" name="jenis_brg[{{$kb}}]" value="barang">
                                 </div>
                             </td>
                             <td>
                                 <div class="form-group">
-                                    <input type="number" class="form-control jumlah" name="jumlah[]" min="0">
+                                    <input type="number" class="form-control jumlah" name="jumlah[]" min="0" value="{{$brg->jumlah}}">
                                 </div>
                             </td>
                             <td>
                                 <div class="form-group">
-                                    <input type="text" class="form-control harga" name="harga[]">
+                                    <input type="text" class="form-control harga" name="harga[]" value="{{$brg->harga}}">
                                 </div>
                             </td>
                             <td>
                                 <div class="form-group">
-                                    <input type="number" class="form-control disc" name="disc[]" step="0.00" min="0">
+                                    <input type="number" class="form-control disc" name="disc[]" step="0.00" min="0" value="{{$brg->disc}}">
                                 </div>
                             </td>
                             <td>
                                 <div class="form-group">
-                                    <input type="text" class="form-control subtotal" readonly="true" name="subtotal[]">
+                                    <input type="text" class="form-control subtotal" readonly="true" name="subtotal[]" value="{{$brg->jumlah * $brg->harga}}">
                                 </div>
                             </td>
 
@@ -135,12 +134,59 @@
                                 </button>
                             </td>
                         </tr>
+                        @endforeach
+                        @endif
+                        @if($j != null)
+                        @foreach ($j as $kj => $jasa)
+                        <tr>
+                            <td>
+                                <div class="dropdown ">
+                                    <select class="custom-select barang_id tw-text-prim-white" name="barang_id[{{$kj + $count}}]">
+                                        <option value="{{$jasa->Jasa->id}}" selected>{{$jasa->Jasa->nama}}</option>
+                                    </select>
+                                </div>
+                                <!-- End Dropdown  -->
+                            </td>
+                            <td class="d-none">
+                                <div class="form-group">
+                                    <input type="text" class="form-control jenis_brg" name="jenis_brg[]" value="jasa">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <input type="number" class="form-control jumlah" name="jumlah[]" min="0" value="{{$jasa->jumlah}}">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <input type="text" class="form-control harga" name="harga[]" value="{{$jasa->harga}}">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <input type="number" class="form-control disc" name="disc[]" step="0.00" min="0" value="{{$jasa->disc}}">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    <input type="text" class="form-control subtotal" readonly="true" name="subtotal[]" value="{{$jasa->jumlah * $jasa->harga}}">
+                                </div>
+                            </td>
+
+                            <td>
+                                <button type="button" id="removerow" class="tw-bg-transparent tw-border-none">
+                                    <i class="fa fa-trash tw-text-prim-red"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        @endforeach
+                        @endif
                     </tbody>
                     <tfoot>
                         <tr>
                             <td class="tw-border-none" colspan="4">Total sebelum Diskon</td>
                             <td class="tw-border-none" colspan="2">
-                                    <input type="text" class="form-control total_kotor" name="total_kotor" readonly="false">
+                                    <input type="text" class="form-control total_kotor" name="total_kotor" readonly="false" value="{{$d->total_jual}}">
                             </td>
                         </tr>
                         <tr>
@@ -152,19 +198,19 @@
                         <tr>
                             <td class="tw-border-none" colspan="4">Total Harga</td>
                             <td class="tw-border-none" colspan="2">
-                                    <input type="text" class="form-control total_jual" name="total_jual" readonly="true">
+                                    <input type="text" class="form-control total_jual" name="total_jual" readonly="true" value="{{$d->total_jual}}">
                             </td>
                         </tr>
                         <tr>
                             <td class="tw-border-none" colspan="4">Jumlah Bayar</td>
                             <td class="tw-border-none" colspan="2">
-                                    <input type="text" class="form-control bayar_jual" name="bayar_jual">
+                                    <input type="text" class="form-control bayar_jual" name="bayar_jual" value="{{$d->bayar_jual}}">
                             </td>
                         </tr>
                         <tr>
                             <td class="tw-border-none" colspan="4">Kembali</td>
                             <td class="tw-border-none" colspan="2">
-                                    <input type="text" class="form-control kembali_jual" name="kembali_jual" readonly="true">
+                                    <input type="text" class="form-control kembali_jual" name="kembali_jual" readonly="true" value="{{$d->kembali_jual}}">
                             </td>
                         </tr>
                     </tfoot>

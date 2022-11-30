@@ -970,7 +970,9 @@ class TransaksiController extends Controller
         $d = TransJual::find($id);
         $b = DTransJual::where('htrans_jual_id', $id)->get();
         $j = DTransJualJasa::where('htrans_jual_id', $id)->get();
-        return view('layouts.transaksi.edit_jual', ['id' => $id, 'd' => $d, 'j' => $j]);
+        $date = Carbon::now()->toDateString();
+        $promo = Promo::where('tgl_mulai', '<=', $date)->where('tgl_selesai', '>=', $date)->get();
+        return view('layouts.transaksi.edit_jual', ['id' => $id, 'd' => $d, 'b' => $b, 'j' => $j, 'promo' => $promo]);
     }
 
     public function update_jual(Request $r, $id)
