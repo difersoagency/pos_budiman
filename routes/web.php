@@ -30,7 +30,13 @@ Route::group(['prefix' => '/home'], function () {
 
 Route::group(['prefix' => '/master'], function () {
     Route::get('/', [App\Http\Controllers\MasterController::class, 'archive_master'])->name('master');
-    Route::get('/koreksi', [App\Http\Controllers\MasterController::class, 'master_koreksi'])->name('koreksi');
+
+    Route::group(['prefix' => '/koreksi'], function () {
+        Route::get('/', [App\Http\Controllers\MasterController::class, 'master_koreksi'])->name('koreksi');
+        Route::post('/data/{id}', [App\Http\Controllers\MasterController::class, 'data_koreksi'])->name('koreksi.data');
+        Route::get('/tambah', [App\Http\Controllers\MasterController::class, 'koreksi_create'])->name('koreksi.create');
+        Route::post('/store', [App\Http\Controllers\MasterController::class, 'koreksi_store'])->name('koreksi.store');
+    });
     Route::group(['prefix' => '/customer'], function () {
         Route::get('/', [App\Http\Controllers\MasterController::class, 'master_customer'])->name('customer');
         Route::get('/create', [App\Http\Controllers\MasterController::class, 'customer_create'])->name('customer.create');

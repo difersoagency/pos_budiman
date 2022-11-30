@@ -69,7 +69,7 @@
 
                             <!-- START: Table Tablet + Desktop -->
                             <div class="table-barang tw-mt-5 tw-col-span-2" data-current-page="1">
-                                <table id="showtable" class="table main-table table-bordered responsive nowrap" style="width:100%">
+                                <table id="table_barang" class="table main-table table-bordered responsive nowrap" style="width:100%">
                                     <thead class="tw-bg-prim-blue">
                                         <tr>
                                             <th class="tw-text-prim-white">Kode </th>
