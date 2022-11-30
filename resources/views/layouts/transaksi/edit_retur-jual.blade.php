@@ -11,37 +11,34 @@
             </ol>
         </nav>
         <form action="{{route('update_retur_jual', ['id' => $id])}}" method="POST">
+        @method('PUT')
         @csrf
         <div class="tw-grid tw-grid-cols-3 tw-px-4">
             <div class="mx-2">
                 <label for="no_retur_jual">No Retur Jual</label>
-                <input type="text" placeholder="Masukkan No Retur" class="form-control no_retur_jual" name="no_retur_jual" id="no_retur_jual">
+                <input type="text" placeholder="Masukkan No Retur" class="form-control no_retur_jual" name="no_retur_jual" id="no_retur_jual" value="{{$r->no_retur_jual}}">
             </div>
             <div class="mx-2 tw-col-span-2">
                 <label for="htrans_jual_id">Ref Transaksi Penjualan</label>
-                <div class="dropdown" style="width:50%;">
-                    <select class="custom-select tw-text-prim-white htrans_jual_id" id="htrans_jual_id" name="htrans_jual_id">
-                    </select>
-                </div>
+                <p>{{$r->TransJual->no_trans_jual}}</p>
             </div>
             <div class="my-4 mx-2">
                 <label for="user_beli">Tgl Retur Jual</label>
-                <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_retur_jual" name="tgl_retur_jual" id="tgl_retur_jual">
+                <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_retur_jual" name="tgl_retur_jual" id="tgl_retur_jual" value="{{$r->tgl_retur_jual}}">
             </div>
             <div class="my-4">
             <label for="user_beli" class="mx-2">Info Penjualan</label>
             <dl class="mx-2">
-                <dd id="no_trans_jual"></dd>
-                <dd>Transaksi Pada <span id="tgl_trans_jual">-</span></dd>
-                <dd>Garansi Hingga <span id="tgl_max_garansi">-</span></dd>
+                <dd>Transaksi Pada <span id="tgl_trans_jual">{{$r->TransJual->tgl_trans_jual}}</span></dd>
+                <dd>Garansi Hingga <span id="tgl_max_garansi">{{$r->TransJual->tgl_max_garansi}}</span></dd>
             </dl>
             </div>
             <div class="my-4">
                 <label for="user_beli" class="mx-2">Customer</label>
                 <dl class="mx-2">
-                    <dd id="customer">-</dd>
-                    <dd id="alamat">-</dd>
-                    <dd id="telepon">-</dd>
+                    <dd id="customer">{{$r->TransJual->Booking->Customer->nama_customer}}</dd>
+                    <dd id="alamat">{{$r->TransJual->Booking->Customer->alamat}}</dd>
+                    <dd id="telepon">{{$r->TransJual->Booking->Customer->telepon}}</dd>
                 </dl>
             </div>
 
@@ -65,29 +62,26 @@
                         </tr>
                     </thead>
                     <tbody>
+                    @foreach($d as $k => $data)
                     <tr>
                             <td>
-                                <select class="custom-select barang_id tw-text-prim-white" name="barang_id[]">
+                                <select class="custom-select barang_id tw-text-prim-white" name="barang_id[{{$k}}]">
+                                    <option value="{{$data->Barang->id}}" selected>{{$data->Barang->nama_barang}}</option>
                                 </select>
                             </td>
                             <td>
                                 <div class="form-group">
-                                    <input type="text" class="form-control jumlah" name="jumlah[]" min="0" value="">
+                                    <input type="text" class="form-control jumlah" name="jumlah[{{$k}}]" min="0" value="{{$data->jumlah}}">
                                 </div>
                             </td>
                             <td>
                                 <div class="form-group">
-                                    <input type="text" class="form-control harga" name="harga[]" min="0"  value="">
+                                    <input type="text" class="form-control harga" name="harga[{{$k}}]" min="0"  value="{{$data->harga}}">
                                 </div>
                             </td>
-                            <!-- <td>
-                                <div class="form-group">
-                                    <input type="number" class="form-control disc" name="disc[]" step="0.00" min="0" value="">
-                                </div>
-                            </td> -->
                             <td>
                                 <div class="form-group">
-                                    <input type="text" readonly="true" class="form-control subtotal" name="subtotal[]" min="0" value="">
+                                    <input type="text" readonly="true" class="form-control subtotal" name="subtotal[{{$k}}]" min="0" value="{{$data->jumlah * $data->harga}}">
                                 </div>
                             </td>
 
@@ -97,6 +91,7 @@
                                 </button>
                             </td>
                 </tr>
+                @endforeach
                     </tbody>
                     <tfoot>
                         <!-- <tr>
@@ -114,7 +109,7 @@
                         <tr>
                             <td class="tw-border-none" colspan="3">Total Harga</td>
                             <td class="tw-border-none" colspan="2">
-                                    <input type="text" class="form-control total_retur_jual" name="total_retur_jual" readonly="true">
+                                <input type="text" class="form-control total_retur_jual" name="total_retur_jual" readonly="true" value="{{$r->total_retur_jual}}">
                             </td>
                         </tr>
                     </tfoot>
@@ -232,82 +227,31 @@
                     },
                 }
         });
-        select_barang([]);
-        function select_barang(array){
-            var arr = [];
-            if(array.length > 0){
-                arr = array;
-            }
+        select_barang();
+        function select_barang(){
             $('.barang_id').select2({
                 placeholder: "Pilih Barang",
-                data: array
+                ajax: {
+                    dataType: 'json',
+                    type: 'GET',
+                    url: '/api/get_d_trans_jual/'+'{{$r->htrans_jual_id}}',
+                    processResults: function(data) {
+                        console.log(data);
+                        return {
+                            results: $.map(data, function(obj) {
+                                return {
+                                    id: obj.id,
+                                    text: obj.text,
+                                    jumlah: obj.jumlah,
+                                    harga: obj.harga,
+                                    disc: obj.disc
+                                };
+                            })
+                        };
+                    },
+                }
             });
         }
-
-        $(document).on('change', '.htrans_jual_id', function(){
-        $('#customer').text($(this).select2('data')[0].cust);
-        $('#alamat').text($(this).select2('data')[0].alamat);
-        $('#telepon').text($(this).select2('data')[0].telp);
-
-        $('#no_trans_jual').text($(this).select2('data')[0].text);
-        $('#tgl_trans_jual').text($(this).select2('data')[0].tgl_trans_jual);
-        $('#tgl_max_garansi').text($(this).select2('data')[0].tgl_max_garansi);
-
-        var d_barang = $(this).select2('data')[0].detail;
-        if($(this).val() != ""){
-            $('#btntambah').removeAttr('disabled');
-            $('.barang_id').removeAttr('disabled');
-            for(var i = 0; i < d_barang.length; i++){
-                if($('#barangtable .barang_id').val() == null){
-                    $('#barangtable tbody').empty();
-                }
-                var ids = d_barang[i].id;
-                var namas = d_barang[i].text;
-                var jumlah = d_barang[i].jumlah;
-                var harga = d_barang[i].harga;
-                var disc = d_barang[i].disc;
-
-                $('#barangtable tbody').append(`<tr>
-                            <td>
-                                <select class="custom-select barang_id tw-text-prim-white" name="barang_id[`+i+`]">
-                                    <option value="`+ids+`" selected>`+namas+`</option>
-                                </select>
-                            </td>
-                            <td>
-                                <div class="form-group">
-                                    <input type="text" class="form-control jumlah" name="jumlah[`+i+`]" min="0" value="`+jumlah+`">
-                                </div>
-                            </td>
-                            <td>
-                                <div class="form-group">
-                                    <input type="text" class="form-control harga" name="harga[`+i+`]" min="0"  value="`+number_format(harga)+`">
-                                </div>
-                            </td>
-                            <!-- <td>
-                                <div class="form-group">
-                                    <input type="number" class="form-control disc" name="disc[`+i+`]" step="0.00" min="0" value="`+disc+`">
-                                </div>
-                            </td> -->
-                            <td>
-                                <div class="form-group">
-                                    <input type="text" readonly="true" class="form-control subtotal" name="subtotal[`+i+`]" min="0" value="`+number_format(harga * jumlah)+`">
-                                </div>
-                            </td>
-
-                            <td>
-                                <button type="button" id="removerow" class="tw-bg-transparent tw-border-none">
-                                    <i class="fa fa-trash tw-text-prim-red"></i>
-                                </button>
-                            </td>
-                </tr>`);
-                select_barang(d_barang);
-                // $('select[name="barang_id['+i+']').val($(".barang_id option:contains('"+namas+"')").val()).change();
-            }
-            brg_arr = d_barang;
-        }
-
-        sum_total_harga();
-    });
 
         $(document).on('keyup change', '#barangtable .harga', function(){
             var tes = $(this).val().replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -377,7 +321,7 @@
                     $(el).find('.jumlah').attr('name', 'jumlah[' + j + ']');
                     $(el).find('.harga').attr('name', 'harga[' + j + ']');
                     $(el).find('.subtotal').attr('name', 'subtotal[' + j + ']');
-                    select_barang(brg_arr);
+                    select_barang();
                     c++;
                 });
             }

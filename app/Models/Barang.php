@@ -36,7 +36,7 @@ class Barang extends Model
     }
     public function DTransJual()
     {
-        return $this->hasMany(DTransJual::class);
+        return $this->hasMany(DTransJual::class, 'barang_id');
     }
     public function DTransBeli()
     {

@@ -70,7 +70,7 @@
 
         </div>
         <div class="tw-grid pb-4">
-            <button  disabled="true" type="button" class="tw-w-48 tw-bg-prim-red tw-border-0  tw-text-center tw-text-white tw-py-2 tw-rounded-lg hover:tw-bg-red-700 tw-transition-all float-right" id="btntambah">
+            <button type="button" class="tw-w-48 tw-bg-prim-red tw-border-0  tw-text-center tw-text-white tw-py-2 tw-rounded-lg hover:tw-bg-red-700 tw-transition-all float-right" id="btntambah">
                 + Tambah Barang
             </button>
         </div>
@@ -91,50 +91,50 @@
                     <tbody>
                         <?php $count = 0 ?>
                         @if($b != null)
-                        <?php $count = count($b) ?>
-                        @foreach ($b as $kb => $brg)
-                        <tr>
-                            <td>
-                                <div class="dropdown ">
-                                    <select class="custom-select barang_id tw-text-prim-white" name="barang_id[{{$kb}}]">
-                                        <option value="{{$brg->Barang->id}}" selected>{{$brg->Barang->nama}}</option>
-                                    </select>
-                                </div>
-                                <!-- End Dropdown  -->
-                            </td>
-                            <td class="d-none">
-                                <div class="form-group">
-                                    <input type="text" class="form-control jenis_brg" name="jenis_brg[{{$kb}}]" value="barang">
-                                </div>
-                            </td>
-                            <td>
-                                <div class="form-group">
-                                    <input type="number" class="form-control jumlah" name="jumlah[]" min="0" value="{{$brg->jumlah}}">
-                                </div>
-                            </td>
-                            <td>
-                                <div class="form-group">
-                                    <input type="text" class="form-control harga" name="harga[]" value="{{$brg->harga}}">
-                                </div>
-                            </td>
-                            <td>
-                                <div class="form-group">
-                                    <input type="number" class="form-control disc" name="disc[]" step="0.00" min="0" value="{{$brg->disc}}">
-                                </div>
-                            </td>
-                            <td>
-                                <div class="form-group">
-                                    <input type="text" class="form-control subtotal" readonly="true" name="subtotal[]" value="{{$brg->jumlah * $brg->harga}}">
-                                </div>
-                            </td>
+                            <?php $count = count($b) ?>
+                            @foreach ($b as $kb => $brg)
+                            <tr>
+                                <td>
+                                    <div class="dropdown ">
+                                        <select class="custom-select barang_id tw-text-prim-white" name="barang_id[{{$kb}}]">
+                                            <option value="{{$brg->Barang->id}}" selected>{{$brg->Barang->nama_barang}}</option>
+                                        </select>
+                                    </div>
+                                    <!-- End Dropdown  -->
+                                </td>
+                                <td class="d-none">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control jenis_brg" name="jenis_brg[{{$kb}}]" value="barang">
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group">
+                                        <input type="number" class="form-control jumlah" name="jumlah[]" min="0" value="{{$brg->jumlah}}">
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control harga" name="harga[]" value="{{$brg->harga}}">
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group">
+                                        <input type="number" class="form-control disc" name="disc[]" step="0.00" min="0" value="{{$brg->disc}}">
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control subtotal" readonly="true" name="subtotal[]" value="{{$brg->jumlah * $brg->harga}}">
+                                    </div>
+                                </td>
 
-                            <td>
-                                <button type="button" id="removerow" class="tw-bg-transparent tw-border-none">
-                                    <i class="fa fa-trash tw-text-prim-red"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        @endforeach
+                                <td>
+                                    <button type="button" id="removerow" class="tw-bg-transparent tw-border-none">
+                                        <i class="fa fa-trash tw-text-prim-red"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            @endforeach
                         @endif
                         @if($j != null)
                         @foreach ($j as $kj => $jasa)
@@ -142,7 +142,7 @@
                             <td>
                                 <div class="dropdown ">
                                     <select class="custom-select barang_id tw-text-prim-white" name="barang_id[{{$kj + $count}}]">
-                                        <option value="{{$jasa->Jasa->id}}" selected>{{$jasa->Jasa->nama}}</option>
+                                        <option value="{{$jasa->Jasa->id}}" selected>{{$jasa->Jasa->nama_jasa}}</option>
                                     </select>
                                 </div>
                                 <!-- End Dropdown  -->
@@ -292,7 +292,7 @@ $(function(){
                             <td>
                                 <!-- Dropdown -->
                                 <div class="dropdown ">
-                                    <select class="custom-select barang_id tw-text-prim-white" name="barang_id[]" disabled="true">
+                                    <select class="custom-select barang_id tw-text-prim-white" name="barang_id[]">
                                     </select>
                                 </div>
                                 <!-- End Dropdown  -->
@@ -463,75 +463,75 @@ $(function(){
             sum_subtotal_harga($(this).closest('tr'))
         });
 
-    $(document).on('change', '.booking_id', function(){
-        $('#customer_id').html($(this).select2('data')[0].cust);
-        $('#customer_alamat').html($(this).select2('data')[0].alamat);
-        $('#customer_telp').html($(this).select2('data')[0].telp);
-        var d_booking = $(this).select2('data')[0].detail;
-        console.log(d_booking)
-        if($(this).val() != ""){
-            console.log(d_booking);
-            $('#btntambah').removeAttr('disabled');
-            $('.barang_id').removeAttr('disabled');
-            for(var i = 0; i < d_booking.length; i++){
-                if($('#barangtable .barang_id').val() == null){
-                    $('#barangtable tbody').empty();
-                }
-                var ids = d_booking[i].barang_id != null ? d_booking[i].barang_id : d_booking[i].jasa_id;
-                var namas = d_booking[i].barang_id != null ? d_booking[i].barang.nama_barang : d_booking[i].jasa.nama_jasa;
-                var jumlah = d_booking[i].jumlah;
-                var harga = d_booking[i].barang_id != null ? d_booking[i].barang.harga_jual : d_booking[i].jasa.harga;
-                var jenis = d_booking[i].barang_id != null ? "barang" : "jenis";
-                $('#barangtable tbody').append(`<tr>
-                <td>
-                                <!-- Dropdown -->
-                                <div class="dropdown ">
-                                    <select class="custom-select barang_id tw-text-prim-white" name="barang_id[`+i+`]">
-                                        <option value="`+ids+`" selected>`+namas+`</option>
-                                    </select>
-                                </div>
-                                <!-- End Dropdown  -->
-                            </td>
-                            <td class="d-none">
-                                <div class="form-group">
-                                    <input type="text" class="form-control jenis_brg" name="jenis_brg[`+i+`]" value="`+jenis+`">
-                                </div>
-                            </td>
-                            <td>
-                                <div class="form-group">
-                                    <input type="number" class="form-control jumlah" name="jumlah[`+i+`]" min="0" value="`+jumlah+`">
-                                </div>
-                            </td>
-                            <td>
-                                <div class="form-group">
-                                    <input type="text" class="form-control harga" name="harga[`+i+`]" min="0"  value="`+number_format(harga)+`">
-                                </div>
-                            </td>
-                            <td>
-                                <div class="form-group">
-                                    <input type="number" class="form-control disc" name="disc[`+i+`]" step="0.00" min="0">
-                                </div>
-                            </td>
-                            <td>
-                                <div class="form-group">
-                                    <input type="text" readonly="true" class="form-control subtotal" name="subtotal[`+i+`]" min="0" value="`+number_format(harga * jumlah)+`">
-                                </div>
-                            </td>
+    // $(document).on('change', '.booking_id', function(){
+    //     $('#customer_id').html($(this).select2('data')[0].cust);
+    //     $('#customer_alamat').html($(this).select2('data')[0].alamat);
+    //     $('#customer_telp').html($(this).select2('data')[0].telp);
+    //     var d_booking = $(this).select2('data')[0].detail;
+    //     console.log(d_booking)
+    //     if($(this).val() != ""){
+    //         console.log(d_booking);
+    //         $('#btntambah').removeAttr('disabled');
+    //         $('.barang_id').removeAttr('disabled');
+    //         for(var i = 0; i < d_booking.length; i++){
+    //             if($('#barangtable .barang_id').val() == null){
+    //                 $('#barangtable tbody').empty();
+    //             }
+    //             var ids = d_booking[i].barang_id != null ? d_booking[i].barang_id : d_booking[i].jasa_id;
+    //             var namas = d_booking[i].barang_id != null ? d_booking[i].barang.nama_barang : d_booking[i].jasa.nama_jasa;
+    //             var jumlah = d_booking[i].jumlah;
+    //             var harga = d_booking[i].barang_id != null ? d_booking[i].barang.harga_jual : d_booking[i].jasa.harga;
+    //             var jenis = d_booking[i].barang_id != null ? "barang" : "jenis";
+    //             $('#barangtable tbody').append(`<tr>
+    //             <td>
+    //                             <!-- Dropdown -->
+    //                             <div class="dropdown ">
+    //                                 <select class="custom-select barang_id tw-text-prim-white" name="barang_id[`+i+`]">
+    //                                     <option value="`+ids+`" selected>`+namas+`</option>
+    //                                 </select>
+    //                             </div>
+    //                             <!-- End Dropdown  -->
+    //                         </td>
+    //                         <td class="d-none">
+    //                             <div class="form-group">
+    //                                 <input type="text" class="form-control jenis_brg" name="jenis_brg[`+i+`]" value="`+jenis+`">
+    //                             </div>
+    //                         </td>
+    //                         <td>
+    //                             <div class="form-group">
+    //                                 <input type="number" class="form-control jumlah" name="jumlah[`+i+`]" min="0" value="`+jumlah+`">
+    //                             </div>
+    //                         </td>
+    //                         <td>
+    //                             <div class="form-group">
+    //                                 <input type="text" class="form-control harga" name="harga[`+i+`]" min="0"  value="`+number_format(harga)+`">
+    //                             </div>
+    //                         </td>
+    //                         <td>
+    //                             <div class="form-group">
+    //                                 <input type="number" class="form-control disc" name="disc[`+i+`]" step="0.00" min="0">
+    //                             </div>
+    //                         </td>
+    //                         <td>
+    //                             <div class="form-group">
+    //                                 <input type="text" readonly="true" class="form-control subtotal" name="subtotal[`+i+`]" min="0" value="`+number_format(harga * jumlah)+`">
+    //                             </div>
+    //                         </td>
 
-                            <td>
-                                <button type="button" id="removerow" class="tw-bg-transparent tw-border-none">
-                                    <i class="fa fa-trash tw-text-prim-red"></i>
-                                </button>
-                            </td>
-                </tr>`);
-                select_barang();
-                // $('select[name="barang_id['+i+']').val($(".barang_id option:contains('"+namas+"')").val()).change();
-            }
-        }
-        sum_total_harga();
-    });
+    //                         <td>
+    //                             <button type="button" id="removerow" class="tw-bg-transparent tw-border-none">
+    //                                 <i class="fa fa-trash tw-text-prim-red"></i>
+    //                             </button>
+    //                         </td>
+    //             </tr>`);
+    //             select_barang();
+    //             // $('select[name="barang_id['+i+']').val($(".barang_id option:contains('"+namas+"')").val()).change();
+    //         }
+    //     }
+    //     sum_total_harga();
+    // });
 
-    $('.pembayaran_id').prepend('<option selected=""></option>').select2({
+    $('.pembayaran_id').select2({
         placeholder: "Pilih Pembayaran",
         delay: 250,
                 ajax: {

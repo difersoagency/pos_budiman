@@ -19,6 +19,7 @@ use App\Models\Tipe;
 use App\Models\TransBeli;
 use App\Models\User;
 use App\Models\TransJual;
+use App\Models\DTransJual;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Database\Eloquent\Relations\Pivot;
@@ -65,6 +66,50 @@ class MasterController extends Controller
         echo json_encode($data);
     }
 
+    public function garansi_transaksi_jual_select(){
+        $date = Carbon::now()->toDateString();
+        $res = TransJual::where('tgl_max_garansi', '>=', $date)->with('Booking.Customer', 'DTransJual.Barang')->has('DTransJual')->get();
+        $data = array();
+
+        foreach($res as $i => $p){
+            $data[$i] = array(
+                'id' => $p->id,
+                'no_trans_jual' => $p->no_trans_jual,
+                'tgl_trans_jual' => $p->tgl_trans_jual,
+                'tgl_max_garansi' => $p->tgl_max_garansi,
+                'customer' => $p->Booking->Customer->nama_customer,
+                'alamat' => $p->Booking->Customer->alamat,
+                'telepon' => $p->Booking->Customer->telepon,
+                'detail' => array()
+            );
+            foreach($p->DTransJual as $key => $d){
+                $data[$i]['detail'][$key] = array(
+                    'id' => $d->barang_id,
+                    'text' => $d->Barang->nama_barang,
+                    'jumlah' => $d->jumlah,
+                    'harga' => $d->harga,
+                    'disc' => $d->disc
+                );
+            }
+        }
+
+        return response()->json($data);
+    }
+
+    public function get_d_trans_jual($id){
+        $data = array();
+        $p = DTransJual::where('htrans_jual_id', $id)->get();
+        foreach($p as $key => $d){
+            $data[$key] = array(
+                'id' => $d->barang_id,
+                'text' => $d->Barang->nama_barang,
+                'jumlah' => $d->jumlah,
+                'harga' => $d->harga,
+                'disc' => $d->disc
+            );
+        }
+        return response()->json($data);
+    }
     public function booking_select(Request $r)
     {
         $data = Booking::doesntHave('TransJual')->with('Customer', 'DBooking.Barang', 'DBooking.Jasa')->where('no_booking', 'LIKE', '%' . $r->input('term', '') . '%')->get();

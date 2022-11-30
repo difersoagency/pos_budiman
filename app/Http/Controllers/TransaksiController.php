@@ -137,7 +137,7 @@ class TransaksiController extends Controller
     {
         $r = ReturJual::find($id);
         $d = DReturJual::where('hretur_jual_id', $id)->get();
-        return view('layouts.transaksi.edit_retur-jual', ['id' => $id, 'd' => $d]);
+        return view('layouts.transaksi.edit_retur-jual', ['id' => $id, 'd' => $d, 'r' => $r]);
     }
 
     public function update_retur_jual(Request $r, $id)
@@ -163,10 +163,10 @@ class TransaksiController extends Controller
             $bool = true;
             $dc = NULL;
             $jb = '';
-            if ($c) {
+            if ($u) {
                 for ($i = 0; $i < count($r->barang_id); $i++) {
                     $dc = DReturJual::create([
-                        'hretur_jual_id' => $c->id,
+                        'hretur_jual_id' => $id,
                         'barang_id' => $r->barang_id[$i],
                         'harga' => str_replace(",", "", $r->harga[$i]),
                         'jumlah' => $r->jumlah[$i]
@@ -239,16 +239,16 @@ class TransaksiController extends Controller
             ->addColumn('action', function ($data) {
                 $sisahutang = (float)$data->total_piutang - (float)$data->sum_total;
                 $res = '<div class="grid grid-cols-3">
-                <button id="btndetail" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->id . '" >
+                <button id="btndetail" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="Piutang ' . $data->TransJual->no_trans_jual . '" >
                                                         <i class="fas fa-eye tw-text-prim-blue"></i>
                                                     </button>';
                 if($sisahutang > 0){
-                $res .= '<button id="btnbayar" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->id . '" >
+                $res .= '<button id="btnbayar" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="Piutang ' . $data->TransJual->no_trans_jual . '" >
                                                         <i class="fas fa-money-check-alt tw-text-prim-blue"></i>
                                                     </button>';
                 }
                 if($data->sum_total <= 0){
-                $res .= '<button id="btndelete" data-id="' . $data->id . '" data-nama="' . $data->id . '"
+                $res .= '<button id="btndelete" data-id="' . $data->id . '" data-nama="Piutang ' . $data->TransJual->no_trans_jual . '"
                                                         class="tw-bg-transparent tw-border-none">
                                                         <i class="fa fa-trash tw-text-prim-red"></i>
                                                     </button>';
@@ -703,7 +703,7 @@ class TransaksiController extends Controller
                 <button id="btndetail" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->no_trans_jual . '" >
                                                         <i class="fas fa-eye tw-text-prim-blue"></i>
                                                     </button>';
-                if(!isset($data->Piutang->DPiutang)){
+                if(!isset($data->Piutang) || isset($data->Piutang)){
                     if(count($data->ReturJual) <= 0){
                     $res .= '<a href="/transaksi/jual/edit/'.$data->id.'"><button id="btnedit" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->no_trans_jual . '" >
                                                         <i class="fa fa-pen tw-text-prim-blue"></i>
@@ -868,12 +868,11 @@ class TransaksiController extends Controller
 
     public function data_detail_jual($id)
     {
-        $databrg = DTransJual::where('htrans_jual_id', $id)->addSelect(['nama' => function ($q) {
-            $q->selectRaw('CONCAT(kode_barang, " - ", nama_merek, " ", nama_barang)')
+        $databrg = DTransJual::where('htrans_jual_id', $id)->select('jumlah', 'harga', 'disc')->addSelect(['nama' => function ($q) {
+            $q->selectRaw('nama_barang')
                 ->from('barang')
-                ->join('merek', 'merek.id', '=', 'barang.merek_id')
-                ->whereColumn('barang.id', 'dtrans_jual.barang_id');
-        }])->select('jumlah', 'harga', 'disc')->get();
+                ->where('barang.id', '2');
+        }])->get();
 
         $datajasa = DTransJualJasa::where('htrans_jual_id', $id)->addSelect(['nama' => function ($q) {
             $q->selectRaw('nama_jasa')
@@ -1011,18 +1010,18 @@ class TransaksiController extends Controller
             $bool = true;
             $dc = NULL;
             $jb = '';
-            if ($c) {
+            if ($u) {
                 for ($i = 0; $i < count($r->barang_id); $i++) {
                     if ($r->jenis_brg[$i] == "jasa") {
                         $dc = DTransJualJasa::create([
-                            'htrans_jual_id' => $c->id,
+                            'htrans_jual_id' => $id,
                             'jasa_id' => $r->barang_id[$i],
                             'harga' => str_replace(",", "", $r->harga[$i]),
                             'disc' => $r->disc[$i]
                         ]);
                     } else if ($r->jenis_brg[$i] == "barang") {
                         $dc = DTransJual::create([
-                            'htrans_jual_id' => $c->id,
+                            'htrans_jual_id' => $id,
                             'barang_id' => $r->barang_id[$i],
                             'harga' => str_replace(",", "", $r->harga[$i]),
                             'jumlah' => $r->jumlah[$i],
@@ -1041,7 +1040,7 @@ class TransaksiController extends Controller
                 $totaljual = (float)str_replace(",", "", $r->total_jual);
                 if ($byrjual < $totaljual) {
                     Piutang::create([
-                        'htrans_jual_id' => $c->id,
+                        'htrans_jual_id' => $id,
                         'pembayaran_id' => $r->pembayaran_id,
                         'tgl_piutang' => $r->tgl_trans_jual,
                         'total_piutang' => $totaljual - $byrjual
