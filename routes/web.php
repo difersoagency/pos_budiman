@@ -30,13 +30,13 @@ Route::group(['prefix' => '/home'], function () {
 
 Route::group(['prefix' => '/master'], function () {
     Route::get('/', [App\Http\Controllers\MasterController::class, 'archive_master'])->name('master');
-    Route::get('/substitusi', [App\Http\Controllers\MasterController::class, 'master_substitusi'])->name('substitusi');
 
 
     Route::group(['prefix' => '/substitusi'], function () {
         Route::get('/', [App\Http\Controllers\MasterController::class, 'master_substitusi'])->name('substitusi');
         // Route::post('/data/{id}', [App\Http\Controllers\MasterController::class, 'data_koreksi'])->name('koreksi.data');
         Route::get('/tambah', [App\Http\Controllers\MasterController::class, 'substitusi_create'])->name('substitusi.create');
+        Route::get('/edit', [App\Http\Controllers\MasterController::class, 'substitusi_edit'])->name('substitusi.edit');
         // Route::post('/store', [App\Http\Controllers\MasterController::class, 'koreksi_store'])->name('koreksi.store');
     });
 

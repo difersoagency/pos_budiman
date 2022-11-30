@@ -107,7 +107,13 @@ class MasterController extends Controller
     public function substitusi_create()
     {
         $kota = Kota::all();
-        return view('layouts.modal.substitusi-modal', ['kota' => $kota]);
+        return view('layouts.modal.substitusi-modal-create', ['kota' => $kota]);
+    }
+
+    public function substitusi_edit()
+    {
+        $kota = Kota::all();
+        return view('layouts.modal.substitusi-modal-edit', ['kota' => $kota]);
     }
     public function customer_edit($id)
     {

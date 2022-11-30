@@ -39,17 +39,27 @@
                                     <tr>
                                         <th class="tw-text-prim-white">No</th>
                                         <th class="tw-text-prim-white">Tgl. Pembuatan</th>
-                                        <th class="tw-text-prim-white">Barang 1</th>
+                                        <th class="tw-text-prim-white tw-w-60">Barang 1</th>
                                         <th class="tw-text-prim-white tw-w-60">Barang 2</th>
+                                        <th class="tw-text-prim-white tw-w-20">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {{-- <td>1</td>
+                                    <td>1</td>
                                     <td>12/12/12</td>
-                                    <td>Lampu</td>
-                                    <td>Lampu Depan Merah</td>
-                                    <td>5</td>
-                                    <td>Opname</td> --}}
+                                    <td>a</td>
+                                    <td>b</td>
+                                    <td class="tw-px-3">
+                                        <div class="grid grid-cols-2 tw-contents">
+                                            <button href="" class="mr-4 tw-bg-transparent tw-border-none" data-toggle="modal" id="editButton">
+                                                <i class="fa fa-pen tw-text-prim-blue"></i>
+                                            </button>
+                                            <button data-toggle="modal" data-target="#deleteModal" class="tw-bg-transparent tw-border-none">
+                                                <i class="fa fa-trash tw-text-prim-red"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+
                                 </tbody>
                             </table>
                         </div>
@@ -97,7 +107,29 @@
                     placeholder: "Pilih Data",
                     dropdownParent: $("#modalPop")
                 });
-                select_barang();
+                // select_barang();
+
+            },
+
+        })
+    });
+
+    $(document).on('click', '#editButton', function(event) {
+        event.preventDefault();
+        $.ajax({
+            url: "{{ route('substitusi.edit') }}",
+            beforeSend: function() {
+                $('#loader').show();
+            },
+            // return the result
+            success: function(result) {
+                $('#modalPop').modal("show");
+                $('#modal-body').html(result).show();
+                $(".selects").select2({
+                    placeholder: "Pilih Data",
+                    dropdownParent: $("#modalPop")
+                });
+                // select_barang();
 
             },
 

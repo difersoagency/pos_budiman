@@ -41,9 +41,7 @@ $(document).ready(function() {
     dropdownParent: $("#modalPop")
   });
   $('.selects').select2();
-  
-  $('.sub_1').select2();
-  $('.sub_2').select2();
+
 
   $(".kota").select2({
     dropdownParent: $("#suppliermodal")
