@@ -16,12 +16,12 @@
                 <div class="col-lg-12">
                     <div class="card tw-w-full tw-px-6 tw-py-5 tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-items-center">
                         <div class="tw-w-full tw-col-span-2 md:tw-col-span-1">
-                            <h1 class="tw-m-0 tw-text-2xl tw-font-bold">Riwayat Transaksi</h1>
+                            <h1 class="tw-m-0 tw-text-2xl tw-font-bold">Daftar Substitusi</h1>
                         </div>
                         <div class="tw-text-right tw-items-center tw-grid tw-grid-cols-1 tw-mx-auto md:tw-mx-0 md:tw-ml-auto tw-w-full md:tw-w-fit tw-mt-4 md:tw-mt-0">
                             <div class="tw-w-full md:tw-w-fit md:tw-ml-auto">
                                 <button class="btn tw-text-prim-white tw-bg-prim-red tw-text-sm tw-w-full md:tw-w-fit" type="button" id="addItemButton">
-                                    + Tambah Koreksi
+                                    + Tambah Substitusi
                                 </button>
                             </div>
                         </div>
@@ -38,11 +38,9 @@
                                 <thead class="tw-bg-prim-blue">
                                     <tr>
                                         <th class="tw-text-prim-white">No</th>
-                                        <th class="tw-text-prim-white">Tgl. Koreksi</th>
-                                        <th class="tw-text-prim-white">Jenis</th>
-                                        <th class="tw-text-prim-white tw-w-60">Nama</th>
-                                        <th class="tw-text-prim-white">Jumlah</th>
-                                        <th class="tw-text-prim-white">Keterangan</th>
+                                        <th class="tw-text-prim-white">Tgl. Pembuatan</th>
+                                        <th class="tw-text-prim-white">Barang 1</th>
+                                        <th class="tw-text-prim-white tw-w-60">Barang 2</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -65,7 +63,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Form Koreksi</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Form Substitsui Barang</h5>
                     <button type="button" class="close tw-text-prim-red" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -83,68 +81,11 @@
 <!-- /.content -->
 </div>
 @section('script')
-<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    @if(Session::has('error'))
-    Swal.fire({
-        title: 'Gagal',
-        text: "{{ Session::get('error') }}",
-        icon: 'error',
-    });
-    @endif
-    @if(Session::has('success'))
-    Swal.fire({
-        title: 'Berhasil',
-        text: "{{ Session::get('success') }}",
-        icon: 'success',
-    });
-    @endif
-
-    function select_barang() {
-        $('.barang').select2({
-            placeholder: "Pilih Barang",
-            ajax: {
-                minimumResultsForSearch: 20,
-                dataType: 'json',
-                theme: "bootstrap",
-                delay: 250,
-                type: 'GET',
-                url: '{{route("barang.selectdata")}}',
-                data: function(params) {
-                    return {
-                        term: params.term,
-                    }
-                },
-                processResults: function(data) {
-                    return {
-                        results: $.map(data, function(obj) {
-                            return {
-                                id: obj.id,
-                                text: obj.nama_barang
-                            };
-                        })
-                    };
-                },
-            }
-        }).change(function() {
-            var id = $(this).val();
-            $.ajax({
-                url: '/barang/selectdata/' + id,
-                type: 'GET',
-                dataType: 'json',
-                success: function(data) {
-                    $('#stok_get').text("Stok sekarang : " + data.stok);
-                }
-            });
-        });
-
-
-    }
-
     $(document).on('click', '#addItemButton', function(event) {
         event.preventDefault();
         $.ajax({
-            url: "{{ route('koreksi.create') }}",
+            url: "{{ route('substitusi.create') }}",
             beforeSend: function() {
                 $('#loader').show();
             },
@@ -161,48 +102,6 @@
             },
 
         })
-    });
-
-    $(document).ready(function() {
-        var table_koreksi = $('#table_koreksi').DataTable({
-            destroy: true,
-            processing: true,
-            serverSide: true,
-            ajax: {
-                'type': 'POST',
-                'datatype': 'JSON',
-                'url': '/master/koreksi/data/0',
-                'headers': {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                }
-            },
-            columns: [{
-                    data: 'DT_RowIndex',
-                    className: 'nowrap-text align-center',
-                    orderable: false,
-                    searchable: false
-                }, {
-                    data: 'tgl_koreksi',
-                    className: 'nowrap-text align-center',
-                },
-                {
-                    data: 'jenis',
-                    className: 'nowrap-text align-center',
-                },
-                {
-                    data: 'nama',
-                    className: 'nowrap-text align-center',
-                },
-                {
-                    data: 'jumlah',
-                    className: 'nowrap-text align-center',
-                },
-                {
-                    data: 'ket',
-                    className: 'nowrap-text align-center',
-                }
-            ]
-        });
     });
 </script>
 @stop

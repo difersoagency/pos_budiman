@@ -104,6 +104,11 @@ class MasterController extends Controller
         $kota = Kota::all();
         return view('layouts.modal.koreksi-modal-create', ['kota' => $kota]);
     }
+    public function substitusi_create()
+    {
+        $kota = Kota::all();
+        return view('layouts.modal.substitusi-modal', ['kota' => $kota]);
+    }
     public function customer_edit($id)
     {
         $kota = Kota::all();
@@ -1010,6 +1015,10 @@ class MasterController extends Controller
     public function master_koreksi()
     {
         return view('layouts.master.koreksi');
+    }
+    public function master_substitusi()
+    {
+        return view('layouts.master.substitusi');
     }
 
 
