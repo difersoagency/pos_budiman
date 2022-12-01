@@ -6,7 +6,7 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/master">Master</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Koreksi</li>
+            <li class="breadcrumb-item active" aria-current="page">Substitusi</li>
         </ol>
     </nav>
     <!-- Main content -->
@@ -65,7 +65,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Form Barang </h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Form Koreksi</h5>
                     <button type="button" class="close tw-text-prim-red" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -85,7 +85,7 @@
 @section('script')
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-       @if(Session::has('error'))
+    @if(Session::has('error'))
     Swal.fire({
         title: 'Gagal',
         text: "{{ Session::get('error') }}",
@@ -99,7 +99,8 @@
         icon: 'success',
     });
     @endif
-        function select_barang() {
+
+    function select_barang() {
         $('.barang').select2({
             placeholder: "Pilih Barang",
             ajax: {
@@ -126,21 +127,21 @@
                 },
             }
         }).change(function() {
-                var id = $(this).val();
-                $.ajax({
-                    url: '/barang/selectdata/' + id,
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(data) {
-                            $('#stok_get').text("Stok sekarang : " +data.stok);
-                    }
-                });
-                });
+            var id = $(this).val();
+            $.ajax({
+                url: '/barang/selectdata/' + id,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    $('#stok_get').text("Stok sekarang : " + data.stok);
+                }
+            });
+        });
 
-        
+
     }
 
-        $(document).on('click', '#addItemButton', function(event) {
+    $(document).on('click', '#addItemButton', function(event) {
         event.preventDefault();
         $.ajax({
             url: "{{ route('koreksi.create') }}",
@@ -156,7 +157,7 @@
                     dropdownParent: $("#modalPop")
                 });
                 select_barang();
-             
+
             },
 
         })
@@ -195,14 +196,14 @@
                 {
                     data: 'jumlah',
                     className: 'nowrap-text align-center',
-                }, 
+                },
                 {
                     data: 'ket',
                     className: 'nowrap-text align-center',
                 }
             ]
         });
-        });
+    });
 </script>
 @stop
 @endsection

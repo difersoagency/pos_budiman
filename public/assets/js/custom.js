@@ -1,3 +1,5 @@
+
+
 $(function () {
   $('[data-toggle="tooltip"]').tooltip()
 })
@@ -21,6 +23,8 @@ dropdownMenu.forEach(function(element){
   })
 })
 
+
+
 // Datatable
 
 $(document).ready(function () {
@@ -37,6 +41,7 @@ $(document).ready(function() {
     dropdownParent: $("#modalPop")
   });
   $('.selects').select2();
+
 
   $(".kota").select2({
     dropdownParent: $("#suppliermodal")
