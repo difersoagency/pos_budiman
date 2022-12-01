@@ -181,9 +181,9 @@ class TransaksiController extends Controller
                 }
             }
             if ($bool == true) {
-                return redirect()->back()->with('success', "Data berhasil di tambah");
+                return redirect()->back()->with('success', "Data berhasil di edit");
             } else {
-                return redirect()->back()->with('error', "Gagal Menambahkan, periksa kembali" . $r->jenis_brg[0]);
+                return redirect()->back()->with('error', "Gagal Mengedit, periksa kembali" . $r->jenis_brg[0]);
             }
         }
     }
@@ -1048,9 +1048,9 @@ class TransaksiController extends Controller
                 }
             }
             if ($bool == true) {
-                return redirect()->back()->with('success', "Data berhasil di tambah");
+                return redirect()->back()->with('success', "Data berhasil di edit");
             } else {
-                return redirect()->back()->with('error', "Gagal Menambahkan, periksa kembali" . $r->jenis_brg[0]);
+                return redirect()->back()->with('error', "Gagal Mengedit, periksa kembali" . $r->jenis_brg[0]);
             }
         }
     }
