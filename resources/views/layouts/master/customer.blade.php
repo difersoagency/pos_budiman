@@ -48,8 +48,8 @@
                         <!-- END: Table Mobile View -->
 
                         <!-- START: Table Tablet + Desktop -->
-                        <div class="table-barang tw-mt-5 tw-col-span-2" data-current-page="1">
-                            <table id="table_customer" class="table table-bordered responsive nowrap" style="width:100%">
+                        <div class="table-customer tw-mt-5 tw-col-span-2" data-current-page="1">
+                            <table id="showtable" class="table main-table table-bordered responsive nowrap" style="width:100%">
                                 <thead class="tw-bg-prim-blue">
                                     <tr>
                                         <th class="tw-text-prim-white">Nama Pelanggan</th>
@@ -215,83 +215,79 @@
                 }
             ]
         })
-        });
+    });
 
 
-        $(document).on('click', '#btnedit', function() {
-            var id = $(this).attr('data-id');
-            var nama = $(this).attr('data-nama');
-            Swal.fire({
-                title: 'Edit',
-                text: "Edit " + nama,
-                icon: "question",
-                showCancelButton: true,
-                cancelButtonText: 'Tidak',
-                confirmButtonText: 'Iya',
+    $(document).on('click', '#btnedit', function() {
+        var id = $(this).attr('data-id');
+        var nama = $(this).attr('data-nama');
+        Swal.fire({
+            title: 'Edit',
+            text: "Edit " + nama,
+            icon: "question",
+            showCancelButton: true,
+            cancelButtonText: 'Tidak',
+            confirmButtonText: 'Iya',
 
-            }).then((result) => {
-                /* Read more about isConfirmed, isDenied below */
-                if (result.isConfirmed) {
-                    edit(id);
-                }
-            })
-
-        });
-
-        $('#kota_id').change(function() {
-            var merek_id = $(this).val();
-            $('#table_customer').DataTable().ajax.url('/master/customer/data/' + merek_id).load();
-        });
-
-
-        $(document).on('click', '#btndelete', function() {
-            var id = $(this).attr('data-id');
-            var nama = $(this).attr('data-nama');
-            Swal.fire({
-                title: 'Hapus',
-                text: "Hapus " + nama,
-                icon: "warning",
-                showCancelButton: true,
-                cancelButtonText: 'Tidak',
-                confirmButtonText: 'Iya',
-
-            }).then((result) => {
-                /* Read more about isConfirmed, isDenied below */
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: '{{ route("customer.delete") }}',
-                        type: 'DELETE',
-                        dataType: 'json',
-                        data: {
-                            "id": id,
-                            "_method": "DELETE",
-                            _token: "{{ csrf_token() }}"
-                        },
-                        success: function(result) {
-                            if (result.info == "success") {
-                                Swal.fire({
-                                    title: 'Berhasil',
-                                    text: 'Data berhasil di hapus',
-                                    icon: 'success',
-                                });
-                                window.location.reload();
-                            } else {
-                                Swal.fire({
-                                    title: 'Gagal',
-                                    text: 'Data gagal di hapus',
-                                    icon: 'error',
-                                });
-                            }
-                        }
-                    });
-                }
-            })
-
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                edit(id);
+            }
         })
-   
+
+    });
+
+    $('#kota_id').change(function() {
+        var merek_id = $(this).val();
+        $('#table_customer').DataTable().ajax.url('/master/customer/data/' + merek_id).load();
+    });
+
+
+    $(document).on('click', '#btndelete', function() {
+        var id = $(this).attr('data-id');
+        var nama = $(this).attr('data-nama');
+        Swal.fire({
+            title: 'Hapus',
+            text: "Hapus " + nama,
+            icon: "warning",
+            showCancelButton: true,
+            cancelButtonText: 'Tidak',
+            confirmButtonText: 'Iya',
+
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '{{ route("customer.delete") }}',
+                    type: 'DELETE',
+                    dataType: 'json',
+                    data: {
+                        "id": id,
+                        "_method": "DELETE",
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(result) {
+                        if (result.info == "success") {
+                            Swal.fire({
+                                title: 'Berhasil',
+                                text: 'Data berhasil di hapus',
+                                icon: 'success',
+                            });
+                            window.location.reload();
+                        } else {
+                            Swal.fire({
+                                title: 'Gagal',
+                                text: 'Data gagal di hapus',
+                                icon: 'error',
+                            });
+                        }
+                    }
+                });
+            }
+        })
+
+    })
 </script>
 @stop
 @endsection
-
-
-

@@ -31,24 +31,24 @@
                             </div>
                             <!-- /.row -->
                         </div>
-                                <!-- START: Table Tablet + Desktop -->
-                                <div class="table-barang tw-mt-5 tw-col-span-2" data-current-page="1">
-                                    <table id="showtable" class="table table-bordered responsive nowrap" style="width:100%">
-                                        <thead class="tw-bg-prim-blue">
-                                            <tr>
-                                                <th class="tw-text-prim-white">No</th>
-                                                <th class="tw-text-prim-white">Nama Jasa</th>
-                                                <th class="tw-text-prim-white">Harga</th>
-                                                <th class="tw-text-prim-white">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
+                        <!-- START: Table Tablet + Desktop -->
+                        <div class="table-jasa tw-mt-5 tw-col-span-2" data-current-page="1">
+                            <table id="showtable" class="table main-table table-bordered responsive nowrap" style="width:100%">
+                                <thead class="tw-bg-prim-blue">
+                                    <tr>
+                                        <th class="tw-text-prim-white">No</th>
+                                        <th class="tw-text-prim-white">Nama Jasa</th>
+                                        <th class="tw-text-prim-white">Harga</th>
+                                        <th class="tw-text-prim-white">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
 
-                                    </table>
-                                </div>
-                                <!-- /.col-md-6 -->
-                         
+                            </table>
+                        </div>
+                        <!-- /.col-md-6 -->
+
     </section>
 </div>
 <!-- Modal -->

@@ -24,7 +24,7 @@ dropdownMenu.forEach(function(element){
 // Datatable
 
 $(document).ready(function () {
-  $('#example').DataTable();
+  $('.main-table').DataTable();
 });
 
 // Select 2

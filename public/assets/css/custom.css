@@ -196,6 +196,18 @@
    font-weight: 900;
 }
 
+.sub:after, .sub:before {
+  font-family: "Font Awesome 5 Free";
+   content: "\f2f1";
+   font-weight: 900;
+}
+
+.koreksi:after, .koreksi:before {
+  font-family: "Font Awesome 5 Free";
+   content: "\f54a";
+   font-weight: 900;
+}
+
 
 .promobox {
   background: linear-gradient(90deg, rgba(3,3,61,1) 0%, rgba(53,116,129,1) 100%);

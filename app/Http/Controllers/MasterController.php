@@ -6,6 +6,7 @@ use App\Models\Barang;
 use App\Models\Jasa;
 use App\Models\Booking;
 use App\Models\Customer;
+use App\Models\Koreksi;
 use App\Models\Pembayaran;
 
 use App\Models\Pegawai;
@@ -142,6 +143,11 @@ class MasterController extends Controller
     {
         $kota = Kota::all();
         return view('layouts.modal.customer-modal-create', ['kota' => $kota]);
+    }
+    public function koreksi_create()
+    {
+        $kota = Kota::all();
+        return view('layouts.modal.koreksi-modal-create', ['kota' => $kota]);
     }
     public function customer_edit($id)
     {
@@ -1046,6 +1052,10 @@ class MasterController extends Controller
     {
         return view('layouts.master.satuan');
     }
+    public function master_koreksi()
+    {
+        return view('layouts.master.koreksi');
+    }
 
 
 
@@ -1058,6 +1068,47 @@ class MasterController extends Controller
 
 
     //Store
+    public function koreksi_store(Request $request)
+    {
+        //  dd($request);
+        $validator = Validator::make($request->all(), [
+            'koreksi_tanggal' => ['required'],
+            'koreksi_jenis' => ['required'],
+            'koreksi_barang' => ['required'],
+            'koreksi_jumlah' => ['required'],
+
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', "Update Gagal, periksa form");
+        } else {
+
+            $barang = Barang::find($request->koreksi_barang);
+            if ($request->koreksi_jenis == 'in') {
+                $barang->increment('stok', $request->koreksi_jumlah);
+            } else {
+                if ($request->koreksi_jumlah > $barang->stok) {
+                    return redirect()->back()->with('error', "Update Gagal, periksa kembali");
+                } else {
+                    $barang->decrement('stok', $request->koreksi_jumlah);
+                }
+            }
+
+            $c = Koreksi::create([
+                'barang_id' => $request->koreksi_barang,
+                'tgl_koreksi' => $request->koreksi_tanggal,
+                'jumlah' => $request->koreksi_jumlah,
+                'jenis' => $request->koreksi_jenis,
+                'keterangan' => $request->koreksi_keterangan,
+
+            ]);
+
+            if ($c) {
+                return redirect()->back()->with('success', "Data berhasil di tambah");
+            } else {
+                return redirect()->back()->with('error', "Update Gagal, periksa kembali");
+            }
+        }
+    }
     public function master_barang_store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -1094,6 +1145,46 @@ class MasterController extends Controller
         }
     }
 
+    public function data_koreksi($id)
+    {
+        if ($id != 0) {
+            $data = Koreksi::with(['Barang'])->where('barang_id', $id)->get();
+        } else {
+            $data = Koreksi::with(['Barang'])->get();
+            return datatables()->of($data)
+                ->addIndexColumn()
+                ->addColumn('tgl_koreksi', function ($data) {
+                    return $data->tgl_koreksi;
+                })
+                ->addColumn('jenis', function ($data) {
+                    return $data->jenis == 'in' ? 'Stok Masuk' : 'Stok Keluar';
+                })
+                ->addColumn('nama', function ($data) {
+                    return $data->Barang->nama_barang;
+                })
+                ->addColumn('jumlah', function ($data) {
+                    return $data->jumlah;
+                })
+                ->addColumn('ket', function ($data) {
+                    return $data->ket;
+                })
+
+                ->addColumn('button', function ($data) {
+                    return ' <div class="grid grid-cols-2 tw-contents">
+                                                    <button id="btnedit" class="mr-4 tw-bg-transparent tw-border-none"
+                                                      data-id="' . $data->id . '"   data-nama="' . $data->nama_barang . '" >
+                                                        <i class="fa fa-pen tw-text-prim-blue"></i>
+                                                    </button>
+                                                    <button id="btndelete"       data-id="' . $data->id . '"   data-nama="' . $data->nama_barang . '"
+                                                        class="tw-bg-transparent tw-border-none">
+                                                        <i class="fa fa-trash tw-text-prim-red"></i>
+                                                    </button>
+                                                </div>';
+                })
+                ->rawColumns(['button'])
+                ->make(true);
+        }
+    }
     public function master_barang_data($id)
     {
         if ($id != 0) {

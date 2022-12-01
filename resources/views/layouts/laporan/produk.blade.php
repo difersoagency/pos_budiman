@@ -27,7 +27,7 @@
                         </div>
 
                         <div class="table_master_beli tw-mt-5 tw-col-span-2" data-current-page="1">
-                            <table id="example" class="table table-bordered responsive nowrap" style="width:100%">
+                            <table id="showtable" class="table main-table table-bordered responsive nowrap" style="width:100%">
                                 <thead class="tw-bg-prim-blue">
                                     <tr>
                                         <th class="tw-text-prim-white">Periode</th>
