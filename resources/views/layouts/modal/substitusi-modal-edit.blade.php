@@ -1,15 +1,17 @@
-<form method="POST" class="tw-h-96  tw-overflow-y-auto">
+<form method="POST" action="{{route('substitusi.update', ['id' => $data->id])}}" class="tw-h-96  tw-overflow-y-auto">
     @csrf
+    @method('PUT')
     <div class="mx-2 mt-4">
         <label for="koreksi_tanggal">Tgl Pembuatan</label>
-        <input type="date" placeholder="Tanggal Transaksi" class="form-control koreksi_tanggal" name="koreksi_tanggal" id="koreksi_tanggal">
+        <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_subtitusi" name="tgl_subtitusi" id="tgl_subtitusi" value="{{$data->tgl_subtitusi}}">
     </div>
     <div class="mx-2 mt-4">
         <label for="booking_id">Barang 1</label>
         <div class="dropdown" style="width:100%;">
-            <select class="custom-select sub_1 tw-text-prim-white" id="edit_sub_1" name="edit_sub_1">
-                <option value="1">Barang 1</option>
-                <option value="2">Barang 2</option>
+            <select class="custom-select sub_1 tw-text-prim-white" id="barang_id_1" name="barang_id_1">
+            @foreach($barang as $b)    
+            <option value="{{$b->id}}" @if($data->barang_id_1 == $b->id) selected @endif>{{$b->nama_barang}}</option>
+            @endforeach
             </select>
         </div>
     </div>
@@ -21,9 +23,10 @@
     <div class="mx-2 mt-4">
         <label for="booking_id">Barang 2</label>
         <div class="dropdown" style="width:100%;">
-            <select class="custom-select sub_2 tw-text-prim-white" id="edit_sub_2" name="edit_sub_2">
-                <option value="1">Barang 1</option>
-                <option value="2">Barang 2</option>
+            <select class="custom-select sub_2 tw-text-prim-white" id="barang_id_2" name="barang_id_2">
+                @foreach($barang as $b)    
+                <option value="{{$b->id}}" @if($data->barang_id_2 == $b->id) selected @endif>{{$b->nama_barang}}</option>
+                @endforeach
             </select>
         </div>
     </div>

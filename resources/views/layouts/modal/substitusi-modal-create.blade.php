@@ -1,15 +1,16 @@
-<form method="POST" class="tw-h-96  tw-overflow-y-auto">
+<form method="POST" action="{{route('substitusi.store')}}" class="tw-h-96  tw-overflow-y-auto">
     @csrf
     <div class="mx-2 mt-4">
         <label for="koreksi_tanggal">Tgl Pembuatan</label>
-        <input type="date" placeholder="Tanggal Transaksi" class="form-control koreksi_tanggal" name="koreksi_tanggal" id="koreksi_tanggal">
+        <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_subtitusi" name="tgl_subtitusi" id="tgl_subtitusi">
     </div>
     <div class="mx-2 mt-4">
         <label for="booking_id">Barang 1</label>
         <div class="dropdown" style="width:100%;">
-            <select class="custom-select sub_1 tw-text-prim-white" id="substitusi_barang_1" name="substitusi_barang_1">
-                <option value="1">Barang 1</option>
-                <option value="2">Barang 2</option>
+            <select class="custom-select sub_1 tw-text-prim-white" id="barang_id_1" name="barang_id_1">
+                @foreach($barang as $b)
+                <option value="{{$b->id}}">{{$b->nama_barang}}</option>
+                @endforeach
             </select>
         </div>
     </div>
@@ -21,9 +22,10 @@
     <div class="mx-2 mt-4">
         <label for="booking_id">Barang 2</label>
         <div class="dropdown" style="width:100%;">
-            <select class="custom-select sub_2 tw-text-prim-white" id="substitusi_barang_2" name="substitusi_barang_2">
-                <option value="1">Barang 1</option>
-                <option value="2">Barang 2</option>
+            <select class="custom-select sub_2 tw-text-prim-white" id="barang_id_2" name="barang_id_2">
+                @foreach($barang as $b)
+                <option value="{{$b->id}}">{{$b->nama_barang}}</option>
+                @endforeach
             </select>
         </div>
     </div>
@@ -39,8 +41,8 @@
     $('.sub_1').select2();
     $('.sub_2').select2();
     // Switch Substitution
-    let barang1 = document.querySelector('#substitusi_barang_1');
-    let barang2 = document.querySelector('#substitusi_barang_2');
+    let barang1 = document.querySelector('#barang_id_1');
+    let barang2 = document.querySelector('#barang_id_2');
     let buttonSwitch = document.querySelector('a.switch-sub');
 
     buttonSwitch.addEventListener('click', function() {

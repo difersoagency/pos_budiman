@@ -34,7 +34,7 @@
                         </div>
                         <!-- START: Table Tablet + Desktop -->
                         <div class="table-koreksi tw-mt-5 tw-col-span-2" data-current-page="1">
-                            <table id="table_koreksi" class="table main-table table-bordered responsive nowrap" style="width:100%">
+                            <table id="showtable" class="table main-table table-bordered responsive nowrap" style="width:100%">
                                 <thead class="tw-bg-prim-blue">
                                     <tr>
                                         <th class="tw-text-prim-white">No</th>
@@ -45,20 +45,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <td>1</td>
-                                    <td>12/12/12</td>
-                                    <td>a</td>
-                                    <td>b</td>
-                                    <td class="tw-px-3">
-                                        <div class="grid grid-cols-2 tw-contents">
-                                            <button href="" class="mr-4 tw-bg-transparent tw-border-none" data-toggle="modal" id="editButton">
-                                                <i class="fa fa-pen tw-text-prim-blue"></i>
-                                            </button>
-                                            <button data-toggle="modal" data-target="#deleteModal" class="tw-bg-transparent tw-border-none">
-                                                <i class="fa fa-trash tw-text-prim-red"></i>
-                                            </button>
-                                        </div>
-                                    </td>
+                                    
 
                                 </tbody>
                             </table>
@@ -91,33 +78,88 @@
 <!-- /.content -->
 </div>
 @section('script')
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    $(document).on('click', '#addItemButton', function(event) {
-        event.preventDefault();
-        $.ajax({
-            url: "{{ route('substitusi.create') }}",
-            beforeSend: function() {
-                $('#loader').show();
-            },
-            // return the result
-            success: function(result) {
-                $('#modalPop').modal("show");
-                $('#modal-body').html(result).show();
-                $(".selects").select2({
-                    placeholder: "Pilih Data",
-                    dropdownParent: $("#modalPop")
-                });
-                // select_barang();
-
-            },
-
-        })
+    @if(Session::has('error'))
+    Swal.fire({
+        title: 'Gagal',
+        text: "{{ Session::get('error') }}",
+        icon: 'error',
     });
+    @endif
+    @if(Session::has('success'))
+    Swal.fire({
+        title: 'Berhasil',
+        text: "{{ Session::get('success') }}",
+        icon: 'success',
+    });
+    @endif
+    $(function(){
+
+        var showtable = $('#showtable').DataTable({
+            destroy: true,
+            processing: true,
+            serverSide: true,
+            ajax: {
+                'type': 'GET',
+                'datatype': 'JSON',
+                'url': '/master/substitusi/data',
+                'headers': {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            },
+            columns: [{
+                    data: 'DT_RowIndex',
+                    className: 'nowrap-text align-center',
+                    orderable: false,
+                    searchable: false
+                }, {
+                    data: 'tgl_subtitusi',
+                    className: 'nowrap-text align-center',
+                },
+                {
+                    data: 'barang_id_1',
+                    className: 'nowrap-text align-center',
+                },
+                {
+                    data: 'barang_id_2',
+                    className: 'nowrap-text align-center',
+                },
+                {
+                    data: 'button',
+                    className: 'nowrap-text align-center',
+                }
+            ]
+        });
+
+        $(document).on('click', '#addItemButton', function(event) {
+            event.preventDefault();
+            $.ajax({
+                url: "{{ route('substitusi.create') }}",
+                beforeSend: function() {
+                    $('#loader').show();
+                },
+                // return the result
+                success: function(result) {
+                    $('#modalPop').modal("show");
+                    $('#modal-body').html(result).show();
+                    $(".selects").select2({
+                        placeholder: "Pilih Data",
+                        dropdownParent: $("#modalPop")
+                    });
+                    // select_barang();
+
+                },
+
+            })
+        });
 
     $(document).on('click', '#editButton', function(event) {
         event.preventDefault();
+        var rows = showtable.rows($(this).parents('tr')).data();
+        var id = rows[0].id
         $.ajax({
-            url: "{{ route('substitusi.edit') }}",
+            url: "/master/substitusi/edit/"+id,
             beforeSend: function() {
                 $('#loader').show();
             },
@@ -135,6 +177,52 @@
 
         })
     });
+    $(document).on('click', '#deletebutton', function() {
+        var rows = showtable.rows($(this).parents('tr')).data();
+        var id = rows[0].id
+        Swal.fire({
+            title: 'Hapus',
+            text: "Hapus Substitusi",
+            icon: "warning",
+            showCancelButton: true,
+            cancelButtonText: 'Tidak',
+            confirmButtonText: 'Iya',
+
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '{{ route("substitusi.delete") }}',
+                    type: 'DELETE',
+                    dataType: 'json',
+                    data: {
+                        "id": id,
+                        "_method": "DELETE",
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(result) {
+                        if (result.info == "success") {
+                            Swal.fire({
+                                title: 'Berhasil',
+                                text: 'Data berhasil di hapus',
+                                icon: 'success',
+                            });
+                            window.location.reload();
+                        } else {
+                            Swal.fire({
+                                title: 'Gagal',
+                                text: 'Data gagal di hapus',
+                                icon: 'error',
+                            });
+                        }
+                    }
+                });
+            }
+        })
+
+    })
+})
+    
 </script>
 @stop
 @endsection

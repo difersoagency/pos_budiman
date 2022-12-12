@@ -34,10 +34,12 @@ Route::group(['prefix' => '/master'], function () {
 
     Route::group(['prefix' => '/substitusi'], function () {
         Route::get('/', [App\Http\Controllers\MasterController::class, 'master_substitusi'])->name('substitusi');
-        // Route::post('/data/{id}', [App\Http\Controllers\MasterController::class, 'data_koreksi'])->name('koreksi.data');
+        Route::get('/data', [App\Http\Controllers\MasterController::class, 'substitusi_data'])->name('substitusi.data');
         Route::get('/tambah', [App\Http\Controllers\MasterController::class, 'substitusi_create'])->name('substitusi.create');
-        Route::get('/edit', [App\Http\Controllers\MasterController::class, 'substitusi_edit'])->name('substitusi.edit');
-        // Route::post('/store', [App\Http\Controllers\MasterController::class, 'koreksi_store'])->name('koreksi.store');
+        Route::post('/store', [App\Http\Controllers\MasterController::class, 'substitusi_store'])->name('substitusi.store');
+        Route::get('/edit/{id}', [App\Http\Controllers\MasterController::class, 'substitusi_edit'])->name('substitusi.edit');
+        Route::put('/update/{id}', [App\Http\Controllers\MasterController::class, 'substitusi_update'])->name('substitusi.update');
+        Route::delete('/delete', [App\Http\Controllers\MasterController::class, 'substitusi_delete'])->name('substitusi.delete');
     });
 
     Route::group(['prefix' => '/koreksi'], function () {

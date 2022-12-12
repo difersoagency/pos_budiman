@@ -55,4 +55,14 @@ class Barang extends Model
     {
         return $this->hasMany(DBooking::class);
     }
+
+    public function Subtitusi1()
+    {
+        return $this->hasMany(Subtitusi::class, 'barang_id_1');
+    }
+
+    public function Subtitusi2()
+    {
+        return $this->hasMany(Subtitusi::class, 'barang_id_2');
+    }
 }

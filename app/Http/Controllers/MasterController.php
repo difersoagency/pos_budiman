@@ -7,6 +7,7 @@ use App\Models\Jasa;
 use App\Models\Booking;
 use App\Models\Customer;
 use App\Models\Koreksi;
+use App\Models\Subtitusi;
 use App\Models\Pembayaran;
 
 use App\Models\Pegawai;
@@ -149,17 +150,104 @@ class MasterController extends Controller
         $kota = Kota::all();
         return view('layouts.modal.koreksi-modal-create', ['kota' => $kota]);
     }
-    public function substitusi_create()
+
+    public function substitusi_data()
     {
-        $kota = Kota::all();
-        return view('layouts.modal.substitusi-modal-create', ['kota' => $kota]);
+        $data = Subtitusi::all();
+        return datatables()->of($data)
+            ->addIndexColumn()
+            ->editColumn('tgl_subtitusi', function ($data) {
+                return $data->tgl_subtitusi;
+            })
+            ->editColumn('barang_id_1', function ($data) {
+                return $data->Barang1->nama_barang;
+            })
+            ->editColumn('barang_id_2', function ($data) {
+                return $data->Barang2->nama_barang;
+            })
+            ->addColumn('button', function ($data) {
+                return ' <div class="grid grid-cols-2 tw-contents">
+                    <button href="" class="mr-4 tw-bg-transparent tw-border-none" data-toggle="modal" id="editButton">
+                        <i class="fa fa-pen tw-text-prim-blue"></i>
+                    </button>
+                    <button data-toggle="modal" data-target="#deleteModal" class="tw-bg-transparent tw-border-none" id="deletebutton">
+                        <i class="fa fa-trash tw-text-prim-red"></i>
+                    </button>
+                </div>';
+            })
+            ->rawColumns(['button'])
+            ->make(true);
     }
 
-    public function substitusi_edit()
+    public function substitusi_create()
     {
-        $kota = Kota::all();
-        return view('layouts.modal.substitusi-modal-edit', ['kota' => $kota]);
+        $barang = Barang::all();
+        return view('layouts.modal.substitusi-modal-create', ['barang' => $barang]);
     }
+
+    public function substitusi_store(Request $r){
+        $validator = Validator::make($r->all(), [
+            'tgl_subtitusi' => ['required'],
+            'barang_id_1' => ['required'],
+            'barang_id_2' => ['required']
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', "Tambah Gagal, periksa kembali");
+        } else {
+            $c = Subtitusi::create([
+                'tgl_subtitusi' => $r->tgl_subtitusi,
+                'barang_id_1' => $r->barang_id_1,
+                'barang_id_2' => $r->barang_id_2
+            ]);
+
+            if ($c) {
+                return redirect()->back()->with('success', "Data berhasil di tambah");
+            } else {
+                return redirect()->back()->with('error', "Gagal menambahkan, silahkan periksa data kembali");
+            }
+        }
+    }
+
+    public function substitusi_edit($id)
+    {
+        $data = Subtitusi::find($id);   
+        $barang = Barang::all();
+        return view('layouts.modal.substitusi-modal-edit', ['barang' => $barang, 'data' => $data]);
+    }
+
+    public function substitusi_update(Request $r, $id){
+        $validator = Validator::make($r->all(), [
+            'tgl_subtitusi' => ['required'],
+            'barang_id_1' => ['required'],
+            'barang_id_2' => ['required']
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', "Ubah Gagal, periksa kembali");
+        } else {
+            $u = Subtitusi::find($id);
+            $u->tgl_subtitusi = $r->tgl_subtitusi;
+            $u->barang_id_1 = $r->barang_id_1;
+            $u->barang_id_2 = $r->barang_id_2;
+            $u->save();
+
+            if ($u) {
+                return redirect()->back()->with('success', "Data berhasil di ubah");
+            } else {
+                return redirect()->back()->with('error', "Gagal mengubah, silahkan periksa data kembali");
+            }
+        }
+    }
+
+    public function substitusi_delete(Request $request){
+        $b = Subtitusi::find($request->id);
+        $delete = $b->delete();
+        if ($delete) {
+            return response()->json(['info' => 'success', 'msg' => 'Data berhasil di hapus']);
+        } else {
+            return response()->json(['info' => 'error', 'msg' => 'Hapus Gagal, periksa kembali']);
+        }
+    }
+
     public function customer_edit($id)
     {
         $kota = Kota::all();
