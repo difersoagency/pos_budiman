@@ -1112,15 +1112,19 @@ class TransaksiController extends Controller
                 }
             })
             ->addColumn('action', function ($data) {
-                return  '<div class="grid grid-cols-2">
-                <button id="btnedit" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->no_booking . '" >
+                if ($data->TransJual != NULL) {
+                    return '-';
+                }else{
+                return '<div class="grid grid-cols-2">
+                <a href="/transaksi/booking/edit/'.$data->id.'"><button id="btnedit" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->no_booking . '" >
                                                         <i class="fa fa-pen tw-text-prim-blue"></i>
-                                                    </button>
+                                                    </button></a>
                                                     <button id="btndelete" data-id="' . $data->id . '" data-nama="' . $data->no_booking . '"
                                                         class="tw-bg-transparent tw-border-none">
                                                         <i class="fa fa-trash tw-text-prim-red"></i>
                                                     </button>
-            </div>';
+                </div>';
+                }
             })
             ->rawColumns(['status', 'action'])
             ->make(true);
@@ -1221,6 +1225,91 @@ class TransaksiController extends Controller
             } else {
                 return redirect()->back()->with('error', "Gagal Menambahkan, periksa kembali");
             }
+        }
+    }
+
+    public function edit_booking($id)
+    {
+        $data = Booking::find($id);
+        $arr = array();
+        foreach($data->DBooking as $key => $i){
+            $arr[$key] = array('id' => $i->barang_id != null ? $i->barang_id : $i->jasa_id,
+            'nama' => $i->barang_id != null ? $i->barang->nama_barang : $i->jasa->nama_jasa,
+            'jenis' => $i->barang_id != null ? 'barang' : 'jasa',
+            'jumlah' => $i->jumlah
+        );
+        }
+        return view('layouts.transaksi.edit_booking', ['id' => $id, 'data' => $data, 'dbooking' => $arr]);
+    }
+
+    public function update_booking(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'customer_id' => ['required'],
+            'no_booking' => ['required', 'unique:booking,no_booking'],
+            'tgl_booking' => ['required']
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', "Gagal menambahkan, periksa kembali form anda");
+        } else {
+            $c = Booking::create([
+                'customer_id' => $request->customer_id,
+                'no_booking' => $request->no_booking,
+                'tgl_booking' => $request->tgl_booking
+            ]);
+            $bool = true;
+            $dc = NULL;
+            $jb = '';
+            if ($c) {
+                for ($i = 0; $i < count($request->barang_id); $i++) {
+                    if ($request->jenis_brg[$i] == "jasa") {
+                        $dc = DBooking::create([
+                            'booking_id' => $c->id,
+                            'barang_id' => NULL,
+                            'jasa_id' => $request->barang_id[$i],
+                            'jumlah' => $request->jumlah[$i]
+                        ]);
+                    } else if ($request->jenis_brg[$i] == "barang") {
+                        $dc = DBooking::create([
+                            'booking_id' => $c->id,
+                            'jasa_id' => NULL,
+                            'barang_id' => $request->barang_id[$i],
+                            'jumlah' => $request->jumlah[$i]
+                        ]);
+                    }
+                    if (!$dc) {
+                        $bool = false;
+                    }
+                }
+            }
+            if ($bool == true) {
+                return redirect()->back()->with('success', "Data berhasil di tambah");
+            } else {
+                return redirect()->back()->with('error', "Gagal Menambahkan, periksa kembali");
+            }
+        }
+    }
+
+
+    public function delete_booking(Request $r){
+        $id = $r->id;
+        $bool = true;
+        $db = DBooking::where('booking_id', $id)->count();
+        if($db > 0){
+            $delb = DBooking::where('booking_id', $id)->delete();
+            if(!$delb){
+                $bool = false;
+            }
+        }
+        $b = Booking::where('id', $id)->delete();
+        if(!$b){
+            $bool = false;
+        }
+
+        if ($bool == true) {
+            return response()->json(['info' => 'success', 'msg' => 'Data berhasil di hapus']);
+        } else {
+            return response()->json(['info' => 'error', 'msg' => 'Hapus Gagal, periksa kembali']);
         }
     }
 }

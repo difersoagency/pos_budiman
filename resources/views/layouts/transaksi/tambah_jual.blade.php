@@ -88,7 +88,7 @@
                             <th class="tw-text-center tw-border-t-0 d-none">Jenis</th>
                             <th class="tw-text-center tw-border-t-0" style="width:10%">Jumlah</th>
                             <th class="tw-text-center tw-border-t-0" style="width:20%">Harga</th>
-                            <th class="tw-text-center tw-border-t-0" style="width:10%">Disc</th>
+                            <th class="tw-text-center tw-border-t-0" style="width:15%">Disc</th>
                             <th class="tw-text-center tw-border-t-0" style="width:20%">Subtotal</th>
                             <th class="tw-text-center tw-border-t-0" style="width:5%">Action</th>
                         </tr>
@@ -119,8 +119,11 @@
                                 </div>
                             </td>
                             <td>
-                                <div class="form-group">
+                                <div class="input-group mb-3">
                                     <input type="number" class="form-control disc" name="disc[]" step="0.00" min="0">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" id="basic-addon2">%</span>
+                                    </div>
                                 </div>
                             </td>
                             <td>
@@ -246,7 +249,7 @@ $(function(){
                             <td>
                                 <!-- Dropdown -->
                                 <div class="dropdown ">
-                                    <select class="custom-select barang_id tw-text-prim-white" name="barang_id[]" disabled="true">
+                                    <select class="custom-select barang_id tw-text-prim-white" name="barang_id[]">
                                     </select>
                                 </div>
                                 <!-- End Dropdown  -->
@@ -267,8 +270,11 @@ $(function(){
                                 </div>
                             </td>
                             <td>
-                                <div class="form-group">
+                                <div class="input-group mb-3">
                                     <input type="number" class="form-control disc" name="disc[]" step="0.00" min="0">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" id="basic-addon2">%</span>
+                                    </div>
                                 </div>
                             </td>
                             <td>
@@ -462,8 +468,11 @@ $(function(){
                                 </div>
                             </td>
                             <td>
-                                <div class="form-group">
-                                    <input type="number" class="form-control disc" name="disc[`+i+`]" step="0.00" min="0">
+                                <div class="input-group mb-3">
+                                <input type="number" class="form-control disc" name="disc[`+i+`]" step="0.00" min="0">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" id="basic-addon2">%</span>
+                                    </div>
                                 </div>
                             </td>
                             <td>

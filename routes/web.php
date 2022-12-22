@@ -259,7 +259,10 @@ Route::group(['prefix' => '/transaksi'], function () {
         Route::post('/data', [App\Http\Controllers\TransaksiController::class, 'data_master_booking'])->name('data_booking');
         Route::get('/tambah', [App\Http\Controllers\TransaksiController::class, 'tambah_booking'])->name('tambah_booking');
         Route::post('/store', [App\Http\Controllers\TransaksiController::class, 'store_booking'])->name('store_booking');
+        Route::get('/edit/{id}', [App\Http\Controllers\TransaksiController::class, 'edit_booking'])->name('edit_booking');
+        Route::put('/update/{id}', [App\Http\Controllers\TransaksiController::class, 'update_booking'])->name('update_booking');
         Route::get('/', [App\Http\Controllers\TransaksiController::class, 'master_booking'])->name('master_booking');
+        Route::delete('/delete', [App\Http\Controllers\TransaksiController::class, 'delete_booking'])->name('booking.delete');
     });
 });
 

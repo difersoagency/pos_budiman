@@ -7,7 +7,7 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="transaksi">Transaksi</a></li>
                     <li class="breadcrumb-item"><a href="{{ route('master_booking') }}">Booking</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Tambah Booking</li>
+                    <li class="breadcrumb-item active" aria-current="page">Edit Booking</li>
                 </ol>
             </nav>
             <form method="POST" action="{{ route('store_booking') }}">
@@ -18,18 +18,19 @@
                         <div class="dropdown">
                             <select class="custom-select customer_id tw-text-prim-white" id="customer_id"
                                 name="customer_id">
+                                <option value="{{$data->customer_id}}" selected="true">{{$data->customer->nama_customer}}</option>
                             </select>
                         </div>
                     </div>
                     <div class="mx-2">
                         <label for="user_beli">No Booking</label>
-                        <input type="text" placeholder="No Booking" class="form-control no_booking" name="no_booking"
+                        <input type="text" placeholder="No Booking" class="form-control no_booking" name="no_booking" value="{{$data->no_booking}}"
                             id="no_booking">
                     </div>
                     <div class="mx-2">
                         <label for="user_beli">Tgl Booking</label>
                         <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_booking"
-                            name="tgl_booking" id="tgl_booking">
+                            name="tgl_booking" id="tgl_booking" value="{{$data->tgl_booking}}">
                     </div>
 
                 </div>
@@ -47,19 +48,18 @@
                                     <th class="tw-text-center tw-border-t-0" style="width:70%">Jenis Barang / Jasa</th>
                                     <th class="tw-text-center tw-border-t-0" style="width:20%">Jumlah</th>
                                     <th class="tw-text-center tw-border-t-0 d-none">jenis</th>
-                                    <!-- <th class="tw-text-center tw-border-t-0" style="width:20%">Harga</th>
-                                        <th class="tw-text-center tw-border-t-0" style="width:10%">Disc</th>
-                                        <th class="tw-text-center tw-border-t-0" style="width:20%">Subtotal</th> -->
                                     <th class="tw-text-center tw-border-t-0" style="width:10%">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                @foreach($dbooking as $key => $i)
                                 <tr>
                                     <td>
                                         <!-- Dropdown -->
                                         <div class="dropdown ">
                                             <select class="custom-select barang_id tw-text-prim-white barang_id"
-                                                name="barang_id[]">
+                                                name="barang_id[{{$key}}]">
+                                                <option value="{{$i->id}}">{{$i->nama}}</option>
                                             </select>
                                         </div>
                                         <!-- End Dropdown  -->
@@ -67,12 +67,12 @@
                                     <td class="d-none">
                                         <div class="form-group">
                                             <input type="text" class="form-control jenis_brg" name="jenis_brg[]"
-                                                id="jenis_brg">
+                                                id="jenis_brg" value="{{$i->jenis}}">
                                         </div>
                                     </td>
                                     <td>
                                         <div class="form-group">
-                                            <input type="number" class="form-control jumlah" name="jumlah[]"
+                                            <input type="number" class="form-control jumlah" name="jumlah[]" value="{{$i->jumlah}}"
                                                 min="0">
                                         </div>
                                     </td>
@@ -83,6 +83,7 @@
                                         </button>
                                     </td>
                                 </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
