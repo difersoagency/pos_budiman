@@ -66,6 +66,7 @@
                 </div>
                 <input type="text" class="form-control" aria-label="Amount" id="harga-jual" name="harga_jual" value="0">
             </div>
+            <small class="text-danger" id="msg-harga_jual"></small>
         </div>
         <div class="form-group">
             <label for="harga-beli" class="col-form-label">Harga Beli:</label>
@@ -75,6 +76,7 @@
                 </div>
                 <input type="text" class="form-control" aria-label="Amount" id="harga-beli" name="harga_beli" value="0">
             </div>
+            <small class="text-danger" id="msg-harga_beli"></small>
         </div>
     </div>
 

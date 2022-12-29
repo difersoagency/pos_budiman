@@ -32,7 +32,7 @@
                 <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_trans_jual" name="tgl_trans_jual" id="tgl_trans_jual" value="{{$d->tgl_trans_jual}}">
             </div>
 
-            <div class="my-4 tw-row-span-2">
+            <div class="my-4">
                 <label for="user_beli" class="mx-2">Dibuat Oleh</label>
                 <dl class="mx-2">
                     <dd>{{Auth::user()->pegawai->nama_pegawai}}</dd>
@@ -50,6 +50,10 @@
                         <option value="{{$d->Pembayaran->id}}" selected>{{$d->Pembayaran->nama_bayar}}</option>
                     </select>
                 </div>
+            </div>
+            <div class="mb-4 mx-2" id="input_giro" @if($d->Pembayaran->id != "4") hidden="true" @endif>
+                <label for="user_beli">Giro</label>
+                <input type="text" placeholder="No Giro" class="form-control nomor_giro" name="nomor_giro" id="nomor_giro" value="{{$d->no_giro}}">
             </div>
         </div>
         <div class="tw-rounded-lg promobox mb-4 tw-py-2 tw-px-4">
@@ -248,6 +252,14 @@
     });
     @endif
 $(function(){
+    $(document).on('change', '#pembayaran_id', function(e) {
+        if($(this).val() != "4"){
+            $('#input_giro').attr('hidden', true);
+        }
+        else{
+            $('#input_giro').attr('hidden', false);
+        }
+    })
 
     function replaceAll(string, search, replace) {
         return string.split(search).join(replace);

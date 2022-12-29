@@ -9,7 +9,7 @@ class DTransHutang extends Model
 {
     use HasFactory;
     protected $table = 'd_hutang';
-    protected $fillable = ['h_hutang_id', 'tgl_bayar', 'total_bayar'];
+    protected $fillable = ['h_hutang_id', 'tgl_bayar', 'total_bayar', 'no_giro'];
     public $timestamps = false;
 
     public function TransHutang()

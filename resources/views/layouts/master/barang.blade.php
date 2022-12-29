@@ -345,6 +345,27 @@
             $('#table_barang').DataTable().ajax.url('/barang/data/' + merek_id).load();
         });
 
+        $(document).on('keyup change', '#harga-jual', function(){
+            if($(this).val() < 10000){
+                $('#harga-jual').addClass('is-invalid');
+                $('#msg-harga_jual').html('Harga Jual Minimal adalah 10.000');
+            }
+            else{
+                $('#harga-jual').removeClass('is-invalid');
+                $('#msg-harga_jual').html('');
+            }
+        });
+
+        $(document).on('keyup change', '#harga-beli', function(){
+            if($(this).val() < 10000){
+                $('#harga-beli').addClass('is-invalid');
+                $('#msg-harga_beli').html('Harga Beli Minimal adalah 10.000');
+            }
+            else{
+                $('#harga-beli').removeClass('is-invalid');
+                $('#msg-harga_beli').html('');
+            }
+        });
     });
 </script>
 @stop

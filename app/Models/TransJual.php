@@ -10,7 +10,7 @@ class TransJual extends Model
     use HasFactory;
     protected $table = 'htrans_jual';
     public $timestamps = false;
-    protected $fillable = ['no_trans_jual', 'promo_id', 'pembayaran_id', 'booking_id', 'tgl_trans_jual', 'total_jual', 'bayar_jual', 'kembali_jual', 'tgl_max_garansi'];
+    protected $fillable = ['no_trans_jual', 'no_giro',  'promo_id', 'pembayaran_id', 'booking_id', 'tgl_trans_jual', 'total_jual', 'bayar_jual', 'kembali_jual', 'tgl_max_garansi'];
 
     public function Promo()
     {

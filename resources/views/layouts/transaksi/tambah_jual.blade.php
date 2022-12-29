@@ -30,7 +30,7 @@
                 <label for="tgl_trans_jual">Tgl Transaksi</label>
                 <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_trans_jual" name="tgl_trans_jual" id="tgl_trans_jual">
             </div>
-            <div class="my-4 tw-row-span-2">
+            <div class="my-4 tw-row-span-3">
                 <label for="user_beli" class="mx-2">Customer</label>
                 <dl class="mx-2">
                     <dl id="customer_id">-</dl>
@@ -38,7 +38,7 @@
                     <dl id="customer_telp">-</dl>
                 </dl>
             </div>
-            <div class="my-4 tw-row-span-2">
+            <div class="my-4 tw-row-span-3">
                 <label for="user_beli" class="mx-2">Dibuat Oleh</label>
                 <dl class="mx-2">
                     <dd>{{Auth::user()->pegawai->nama_pegawai}}</dd>
@@ -49,12 +49,16 @@
                 <label for="user_beli">Batas Garansi</label>
                 <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_max_garansi" name="tgl_max_garansi" id="tgl_max_garansi">
             </div>
-            <div class="mb-4 mx-2 float-right">
+            <div class="mb-4 mx-2">
                 <label for="user_beli">Pembayaran</label>
                 <div class="dropdown">
                     <select class="custom-select pembayaran_id tw-text-prim-white" id="pembayaran_id" name="pembayaran_id">
                     </select>
                 </div>
+            </div>
+            <div class="mb-4 mx-2" id="input_giro" hidden="true">
+                <label for="user_beli">Giro</label>
+                <input type="text" placeholder="No Giro" class="form-control nomor_giro" name="nomor_giro" id="nomor_giro">
             </div>
         </div>
         <div class="tw-rounded-lg promobox mb-4 tw-py-2 tw-px-4">
@@ -242,7 +246,15 @@ $(function(){
                     sum_bayar_jual();
                 }
             });
-
+    
+    $(document).on('change', '#pembayaran_id', function(e) {
+        if($(this).val() != "4"){
+            $('#input_giro').attr('hidden', true);
+        }
+        else{
+            $('#input_giro').attr('hidden', false);
+        }
+    })
 
     $('#btntambah').on('click', function(){
         $('#barangtable > tbody > tr:last').after(`<tr>

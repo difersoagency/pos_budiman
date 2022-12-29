@@ -10,13 +10,14 @@
                     <li class="breadcrumb-item active" aria-current="page">Edit Booking</li>
                 </ol>
             </nav>
-            <form method="POST" action="{{ route('store_booking') }}">
+            <form method="POST" action="{{ route('update_booking', ['id' => $id]) }}">
+                @method('PUT')
                 @csrf
                 <div class="tw-grid tw-grid-cols-3 tw-p-4">
                     <div class="mx-2 ">
                         <label for="htrans_jual_id">Customer</label>
                         <div class="dropdown">
-                            <select class="custom-select customer_id tw-text-prim-white" id="customer_id"
+                            <select class="custom-select cust_id tw-text-prim-white" id="customer_id"
                                 name="customer_id">
                                 <option value="{{$data->customer_id}}" selected="true">{{$data->customer->nama_customer}}</option>
                             </select>
@@ -52,14 +53,14 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($dbooking as $key => $i)
+                            @foreach($dbooking as $key => $i)
                                 <tr>
                                     <td>
                                         <!-- Dropdown -->
                                         <div class="dropdown ">
                                             <select class="custom-select barang_id tw-text-prim-white barang_id"
                                                 name="barang_id[{{$key}}]">
-                                                <option value="{{$i->id}}">{{$i->nama}}</option>
+                                                <option value="{{$i['id']}}" selected="true">{{$i['nama']}}</option>
                                             </select>
                                         </div>
                                         <!-- End Dropdown  -->
@@ -67,12 +68,12 @@
                                     <td class="d-none">
                                         <div class="form-group">
                                             <input type="text" class="form-control jenis_brg" name="jenis_brg[]"
-                                                id="jenis_brg" value="{{$i->jenis}}">
+                                                id="jenis_brg" value="{{$i['jenis']}}">
                                         </div>
                                     </td>
                                     <td>
                                         <div class="form-group">
-                                            <input type="number" class="form-control jumlah" name="jumlah[]" value="{{$i->jumlah}}"
+                                            <input type="number" class="form-control jumlah" name="jumlah[]" value="{{$i['jumlah']}}"
                                                 min="0">
                                         </div>
                                     </td>
@@ -121,7 +122,7 @@
                 });
             @endif
 
-            $('.barang_id').prepend('<option selected=""></option>').select2({
+            $('.barang_id').select2({
                 placeholder: "Pilih Barang",
                 delay: 250,
                 ajax: {
@@ -153,7 +154,7 @@
                 $(this).closest('tr').find('#jenis_brg').val(val);
             })
 
-            $('.customer_id').prepend('<option selected=""></option>').select2({
+            $('.cust_id').select2({
                 placeholder: "Pilih Customer",
                 delay: 250,
                 ajax: {

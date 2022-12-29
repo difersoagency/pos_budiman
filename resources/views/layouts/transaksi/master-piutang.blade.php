@@ -89,6 +89,33 @@
     });
     @endif
 $(document).ready(function() {
+        function select_pembayaran(){
+            $('.pembayaran_id').select2({
+                placeholder: "Pilih Pembayaran",
+                dropdownParent: $("#modal"),
+                delay: 250,
+                ajax: {
+                    dataType: 'json',
+                    type: 'GET',
+                    url: '/api/pembayaran_select',
+                    data: function(params) {
+                        return {
+                            term: params.term
+                        }
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(obj) {
+                                return {
+                                    id: obj.id,
+                                    text: obj.nama_bayar
+                                };
+                            })
+                        };
+                    },
+                }
+            });
+        }
         function data_detail(id){
             $('#piutangtable').DataTable({
             processing: true,
@@ -116,7 +143,14 @@ $(document).ready(function() {
                 }]
             });
         }
-
+        $(document).on('change', '#pembayaran_id', function(e) {
+            if($(this).val() != "4"){
+                $('#input_giro').attr('hidden', true);
+            }
+            else{
+                $('#input_giro').attr('hidden', false);
+            }
+        })
         $(document).on('click', '#btndetail', function(event) {
             var id = $(this).attr('data-id');
             $.ajax({
@@ -190,10 +224,11 @@ $(document).ready(function() {
                 // return the result
                 success: function(result) {
                     $('#modal').modal("show");
-                    $('.modal-title').html("Detail Pembayaran Piutang");
+                    $('.modal-title').html("Pembayaran Piutang");
                     $('.modal-body').html(result).show();
-
-                    data_detail(id);
+                    $('.pembayaran_id').select2({dropdownParent: $(".modal-body")});
+                    
+                    
                 },
             })
         });

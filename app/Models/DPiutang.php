@@ -12,7 +12,9 @@ class DPiutang extends Model
     public $timestamps = false;
     protected $fillable = ['h_piutang_id',
     'tgl_piutang',
-    'total_bayar'];
+    'total_bayar',
+    'no_giro'
+];
 
     public function Piutang()
     {

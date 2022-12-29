@@ -139,6 +139,17 @@
             })
         });
 
+        $(document).on('keyup change', '#harga-jasa', function(){
+            if($(this).val() < 10000){
+                $('#harga-jasa').addClass('is-invalid');
+                $('#msg-harga-jasa').html('Harga Minimal Jasa adalah 10.000');
+            }
+            else{
+                $('#harga-jasa').removeClass('is-invalid');
+                $('#msg-harga-jasa').html('');
+            }
+        });
+
         $(document).on('click', '#btnedit', function(event) {
             event.preventDefault();
             var data_id = $(this).attr('data-id');

@@ -281,8 +281,8 @@ class TransaksiController extends Controller
 
     public function tambah_detail_piutang($id)
     {
-
-        return view('layouts.modal.piutang-modal-create', ['id' => $id]);
+        $p = Pembayaran::all();
+        return view('layouts.modal.piutang-modal-create', ['id' => $id, 'p' => $p]);
     }
 
     public function delete_piutang(Request $r){
@@ -1231,32 +1231,37 @@ class TransaksiController extends Controller
     public function edit_booking($id)
     {
         $data = Booking::find($id);
-        $arr = array();
+        $dbooking = array();
         foreach($data->DBooking as $key => $i){
-            $arr[$key] = array('id' => $i->barang_id != null ? $i->barang_id : $i->jasa_id,
+            $dbooking[$key] = array('id' => $i->barang_id != null ? $i->barang_id : $i->jasa_id,
             'nama' => $i->barang_id != null ? $i->barang->nama_barang : $i->jasa->nama_jasa,
             'jenis' => $i->barang_id != null ? 'barang' : 'jasa',
             'jumlah' => $i->jumlah
         );
         }
-        return view('layouts.transaksi.edit_booking', ['id' => $id, 'data' => $data, 'dbooking' => $arr]);
+        return view('layouts.transaksi.edit_booking', ['id' => $id, 'data' => $data, 'dbooking' => $dbooking]);
     }
 
     public function update_booking(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
             'customer_id' => ['required'],
-            'no_booking' => ['required', 'unique:booking,no_booking'],
+            'no_booking' => ['required', 'unique:booking,no_booking,'.$id],
             'tgl_booking' => ['required']
         ]);
         if ($validator->fails()) {
             return redirect()->back()->with('error', "Gagal menambahkan, periksa kembali form anda");
         } else {
-            $c = Booking::create([
-                'customer_id' => $request->customer_id,
-                'no_booking' => $request->no_booking,
-                'tgl_booking' => $request->tgl_booking
-            ]);
+            $count = DBooking::where('booking_id', $id)->count();
+            if($count > 0){
+                DBooking::where('booking_id', $id)->delete();
+            }
+
+            $c = Booking::find($id);
+            $c->customer_id = $request->customer_id;
+            $c->no_booking = $request->no_booking;
+            $c->tgl_booking = $request->tgl_booking;
+            $c->save();
             $bool = true;
             $dc = NULL;
             $jb = '';
@@ -1283,9 +1288,9 @@ class TransaksiController extends Controller
                 }
             }
             if ($bool == true) {
-                return redirect()->back()->with('success', "Data berhasil di tambah");
+                return redirect()->back()->with('success', "Data berhasil di ubah");
             } else {
-                return redirect()->back()->with('error', "Gagal Menambahkan, periksa kembali");
+                return redirect()->back()->with('error', "Gagal Mengubah, periksa kembali");
             }
         }
     }
