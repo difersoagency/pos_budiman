@@ -38,7 +38,7 @@ Route::group(['prefix' => '/master'], function () {
         Route::get('/tambah', [App\Http\Controllers\MasterController::class, 'substitusi_create'])->name('substitusi.create');
         Route::post('/store', [App\Http\Controllers\MasterController::class, 'substitusi_store'])->name('substitusi.store');
         Route::get('/edit/{id}', [App\Http\Controllers\MasterController::class, 'substitusi_edit'])->name('substitusi.edit');
-        Route::put('/update/{id}', [App\Http\Controllers\MasterController::class, 'substitusi_update'])->name('substitusi.update');
+        Route::post('/update/{id}', [App\Http\Controllers\MasterController::class, 'substitusi_update'])->name('substitusi.update');
         Route::delete('/delete', [App\Http\Controllers\MasterController::class, 'substitusi_delete'])->name('substitusi.delete');
     });
 

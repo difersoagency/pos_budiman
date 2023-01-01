@@ -55,12 +55,12 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalPop">Form Satuan</h5>
+                    <h5 class="modal-title">Form Satuan</h5>
                     <button type="button" class="close tw-text-prim-red" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" id="modal-body">
                 </div>
             </div>
         </div>
@@ -129,12 +129,14 @@
 
                     $('#usermodal').modal("show");
                     $('.modal-title').html("Tambah User");
-                    $('.modal-body').html(result).show();
+                    $('#modal-body').html(result).show();
                     $('#level_user_id').select2({
-                        placeholder: "Pilih Data"
+                        placeholder: "Pilih Data",
+                        dropdownParent: $("#usermodal")
                     });
                     $('#pegawai_id').select2({
-                        placeholder: "Pilih Data"
+                        placeholder: "Pilih Data",
+                        dropdownParent: $("#usermodal")
                     });
                 },
             })
@@ -164,15 +166,68 @@
                         success: function(result) {
                             $('#usermodal').modal("show");
                             $('.modal-title').html("Ubah User");
-                            $('.modal-body').html(result).show();
+                            $('#modal-body').html(result).show();
                             $('#level_user_id').select2({
-                                placeholder: "Pilih Data"
+                                placeholder: "Pilih Data",
+                                dropdownParent: $("#usermodal")
                             });
                         },
                     })
                 }
             })
         });
+
+        $(document).on('submit', '#formtambah', function(event) {
+            event.preventDefault();
+            var action = $(this).attr('action');
+            $.ajax({
+                url: action,
+                type: 'POST',
+                data: $('#formtambah').serialize(),
+                success: function(result) {
+                    if (result.data == "success") {
+                        Swal.fire({
+                            title: 'Berhasil',
+                            text: result.msg,
+                            icon: 'success',
+                        });
+                        window.location.reload();
+                    } else {
+                        Swal.fire({
+                            title: 'Gagal',
+                            text: result.msg,
+                            icon: 'error',
+                        });
+                    }
+                }
+            });
+        })
+
+        $(document).on('submit', '#formedit', function(event) {
+            event.preventDefault();
+            var action = $(this).attr('action');
+            $.ajax({
+                url: action,
+                type: 'POST',
+                data: $('#formedit').serialize(),
+                success: function(result) {
+                    if (result.data == "success") {
+                        Swal.fire({
+                            title: 'Berhasil',
+                            text: result.msg,
+                            icon: 'success',
+                        });
+                        window.location.reload();
+                    } else {
+                        Swal.fire({
+                            title: 'Gagal',
+                            text: result.msg,
+                            icon: 'error',
+                        });
+                    }
+                }
+            });
+        })
 
         $(document).on('click', '#btndelete', function(event) {
             event.preventDefault();

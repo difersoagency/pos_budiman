@@ -1,6 +1,5 @@
-<form method="POST" action="{{route('substitusi.update', ['id' => $data->id])}}" class="tw-h-96  tw-overflow-y-auto">
+<form method="POST" action="{{route('substitusi.update', ['id' => $data->id])}}" class="tw-h-96  tw-overflow-y-auto" id="formedit">
     @csrf
-    @method('PUT')
     <div class="mx-2 mt-4">
         <label for="koreksi_tanggal">Tgl Pembuatan</label>
         <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_subtitusi" name="tgl_subtitusi" id="tgl_subtitusi" value="{{$data->tgl_subtitusi}}">

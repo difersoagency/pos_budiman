@@ -172,7 +172,7 @@
     });
 
     $(document).ready(function() {
-        var table_customer = $('#table_customer').DataTable({
+        var table_customer = $('#showtable').DataTable({
             destroy: true,
             processing: true,
             serverSide: true,
@@ -238,6 +238,59 @@
 
     });
 
+
+    $(document).on('submit', '#formtambah', function(event) {
+            event.preventDefault();
+            var action = $(this).attr('action');
+            $.ajax({
+                url: action,
+                type: 'POST',
+                data: $('#formtambah').serialize(),
+                success: function(result) {
+                    if (result.data == "success") {
+                        Swal.fire({
+                            title: 'Berhasil',
+                            text: result.msg,
+                            icon: 'success',
+                        });
+                        window.location.reload();
+                    } else {
+                        Swal.fire({
+                            title: 'Gagal',
+                            text: result.msg,
+                            icon: 'error',
+                        });
+                    }
+                }
+            });
+        })
+
+        $(document).on('submit', '#formedit', function(event) {
+            event.preventDefault();
+            var action = $(this).attr('action');
+            $.ajax({
+                url: action,
+                type: 'POST',
+                data: $('#formedit').serialize(),
+                success: function(result) {
+                    if (result.data == "success") {
+                        Swal.fire({
+                            title: 'Berhasil',
+                            text: result.msg,
+                            icon: 'success',
+                        });
+                        window.location.reload();
+                    } else {
+                        Swal.fire({
+                            title: 'Gagal',
+                            text: result.msg,
+                            icon: 'error',
+                        });
+                    }
+                }
+            });
+        })
+        
     $('#kota_id').change(function() {
         var merek_id = $(this).val();
         $('#table_customer').DataTable().ajax.url('/master/customer/data/' + merek_id).load();

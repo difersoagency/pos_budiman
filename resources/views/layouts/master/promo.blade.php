@@ -57,26 +57,6 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {{-- <tr>
-                                            <td>FREE99</td>
-                                            <td>Gratis Spesial 9.9</td>
-                                            <td>100%</td>
-                                            <td>Rp. 200.0000</td>
-                                            <td>04/05/2022</td>
-                                            <td>04/07/2022</td>
-                                            <td class="tw-px-3">
-                                                <div class="grid grid-cols-2 tw-contents">
-                                                    <button class="mr-4 tw-bg-transparent tw-border-none"
-                                                        data-toggle="modal" data-target="#promoModal">
-                                                        <i class="fa fa-pen tw-text-prim-blue"></i>
-                                                    </button>
-                                                    <button data-toggle="modal" data-target="#deleteModal"
-                                                        class="tw-bg-transparent tw-border-none">
-                                                        <i class="fa fa-trash tw-text-prim-red"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr> --}}
                                 </tbody>
 
                             </table>
@@ -114,12 +94,7 @@
 @section('script')
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    function date() {
-        $("#tanggal_akhir").val('');
-        var max = $("#tanggal_mulai").val();
-        console.log(max);
-        $("#tanggal_akhir").attr("min", max);
-    }
+    
 
     @if(Session::has('error'))
     Swal.fire({
@@ -136,33 +111,21 @@
     });
     @endif
 
-    $(document).on('click', '#addItemButton', function(event) {
-        event.preventDefault();
-        $.ajax({
-            url: "{{ route('promo.create') }}",
-            beforeSend: function() {
-                $('#loader').show();
-            },
-            // return the result
-            success: function(result) {
-                $('#modalPop').modal("show");
-                $('#modal-body').html(result).show();
-                $(".input-select2").select2({
-                    dropdownParent: $("#modalPop")
-                });
-            },
-        })
-    });
-
-    $(document).ready(function() {
-        var table_promo = $('#table_promo').DataTable({
+    
+    $(function() {
+        function date() {
+            $("#tanggal_akhir").val('');
+            var max = $("#tanggal_mulai").val();
+            $("#tanggal_akhir").attr("min", max);
+        }
+        var table_promo = 
+        $('#table_promo').DataTable({
             destroy: true,
             processing: true,
             serverSide: true,
             ajax: {
-                'type': 'POST',
-                'datatype': 'JSON',
                 'url': '/master/promo/data',
+                'type': 'POST',
                 'headers': {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 }
@@ -170,30 +133,34 @@
             columns: [{
                     data: 'kode_promo',
                     className: 'nowrap-text align-center',
+                    searchable: true,
                 },
                 {
                     data: 'nama_promo',
                     className: 'nowrap-text align-center',
+                    searchable: true,
                 },
                 {
                     data: 'disc',
                     className: 'nowrap-text align-center',
+                    searchable: true,
                 },
                 {
                     data: 'barang',
                     className: 'nowrap-text align-center',
+                    searchable: true,
                 },
                 {
                     data: 'tgl_mulai',
                     className: 'nowrap-text align-center',
                     orderable: false,
-                    searchable: false
+                    searchable: true
                 },
                 {
                     data: 'tgl_selesai',
                     className: 'nowrap-text align-center',
                     orderable: false,
-                    searchable: false
+                    searchable: true
                 },
                 {
 
@@ -204,92 +171,127 @@
                 }
             ]
         });
+
+        $(document).on('click', '#addItemButton', function(event) {
+            event.preventDefault();
+            $.ajax({
+                url: "{{ route('promo.create') }}",
+                beforeSend: function() {
+                    $('#loader').show();
+                },
+                // return the result
+                success: function(result) {
+                    $('#modalPop').modal("show");
+                    $('#modal-body').html(result).show();
+                    $(".input-select2").select2({
+                        dropdownParent: $("#modalPop")
+                    });
+                },
+            })
+        });
+
+
+        function edit(id) {
+            event.preventDefault();
+            $.ajax({
+                url: "/master/promo/edit/" + id,
+                beforeSend: function() {
+                    $('#loader').show();
+                },
+                // return the result
+                success: function(result) {
+                    $('#modalPop').modal("show");
+                    $('#modal-body').html(result).show();
+                    $(".input-select2").select2({
+                        dropdownParent: $("#modalPop")
+                    });
+
+                },
+
+            })
+        }
+
+        $(document).on('click', '#btnedit', function() {
+            var id = $(this).attr('data-id');
+            var nama = $(this).attr('data-nama');
+            Swal.fire({
+                title: 'Edit',
+                text: "Edit " + nama,
+                icon: "question",
+                showCancelButton: true,
+                cancelButtonText: 'Tidak',
+                confirmButtonText: 'Iya',
+
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    edit(id);
+                }
+            })
+
+        })
+
+        $(document).on('change', 'input[name="jenis"]', function(){
+            if($('input[name="jenis"]:checked').val() == "barang"){
+                $('#jasa_input').attr('hidden', true);
+                $('#jasa_id').val(null).trigger('change');
+                $('#barang_input').attr('hidden', false);
+            }
+            else{
+                $('#jasa_input').attr('hidden', false);
+                $('#barang_id').val(null).trigger('change');
+                $('#barang_input').attr('hidden', true);
+            
+            }
+        });
+
+        $(document).on('click', '#btndelete', function() {
+            var id = $(this).attr('data-id');
+            var nama = $(this).attr('data-nama');
+            Swal.fire({
+                title: 'Hapus',
+                text: "Hapus " + nama,
+                icon: "warning",
+                showCancelButton: true,
+                cancelButtonText: 'Tidak',
+                confirmButtonText: 'Iya',
+
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '{{ route("promo.delete") }}',
+                        type: 'DELETE',
+                        dataType: 'json',
+                        data: {
+                            "id": id,
+                            "_method": "DELETE",
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(result) {
+                            if (result.info == "success") {
+                                Swal.fire({
+                                    title: 'Berhasil',
+                                    text: 'Data berhasil di hapus',
+                                    icon: 'success',
+                                });
+                                window.location.reload();
+                            } else {
+                                Swal.fire({
+                                    title: 'Gagal',
+                                    text: 'Data gagal di hapus',
+                                    icon: 'error',
+                                });
+                            }
+                        }
+                    });
+                }
+            })
+
+        });
     });
 
-    function edit(id) {
-        event.preventDefault();
-        $.ajax({
-            url: "/master/promo/edit/" + id,
-            beforeSend: function() {
-                $('#loader').show();
-            },
-            // return the result
-            success: function(result) {
-                $('#modalPop').modal("show");
-                $('#modal-body').html(result).show();
-                $(".input-select2").select2({
-                    dropdownParent: $("#modalPop")
-                });
-
-            },
-
-        })
-    }
-
-    $(document).on('click', '#btnedit', function() {
-        var id = $(this).attr('data-id');
-        var nama = $(this).attr('data-nama');
-        Swal.fire({
-            title: 'Edit',
-            text: "Edit " + nama,
-            icon: "question",
-            showCancelButton: true,
-            cancelButtonText: 'Tidak',
-            confirmButtonText: 'Iya',
-
-        }).then((result) => {
-            /* Read more about isConfirmed, isDenied below */
-            if (result.isConfirmed) {
-                edit(id);
-            }
-        })
-
-    })
-
-    $(document).on('click', '#btndelete', function() {
-        var id = $(this).attr('data-id');
-        var nama = $(this).attr('data-nama');
-        Swal.fire({
-            title: 'Hapus',
-            text: "Hapus " + nama,
-            icon: "warning",
-            showCancelButton: true,
-            cancelButtonText: 'Tidak',
-            confirmButtonText: 'Iya',
-
-        }).then((result) => {
-            /* Read more about isConfirmed, isDenied below */
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: '{{ route("promo.delete") }}',
-                    type: 'DELETE',
-                    dataType: 'json',
-                    data: {
-                        "id": id,
-                        "_method": "DELETE",
-                        _token: "{{ csrf_token() }}"
-                    },
-                    success: function(result) {
-                        if (result.info == "success") {
-                            Swal.fire({
-                                title: 'Berhasil',
-                                text: 'Data berhasil di hapus',
-                                icon: 'success',
-                            });
-                            window.location.reload();
-                        } else {
-                            Swal.fire({
-                                title: 'Gagal',
-                                text: 'Data gagal di hapus',
-                                icon: 'error',
-                            });
-                        }
-                    }
-                });
-            }
-        })
-
-    })
+    
 </script>
 @stop
 @endsection

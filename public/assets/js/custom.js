@@ -258,7 +258,7 @@ $(function() {
                 );
           }
         },
-        error: function(xhr, status, error) {
+        error: function(response) {
           swal.fire(
             'Gagal',
             'Lengkapi Form',

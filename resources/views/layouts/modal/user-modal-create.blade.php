@@ -1,10 +1,10 @@
-<form action="{{ route('user.store') }}" method="POST">
+<form action="{{ route('user.store') }}" method="POST" id="formtambah">
     @csrf
     <div class="tw-grid tw-grid-cols-2">
     <div class="form-group tw-mr-3">
         <label for="pegawai" class="col-form-label">Pegawai:</label>
         <div class="dropdown tw-mb-4">
-            <select class="custom-select select2 input-select" id="pegawai" name="pegawai_id">
+            <select class="custom-select select2 input-select" id="pegawai_id" name="pegawai_id">
                 @foreach ($pegawai as $p)
                 <option value="{{ $p->id }}">{{ Str::ucfirst($p->nama_pegawai) }}</option>
                 @endforeach

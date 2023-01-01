@@ -72,16 +72,16 @@
         </div>
     </section>
     <!-- /.content -->
-    <div class="modal fade" id="suppliermodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modalPop" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalPop">Form Satuan</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Form Supplier</h5>
                     <button type="button" class="close tw-text-prim-red" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" id="modal-body">
                 </div>
             </div>
         </div>
@@ -94,21 +94,7 @@
 @section('script')
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    @if (Session::has('error'))
-            Swal.fire({
-                title: 'Gagal',
-                text: "{{ Session::get('error') }}",
-                icon: 'error',
-            });
-        @endif
-        @if (Session::has('success'))
-            Swal.fire({
-                title: 'Berhasil',
-                text: "{{ Session::get('success') }}",
-                icon: 'success',
-            });
-        @endif
-        var selectval;
+    var selectval;
  
         // Custom filtering function which will search data in column four between two values
         
@@ -182,11 +168,11 @@
                 // return the result
                 success: function(result) {
 
-                    $('#suppliermodal').modal("show");
+                    $('#modalPop').modal("show");
                     $('.modal-title').html("Tambah Supplier");
-                    $('.modal-body').html(result).show();
-                    $('.kota').select2({
-                        placeholder: "Pilih Data"
+                    $('#modal-body').html(result).show();
+                    $(".select2").select2({
+                        dropdownParent: $("#modalPop")
                     });
                 },
             })
@@ -214,17 +200,69 @@
                         },
                         // return the result
                         success: function(result) {
-                            $('#suppliermodal').modal("show");
+                            $('#modalPop').modal("show");
                             $('.modal-title').html("Ubah Supplier");
-                            $('.modal-body').html(result).show();
-                            $(".kota").select2({
-                                dropdownParent: $("#suppliermodal")
+                            $('#modal-body').html(result).show();
+                            $(".select2").select2({
+                                dropdownParent: $("#modalPop")
                             });
                         },
                     })
                 }
             })
         });
+
+        $(document).on('submit', '#formtambah', function(event) {
+            event.preventDefault();
+            var action = $(this).attr('action');
+            $.ajax({
+                url: action,
+                type: 'POST',
+                data: $('#formtambah').serialize(),
+                success: function(result) {
+                    if (result.data == "success") {
+                        Swal.fire({
+                            title: 'Berhasil',
+                            text: result.msg,
+                            icon: 'success',
+                        });
+                        window.location.reload();
+                    } else {
+                        Swal.fire({
+                            title: 'Gagal',
+                            text: result.msg,
+                            icon: 'error',
+                        });
+                    }
+                }
+            });
+        })
+
+        $(document).on('submit', '#formedit', function(event) {
+            event.preventDefault();
+            var action = $(this).attr('action');
+            $.ajax({
+                url: action,
+                type: 'POST',
+                data: $('#formedit').serialize(),
+                success: function(result) {
+                    if (result.data == "success") {
+                        Swal.fire({
+                            title: 'Berhasil',
+                            text: result.msg,
+                            icon: 'success',
+                        });
+                        window.location.reload();
+                    } else {
+                        Swal.fire({
+                            title: 'Gagal',
+                            text: result.msg,
+                            icon: 'error',
+                        });
+                    }
+                }
+            });
+        })
 
         $(document).on('click', '#btndelete', function(event) {
             event.preventDefault();

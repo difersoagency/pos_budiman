@@ -17,14 +17,14 @@
                         <div class="tw-w-full tw-col-span-2 md:tw-col-span-1">
                             <h1 class="tw-m-0 tw-text-2xl tw-font-bold">Daftar Piutang Usaha</h1>
                         </div>
-                        <div class="tw-text-right tw-grid tw-grid-cols-1 md:tw-flex tw-mx-auto md:tw-mx-0 md:tw-ml-auto tw-w-full md:tw-w-fit tw-mt-4 md:tw-mt-0">
+                        <!-- <div class="tw-text-right tw-grid tw-grid-cols-1 md:tw-flex tw-mx-auto md:tw-mx-0 md:tw-ml-auto tw-w-full md:tw-w-fit tw-mt-4 md:tw-mt-0">
 
                             <div class="dropdown tw-mb-4 tw-w-full md:tw-w-fit">
                                 <button class="btn tw-text-prim-white tw-bg-prim-red tw-text-sm tw-w-full md:tw-w-fit" type="button" id="addItemButton" onclick="location.href =  `{{route('bayar_piutang')}}`">
                                     + Pembayaran Piutang
                                 </button>
                             </div>
-                        </div>
+                        </div> -->
 
                         <div class="table_master_beli tw-mt-5 tw-col-span-2" data-current-page="1">
                             <table id="piutang" class="table table-bordered responsive nowrap" style="width:100%">
@@ -53,7 +53,7 @@
             </div>
             <!-- /.row -->
         </div>
-        <div class="modal fade w-full" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade w-full" id="modalPop" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -62,7 +62,7 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body" id="modal-body">
                     </div>
                 </div>
             </div>
@@ -146,6 +146,7 @@ $(document).ready(function() {
         $(document).on('change', '#pembayaran_id', function(e) {
             if($(this).val() != "4"){
                 $('#input_giro').attr('hidden', true);
+                $('#no_giro').val('');
             }
             else{
                 $('#input_giro').attr('hidden', false);
@@ -223,10 +224,10 @@ $(document).ready(function() {
                 },
                 // return the result
                 success: function(result) {
-                    $('#modal').modal("show");
+                    $('#modalPop').modal("show");
                     $('.modal-title').html("Pembayaran Piutang");
-                    $('.modal-body').html(result).show();
-                    $('.pembayaran_id').select2({dropdownParent: $(".modal-body")});
+                    $('#modal-body').html(result).show();
+                    $('.pembayaran_id').select2({dropdownParent: $("#modalPop")});
                     
                     
                 },

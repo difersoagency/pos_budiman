@@ -9,11 +9,16 @@ class DTransHutang extends Model
 {
     use HasFactory;
     protected $table = 'd_hutang';
-    protected $fillable = ['h_hutang_id', 'tgl_bayar', 'total_bayar', 'no_giro'];
+    protected $fillable = ['h_hutang_id', 'tgl_bayar', 'total_bayar', 'no_giro', 'pembayaran_id'];
     public $timestamps = false;
 
     public function TransHutang()
     {
         return $this->belongsTo(TransHutang::class, 'h_hutang_id', 'id');
+    }
+
+    public function Pembayaran()
+    {
+        return $this->belongsTo(Pembayaran::class, 'pembayaran_id');
     }
 }

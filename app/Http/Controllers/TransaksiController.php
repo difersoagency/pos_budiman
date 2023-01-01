@@ -152,6 +152,13 @@ class TransaksiController extends Controller
         } else {
             $drj = DReturJual::where('hretur_jual_id', $r->id)->count();
             if($drj > 0){
+                $drjs = DReturJual::where('hretur_jual_id', $r->id)->get();
+                foreach($drjs as $i){
+                    $b = Barang::find($i->barang_id);
+                    $b->stok = $b->stok - $i->jumlah;
+                    $b->save();
+                }
+                
                 $drjd = DReturJual::where('hretur_jual_id', $r->id)->delete();
             }
             $u = ReturJual::find($id);
@@ -296,7 +303,6 @@ class TransaksiController extends Controller
 
     public function update_hutang(Request $request, $id)
     {
-
         $validator = Validator::make($request->all(), [
             'tgl_beli.*' => 'required',
             'pembayaran_hutang.*' => 'required',
@@ -318,6 +324,8 @@ class TransaksiController extends Controller
                     DTransHutang::create([
                         'h_hutang_id' =>  $id,
                         'tgl_bayar' => $request->tgl_beli[$i],
+                        'pembayaran_id' => $request->pembayaran_id,
+                        'no_giro' => $request->no_giro,
                         'total_bayar' =>  str_replace('.', "", $request->pembayaran_hutang[$i]),
                     ]);
                 }
@@ -373,7 +381,9 @@ class TransaksiController extends Controller
             $d = DPiutang::create([
                 'h_piutang_id' => $id,
                 'tgl_piutang' => $r->tgl_piutang,
-                'total_bayar' => $r->total_bayar
+                'total_bayar' => $r->total_bayar,
+                'no_giro' => $r->no_giro,
+                'pembayaran_id' => $r->pembayaran_id
             ]);
 
             if ($d) {
@@ -443,11 +453,7 @@ class TransaksiController extends Controller
                 $trans_beli->total = str_replace('.', "", $request->total_bayar);
                 $trans_beli->save();
 
-
-
-
                 $tb = DTransBeli::where('htrans_beli_id', $id)->get();
-
 
                 if (count($tb) > 0) {
                     DTransBeli::where('htrans_beli_id', $id)->delete();
@@ -462,9 +468,19 @@ class TransaksiController extends Controller
                         'harga' =>  str_replace('.', "", $request->harga_satuan[$i]),
                         'disc' => $request->diskon_beli[$i]
                     ]);
+
+
+                    $b = Barang::find($request->barang[$i]);
+                    $b->stok = $b->stok + $request->jumlah_beli[$i];
+                    $u = $b->save();
+                    if(!$u){
+                        $bool = false;
+                    }
                 }
 
                 return response()->json(['data' => 'success']);
+
+                
             }
         }
     }
@@ -528,6 +544,10 @@ class TransaksiController extends Controller
                     'jumlah' => $request->jumlah[$i],
                     'harga' =>  str_replace('.', "", $request->harga[$i]),
                 ]);
+
+                $b = Barang::find($request->barang_id[$i]);
+                $b->stok = $b->stok + $request->jumlah[$i];
+                $b->save();
             }
 
             return response()->json(['data' => 'success']);
@@ -563,6 +583,10 @@ class TransaksiController extends Controller
                     'jumlah' => $request->jumlah[$i],
                     'harga' =>  str_replace('.', "", $request->harga[$i]),
                 ]);
+
+                $b = Barang::find($request->barang_id[$i]);
+                $b->stok = $b->stok - $request->jumlah[$i];
+                $b->save();
             }
 
 
@@ -613,6 +637,10 @@ class TransaksiController extends Controller
                         'harga' =>  str_replace('.', "", $request->harga_satuan[$i]),
                         'disc' => $request->diskon_beli[$i]
                     ]);
+
+                    $b = Barang::find($request->barang[$i]);
+                    $b->stok = $b->stok + $request->jumlah_beli[$i];
+                    $b->save();
                 }
 
                 if (str_replace('.', "", $request->total_dibayar) != str_replace('.', "", $request->total_bayar)) {
@@ -888,9 +916,20 @@ class TransaksiController extends Controller
 
     public function tambah_jual()
     {
+        return view('layouts.transaksi.tambah_jual');
+    }
+
+    public function promo_aktif($id, $jenis){
         $date = Carbon::now()->toDateString();
-        $promo = Promo::where('tgl_mulai', '<=', $date)->where('tgl_selesai', '>=', $date)->get();
-        return view('layouts.transaksi.tambah_jual', ['promo' => $promo]);
+        $promo = NULL;
+        if($jenis == 'barang'){
+            $kb = Barang::where('kode_barang', $id)->first();
+            $promo = Promo::where('tgl_mulai', '<=', $date)->where('tgl_selesai', '>=', $date)->where('barang_id', $kb->id)->get();
+        }
+        else{
+            $promo = Promo::where('tgl_mulai', '<=', $date)->where('tgl_selesai', '>=', $date)->where('jasa_id', $id)->get();
+        }
+        echo json_encode($promo);
     }
 
     public function store_jual(Request $r)
@@ -914,7 +953,7 @@ class TransaksiController extends Controller
                 'total_jual' => str_replace(",", "", $r->total_jual),
                 'bayar_jual' => str_replace(",", "", $r->bayar_jual),
                 'kembali_jual' => str_replace(",", "", $r->kembali_jual),
-                'promo_id' => $r->promo_id,
+                'no_giro' => $r->no_giro,
                 'pembayaran_id' => $r->pembayaran_id,
             ]);
             $bool = true;
@@ -929,16 +968,19 @@ class TransaksiController extends Controller
                             'harga' => str_replace(",", "", $r->harga[$i]),
                             'disc' => $r->disc[$i]
                         ]);
+                        
                     } else if ($r->jenis_brg[$i] == "barang") {
+                        $kb = Barang::where('kode_barang', $r->barang_id[$i])->first();
+
                         $dc = DTransJual::create([
                             'htrans_jual_id' => $c->id,
-                            'barang_id' => $r->barang_id[$i],
+                            'barang_id' => $kb->id,
                             'harga' => str_replace(",", "", $r->harga[$i]),
                             'jumlah' => $r->jumlah[$i],
                             'disc' => $r->disc[$i]
                         ]);
 
-                        $b = Barang::find($r->barang_id[$i]);
+                        $b = Barang::find($kb->id);
                         $b->stok = $b->stok - $r->jumlah[$i];
                         $b->save();
                     }
@@ -960,7 +1002,7 @@ class TransaksiController extends Controller
             if ($bool == true) {
                 return redirect()->back()->with('success', "Data berhasil di tambah");
             } else {
-                return redirect()->back()->with('error', "Gagal Menambahkan, periksa kembali" . $r->jenis_brg[0]);
+                return redirect()->back()->with('error', "Gagal Menambahkan, periksa kembali");
             }
         }
     }
@@ -993,6 +1035,12 @@ class TransaksiController extends Controller
             }
             $dtj = DTransJual::where('htrans_jual_id', $id)->count();
             if($dtj > 0){
+                $dtjs = DTransJual::where('htrans_jual_id', $id)->get();
+                foreach($dtjs as $i){
+                    $b = Barang::find($i->barang_id);
+                    $b->stok = $b->stok + $i->jumlah;
+                    $bu = $b->save();
+                }
                 $dtjd = DTransJual::where('htrans_jual_id', $id)->delete();
             }
 
@@ -1003,7 +1051,7 @@ class TransaksiController extends Controller
             $u->total_jual = str_replace(",", "", $r->total_jual);
             $u->bayar_jual = str_replace(",", "", $r->bayar_jual);
             $u->kembali_jual = str_replace(",", "", $r->kembali_jual);
-            $u->promo_id = $r->promo_id;
+            $u->no_giro = $r->no_giro;
             $u->pembayaran_id = $r->pembayaran_id;
             $u->save();
 
@@ -1020,15 +1068,16 @@ class TransaksiController extends Controller
                             'disc' => $r->disc[$i]
                         ]);
                     } else if ($r->jenis_brg[$i] == "barang") {
+                        $kb = Barang::where('kode_barang', $r->barang_id[$i])->first();
                         $dc = DTransJual::create([
                             'htrans_jual_id' => $id,
-                            'barang_id' => $r->barang_id[$i],
+                            'barang_id' => $kb->id,
                             'harga' => str_replace(",", "", $r->harga[$i]),
                             'jumlah' => $r->jumlah[$i],
                             'disc' => $r->disc[$i]
                         ]);
 
-                        $b = Barang::find($r->barang_id[$i]);
+                        $b = Barang::find($kb->id);
                         $b->stok = $b->stok - $r->jumlah[$i];
                         $b->save();
                     }
@@ -1172,7 +1221,8 @@ class TransaksiController extends Controller
 
     {
         $data = TransHutang::find($id);
-        return view('layouts.transaksi.edit-hutang', ['data' => $data]);
+        $p = Pembayaran::all();
+        return view('layouts.transaksi.edit-hutang', ['data' => $data, 'p' => $p]);
     }
 
     public function tambah_booking()
@@ -1208,10 +1258,11 @@ class TransaksiController extends Controller
                             'jumlah' => $request->jumlah[$i]
                         ]);
                     } else if ($request->jenis_brg[$i] == "barang") {
+                        $kb = Barang::where('kode_barang', $request->barang_id[$id])->first();
                         $dc = DBooking::create([
                             'booking_id' => $c->id,
                             'jasa_id' => NULL,
-                            'barang_id' => $request->barang_id[$i],
+                            'barang_id' => $kb->id,
                             'jumlah' => $request->jumlah[$i]
                         ]);
                     }
@@ -1233,7 +1284,7 @@ class TransaksiController extends Controller
         $data = Booking::find($id);
         $dbooking = array();
         foreach($data->DBooking as $key => $i){
-            $dbooking[$key] = array('id' => $i->barang_id != null ? $i->barang_id : $i->jasa_id,
+            $dbooking[$key] = array('id' => $i->barang_id != null ? $i->Barang->kode_barang : $i->jasa_id,
             'nama' => $i->barang_id != null ? $i->barang->nama_barang : $i->jasa->nama_jasa,
             'jenis' => $i->barang_id != null ? 'barang' : 'jasa',
             'jumlah' => $i->jumlah
@@ -1275,10 +1326,11 @@ class TransaksiController extends Controller
                             'jumlah' => $request->jumlah[$i]
                         ]);
                     } else if ($request->jenis_brg[$i] == "barang") {
+                        $kb = Barang::where('kode_barang', $request->barang_id[$id])->first();
                         $dc = DBooking::create([
                             'booking_id' => $c->id,
                             'jasa_id' => NULL,
-                            'barang_id' => $request->barang_id[$i],
+                            'barang_id' => $kb->id,
                             'jumlah' => $request->jumlah[$i]
                         ]);
                     }

@@ -42,6 +42,22 @@
                     </div>
                 </div>
             </div>
+
+            <div class="tw-grid tw-grid-cols-2 tw-mb-7 tw-gap-7">
+            <div>
+              <label for="pembayaran_id" class="col-form-label">Pembayaran:</label>
+              <select class="select2 pembayaran_id custom-select" id="pembayaran_id" name="pembayaran_id">
+                @foreach($p as $pem)
+                  <option value="{{$pem->id}}">{{$pem->nama_bayar}}</option>
+                @endforeach
+              </select>
+            </div>
+
+            <div id="input_giro" hidden="true">
+              <label for="no_giro" class="col-form-label">No Giro:</label>
+              <input type="text" class="form-control" id="no_giro" name="no_giro" value="">
+            </div>
+            </div>
             <div class="tw-bg-white tw-px-5 tw-py-3 ">
                 <div class="md:tw-overflow-x-hidden tw-overflow-y-auto tw-h-52">
                     <table id="hutang" class="tw-w-full table table-striped ">
@@ -214,6 +230,16 @@
 
         total();
     });
+    $('.pembayaran_id').select2();
+    $(document).on('change', '#pembayaran_id', function(e) {
+            if($(this).val() != "4"){
+                $('#input_giro').attr('hidden', true);
+                $('#no_giro').val('');
+            }
+            else{
+                $('#input_giro').attr('hidden', false);
+            }
+        })
 
     function numberRows(table) {
         var c = 0 - 2;

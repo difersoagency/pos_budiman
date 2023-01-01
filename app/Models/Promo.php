@@ -9,7 +9,7 @@ class Promo extends Model
 {
     use HasFactory;
     protected $table = 'promo';
-    protected $fillable = ['kode_promo', 'tgl_mulai', 'tgl_selesai', 'nama_promo', 'barang_id', 'qty_sk', 'disc'];
+    protected $fillable = ['kode_promo', 'tgl_mulai', 'tgl_selesai', 'nama_promo', 'barang_id', 'jasa_id', 'qty_sk', 'disc'];
     public $timestamps = false;
 
     public function Barang()
@@ -17,8 +17,13 @@ class Promo extends Model
         return $this->belongsTo(Barang::class, 'barang_id');
     }
 
-    public function TransJual()
+    public function Jasa()
     {
-        return $this->hasMany(TransJual::class);
+        return $this->belongsTo(Jasa::class, 'jasa_id');
+    }
+
+    public function DTransJual()
+    {
+        return $this->hasMany(DTransJual::class);
     }
 }

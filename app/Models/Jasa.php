@@ -22,4 +22,9 @@ class Jasa extends Model
         return $this->hasMany(DBooking::class);
     }
 
+    public function Promo()
+    {
+        return $this->belongsTo(Promo::class, 'jasa_id');
+    }
+
 }

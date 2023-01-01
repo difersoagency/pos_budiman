@@ -1,5 +1,5 @@
 
-        <form action="{{route('pegawai.store')}}" method="POST">
+        <form action="{{route('pegawai.store')}}" method="POST" id="formtambah">
           @csrf
           <div class="tw-grid tw-grid-cols-2">
             <div class="form-group tw-mr-3">
@@ -16,8 +16,7 @@
             <div class="form-group tw-mr-3">
               <label for="tipe" class="col-form-label">Gender:</label>
               <div class="dropdown tw-mb-4">
-                <select class="custom-select" id="tipe" name="gender">
-                  <option selected>Jenis Kelamin</option>
+                <select class="custom-select select2" id="tipe" name="gender">
                   <option value="L">Laki-Laki</option>
                   <option value="P">Perempuan</option>
                 </select>

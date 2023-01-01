@@ -26,7 +26,7 @@
             <input type="number" class="form-control" id="no-telp" name="telepon">
         </div>
     </div>
-    </div>
+    
     <div class="modal-footer">
         <button type="button" class="btn tw-bg-prim-red tw-text-prim-white" data-dismiss="modal">Batal</button>
         <button type="submit" class="btn tw-bg-prim-blue tw-text-prim-white">Save</button>

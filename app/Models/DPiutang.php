@@ -13,11 +13,17 @@ class DPiutang extends Model
     protected $fillable = ['h_piutang_id',
     'tgl_piutang',
     'total_bayar',
+    'pembayaran_id',
     'no_giro'
 ];
 
     public function Piutang()
     {
         return $this->belongsTo(Piutang::class, 'h_piutang_id');
+    }
+
+    public function Pembayaran()
+    {
+        return $this->belongsTo(Pembayaran::class, 'pembayaran_id');
     }
 }

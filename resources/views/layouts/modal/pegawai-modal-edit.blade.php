@@ -1,5 +1,5 @@
 
-        <form action="{{route('pegawai.update', ['id' => $data->id])}}" method="POST">
+        <form action="{{route('pegawai.update', ['id' => $data->id])}}" method="POST" id="formedit">
           @csrf
           <div class="tw-grid tw-grid-cols-2">
             <div class="form-group tw-mr-3">
@@ -17,7 +17,6 @@
               <label for="tipe" class="col-form-label">Gender:</label>
               <div class="dropdown tw-mb-4">
                 <select class="custom-select select2" id="gender" name="gender">
-                  <option>Jenis Kelamin</option>
                   <option value="L" @if($data->gender == "L") selected @endif>Laki-Laki</option>
                   <option value="P" @if($data->gender == "P") selected @endif>Perempuan</option>
                 </select>

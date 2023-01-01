@@ -58,26 +58,26 @@
             </div>
             <div class="mb-4 mx-2" id="input_giro" hidden="true">
                 <label for="user_beli">Giro</label>
-                <input type="text" placeholder="No Giro" class="form-control nomor_giro" name="nomor_giro" id="nomor_giro">
+                <input type="text" placeholder="No Giro" class="form-control no_giro" name="no_giro" id="no_giro">
             </div>
         </div>
-        <div class="tw-rounded-lg promobox mb-4 tw-py-2 tw-px-4">
+        <!-- <div class="tw-rounded-lg promobox mb-4 tw-py-2 tw-px-4">
             <h2 class="tw-text-md tw-text-prim-white">Promo</h2>
             <div class="tw-grid tw-grid-cols-4 tw-gap-7">
-                @foreach($promo as $key => $promo)
+
                 <div class="my-2 tw-text-white">
-                    <label for="user_beli">{{$promo->kode_promo}}</label>
+                    <label for="user_beli">KODE PROMO</label>
                     <div class="form-check tw-text-white">
-                        <input class="form-check-input" type="radio" value="{{$promo->id}}" id="promo_id{{$key}}" name="promo_id[{{$key}}]" data-barang="{{$promo->barang_id}}" data-disc="{{$promo->disc}}" data-min="{{$promo->qty_sk}} " disabled="true">
-                        <label class="tw-text-white tw-text-[12px]" for="promo_id{{$key}}">
-                        {{$promo->nama_promo}}
+                        <input class="form-check-input" type="radio" value="" id="promo_id" name="promo_id[]" data-barang="" data-disc="" data-min=" " disabled="true">
+                        <label class="tw-text-white tw-text-[12px]" for="promo_id">
+                        NAMA PROMO
                         </label>
                     </div>
                 </div>
-                @endforeach
+
             </div>
 
-        </div>
+        </div> -->
         <div class="tw-grid pb-4">
             <button  disabled="true" type="button" class="tw-w-48 tw-bg-prim-red tw-border-0  tw-text-center tw-text-white tw-py-2 tw-rounded-lg hover:tw-bg-red-700 tw-transition-all float-right" id="btntambah">
                 + Tambah Barang
@@ -107,10 +107,8 @@
                                 </div>
                                 <!-- End Dropdown  -->
                             </td>
-                            <td class="d-none">
-                                <div class="form-group">
+                            <td hidden="true">
                                     <input type="text" class="form-control jenis_brg" name="jenis_brg[]">
-                                </div>
                             </td>
                             <td>
                                 <div class="form-group">
@@ -209,6 +207,18 @@
     });
     @endif
 $(function(){
+    function promo_aktif(id, jenis, table){
+        $.ajax({
+            async: false,
+            dataType: 'json',
+            type: 'GET',
+            url: '/api/promo_aktif/'+id+'/'+jenis,
+            success: function(response) {
+                console.log(response);
+            },
+        })
+                    
+    }
 
     function replaceAll(string, search, replace) {
         return string.split(search).join(replace);
@@ -250,11 +260,14 @@ $(function(){
     $(document).on('change', '#pembayaran_id', function(e) {
         if($(this).val() != "4"){
             $('#input_giro').attr('hidden', true);
+            $('#no_giro').val('');
         }
         else{
             $('#input_giro').attr('hidden', false);
         }
     })
+
+
 
     $('#btntambah').on('click', function(){
         $('#barangtable > tbody > tr:last').after(`<tr>
@@ -266,10 +279,8 @@ $(function(){
                                 </div>
                                 <!-- End Dropdown  -->
                             </td>
-                            <td class="d-none">
-                                <div class="form-group">
+                            <td hidden="true">
                                     <input type="text" class="form-control jenis_brg" name="jenis_brg[]">
-                                </div>
                             </td>
                             <td>
                                 <div class="form-group">
@@ -424,7 +435,9 @@ $(function(){
     $(document).on('change', '#barangtable .barang_id', function(){
         $(this).closest('tr').find('.jenis_brg').val($(this).select2('data')[0].jenis);
         $(this).closest('tr').find('.harga').val(number_format($(this).select2('data')[0].harga));
+        promo_aktif($(this).val(), $(this).select2('data')[0].jenis, "tes");
         sum_total_harga();
+        console.log($(this).val());
     });
 
     $(document).on('keyup change', '#barangtable .jumlah', function(){
@@ -449,11 +462,14 @@ $(function(){
                 if($('#barangtable .barang_id').val() == null){
                     $('#barangtable tbody').empty();
                 }
-                var ids = d_booking[i].barang_id != null ? d_booking[i].barang_id : d_booking[i].jasa_id;
+                var ids = d_booking[i].barang_id != null ? d_booking[i].barang.kode_barang : d_booking[i].jasa_id;
                 var namas = d_booking[i].barang_id != null ? d_booking[i].barang.nama_barang : d_booking[i].jasa.nama_jasa;
                 var jumlah = d_booking[i].jumlah;
                 var harga = d_booking[i].barang_id != null ? d_booking[i].barang.harga_jual : d_booking[i].jasa.harga;
-                var jenis = d_booking[i].barang_id != null ? "barang" : "jenis";
+                var jenis = d_booking[i].barang_id != null ? "barang" : "jasa";
+
+                console.log(promo_aktif(ids, jenis, "tes"));
+
                 $('#barangtable tbody').append(`<tr>
                 <td>
                                 <!-- Dropdown -->
@@ -464,10 +480,8 @@ $(function(){
                                 </div>
                                 <!-- End Dropdown  -->
                             </td>
-                            <td class="d-none">
-                                <div class="form-group">
+                            <td hidden="true">
                                     <input type="text" class="form-control jenis_brg" name="jenis_brg[`+i+`]" value="`+jenis+`">
-                                </div>
                             </td>
                             <td>
                                 <div class="form-group">
@@ -499,6 +513,7 @@ $(function(){
                                 </button>
                             </td>
                 </tr>`);
+                
                 select_barang();
                 // $('select[name="barang_id['+i+']').val($(".barang_id option:contains('"+namas+"')").val()).change();
             }

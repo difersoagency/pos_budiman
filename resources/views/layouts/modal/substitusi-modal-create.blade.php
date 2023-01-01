@@ -1,4 +1,4 @@
-<form method="POST" action="{{route('substitusi.store')}}" class="tw-h-96  tw-overflow-y-auto">
+<form method="POST" action="{{route('substitusi.store')}}" class="tw-h-96  tw-overflow-y-auto" id="formtambah">
     @csrf
     <div class="mx-2 mt-4">
         <label for="koreksi_tanggal">Tgl Pembuatan</label>

@@ -52,24 +52,24 @@
                 </div>
             </div>
             <div class="mb-4 mx-2" id="input_giro" @if($d->Pembayaran->id != "4") hidden="true" @endif>
-                <label for="user_beli">Giro</label>
-                <input type="text" placeholder="No Giro" class="form-control nomor_giro" name="nomor_giro" id="nomor_giro" value="{{$d->no_giro}}">
+                <label for="no_giro">Giro</label>
+                <input type="text" placeholder="No Giro" class="form-control no_giro" name="no_giro" id="no_giro" value="{{$d->no_giro}}">
             </div>
         </div>
         <div class="tw-rounded-lg promobox mb-4 tw-py-2 tw-px-4">
             <h2 class="tw-text-md tw-text-prim-white">Promo</h2>
             <div class="tw-grid tw-grid-cols-4 tw-gap-7">
-                @foreach($promo as $key => $promo)
-                <div class="my-2 tw-text-white">
-                    <label for="user_beli">{{$promo->kode_promo}}</label>
+                <!--  -->
+                <!-- <div class="my-2 tw-text-white">
+                    <label for="user_beli">KODE PROMO</label>
                     <div class="form-check tw-text-white">
-                        <input class="form-check-input" type="radio" value="{{$promo->id}}" id="promo_id{{$key}}" name="promo_id[{{$key}}]" data-barang="{{$promo->barang_id}}" data-disc="{{$promo->disc}}" data-min="{{$promo->qty_sk}} " disabled="true">
-                        <label class="tw-text-white tw-text-[12px]" for="promo_id{{$key}}">
-                        {{$promo->nama_promo}}
+                        <input class="form-check-input" type="radio" value="" id="promo_id" name="promo_id[]" data-barang="" data-disc="" data-min=" " disabled="true">
+                        <label class="tw-text-white tw-text-[12px]" for="promo_id">
+                        NAMA PROMO
                         </label>
                     </div>
-                </div>
-                @endforeach
+                </div> -->
+                <!--  -->
             </div>
 
         </div>
@@ -101,7 +101,7 @@
                                 <td>
                                     <div class="dropdown ">
                                         <select class="custom-select barang_id tw-text-prim-white" name="barang_id[{{$kb}}]">
-                                            <option value="{{$brg->Barang->id}}" selected>{{$brg->Barang->nama_barang}}</option>
+                                            <option value="{{$brg->Barang->kode_barang}}" selected>{{$brg->Barang->nama_barang}}</option>
                                         </select>
                                     </div>
                                     <!-- End Dropdown  -->
@@ -158,7 +158,7 @@
                             </td>
                             <td>
                                 <div class="form-group">
-                                    <input type="number" class="form-control jumlah" name="jumlah[]" min="0" value="{{$jasa->jumlah}}">
+                                    <input type="number" class="form-control jumlah" name="jumlah[]" min="0" value="1">
                                 </div>
                             </td>
                             <td>
@@ -173,7 +173,7 @@
                             </td>
                             <td>
                                 <div class="form-group">
-                                    <input type="text" class="form-control subtotal" readonly="true" name="subtotal[]" value="{{$jasa->jumlah * $jasa->harga}}">
+                                    <input type="text" class="form-control subtotal" readonly="true" name="subtotal[]" value="{{1 * $jasa->harga}}">
                                 </div>
                             </td>
 
@@ -255,6 +255,7 @@ $(function(){
     $(document).on('change', '#pembayaran_id', function(e) {
         if($(this).val() != "4"){
             $('#input_giro').attr('hidden', true);
+            $('#no_giro').val('');
         }
         else{
             $('#input_giro').attr('hidden', false);
