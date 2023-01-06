@@ -1262,7 +1262,7 @@ class MasterController extends Controller
             'stok' => ['required'],
         ]);
         if ($validator->fails()) {
-            return redirect()->back()->with('error', "Update Gagal, periksa form");
+            return response()->json(['data' => 'error', 'msg' => "Periksa dan Pastikan data yang sudah diisi dengan benar"]);
         } else {
             $c = Barang::create([
                 'kode_barang' => $request->kode_barang,
@@ -1277,9 +1277,9 @@ class MasterController extends Controller
             ]);
 
             if ($c) {
-                return redirect()->back()->with('success', "Data berhasil di tambah");
+                return response()->json(['data' => 'success', 'msg' => "Data berhasil di Tambah"]);
             } else {
-                return redirect()->back()->with('error', "Update Gagal, periksa kembali");
+                return response()->json(['data' => 'error', 'msg' => "Tambah data Gagal, periksa kembali"]);
             }
         }
     }
@@ -1382,7 +1382,7 @@ class MasterController extends Controller
             'stok' => ['required'],
         ]);
         if ($validator->fails()) {
-            return redirect()->back()->with('error', "Update Gagal, periksa kembali");
+            return response()->json(['data' => 'error', 'msg' => "Periksa dan Pastikan data yang sudah diisi dengan benar"]);
         } else {
 
             $data = $request->all();
@@ -1390,9 +1390,9 @@ class MasterController extends Controller
             $barang->update($data);
 
             if ($barang) {
-                return redirect()->back()->with('success', "Data berhasil di update");
+                return response()->json(['data' => 'success', 'msg' => "Data berhasil di Ubah"]);
             } else {
-                return redirect()->back()->with('error', "Update Gagal, periksa kembali");
+                return response()->json(['data' => 'error', 'msg' => "Ubah data Gagal, periksa kembali"]);
             }
         }
     }

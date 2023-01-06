@@ -1,4 +1,4 @@
-<form action="{{ route('barang.store') }}" method="POST" class="tw-h-96  tw-overflow-y-auto">
+<form action="{{ route('barang.store') }}" method="POST" class="tw-h-96  tw-overflow-y-auto" id="formtambah_barang">
     @csrf
     <div class="tw-grid tw-grid-cols-2">
         <div class="form-group tw-mr-3">

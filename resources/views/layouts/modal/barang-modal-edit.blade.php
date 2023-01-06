@@ -1,4 +1,4 @@
-<form action="{{ route('barang.update', ['id' => $data->id]) }}" method="POST">
+<form action="{{ route('barang.update', ['id' => $data->id]) }}" method="POST" id="formedit_barang">
     @csrf
     <div class="tw-grid tw-grid-cols-2">
         <div class="form-group tw-mr-3">
