@@ -1,5 +1,5 @@
 
-        <form action="{{route('tipe.store')}}" method="POST">
+        <form action="{{route('tipe.store')}}" method="POST" id="formtambah_tipe">
           @csrf
             <div class="form-group tw-mr-3">
               <label for="kode-tipe" class="col-form-label">Kode tipe:</label>

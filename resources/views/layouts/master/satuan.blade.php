@@ -171,6 +171,57 @@
             })
         });
 
+        $(document).on('submit', '#formtambah_satuan', function(event) {
+            event.preventDefault();
+            var action = $(this).attr('action');
+            $.ajax({
+                url: action,
+                type: 'POST',
+                data: $('#formtambah_satuan').serialize(),
+                success: function(result) {
+                    if (result.data == "success") {
+                        Swal.fire({
+                            title: 'Berhasil',
+                            text: result.msg,
+                            icon: 'success',
+                        });
+                        window.location.reload();
+                    } else {
+                        Swal.fire({
+                            title: 'Gagal',
+                            text: result.msg,
+                            icon: 'error',
+                        });
+                    }
+                }
+            });
+        })
+
+        $(document).on('submit', '#formedit_satuan', function(event) {
+            event.preventDefault();
+            var action = $(this).attr('action');
+            $.ajax({
+                url: action,
+                type: 'POST',
+                data: $('#formedit_satuan').serialize(),
+                success: function(result) {
+                    if (result.data == "success") {
+                        Swal.fire({
+                            title: 'Berhasil',
+                            text: result.msg,
+                            icon: 'success',
+                        });
+                        window.location.reload();
+                    } else {
+                        Swal.fire({
+                            title: 'Gagal',
+                            text: result.msg,
+                            icon: 'error',
+                        });
+                    }
+                }
+            });
+        })
         $(document).on('click', '#btndelete', function(event) {
             event.preventDefault();
             var data_id = $(this).attr('data-id');

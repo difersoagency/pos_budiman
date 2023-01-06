@@ -214,6 +214,58 @@
             })
         });
 
+        $(document).on('submit', '#formtambah_tipe', function(event) {
+            event.preventDefault();
+            var action = $(this).attr('action');
+            $.ajax({
+                url: action,
+                type: 'POST',
+                data: $('#formtambah_tipe').serialize(),
+                success: function(result) {
+                    if (result.data == "success") {
+                        Swal.fire({
+                            title: 'Berhasil',
+                            text: result.msg,
+                            icon: 'success',
+                        });
+                        window.location.reload();
+                    } else {
+                        Swal.fire({
+                            title: 'Gagal',
+                            text: result.msg,
+                            icon: 'error',
+                        });
+                    }
+                }
+            });
+        })
+
+        $(document).on('submit', '#formedit_tipe', function(event) {
+            event.preventDefault();
+            var action = $(this).attr('action');
+            $.ajax({
+                url: action,
+                type: 'POST',
+                data: $('#formedit_tipe').serialize(),
+                success: function(result) {
+                    if (result.data == "success") {
+                        Swal.fire({
+                            title: 'Berhasil',
+                            text: result.msg,
+                            icon: 'success',
+                        });
+                        window.location.reload();
+                    } else {
+                        Swal.fire({
+                            title: 'Gagal',
+                            text: result.msg,
+                            icon: 'error',
+                        });
+                    }
+                }
+            });
+        })
+
         $(document).on('click', '#btndelete', function(event) {
             event.preventDefault();
             var data_id = $(this).attr('data-id');

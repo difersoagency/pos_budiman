@@ -212,13 +212,13 @@
             })
         });
 
-        $(document).on('submit', '#formtambah', function(event) {
+        $(document).on('submit', '#formtambah_supplier', function(event) {
             event.preventDefault();
             var action = $(this).attr('action');
             $.ajax({
                 url: action,
                 type: 'POST',
-                data: $('#formtambah').serialize(),
+                data: $('#formtambah_supplier').serialize(),
                 success: function(result) {
                     if (result.data == "success") {
                         Swal.fire({

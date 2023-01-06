@@ -1,4 +1,4 @@
-<form action="{{ route('supplier.store') }}" method="POST" id="formtambah">
+<form action="{{ route('supplier.store') }}" method="POST" id="formtambah_supplier">
     @csrf
     <div class="form-group tw-mr-3">
         <label for="nama_supplier" class="col-form-label">Nama Supplier:</label>

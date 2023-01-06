@@ -1,5 +1,5 @@
 
-        <form action="{{route('satuan.store')}}" method="POST">
+        <form action="{{route('satuan.store')}}" method="POST"  id="formtambah_satuan">
           @csrf
             <div class="form-group tw-mr-3">
               <label for="kode-satuan" class="col-form-label">Kode Satuan:</label>

@@ -1,5 +1,5 @@
 
-        <form action="{{route('tipe.update', ['id' => $data->id])}}" method="POST">
+        <form action="{{route('tipe.update', ['id' => $data->id])}}" method="POST" id="formedit_tipe">
           @csrf
             <div class="form-group tw-mr-3">
               <label for="kode-tipe" class="col-form-label">Kode Tipe:</label>

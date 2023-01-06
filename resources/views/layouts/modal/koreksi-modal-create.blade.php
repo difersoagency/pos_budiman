@@ -1,4 +1,4 @@
-<form action="{{ route('koreksi.store') }}" method="POST" class="tw-h-96  tw-overflow-y-auto">
+<form action="{{ route('koreksi.store') }}" method="POST" class="tw-h-96  tw-overflow-y-auto"  id="formtambah_koreksi">
     @csrf
     <div class="mx-2 mt-4">
         <label for="koreksi_tanggal">Tgl Transaksi</label>

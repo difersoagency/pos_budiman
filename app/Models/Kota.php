@@ -18,6 +18,6 @@ class Kota extends Model
 
     public function Supplier()
     {
-        return $this->hasMany(Supplier::class, 'kode_kota');
+        return $this->hasMany(Supplier::class);
     }
 }

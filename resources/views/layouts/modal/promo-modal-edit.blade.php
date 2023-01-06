@@ -1,4 +1,4 @@
-<form action="{{ route('promo.update', ['id' => $data->id]) }}" method="POST">
+<form action="{{ route('promo.update', ['id' => $data->id]) }}" method="POST"  id="formedit_promo">
     @csrf
     <div class="form-group tw-mr-3">
         <label for="barang_id" class="col-form-label">Barang :</label>
@@ -50,21 +50,21 @@
         </div>
     </div>
 
-    <input type="hidden" class="form-control" id="jenis" name="jenis">
+    {{-- <input type="hidden" class="form-control" id="jenis" name="jenis"> --}}
 
     <div class="tw-grid tw-grid-cols-2">
         <div class="form-group tw-mr-2">
             <label for="tgl-mulai" class="col-form-label">Tanggal Mulai:</label>
             <div class="dropdown tw-mb-4">
                 <input type="date" name="tgl_mulai" id="tgl-mulai"
-                    class="tw-px-5 tw-py-1 tw-w-full tw-border-gray-400 tw-border" value="{{ $data->tgl_mulai }}">
+                    class="tw-px-5 tw-py-1 tw-w-full tw-border-gray-400 tw-border form-control" value="{{ $data->tgl_mulai }}">
             </div>
         </div>
         <div class="form-group tw-mr-2">
             <label for="tgl-selesai" class="col-form-label">Tanggal Selesai:</label>
             <div class="dropdown tw-mb-4">
                 <input type="date" name="tgl_selesai" id="tgl-selesai"
-                    class="ol-form-label tw-px-5 tw-py-1 tw-w-full tw-border-gray-400 tw-border"
+                    class="ol-form-label tw-px-5 tw-py-1 tw-w-full tw-border-gray-400 tw-border form-control"
                     value="{{ $data->tgl_selesai }}">
             </div>
         </div>

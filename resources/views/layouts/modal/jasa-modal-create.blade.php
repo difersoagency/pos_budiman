@@ -1,5 +1,5 @@
 
-        <form action="{{route('jasa.store')}}" method="POST">
+        <form action="{{route('jasa.store')}}" method="POST" id="formtambah_jasa">
           @csrf
             <!-- <div class="form-group tw-mr-3">
               <label for="kode-jasa" class="col-form-label">Kode Jasa:</label>
@@ -17,7 +17,7 @@
                 <div class="input-group-prepend">
                   <span class="input-group-text">Rp.</span>
                 </div>
-                <input type="number" class="form-control" aria-label="Amount" id="harga-jasa" name="harga">
+                <input type="number" class="form-control" aria-label="Amount" id="harga-jasa" name="harga" value="0">
               </div>
               <small class="text-danger" id="msg-harga-jasa"></small>
             </div>

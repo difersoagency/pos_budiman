@@ -1,4 +1,4 @@
-<form action="{{ route('customer.update', ['id' => $data->id]) }}" method="POST">
+<form action="{{ route('customer.update', ['id' => $data->id]) }}" method="POST" id="formedit_customer">
     @csrf
     <div class="form-group tw-mr-3">
         <label for="nama-pelanggan" class="col-form-label">Nama Pelanggan:</label>

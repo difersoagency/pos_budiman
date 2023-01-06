@@ -1,4 +1,4 @@
-        <form action="{{ route('promo.store') }}" method="POST">
+        <form action="{{ route('promo.store') }}" method="POST" id="formtambah_promo">
             @csrf
             <div class="form-group tw-mr-3">
                 <label for="barang_id" class="col-form-label">Jenis :</label>
@@ -50,15 +50,15 @@
                 <div class="form-group tw-mr-2">
                     <label for="tgl-mulai" class="col-form-label">Tanggal Mulai:</label>
                     <div class="dropdown tw-mb-4">
-                        <input type="date" name="tgl_mulai" id="tgl-mulai"
-                            class="tw-px-5 tw-py-1 tw-w-full tw-border-gray-400 tw-border">
+                        <input type="date" name="tgl_mulai" id="tgl-mulai" 
+                            class="tw-px-5 tw-py-1 tw-w-full tw-border-gray-400 tw-border form-control">
                     </div>
                 </div>
                 <div class="form-group tw-mr-2">
                     <label for="tgl-selesai" class="col-form-label">Tanggal Selesai:</label>
                     <div class="dropdown tw-mb-4">
                         <input type="date" name="tgl_selesai" id="tgl-selesai"
-                            class="ol-form-label tw-px-5 tw-py-1 tw-w-full tw-border-gray-400 tw-border">
+                            class="ol-form-label tw-px-5 tw-py-1 tw-w-full tw-border-gray-400 tw-border form-control">
                     </div>
                 </div>
             </div>

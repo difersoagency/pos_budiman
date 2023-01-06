@@ -56,7 +56,7 @@
         </div>
     </section>
 
-    <div class="modal fade" id="modalPop" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modalPop" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -143,10 +143,9 @@
                 success: function(result) {
                     $('#modalPop').modal("show");
                     $('#modal-body').html(result).show();
-                    $(".selects").select2({
-                        placeholder: "Pilih Data",
-                        dropdownParent: $("#modalPop")
-                    });
+                    $('.select2').prepend('<option selected=""></option>').select2({
+                    placeholder: "Pilih Data"
+                });
                     // select_barang();
 
                 },

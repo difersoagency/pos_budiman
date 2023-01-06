@@ -1,5 +1,5 @@
 
-        <form action="{{route('jasa.update', ['id' => $data->id])}}" method="POST">
+        <form action="{{route('jasa.update', ['id' => $data->id])}}" method="POST" id="formedit_jasa">
           @csrf
             <!-- <div class="form-group tw-mr-3">
               <label for="kode-jasa" class="col-form-label">Kode Jasa:</label>

@@ -1,5 +1,5 @@
 
-        <form action="{{ route('merek.update', ['id' => $data->id]) }}" method="POST">
+        <form action="{{ route('merek.update', ['id' => $data->id]) }}" method="POST" id="formedit_merk">
           @csrf
             
           <div class="form-group tw-mr-3">

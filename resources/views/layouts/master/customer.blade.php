@@ -60,24 +60,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {{-- <tr>
-                                            <td>Wisnu Sunadi</td>
-                                            <td>Bojonegoro</td>
-                                            <td>Jl.Padepokan 12</td>
-                                            <td>081234123</td>
-                                            <td class="tw-px-3">
-                                                <div class="grid grid-cols-2 tw-contents">
-                                                    <button href="" class="mr-4 tw-bg-transparent tw-border-none"
-                                                        data-toggle="modal" data-target="#customerModal">
-                                                        <i class="fa fa-pen tw-text-prim-blue"></i>
-                                                    </button>
-                                                    <button data-toggle="modal" data-target="#deleteModal"
-                                                        class="tw-bg-transparent tw-border-none">
-                                                        <i class="fa fa-trash tw-text-prim-red"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr> --}}
+                        
 
                                 </tbody>
 
@@ -239,13 +222,13 @@
     });
 
 
-    $(document).on('submit', '#formtambah', function(event) {
+    $(document).on('submit', '#formtambah_customer', function(event) {
             event.preventDefault();
             var action = $(this).attr('action');
             $.ajax({
                 url: action,
                 type: 'POST',
-                data: $('#formtambah').serialize(),
+                data: $('#formtambah_customer').serialize(),
                 success: function(result) {
                     if (result.data == "success") {
                         Swal.fire({
@@ -265,13 +248,13 @@
             });
         })
 
-        $(document).on('submit', '#formedit', function(event) {
+        $(document).on('submit', '#formedit_customer', function(event) {
             event.preventDefault();
             var action = $(this).attr('action');
             $.ajax({
                 url: action,
                 type: 'POST',
-                data: $('#formedit').serialize(),
+                data: $('#formedit_customer').serialize(),
                 success: function(result) {
                     if (result.data == "success") {
                         Swal.fire({
@@ -293,7 +276,7 @@
         
     $('#kota_id').change(function() {
         var merek_id = $(this).val();
-        $('#table_customer').DataTable().ajax.url('/master/customer/data/' + merek_id).load();
+        $('#showtable').DataTable().ajax.url('/master/customer/data/' + merek_id).load();
     });
 
 

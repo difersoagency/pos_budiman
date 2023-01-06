@@ -1,5 +1,5 @@
 
-        <form action="{{ route('merek.store') }}" method="POST">
+        <form action="{{ route('merek.store') }}" method="POST" id="formtambah_merk">
           @csrf
             
           <div class="form-group tw-mr-3">
