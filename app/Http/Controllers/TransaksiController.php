@@ -283,6 +283,14 @@ class TransaksiController extends Controller
         $data = DPiutang::where('h_piutang_id', $id)->get();
         return datatables()->of($data)
             ->addIndexColumn()
+            ->addColumn('pembayaran', function($data){
+                $res = $data->Pembayaran->nama_bayar;
+                if($data->Pembayaran->id != '1'){
+                $res .= '<div><small class="text-danger">Nomor: '.$data->no_giro.'</small></div>';
+                }
+                return $res;
+            })
+            ->rawColumns(['pembayaran'])
             ->make(true);
     }
 
@@ -726,6 +734,13 @@ class TransaksiController extends Controller
         $data = TransJual::with('Booking.Customer', 'Pembayaran', 'Piutang.DPiutang', 'ReturJual')->orderBy('tgl_trans_jual', 'desc')->get();
         return datatables()->of($data)
             ->addIndexColumn()
+            ->addColumn('pembayaran', function($data){
+                $res = $data->Pembayaran->nama_bayar;
+                if($data->Pembayaran->id != '1'){
+                $res .= '<div><small class="text-danger">Nomor: '.$data->no_giro.'</small></div>';
+                }
+                return $res;
+            })
             ->addColumn('action', function ($data) {
                 $res = '<div class="grid grid-cols-2">
                 <button id="btndetail" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->no_trans_jual . '" >
@@ -745,7 +760,7 @@ class TransaksiController extends Controller
                 return $res;
 
             })
-            ->rawColumns(['action'])
+            ->rawColumns(['action', 'pembayaran'])
             ->make(true);
     }
 
@@ -1258,7 +1273,7 @@ class TransaksiController extends Controller
                             'jumlah' => $request->jumlah[$i]
                         ]);
                     } else if ($request->jenis_brg[$i] == "barang") {
-                        $kb = Barang::where('kode_barang', $request->barang_id[$id])->first();
+                        $kb = Barang::where('kode_barang', $request->barang_id[$i])->first();
                         $dc = DBooking::create([
                             'booking_id' => $c->id,
                             'jasa_id' => NULL,
@@ -1326,7 +1341,7 @@ class TransaksiController extends Controller
                             'jumlah' => $request->jumlah[$i]
                         ]);
                     } else if ($request->jenis_brg[$i] == "barang") {
-                        $kb = Barang::where('kode_barang', $request->barang_id[$id])->first();
+                        $kb = Barang::where('kode_barang', $request->barang_id[$i])->first();
                         $dc = DBooking::create([
                             'booking_id' => $c->id,
                             'jasa_id' => NULL,

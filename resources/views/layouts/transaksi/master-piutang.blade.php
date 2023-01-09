@@ -53,8 +53,8 @@
             </div>
             <!-- /.row -->
         </div>
-        <div class="modal fade w-full" id="modalPop" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
+        <div class="modal fade" id="modalPop" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog tw-min-w-[60%]" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="modal_title"></h5>
@@ -137,6 +137,8 @@ $(document).ready(function() {
                     searchable: false
                 }, {
                     data: 'tgl_piutang',
+                },{
+                    data: 'pembayaran',
                 }, {
                     data: 'total_bayar',
                     render: DataTable.render.number(',', '.', 2, '')
@@ -144,7 +146,7 @@ $(document).ready(function() {
             });
         }
         $(document).on('change', '#pembayaran_id', function(e) {
-            if($(this).val() != "4"){
+            if($(this).val() == "1"){
                 $('#input_giro').attr('hidden', true);
                 $('#no_giro').val('');
             }
@@ -161,7 +163,7 @@ $(document).ready(function() {
                 },
                 // return the result
                 success: function(result) {
-                    $('#modal').modal("show");
+                    $('#modalPop').modal("show");
                     $('.modal-title').html("Detail Pembayaran Piutang");
                     $('.modal-body').html(result).show();
 

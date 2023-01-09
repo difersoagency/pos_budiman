@@ -244,6 +244,7 @@ $(function() {
                 $( '#trans_beli' ).each(function(){
                   location.reload();
               });
+              window.location.href = "{{route('pembelian')}}";
           } else if(response['data'] == "dibayar"){
                 swal.fire(
                     'Gagal',
@@ -291,6 +292,7 @@ $(function() {
                 $( '#trans_beli' ).each(function(){
                   location.reload();
               });
+              window.location.href = "{{route('retur-pembelian')}}";
            } else if(response['data'] == "dibayar"){
                 swal.fire(
                     'Gagal',
@@ -337,8 +339,10 @@ $(function() {
                     'success'
                 );
                 $( '#hutang' ).each(function(){
-                  location.reload();
+                location.reload();
+                
               });
+              window.location.href='/transaksi/hutang';
          
            } else if( response['data'] == "total_gagal"){
                 swal.fire(

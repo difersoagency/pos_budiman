@@ -200,7 +200,7 @@ $(document).ready(function() {
                 data: 'total_jual',
                 render: DataTable.render.number(',', '.', 2, '')
             }, {
-                data: 'pembayaran.nama_bayar',
+                data: 'pembayaran',
             }, {
                 data: 'action',
                 orderable: false,

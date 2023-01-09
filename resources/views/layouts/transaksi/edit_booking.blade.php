@@ -5,7 +5,7 @@
         <section class="tambahBeli">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="transaksi">Transaksi</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('transaksi') }}">Transaksi</a></li>
                     <li class="breadcrumb-item"><a href="{{ route('master_booking') }}">Booking</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Edit Booking</li>
                 </ol>
@@ -120,6 +120,7 @@
                     text: "{{ Session::get('success') }}",
                     icon: 'success',
                 });
+                window.location.href="{{route('master_booking')}}";
             @endif
 
             $('.barang_id').select2({

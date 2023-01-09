@@ -5,7 +5,7 @@
     <section class="tambahBeli">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="transaksi">Transaksi</a></li>
+                <li class="breadcrumb-item"><a href="{{route('transaksi')}}">Transaksi</a></li>
                 <li class="breadcrumb-item"><a href="{{route('trans-jual')}}">Penjualan</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Tambah Penjualan</li>
             </ol>
@@ -57,8 +57,8 @@
                 </div>
             </div>
             <div class="mb-4 mx-2" id="input_giro" hidden="true">
-                <label for="user_beli">Giro</label>
-                <input type="text" placeholder="No Giro" class="form-control no_giro" name="no_giro" id="no_giro">
+                <label for="user_beli">Nomor</label>
+                <input type="text" placeholder="Nomor Giro/Debit/Kredit" class="form-control no_giro" name="no_giro" id="no_giro">
             </div>
         </div>
         <!-- <div class="tw-rounded-lg promobox mb-4 tw-py-2 tw-px-4">
@@ -178,9 +178,9 @@
 
         </div>
         <div class=" tw-mb-40 tw-mt-10">
-            <button class="tw-bg-white tw-border-2 tw-mr-5 tw-text-prim-blue  tw-border-prim-blue hover:tw-bg-prim-blue hover:tw-text-prim-white  tw-w-32 tw-text-center tw-py-2 tw-rounded-lg  tw-transition-all">
+            <a href="{{route('trans-jual')}}"><button type="button" class="tw-bg-white tw-border-2 tw-mr-5 tw-text-prim-blue  tw-border-prim-blue hover:tw-bg-prim-blue hover:tw-text-prim-white  tw-w-32 tw-text-center tw-py-2 tw-rounded-lg  tw-transition-all">
                 <p class="tw-m-0 tw-font-bold">Batal</p>
-            </button>
+            </button></a>
             <button class="tw-bg-prim-black tw-border-0 tw-w-32 tw-text-center tw-py-2 tw-rounded-lg hover:tw-bg-gray-600 tw-transition-all float-right" type="submit">
                 <p class="tw-m-0 tw-text-white">Simpan</p>
             </button>
@@ -205,6 +205,7 @@
         text: "{{ Session::get('success') }}",
         icon: 'success',
     });
+    window.location.href = "{{route('trans-jual')}}";
     @endif
 $(function(){
     function promo_aktif(id, jenis, table){
@@ -258,7 +259,7 @@ $(function(){
             });
     
     $(document).on('change', '#pembayaran_id', function(e) {
-        if($(this).val() != "4"){
+        if($(this).val() == "1"){
             $('#input_giro').attr('hidden', true);
             $('#no_giro').val('');
         }

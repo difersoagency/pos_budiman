@@ -15,8 +15,8 @@
             </div>
 
             <div class="form-group tw-mr-3" id="input_giro" hidden="true">
-              <label for="no_giro" class="col-form-label">No Giro:</label>
-              <input type="text" class="form-control" id="no_giro" name="no_giro" value="">
+              <label for="no_giro" class="col-form-label">Nomor:</label>
+              <input type="text" class="form-control" id="no_giro" name="no_giro" value="" placeholder="Nomor Giro/Debit/Kredit">
             </div>
 
             <div class="form-group tw-mr-3">

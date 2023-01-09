@@ -153,6 +153,7 @@
         text: "{{ Session::get('success') }}",
         icon: 'success',
     });
+    window.location.href = "{{route('retur-penjualan')}}";
     @endif
     $(function(){
     var brg_arr = [];
