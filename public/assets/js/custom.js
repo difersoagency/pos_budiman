@@ -244,7 +244,7 @@ $(function() {
                 $( '#trans_beli' ).each(function(){
                   location.reload();
               });
-              window.location.href = "{{route('pembelian')}}";
+              window.location.href = "/transaksi/beli";
           } else if(response['data'] == "dibayar"){
                 swal.fire(
                     'Gagal',
@@ -292,7 +292,7 @@ $(function() {
                 $( '#trans_beli' ).each(function(){
                   location.reload();
               });
-              window.location.href = "{{route('retur-pembelian')}}";
+              window.location.href = "/transaksi/retur-beli";
            } else if(response['data'] == "dibayar"){
                 swal.fire(
                     'Gagal',
