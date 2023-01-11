@@ -44,7 +44,7 @@
 
                         <!-- START: Table Tablet + Desktop -->
                         <div class="table-barang tw-mt-5 tw-col-span-2" data-current-page="1">
-                            <table id="table_promo" class="table table-bordered responsive nowrap" style="width:100%">
+                            <table id="showtable" class="table table-bordered responsive nowrap" style="width:100%">
                                 <thead class="tw-bg-prim-blue">
                                     <tr>
                                         <th class="tw-text-prim-white">Kode Promo</th>
@@ -119,10 +119,13 @@
             $("#tanggal_akhir").attr("min", max);
         }
         var table_promo = 
-        $('#table_promo').DataTable({
+        $('#showtable').DataTable({
             destroy: true,
             processing: true,
-            serverSide: true,
+            serverSide: false,
+            language: {
+                processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
+            },
             ajax: {
                 'url': '/master/promo/data',
                 'type': 'POST',

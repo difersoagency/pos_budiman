@@ -833,7 +833,7 @@ class MasterController extends Controller
         } else {
             $c = Jasa::create([
                 'nama_jasa' => $request->nama_jasa,
-                'harga' => $request->harga
+                'harga' => str_replace(",", "", $request->harga)
             ]);
 
             if ($c) {
@@ -1271,8 +1271,8 @@ class MasterController extends Controller
                 'merek_id' => $request->merk,
                 'satuan_id' => $request->satuan,
                 'supplier_id' => $request->supplier,
-                'harga_jual' => $request->harga_jual,
-                'harga_beli' => $request->harga_beli,
+                'harga_jual' => str_replace(",", "", $request->harga_jual),
+                'harga_beli' => str_replace(",", "", $request->harga_beli),
                 'stok' => $request->stok
             ]);
 

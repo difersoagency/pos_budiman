@@ -170,27 +170,20 @@
             columns: [{
                     data: 'nama',
                     className: 'nowrap-text align-center',
-                    orderable: false,
-                    searchable: false,
                 },
                 {
                     data: 'alamat',
                     className: 'nowrap-text align-center',
-                    orderable: false,
-                    searchable: false,
                 },
                 {
                     data: 'kota',
                     className: 'nowrap-text align-center',
-                    orderable: false,
-                    searchable: false,
-                }, {
+                }, 
+                {
                     data: 'telepon',
                     className: 'nowrap-text align-center',
-                    orderable: false,
-                    searchable: false,
-                }, {
-
+                }, 
+                {
                     data: 'button',
                     className: 'tw-px-3',
                     orderable: false,
