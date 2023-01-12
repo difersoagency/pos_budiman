@@ -97,7 +97,7 @@ class TransaksiController extends Controller
             'total_retur_jual' => ['required'],
         ]);
         if ($validator->fails()) {
-            return redirect()->back()->with('error', "Gagal menambahkan, periksa kembali form anda");
+            return response()->json(['data' => 'error', 'msg' => "Gagal menambahkan, periksa kembali form anda"]);
         } else {
             $c = ReturJual::create([
                 'htrans_jual_id' => $r->htrans_jual_id,
@@ -126,9 +126,9 @@ class TransaksiController extends Controller
                 }
             }
             if ($bool == true) {
-                return redirect()->back()->with('success', "Data berhasil di tambah");
+                return response()->json(['data' => 'success', 'msg' => "Data berhasil di tambah"]);
             } else {
-                return redirect()->back()->with('error', "Gagal Menambahkan, periksa kembali" . $r->jenis_brg[0]);
+                return response()->json(['data' => 'error', 'msg' => "Gagal Menambahkan, periksa kembali"]);
             }
         }
     }
@@ -148,7 +148,7 @@ class TransaksiController extends Controller
             'total_retur_jual' => ['required'],
         ]);
         if ($validator->fails()) {
-            return redirect()->back()->with('error', "Gagal menambahkan, periksa kembali form anda");
+            return return response()->json(['data' => 'error', 'msg' => "Gagal menambahkan, periksa kembali form anda"]);
         } else {
             $drj = DReturJual::where('hretur_jual_id', $r->id)->count();
             if($drj > 0){
@@ -188,9 +188,9 @@ class TransaksiController extends Controller
                 }
             }
             if ($bool == true) {
-                return redirect()->back()->with('success', "Data berhasil di edit");
+                return return response()->json(['data' => 'success', 'msg' => "Data berhasil di edit"]);
             } else {
-                return redirect()->back()->with('error', "Gagal Mengedit, periksa kembali" . $r->jenis_brg[0]);
+                return return response()->json(['data' => 'error', 'msg' => "Gagal Mengedit, periksa kembali"]);
             }
         }
     }
@@ -772,9 +772,17 @@ class TransaksiController extends Controller
             ->addColumn('tgl_bayar', function ($data) {
                 return  $data->tgl_bayar;
             })
+            ->addColumn('pembayaran', function($data){
+                $res = $data->Pembayaran->nama_bayar;
+                if($data->Pembayaran->id != '1'){
+                $res .= '<div><small class="text-danger">Nomor: '.$data->no_giro.'</small></div>';
+                }
+                return $res;
+            })
             ->addColumn('total_bayar', function ($data) {
                 return number_format(($data->total_bayar), 0, ',', '.');
             })
+            ->rawColumns(['pembayaran'])
             ->make(true);
     }
     public function data_hutang()
@@ -878,6 +886,11 @@ class TransaksiController extends Controller
     {
         $dtb = DTransBeli::where('htrans_beli_id', $request->id)->get();
         if (count($dtb) > 0) {
+            foreach($dtb as $i){
+                $b = Barang::find($i->barang_id);
+                $b->stok = $b->stok - $i->jumlah;
+                $bu = $b->save();
+            }
             DTransBeli::where('htrans_beli_id', $request->id)->delete();
         }
         $tb = TransBeli::find($request->id)->delete();
@@ -958,7 +971,7 @@ class TransaksiController extends Controller
             'bayar_jual' => ['required'],
         ]);
         if ($validator->fails()) {
-            return redirect()->back()->with('error', "Gagal menambahkan, periksa kembali form anda");
+            return response()->json(['data' => 'error', 'msg' => "Gagal menambahkan, periksa kembali form anda"]);
         } else {
             $c = TransJual::create([
                 'booking_id' => $r->booking_id,
@@ -1015,9 +1028,9 @@ class TransaksiController extends Controller
                 }
             }
             if ($bool == true) {
-                return redirect()->back()->with('success', "Data berhasil di tambah");
+                return response()->json(['data' => 'success', 'msg' => "Data berhasil di tambah"]);
             } else {
-                return redirect()->back()->with('error', "Gagal Menambahkan, periksa kembali");
+                return response()->json(['data' => 'error', 'msg' => "Gagal Menambahkan, periksa kembali"]);
             }
         }
     }
@@ -1038,7 +1051,7 @@ class TransaksiController extends Controller
             'bayar_jual' => ['required'],
         ]);
         if ($validator->fails()) {
-            return redirect()->back()->with('error', "Gagal menambahkan, periksa kembali form anda");
+            return response()->json(['data' => 'error', 'msg' => "Gagal menambahkan, periksa kembali form anda"]);
         } else {
             $pu = Piutang::where('htrans_jual_id', $id)->count();
             if($pu > 0){
@@ -1112,9 +1125,9 @@ class TransaksiController extends Controller
                 }
             }
             if ($bool == true) {
-                return redirect()->back()->with('success', "Data berhasil di edit");
+                return response()->json(['data' => 'success', 'msg' => "Data berhasil di edit"]);
             } else {
-                return redirect()->back()->with('error', "Gagal Mengedit, periksa kembali" . $r->jenis_brg[0]);
+                return response()->json(['data' => 'error', 'msg' => "Gagal Mengedit, periksa kembali"]);
             }
         }
     }
@@ -1130,7 +1143,13 @@ class TransaksiController extends Controller
         }
         $dtj = DTransJual::where('htrans_jual_id', $r->id)->count();
         if($dtj > 0){
-            $dtjd = DTransJual::where('htrans_jual_id', $r->id)->delete();
+            $dtjs = DTransJual::where('htrans_jual_id', $r->id)->get();
+                foreach($dtjs as $i){
+                    $b = Barang::find($i->barang_id);
+                    $b->stok = $b->stok + $i->jumlah;
+                    $bu = $b->save();
+                }
+            $dtj = DTransJual::where('htrans_jual_id', $r->id)->delete();
         }
         $del = TransJual::where('id', $r->id)->delete();
         if ($del) {
@@ -1253,7 +1272,7 @@ class TransaksiController extends Controller
             'tgl_booking' => ['required']
         ]);
         if ($validator->fails()) {
-            return redirect()->back()->with('error', "Gagal menambahkan, periksa kembali form anda");
+            return response()->json(['data' => 'error', 'msg' => "Gagal menambahkan, periksa kembali form anda"]);
         } else {
             $c = Booking::create([
                 'customer_id' => $request->customer_id,
@@ -1287,9 +1306,9 @@ class TransaksiController extends Controller
                 }
             }
             if ($bool == true) {
-                return redirect()->back()->with('success', "Data berhasil di tambah");
+                return response()->json(['data' => 'success', 'msg' => "Data berhasil di tambah"]);
             } else {
-                return redirect()->back()->with('error', "Gagal Menambahkan, periksa kembali");
+                return response()->json(['data' => 'error', 'msg' => "Gagal Menambahkan, periksa kembali"]);
             }
         }
     }
@@ -1313,10 +1332,11 @@ class TransaksiController extends Controller
         $validator = Validator::make($request->all(), [
             'customer_id' => ['required'],
             'no_booking' => ['required', 'unique:booking,no_booking,'.$id],
-            'tgl_booking' => ['required']
+            'tgl_booking' => ['required'],
+            'barang_id.*' => ['required']
         ]);
         if ($validator->fails()) {
-            return redirect()->back()->with('error', "Gagal menambahkan, periksa kembali form anda");
+            return response()->json(['data' => 'error', 'msg' => "Gagal menambahkan, periksa kembali form anda"]);
         } else {
             $count = DBooking::where('booking_id', $id)->count();
             if($count > 0){
@@ -1355,9 +1375,9 @@ class TransaksiController extends Controller
                 }
             }
             if ($bool == true) {
-                return redirect()->back()->with('success', "Data berhasil di ubah");
+                return response()->json(['data' => 'success', 'msg' =>  "Data berhasil di ubah"]);
             } else {
-                return redirect()->back()->with('error', "Gagal Mengubah, periksa kembali");
+                return response()->json(['data' => 'error', 'msg' => "Gagal Mengubah, periksa kembali"]);
             }
         }
     }

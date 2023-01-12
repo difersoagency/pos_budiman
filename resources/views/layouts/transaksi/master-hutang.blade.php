@@ -137,6 +137,8 @@ function detail_hutang_table(id){
                 }, {
                     data: 'tgl_bayar',
                 }, {
+                    data: 'pembayaran',
+                }, {
                     data: 'total_bayar',
                 }]
         });

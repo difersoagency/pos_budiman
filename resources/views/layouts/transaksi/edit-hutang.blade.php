@@ -54,8 +54,8 @@
             </div>
 
             <div id="input_giro" hidden="true">
-              <label for="no_giro" class="col-form-label">No Giro:</label>
-              <input type="text" class="form-control" id="no_giro" name="no_giro" value="">
+              <label for="no_giro" class="col-form-label">Nomor:</label>
+              <input type="text" class="form-control" id="no_giro" name="no_giro" placeholder="Nomor Giro/Debit/Kredit" value="">
             </div>
             </div>
             <div class="tw-bg-white tw-px-5 tw-py-3 ">
@@ -232,7 +232,7 @@
     });
     $('.pembayaran_id').select2();
     $(document).on('change', '#pembayaran_id', function(e) {
-            if($(this).val() != "4"){
+            if($(this).val() == "1"){
                 $('#input_giro').attr('hidden', true);
                 $('#no_giro').val('');
             }

@@ -277,6 +277,9 @@ class MasterController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'nama_customer' => ['required', 'unique:customer,nama_customer'],
+            'alamat' => ['required'],
+            'kota_id' => ['required'],
+            'telepon' => ['required']
         ]);
         if ($validator->fails()) {
             return response()->json(['data' => 'error', 'msg' => "Periksa dan Pastikan data yang sudah diisi dengan benar"]);
@@ -339,6 +342,9 @@ class MasterController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'nama_customer' => ['required', 'unique:customer,nama_customer,' . $id],
+            'alamat' => ['required'],
+            'kota_id' => ['required'],
+            'telepon' => ['required']
         ]);
         if ($validator->fails()) {
             return response()->json(['data' => 'error', 'msg' => "Periksa dan Pastikan data yang sudah diisi dengan benar"]);
@@ -440,9 +446,22 @@ class MasterController extends Controller
             }
         }
     }
-    public function promo_data()
+    public function promo_data($tgl_min, $tgl_max)
     {
-        $data = Promo::with('Barang');
+        $data = NULL;
+        if($tgl_min == "0" && $tgl_max == "0"){
+            $data = Promo::with('Barang');
+        }
+        else if($tgl_min != "0" && $tgl_max != "0"){
+            $data = Promo::with('Barang')->where('tgl_mulai', '<=', $tgl_min)->where('tgl_selesai', '>=', $tgl_max)->get();
+        }
+        else if($tgl_min != "0" && $tgl_max == "0"){
+            $data = Promo::with('Barang')->where('tgl_mulai', '<=', $tgl_min)->get();
+        }
+        else if($tgl_min != "0" && $tgl_max == "0"){
+            $data = Promo::with('Barang')->where('tgl_selesai', '>=', $tgl_max)->get();
+        }
+        
         return datatables()->of($data)
             ->addIndexColumn()
             ->addColumn('kode_promo', function ($data) {
@@ -1387,9 +1406,18 @@ class MasterController extends Controller
 
             $data = $request->all();
             $barang = Barang::find($id);
-            $barang->update($data);
+            $barang->kode_barang = $request->kode_barang;
+                $barang->nama_barang = $request->nama_barang;
+                $barang->tipe_id = $request->tipe;
+                $barang->merek_id = $request->merk;
+                $barang->satuan_id = $request->satuan;
+                $barang->supplier_id = $request->supplier;
+                $barang->harga_jual = str_replace(",", "", $request->harga_jual);
+                $barang->harga_beli = str_replace(",", "", $request->harga_beli);
+                $barang->stok = $request->stok;
+            $bu = $barang->save();
 
-            if ($barang) {
+            if ($bu) {
                 return response()->json(['data' => 'success', 'msg' => "Data berhasil di Ubah"]);
             } else {
                 return response()->json(['data' => 'error', 'msg' => "Ubah data Gagal, periksa kembali"]);

@@ -146,8 +146,8 @@
                 ribuan 	= number_string.substr(sisa).match(/\d{3}/g);
                     
             if (ribuan) {
-                separator = sisa ? '.' : '';
-                rupiah += separator + ribuan.join('.');
+                separator = sisa ? ',' : '';
+                rupiah += separator + ribuan.join(',');
             }
 
             return rupiah;
@@ -158,8 +158,8 @@
         }
 
         $(document).on('keyup change', '#harga-jasa', function(){
-            var unformat = replaceAll($(this).val(), '.', '');
-            var result = unformat.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            var unformat = replaceAll($(this).val(), ',', '');
+            var result = unformat.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             $(this).val(result);
         });
 

@@ -14,11 +14,11 @@
             </select>
         </div>
     </div>
-    <div class="mt-4 tw-w-full tw-text-center">
+    <!-- <div class="mt-4 tw-w-full tw-text-center">
         <a class="switch-sub tw-bg-transparent tw-border-transparent tw-cursor-pointer">
             <div class="icon-switch"></div>
         </a>
-    </div>
+    </div> -->
     <div class="mx-2 mt-4">
         <label for="booking_id">Barang 2</label>
         <div class="dropdown" style="width:100%;">

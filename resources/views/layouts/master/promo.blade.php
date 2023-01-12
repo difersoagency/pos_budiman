@@ -15,9 +15,9 @@
                 <div class="col-lg-12">
                     <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-items-center tw-mb-4">
                         <div class="input-group input-daterange tw-items-center">
-                            <input type="date" class="form-control tw-w-10 tw-mr-3" id="tanggal_mulai" onclick="date()">
+                            <input type="date" class="form-control tw-w-10 tw-mr-3" id="tanggal_mulai">
                             <div class="input-group-addon">-</div>
-                            <input type="date" class="form-control tw-w-10 tw-ml-3" id="tanggal_akhir" onclick="date()">
+                            <input type="date" class="form-control tw-w-10 tw-ml-3" id="tanggal_akhir">
                         </div>
                         <!-- End Date Picker  -->
                     </div>
@@ -113,11 +113,6 @@
 
     
     $(function() {
-        function date() {
-            $("#tanggal_akhir").val('');
-            var max = $("#tanggal_mulai").val();
-            $("#tanggal_akhir").attr("min", max);
-        }
         var table_promo = 
         $('#showtable').DataTable({
             destroy: true,
@@ -127,7 +122,7 @@
                 processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
             },
             ajax: {
-                'url': '/master/promo/data',
+                'url': '/master/promo/data/0/0',
                 'type': 'POST',
                 'headers': {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
@@ -174,6 +169,38 @@
                 }
             ]
         });
+        $(document).on('keyup change', '#tanggal_mulai', function(){
+            $("#tanggal_akhir").val('');
+            var max = $("#tanggal_mulai").val();
+            $("#tanggal_akhir").attr("min", max);
+            if($(this).val() != "" && $("#tanggal_akhir").val() == ""){
+                table_promo.ajax.url('/master/promo/data/'+$("#tanggal_mulai").val()+'/0').load();
+            }
+            else if($(this).val() != "" && $("#tanggal_akhir").val() != ""){
+                table_promo.ajax.url('/master/promo/data/'+$("#tanggal_mulai").val()+'/'+$("#tanggal_akhir").val()).load();
+            }
+            else if($(this).val() == "" && $("#tanggal_akhir").val() != ""){
+                table_promo.ajax.url('/master/promo/data/0/'+$("#tanggal_akhir").val()).load();
+            }
+            else{
+                table_promo.ajax.url('/master/promo/data/0/0').load();
+            }
+        })
+
+        $(document).on('keyup change', '#tanggal_akhir', function(){
+            if($(this).val() != "" && $("#tanggal_mulai").val() == ""){
+                table_promo.ajax.url('/master/promo/data/0/'+$(this).val()).load();
+            }
+            else if($(this).val() != "" && $("#tanggal_mulai").val() != ""){
+                table_promo.ajax.url('/master/promo/data/'+$("#tanggal_mulai").val()+'/'+$("#tanggal_akhir").val()).load();
+            }
+            else if($(this).val() == "" && $("#tanggal_mulai").val() != ""){
+                table_promo.ajax.url('/master/promo/data/'+$("#tanggal_mulai").val()+'/0').load();
+            }
+            else{
+                table_promo.ajax.url('/master/promo/data/0/0').load();
+            }
+        })
 
         $(document).on('click', '#addItemButton', function(event) {
             event.preventDefault();

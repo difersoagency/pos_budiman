@@ -32,6 +32,7 @@
                             <tr>
                                 <th>No</th>
                                 <th>Tgl Bayar</th>
+                                <th>Pembayaran</th>
                                 <th>Total Bayar</th>
                             </tr>
                         </thead>

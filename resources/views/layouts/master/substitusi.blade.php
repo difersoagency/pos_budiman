@@ -144,7 +144,8 @@
                     $('#modalPop').modal("show");
                     $('#modal-body').html(result).show();
                     $('.select2').prepend('<option selected=""></option>').select2({
-                    placeholder: "Pilih Data"
+                    placeholder: "Pilih Data",
+                    dropdownParent: $("#modalPop")
                 });
                     // select_barang();
 
@@ -166,6 +167,7 @@
             success: function(result) {
                 $('#modalPop').modal("show");
                 $('#modal-body').html(result).show();
+                
                 $(".selects").select2({
                     placeholder: "Pilih Data",
                     dropdownParent: $("#modalPop")

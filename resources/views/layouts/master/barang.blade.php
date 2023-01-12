@@ -398,12 +398,12 @@
         });
 
         $(document).on('keyup change', '#harga-jual', function(){
-            var tes = $(this).val().replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            var tes = $(this).val().replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             $(this).val(tes);
         });
 
         $(document).on('keyup change', '#harga-beli', function(){
-            var tes = $(this).val().replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            var tes = $(this).val().replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             $(this).val(tes);
         });
     });

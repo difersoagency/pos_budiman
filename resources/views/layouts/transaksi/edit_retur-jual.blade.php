@@ -10,7 +10,7 @@
                 <li class="breadcrumb-item active" aria-current="page">Edit Retur Penjualan</li>
             </ol>
         </nav>
-        <form action="{{route('update_retur_jual', ['id' => $id])}}" method="POST">
+        <form action="{{route('update_retur_jual', ['id' => $id])}}" method="POST" id="formreturjual">
         @method('PUT')
         @csrf
         <div class="tw-grid tw-grid-cols-3 tw-px-4">
@@ -133,22 +133,32 @@
 @section('script')
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    @if(Session::has('error'))
-    Swal.fire({
-        title: 'Gagal',
-        text: "{{ Session::get('error') }}",
-        icon: 'error',
-    });
-    @endif
-    @if(Session::has('success'))
-    Swal.fire({
-        title: 'Berhasil',
-        text: "{{ Session::get('success') }}",
-        icon: 'success',
-    });
-    window.location.href = "{{route('retur-penjualan')}}";
-    @endif
     $(function(){
+    $(document).on('submit', '#formreturjual', function(event) {
+        event.preventDefault();
+        var action = $(this).attr('action');
+        $.ajax({
+            url: action,
+            type: 'POST',
+            data: $('#formreturjual').serialize(),
+            success: function(result) {
+                if (result.data == "success") {
+                    Swal.fire({
+                        title: 'Berhasil',
+                        text: result.msg,
+                        icon: 'success',
+                    });
+                    window.location.href = "{{route('retur-penjualan')}}";
+                } else {
+                    Swal.fire({
+                        title: 'Gagal',
+                        text: result.msg,
+                        icon: 'error',
+                    });
+                }
+            }
+        });
+    });
     var brg_arr = [];
     function replaceAll(string, search, replace) {
         return string.split(search).join(replace);

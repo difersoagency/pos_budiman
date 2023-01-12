@@ -146,7 +146,7 @@ Route::group(['prefix' => '/master'], function () {
 
     Route::group(['prefix' => '/promo'], function () {
         Route::get('/', [App\Http\Controllers\MasterController::class, 'master_promo'])->name('promo');
-        Route::post('/data', [App\Http\Controllers\MasterController::class, 'promo_data'])->name('promo.data');
+        Route::post('/data/{tgl_min}/{tgl_max}', [App\Http\Controllers\MasterController::class, 'promo_data'])->name('promo.data');
         Route::get('/create', [App\Http\Controllers\MasterController::class, 'promo_create'])->name('promo.create');
         Route::post('/store', [App\Http\Controllers\MasterController::class, 'promo_store'])->name('promo.store');
         Route::get('/edit/{id}', [App\Http\Controllers\MasterController::class, 'promo_edit'])->name('promo.edit');

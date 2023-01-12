@@ -10,7 +10,7 @@
                     <li class="breadcrumb-item active" aria-current="page">Edit Booking</li>
                 </ol>
             </nav>
-            <form method="POST" action="{{ route('update_booking', ['id' => $id]) }}">
+            <form method="POST" action="{{ route('update_booking', ['id' => $id]) }}" id="formbooking">
                 @method('PUT')
                 @csrf
                 <div class="tw-grid tw-grid-cols-3 tw-p-4">
@@ -107,22 +107,31 @@
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(function() {
-            @if (Session::has('error'))
-                Swal.fire({
-                    title: 'Gagal',
-                    text: "{{ Session::get('error') }}",
-                    icon: 'error',
+            $(document).on('submit', '#formbooking', function(event) {
+                event.preventDefault();
+                var action = $(this).attr('action');
+                $.ajax({
+                    url: action,
+                    type: 'POST',
+                    data: $('#formbooking').serialize(),
+                    success: function(result) {
+                        if (result.data == "success") {
+                            Swal.fire({
+                                title: 'Berhasil',
+                                text: result.msg,
+                                icon: 'success',
+                            });
+                            window.location.href="{{route('master_booking')}}";
+                        } else {
+                            Swal.fire({
+                                title: 'Gagal',
+                                text: result.msg,
+                                icon: 'error',
+                            });
+                        }
+                    }
                 });
-            @endif
-            @if (Session::has('success'))
-                Swal.fire({
-                    title: 'Berhasil',
-                    text: "{{ Session::get('success') }}",
-                    icon: 'success',
-                });
-                window.location.href="{{route('master_booking')}}";
-            @endif
-
+            })
             $('.barang_id').select2({
                 placeholder: "Pilih Barang",
                 delay: 250,

@@ -10,7 +10,7 @@
                 <li class="breadcrumb-item active" aria-current="page">Tambah Penjualan</li>
             </ol>
         </nav>
-        <form action="{{route('store_jual')}}" method="POST">
+        <form action="{{route('store_jual')}}" method="POST" id="formjual">
         @csrf
         <div class="tw-grid tw-grid-cols-3 tw-px-4">
             <div class="mx-2">
@@ -192,22 +192,33 @@
 @section('script')
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    @if(Session::has('error'))
-    Swal.fire({
-        title: 'Gagal',
-        text: "{{ Session::get('error') }}",
-        icon: 'error',
-    });
-    @endif
-    @if(Session::has('success'))
-    Swal.fire({
-        title: 'Berhasil',
-        text: "{{ Session::get('success') }}",
-        icon: 'success',
-    });
-    window.location.href = "{{route('trans-jual')}}";
-    @endif
 $(function(){
+    $(document).on('submit', '#formjual', function(event) {
+        event.preventDefault();
+        var action = $(this).attr('action');
+        $.ajax({
+            url: action,
+            type: 'POST',
+            data: $('#formjual').serialize(),
+            success: function(result) {
+                if (result.data == "success") {
+                    Swal.fire({
+                        title: 'Berhasil',
+                        text: result.msg,
+                        icon: 'success',
+                    });
+                    window.location.href = "{{route('trans-jual')}}";
+                } else {
+                    Swal.fire({
+                        title: 'Gagal',
+                        text: result.msg,
+                        icon: 'error',
+                    });
+                }
+            }
+        });
+    });
+    
     function promo_aktif(id, jenis, table){
         $.ajax({
             async: false,
