@@ -29,5 +29,5 @@ Route::get('/booking_select', [App\Http\Controllers\MasterController::class, 'bo
     Route::get('/promo_select', [App\Http\Controllers\MasterController::class, 'promo_select'])->name('promo.select'); 
     Route::get('/garansi_transjual_select', [App\Http\Controllers\MasterController::class, 'garansi_transaksi_jual_select'])->name('garansi_transjual_select');
     Route::get('/get_d_trans_jual/{id}', [App\Http\Controllers\MasterController::class, 'get_d_trans_jual'])->name('get_d_trans_jual');
-    Route::get('/promo_aktif/{id}/{jenis}', [App\Http\Controllers\TransaksiController::class, 'promo_aktif'])->name('promo_aktif');
+    Route::get('/promo_aktif/{id}/{jenis}/{qty}', [App\Http\Controllers\TransaksiController::class, 'promo_aktif'])->name('promo_aktif');
     

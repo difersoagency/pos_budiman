@@ -26,4 +26,9 @@ class Promo extends Model
     {
         return $this->hasMany(DTransJual::class);
     }
+
+    public function DTransJualJasa()
+    {
+        return $this->hasMany(DTransJualJasa::class, 'promo_id');
+    }
 }

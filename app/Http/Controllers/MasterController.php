@@ -1046,7 +1046,7 @@ class MasterController extends Controller
             'email_form' => ['required', 'unique:user,email,' . $id],
             'level_user_id' => ['required']
         ]);
-        if ($validator->fails()) {
+        if ($validator->fails() || $request->password_form !== $request->conf_pass) {
             return response()->json(['data' => 'error', 'msg' => "Periksa dan Pastikan data yang sudah diisi dengan benar"]);
         } else {
             $data = $request->all();
@@ -1054,7 +1054,7 @@ class MasterController extends Controller
             $user->username = $request->username_form;
             $user->level_user_id = $request->level_user_id;
             // if (!Hash::check($request->password, $user->password)) {
-
+            $user->password =  Hash::make($request->password_form);
             // }
             $user->email = $request->email_form;
             $u = $user->save();

@@ -85,15 +85,16 @@
         </div>
         <div class="tw-bg-white tw-px-5 tw-py-3 ">
             <div class="tw-overflow-x-hidden tw-overflow-y-auto tw-h-52">
-                <table id="barangtable" class="tw-w-full table table-striped">
+                <table id="barangtable" class="tw-w-full table table-striped" width="120%">
                     <thead class="tw-border-b tw-border-b-black">
                         <tr class="tw-border-transparent ">
-                            <th class="tw-text-center tw-border-t-0" style="width:35%">Jenis Barang / Jasa</th>
+                            <th class="tw-text-center tw-border-t-0" style="width:20%">Jenis Barang / Jasa</th>
                             <th class="tw-text-center tw-border-t-0 d-none">Jenis</th>
-                            <th class="tw-text-center tw-border-t-0" style="width:10%">Jumlah</th>
-                            <th class="tw-text-center tw-border-t-0" style="width:20%">Harga</th>
+                            <th class="tw-text-center tw-border-t-0" style="width:12%">Jumlah</th>
+                            <th class="tw-text-center tw-border-t-0" style="width:15%">Harga</th>
+                            <th class="tw-text-center tw-border-t-0" style="width:18%">Promo</th>
                             <th class="tw-text-center tw-border-t-0" style="width:15%">Disc</th>
-                            <th class="tw-text-center tw-border-t-0" style="width:20%">Subtotal</th>
+                            <th class="tw-text-center tw-border-t-0" style="width:15%">Subtotal</th>
                             <th class="tw-text-center tw-border-t-0" style="width:5%">Action</th>
                         </tr>
                     </thead>
@@ -118,6 +119,13 @@
                             <td>
                                 <div class="form-group">
                                     <input type="text" class="form-control harga" name="harga[]">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group promo_input" id="promo_input0">
+                                <select class="custom-select promo_id tw-text-prim-white" id="promo_id" name="promo_id[]">
+                                    <option value=""></option>
+                                </select>
                                 </div>
                             </td>
                             <td>
@@ -193,6 +201,7 @@
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(function(){
+    $('.promo_id').select2();
     $(document).on('submit', '#formjual', function(event) {
         event.preventDefault();
         var action = $(this).attr('action');
@@ -219,19 +228,7 @@ $(function(){
         });
     });
     
-    function promo_aktif(id, jenis, table){
-        $.ajax({
-            async: false,
-            dataType: 'json',
-            type: 'GET',
-            url: '/api/promo_aktif/'+id+'/'+jenis,
-            success: function(response) {
-                console.log(response);
-            },
-        })
-                    
-    }
-
+    
     function replaceAll(string, search, replace) {
         return string.split(search).join(replace);
     }
@@ -255,6 +252,9 @@ $(function(){
                     $(el).find('.harga').attr('name', 'harga[' + j + ']');
                     $(el).find('.subtotal').attr('name', 'subtotal[' + j + ']');
                     $(el).find('.disc').attr('name', 'disc[' + j + ']');
+                    $(el).find('.promo_input').attr('id', 'promo_input'+j);
+                    $(el).find('.promo_id').attr('id', 'promo_id'+j);
+                    $(el).find('.promo_id').attr('name', 'promo_id['+j+']');
                     select_barang();
                     c++;
                 });
@@ -305,6 +305,13 @@ $(function(){
                                 </div>
                             </td>
                             <td>
+                                <div class="form-group promo_input" id="promo_input0">
+                                <select class="custom-select promo_id tw-text-prim-white" id="promo_id0" name="promo_id[]">
+                                    <option value=""></option>
+                                </select>
+                                </div>
+                            </td>
+                            <td>
                                 <div class="input-group mb-3">
                                     <input type="number" class="form-control disc" name="disc[]" step="0.00" min="0">
                                     <div class="input-group-append">
@@ -330,6 +337,7 @@ $(function(){
         var tes = $(this).val().replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
         $(this).val(tes);
         sum_subtotal_harga($(this).closest('tr'));
+        sum_total_harga();
     })
 
     $('.booking_id').select2({
@@ -393,21 +401,59 @@ $(function(){
 
     select_barang();
 
+    function promo_aktif($currtable, $id, $jenis, $jumlah){
+        $('#promo_id'+$currtable).empty();
+        $('#promo_input'+$currtable).attr('hidden', false);
+        $('#promo_id'+$currtable).select2({
+            placeholder: "Pilih Promo",
+            delay: 250,
+                ajax: {
+                    dataType: 'json',
+                    type: 'GET',
+                    url: '/api/promo_aktif/'+$id+'/'+$jenis+'/'+$jumlah,
+                    data: function(params) {
+                        return {
+                            term: params.term
+                        }
+                    },
+                    processResults: function(data) {
+                        
+                        return {
+                            results: $.map(data, function(obj) {
+                                return {
+                                    id: obj.id,
+                                    text: obj.kode_promo+' - '+obj.nama_promo,
+                                    disc: obj.disc
+                                };
+                            })
+                        };
+                        
+                    },
+                }
+        })
 
+    }
 
     function sum_subtotal_harga(table){
         var jumlah = table.find('.jumlah').val();
         var disc = table.find('.disc').val();
+        var promo = 0;
         if(jumlah == null){
             jumlah = 0;
+        }
+        if(table.find('.promo_id').val() != null){
+            if(table.find('.promo_id').select2('data')[0].disc != undefined){
+                promo = table.find('.promo_id').select2('data')[0].disc;
+            }
         }
         if(disc == ""){
             disc = 0;
         }
 
         var harga = number_unformat(table.find('.harga').val());
-        var subtotal = ((jumlah * harga) - ((jumlah * harga) * (disc/100)));
-        table.find('.subtotal').val(subtotal);
+        var promos = ((jumlah * harga) - ((jumlah * harga) * (promo/100)));
+        var subtotal = ((promos) - ((promos) * (disc/100)));
+        table.find('.subtotal').val(number_format(subtotal));
         sum_total_harga();
         sum_bayar_jual();
     }
@@ -432,40 +478,52 @@ $(function(){
     }
     function sum_bayar_jual(){
         if($('#barangtable .bayar_jual').val() != ""){
-        var total_jual = parseFloat(number_unformat($('#barangtable .total_jual').val()));
-        var bayar_jual = parseFloat(number_unformat($('#barangtable .bayar_jual').val()));
-        console.log(bayar_jual);
-        if(bayar_jual >= total_jual){
-            $("#barangtable .kembali_jual").val(number_format(bayar_jual - total_jual));
-        }
-        else{
-            $("#barangtable .kembali_jual").val("0");
-        }
+            var total_jual = parseFloat(number_unformat($('#barangtable .total_jual').val()));
+            var bayar_jual = parseFloat(number_unformat($('#barangtable .bayar_jual').val()));
+            console.log(bayar_jual);
+            if(bayar_jual >= total_jual){
+                $("#barangtable .kembali_jual").val(number_format(bayar_jual - total_jual));
+            }
+            else{
+                $("#barangtable .kembali_jual").val("0");
+            }
         }
     }
 
     $(document).on('change', '#barangtable .barang_id', function(){
+        var id = $(this).closest('tr').find('.promo_id').attr('id');
+        var no = id.substring(8);
         $(this).closest('tr').find('.jenis_brg').val($(this).select2('data')[0].jenis);
         $(this).closest('tr').find('.harga').val(number_format($(this).select2('data')[0].harga));
-        promo_aktif($(this).val(), $(this).select2('data')[0].jenis, "tes");
+        promo_aktif(no, $(this).closest('tr').find('.barang_id').val(), $(this).closest('tr').find('.jenis_brg').val(), $(this).closest('tr').find('.jumlah').val());
+        sum_subtotal_harga($(this).closest('tr'));
         sum_total_harga();
-        console.log($(this).val());
     });
 
     $(document).on('keyup change', '#barangtable .jumlah', function(){
+        var id = $(this).closest('tr').find('.promo_id').attr('id');
+        var no = id.substring(8);
+        promo_aktif(no, $(this).closest('tr').find('.barang_id').val(), $(this).closest('tr').find('.jenis_brg').val(), $(this).closest('tr').find('.jumlah').val());
         sum_subtotal_harga($(this).closest('tr'));
+        sum_total_harga();
     });
 
     $(document).on('keyup change', '#barangtable .disc', function(){
-            sum_subtotal_harga($(this).closest('tr'))
-        });
+        sum_subtotal_harga($(this).closest('tr'));
+        sum_total_harga();
+    });
+
+    $(document).on('keyup change', '#barangtable .promo_id', function(){
+        sum_subtotal_harga($(this).closest('tr'));
+        sum_total_harga();
+    });
 
     $(document).on('change', '.booking_id', function(){
         $('#customer_id').html($(this).select2('data')[0].cust);
         $('#customer_alamat').html($(this).select2('data')[0].alamat);
         $('#customer_telp').html($(this).select2('data')[0].telp);
         var d_booking = $(this).select2('data')[0].detail;
-        console.log(d_booking)
+
         if($(this).val() != ""){
             console.log(d_booking);
             $('#btntambah').removeAttr('disabled');
@@ -480,7 +538,7 @@ $(function(){
                 var harga = d_booking[i].barang_id != null ? d_booking[i].barang.harga_jual : d_booking[i].jasa.harga;
                 var jenis = d_booking[i].barang_id != null ? "barang" : "jasa";
 
-                console.log(promo_aktif(ids, jenis, "tes"));
+                
 
                 $('#barangtable tbody').append(`<tr>
                 <td>
@@ -506,6 +564,13 @@ $(function(){
                                 </div>
                             </td>
                             <td>
+                                <div class="form-group promo_input" id="promo_input`+i+`">
+                                <select class="custom-select promo_id tw-text-prim-white" id="promo_id`+i+`" name="promo_id[`+i+`]">
+                                    <option value=""></option>
+                                </select>
+                                </div>
+                            </td>
+                            <td>
                                 <div class="input-group mb-3">
                                 <input type="number" class="form-control disc" name="disc[`+i+`]" step="0.00" min="0">
                                     <div class="input-group-append">
@@ -525,7 +590,7 @@ $(function(){
                                 </button>
                             </td>
                 </tr>`);
-                
+                promo_aktif(i, ids, jenis, jumlah);
                 select_barang();
                 // $('select[name="barang_id['+i+']').val($(".barang_id option:contains('"+namas+"')").val()).change();
             }

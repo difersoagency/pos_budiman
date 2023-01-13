@@ -145,10 +145,10 @@ class TransaksiController extends Controller
         $validator = Validator::make($r->all(), [
             'no_retur_jual' => ['required'],
             'tgl_retur_jual' => ['required'],
-            'total_retur_jual' => ['required'],
+            'total_retur_jual' => ['required']
         ]);
         if ($validator->fails()) {
-            return return response()->json(['data' => 'error', 'msg' => "Gagal menambahkan, periksa kembali form anda"]);
+            return response()->json(['data' => 'error', 'msg' => "Gagal menambahkan, periksa kembali form anda"]);
         } else {
             $drj = DReturJual::where('hretur_jual_id', $r->id)->count();
             if($drj > 0){
@@ -188,9 +188,9 @@ class TransaksiController extends Controller
                 }
             }
             if ($bool == true) {
-                return return response()->json(['data' => 'success', 'msg' => "Data berhasil di edit"]);
+                return response()->json(['data' => 'success', 'msg' => "Data berhasil di edit"]);
             } else {
-                return return response()->json(['data' => 'error', 'msg' => "Gagal Mengedit, periksa kembali"]);
+                return response()->json(['data' => 'error', 'msg' => "Gagal Mengedit, periksa kembali"]);
             }
         }
     }
@@ -924,21 +924,32 @@ class TransaksiController extends Controller
 
     public function data_detail_jual($id)
     {
-        $databrg = DTransJual::where('htrans_jual_id', $id)->select('jumlah', 'harga', 'disc')->addSelect(['nama' => function ($q) {
+        $databrg = DTransJual::where('htrans_jual_id', $id)->select('jumlah', 'harga', 'disc', 'promo_id')->addSelect(['nama' => function ($q) {
             $q->selectRaw('nama_barang')
                 ->from('barang')
-                ->where('barang.id', '2');
-        }])->get();
+                ->whereColumn('barang.id', 'dtrans_jual.barang_id');
+        }, 'promo_name' => function($q){
+            $q->selectRaw('kode_promo')
+                ->from('promo')
+                ->whereColumn('promo.id', 'dtrans_jual.promo_id');
+        }])->with('Promo')->get();
 
         $datajasa = DTransJualJasa::where('htrans_jual_id', $id)->addSelect(['nama' => function ($q) {
             $q->selectRaw('nama_jasa')
                 ->from('jasa')
                 ->whereColumn('jasa.id', 'dtrans_jual_jasa.jasa_id');
-        }])->selectRaw('IF(id IS NULL, "", "1") as jumlah, harga, disc')->get();
+        }, 'promo_name' => function($q){
+            $q->selectRaw('kode_promo')
+                ->from('promo')
+                ->whereColumn('promo.id', 'dtrans_jual_jasa.promo_id');
+        }])->selectRaw('IF(id IS NULL, "", "1") as jumlah, harga, disc, promo_id')->with('Promo')->get();
 
         $data = $databrg->merge($datajasa);
         return datatables()->of($data)
             ->addIndexColumn()
+            ->addColumn('promo', function($data){
+                return $data;
+            })
             ->make(true);
     }
 
@@ -947,12 +958,12 @@ class TransaksiController extends Controller
         return view('layouts.transaksi.tambah_jual');
     }
 
-    public function promo_aktif($id, $jenis){
+    public function promo_aktif($id, $jenis, $qty){
         $date = Carbon::now()->toDateString();
         $promo = NULL;
         if($jenis == 'barang'){
             $kb = Barang::where('kode_barang', $id)->first();
-            $promo = Promo::where('tgl_mulai', '<=', $date)->where('tgl_selesai', '>=', $date)->where('barang_id', $kb->id)->get();
+            $promo = Promo::where('tgl_mulai', '<=', $date)->where('tgl_selesai', '>=', $date)->where('barang_id', $kb->id)->where('qty_sk', '<=', $qty)->get();
         }
         else{
             $promo = Promo::where('tgl_mulai', '<=', $date)->where('tgl_selesai', '>=', $date)->where('jasa_id', $id)->get();
@@ -990,14 +1001,23 @@ class TransaksiController extends Controller
             if ($c) {
                 for ($i = 0; $i < count($r->barang_id); $i++) {
                     if ($r->jenis_brg[$i] == "jasa") {
+                        $promo_id = NULL;
+                        if(isset($r->promo_id[$i])){
+                            $promo_id = $r->promo_id[$i];
+                        }
                         $dc = DTransJualJasa::create([
                             'htrans_jual_id' => $c->id,
                             'jasa_id' => $r->barang_id[$i],
                             'harga' => str_replace(",", "", $r->harga[$i]),
+                            'promo_id' => $promo_id,
                             'disc' => $r->disc[$i]
                         ]);
                         
                     } else if ($r->jenis_brg[$i] == "barang") {
+                        $promo_id = NULL;
+                        if(isset($r->promo_id[$i])){
+                            $promo_id = $r->promo_id[$i];
+                        }
                         $kb = Barang::where('kode_barang', $r->barang_id[$i])->first();
 
                         $dc = DTransJual::create([
@@ -1005,6 +1025,7 @@ class TransaksiController extends Controller
                             'barang_id' => $kb->id,
                             'harga' => str_replace(",", "", $r->harga[$i]),
                             'jumlah' => $r->jumlah[$i],
+                            'promo_id' => $promo_id,
                             'disc' => $r->disc[$i]
                         ]);
 
@@ -1089,18 +1110,28 @@ class TransaksiController extends Controller
             if ($u) {
                 for ($i = 0; $i < count($r->barang_id); $i++) {
                     if ($r->jenis_brg[$i] == "jasa") {
+                        $promo_id = NULL;
+                        if(isset($r->promo_id[$i])){
+                            $promo_id = $r->promo_id[$i];
+                        }
                         $dc = DTransJualJasa::create([
                             'htrans_jual_id' => $id,
                             'jasa_id' => $r->barang_id[$i],
                             'harga' => str_replace(",", "", $r->harga[$i]),
+                            'promo_id' => $promo_id,
                             'disc' => $r->disc[$i]
                         ]);
                     } else if ($r->jenis_brg[$i] == "barang") {
+                        $promo_id = NULL;
+                        if(isset($r->promo_id[$i])){
+                            $promo_id = $r->promo_id[$i];
+                        }
                         $kb = Barang::where('kode_barang', $r->barang_id[$i])->first();
                         $dc = DTransJual::create([
                             'htrans_jual_id' => $id,
                             'barang_id' => $kb->id,
                             'harga' => str_replace(",", "", $r->harga[$i]),
+                            'promo_id' => $promo_id,
                             'jumlah' => $r->jumlah[$i],
                             'disc' => $r->disc[$i]
                         ]);

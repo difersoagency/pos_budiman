@@ -38,9 +38,11 @@
                             <tr>
                                 <th>No</th>
                                 <th>Nama</th>
-                                <th>Jumah</th>
-                                <th>Disc</th>
+                                <th>Jumlah</th>
                                 <th>Harga</th>
+                                <th>Promo</th>
+                                <th>Disc</th>
+                                
                             </tr>
                         </thead>
                         <tbody></tbody>

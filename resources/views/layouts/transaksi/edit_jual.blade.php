@@ -80,15 +80,16 @@
         </div>
         <div class="tw-bg-white tw-px-5 tw-py-3 ">
             <div class="tw-overflow-x-hidden tw-overflow-y-auto tw-h-52">
-                <table id="barangtable" class="tw-w-full table table-striped">
+                <table id="barangtable" class="tw-w-full table table-striped" width="120%">
                     <thead class="tw-border-b tw-border-b-black">
                         <tr class="tw-border-transparent ">
-                            <th class="tw-text-center tw-border-t-0" style="width:35%">Jenis Barang / Jasa</th>
+                            <th class="tw-text-center tw-border-t-0" style="width:20%">Jenis Barang / Jasa</th>
                             <th class="tw-text-center tw-border-t-0 d-none">Jenis</th>
-                            <th class="tw-text-center tw-border-t-0" style="width:10%">Jumlah</th>
-                            <th class="tw-text-center tw-border-t-0" style="width:20%">Harga</th>
-                            <th class="tw-text-center tw-border-t-0" style="width:10%">Disc</th>
-                            <th class="tw-text-center tw-border-t-0" style="width:20%">Subtotal</th>
+                            <th class="tw-text-center tw-border-t-0" style="width:12%">Jumlah</th>
+                            <th class="tw-text-center tw-border-t-0" style="width:15%">Harga</th>
+                            <th class="tw-text-center tw-border-t-0" style="width:18%">Promo</th>
+                            <th class="tw-text-center tw-border-t-0" style="width:15%">Disc</th>
+                            <th class="tw-text-center tw-border-t-0" style="width:15%">Subtotal</th>
                             <th class="tw-text-center tw-border-t-0" style="width:5%">Action</th>
                         </tr>
                     </thead>
@@ -122,13 +123,22 @@
                                     </div>
                                 </td>
                                 <td>
+                                    <div class="form-group promo_input" id="promo_input{{$kb + $count}}">
+                                    <select class="custom-select promo_id tw-text-prim-white" id="promo_id{{$kb + $count}}" name="promo_id[{{$kb + $count}}]">
+                                        @if($brg->promo_id != NULL)
+                                        <option value="{{$brg->promo_id}}" selected>{{$brg->Promo->kode_promo}} - {{$brg->Promo->nama_promo}}</option>
+                                        @endif
+                                    </select>
+                                    </div>
+                                </td>
+                                <td>
                                     <div class="form-group">
                                         <input type="number" class="form-control disc" name="disc[]" step="0.00" min="0" value="{{$brg->disc}}">
                                     </div>
                                 </td>
                                 <td>
                                     <div class="form-group">
-                                        <input type="text" class="form-control subtotal" readonly="true" name="subtotal[]" value="{{$brg->jumlah * $brg->harga}}">
+                                        <input type="text" class="form-control subtotal" readonly="true" name="subtotal[]" @if($brg->promo_id != NULL) value="{{ (($brg->jumlah * $brg->harga) - (($brg->jumlah * $brg->harga) * ($brg->Promo->disc / 100))) - ((($brg->jumlah * $brg->harga) - (($brg->jumlah * $brg->harga) * ($brg->Promo->disc / 100))) * ($brg->disc/100)) }}" @else value="{{($brg->jumlah * $brg->harga) - (($brg->jumlah * $brg->harga) * ($brg->disc / 100))}}" @endif>
                                     </div>
                                 </td>
 
@@ -167,13 +177,22 @@
                                 </div>
                             </td>
                             <td>
+                                <div class="form-group promo_input" id="promo_input{{$kj + $count}}">
+                                <select class="custom-select promo_id tw-text-prim-white" id="promo_id{{$kj + $count}}" name="promo_id[{{$kj + $count}}]">
+                                    @if($jasa->promo_id != NULL)
+                                    <option value="{{$jasa->promo_id}}" selected>{{$jasa->Promo->kode_promo}} - {{$jasa->Promo->nama_promo}}</option>
+                                    @endif
+                                </select>
+                                </div>
+                            </td>
+                            <td>
                                 <div class="form-group">
                                     <input type="number" class="form-control disc" name="disc[]" step="0.00" min="0" value="{{$jasa->disc}}">
                                 </div>
                             </td>
                             <td>
                                 <div class="form-group">
-                                    <input type="text" class="form-control subtotal" readonly="true" name="subtotal[]" value="{{1 * $jasa->harga}}">
+                                    <input type="text" class="form-control subtotal" readonly="true" name="subtotal[]" @if($jasa->promo_id != NULL) value="{{ ((1 * $jasa->harga) - ((1 * $jasa->harga) * ($jasa->Promo->disc / 100))) - (((1 * $jasa->harga) - ((1 * $jasa->harga) * ($jasa->Promo->disc / 100))) * ($jasa->disc / 100)) }}"  @else value="{{(1 * $jasa->harga) - ((1 * $jasa->harga) * ($jasa->disc / 100))}}" @endif>
                                 </div>
                             </td>
 
@@ -238,6 +257,7 @@
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(function(){
+    $('.promo_id').select2();
     $(document).on('submit', '#formjual', function(event) {
         event.preventDefault();
         var action = $(this).attr('action');
@@ -297,6 +317,9 @@ $(function(){
                     $(el).find('.harga').attr('name', 'harga[' + j + ']');
                     $(el).find('.subtotal').attr('name', 'subtotal[' + j + ']');
                     $(el).find('.disc').attr('name', 'disc[' + j + ']');
+                    $(el).find('.promo_input').attr('id', 'promo_input'+j);
+                    $(el).find('.promo_id').attr('id', 'promo_id'+j);
+                    $(el).find('.promo_id').attr('name', 'promo_id['+j+']');
                     select_barang();
                     c++;
                 });
@@ -335,6 +358,13 @@ $(function(){
                             <td>
                                 <div class="form-group">
                                     <input type="text" class="form-control harga" name="harga[]">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group promo_input" id="promo_input0">
+                                <select class="custom-select promo_id tw-text-prim-white" id="promo_id0" name="promo_id[]">
+                                    <option value=""></option>
+                                </select>
                                 </div>
                             </td>
                             <td>
@@ -423,21 +453,59 @@ $(function(){
 
     select_barang();
 
+    function promo_aktif($currtable, $id, $jenis, $jumlah){
+        $('#promo_id'+$currtable).empty();
+        $('#promo_input'+$currtable).attr('hidden', false);
+        $('#promo_id'+$currtable).select2({
+            placeholder: "Pilih Promo",
+            delay: 250,
+                ajax: {
+                    dataType: 'json',
+                    type: 'GET',
+                    url: '/api/promo_aktif/'+$id+'/'+$jenis+'/'+$jumlah,
+                    data: function(params) {
+                        return {
+                            term: params.term
+                        }
+                    },
+                    processResults: function(data) {
+                        
+                        return {
+                            results: $.map(data, function(obj) {
+                                return {
+                                    id: obj.id,
+                                    text: obj.kode_promo+' - '+obj.nama_promo,
+                                    disc: obj.disc
+                                };
+                            })
+                        };
+                        
+                    },
+                }
+        })
 
+    }
 
     function sum_subtotal_harga(table){
         var jumlah = table.find('.jumlah').val();
         var disc = table.find('.disc').val();
+        var promo = 0;
         if(jumlah == null){
             jumlah = 0;
+        }
+        if(table.find('.promo_id').val() != null){
+            if(table.find('.promo_id').select2('data')[0].disc != undefined){
+                promo = table.find('.promo_id').select2('data')[0].disc;
+            }
         }
         if(disc == ""){
             disc = 0;
         }
 
         var harga = number_unformat(table.find('.harga').val());
-        var subtotal = ((jumlah * harga) - ((jumlah * harga) * (disc/100)));
-        table.find('.subtotal').val(subtotal);
+        var promos = ((jumlah * harga) - ((jumlah * harga) * (promo/100)));
+        var subtotal = ((promos) - ((promos) * (disc/100)));
+        table.find('.subtotal').val(number_format(subtotal));
         sum_total_harga();
         sum_bayar_jual();
     }
@@ -475,18 +543,32 @@ $(function(){
     }
 
     $(document).on('change', '#barangtable .barang_id', function(){
+        var id = $(this).closest('tr').find('.promo_id').attr('id');
+        var no = id.substring(8);
         $(this).closest('tr').find('.jenis_brg').val($(this).select2('data')[0].jenis);
         $(this).closest('tr').find('.harga').val(number_format($(this).select2('data')[0].harga));
+        promo_aktif(no, $(this).closest('tr').find('.barang_id').val(), $(this).closest('tr').find('.jenis_brg').val(), $(this).closest('tr').find('.jumlah').val());
+        sum_subtotal_harga($(this).closest('tr'));
         sum_total_harga();
     });
 
     $(document).on('keyup change', '#barangtable .jumlah', function(){
+        var id = $(this).closest('tr').find('.promo_id').attr('id');
+        var no = id.substring(8);
+        promo_aktif(no, $(this).closest('tr').find('.barang_id').val(), $(this).closest('tr').find('.jenis_brg').val(), $(this).closest('tr').find('.jumlah').val());
         sum_subtotal_harga($(this).closest('tr'));
+        sum_total_harga();
     });
 
     $(document).on('keyup change', '#barangtable .disc', function(){
-            sum_subtotal_harga($(this).closest('tr'))
-        });
+        sum_subtotal_harga($(this).closest('tr'));
+        sum_total_harga();
+    });
+
+    $(document).on('keyup change', '#barangtable .promo_id', function(){
+        sum_subtotal_harga($(this).closest('tr'));
+        sum_total_harga();
+    });
 
     // $(document).on('change', '.booking_id', function(){
     //     $('#customer_id').html($(this).select2('data')[0].cust);

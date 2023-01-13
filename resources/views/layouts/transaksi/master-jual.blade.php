@@ -107,10 +107,12 @@ $(document).ready(function() {
                 }, {
                     data: 'jumlah',
                 }, {
-                    data: 'disc',
-                }, {
                     data: 'harga',
                     render: DataTable.render.number(',', '.', 2, '')
+                },{
+                    data: 'promo',
+                },{
+                    data: 'disc',
                 }]
             });
         }

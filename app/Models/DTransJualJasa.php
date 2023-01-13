@@ -10,7 +10,7 @@ class DTransJualJasa extends Model
     use HasFactory;
     protected $table = 'dtrans_jual_jasa';
     public $timestamps = false;
-    protected $fillable = ['htrans_jual_id', 'jasa_id', 'harga', 'disc'];
+    protected $fillable = ['htrans_jual_id', 'jasa_id', 'harga', 'disc', 'promo_id'];
 
     public function TransJual()
     {
@@ -20,5 +20,10 @@ class DTransJualJasa extends Model
     public function Jasa()
     {
         return $this->belongsTo(Jasa::class);
+    }
+
+    public function Promo()
+    {
+        return $this->belongsTo(Promo::class, 'promo_id');
     }
 }
