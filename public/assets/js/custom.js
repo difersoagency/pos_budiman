@@ -34,7 +34,7 @@ $(document).ready(function () {
 // Select 2
 $(document).ready(function() {
   $('.select-edit').select2();
-  $('.select-2').prepend('<option selected=""></option>').select2({placeholder: "Pilih Data"});
+  $('.select-2').prepend('<option selected=""></option>').select2({placeholder: "Pilih Data", allowClear:true});
   $('.select-user').prepend('<option selected=""></option>').select2({placeholder: "Pilih Data"});
   $('.select-trans').prepend('<option selected=""></option>').select2({placeholder: "Pilih Barang"});
   $(".input-select2").select2({

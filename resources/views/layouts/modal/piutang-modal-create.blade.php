@@ -25,7 +25,7 @@
                 <div class="input-group-prepend">
                   <span class="input-group-text">Rp.</span>
                 </div>
-                <input type="number" class="form-control" aria-label="" id="total_bayar" name="total_bayar"  value="">
+                <input type="text" class="form-control" aria-label="" id="total_bayar" name="total_bayar"  value="">
               </div>
             </div>
 

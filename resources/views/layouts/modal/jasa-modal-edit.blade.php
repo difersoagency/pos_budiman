@@ -17,7 +17,7 @@
                 <div class="input-group-prepend">
                   <span class="input-group-text">Rp.</span>
                 </div>
-                <input type="number" class="form-control" aria-label="Amount" id="harga-jasa"  name="harga"  value="{{$data->harga}}">
+                <input type="text" class="form-control" aria-label="Amount" id="harga-jasa"  name="harga"  value="{{$data->harga}}">
               </div>
               <small class="text-danger" id="msg-harga-jasa"></small>
             </div>

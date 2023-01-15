@@ -18,7 +18,7 @@
                         <div class="dropdown tw-mb-7 md:tw-mb-0 tw-w-2/4">
                                 <select class="custom-select select-2 tw-bg-prim-blue tw-text-prim-white" id="kotafilter" placeholder="Pilih Data"
                                     name="state">
-                                    <option value="">Semua</option>
+                                    <option value=""></option>
                                     @foreach ($kotas as $kotas)
                                         <option value="{{ $kotas->nama_kota }}">{{ $kotas->nama_kota }}</option>
                                     @endforeach

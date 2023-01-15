@@ -271,7 +271,6 @@
                 $('#jasa_input').attr('hidden', false);
                 $('#barang_id').val(null).trigger('change');
                 $('#barang_input').attr('hidden', true);
-            
             }
         });
 

@@ -389,7 +389,7 @@ class TransaksiController extends Controller
             $d = DPiutang::create([
                 'h_piutang_id' => $id,
                 'tgl_piutang' => $r->tgl_piutang,
-                'total_bayar' => $r->total_bayar,
+                'total_bayar' => str_replace(",", "", $r->total_bayar),
                 'no_giro' => $r->no_giro,
                 'pembayaran_id' => $r->pembayaran_id
             ]);

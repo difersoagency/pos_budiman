@@ -45,7 +45,7 @@
                 </select>
             </div>
         </div>
-        <div class="form-group">
+        <!-- <div class="form-group">
             <label for="supplier" class="col-form-label">Supplier:</label>
             <div class="dropdown tw-mb-4">
                 <select class="custom-select input-select2 supplier" id="supplier" name="supplier">
@@ -54,7 +54,7 @@
                     @endforeach
                 </select>
             </div>
-        </div>
+        </div> -->
     </div>
 
     <div class="tw-grid tw-grid-cols-2">

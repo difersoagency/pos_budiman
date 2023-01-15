@@ -16,7 +16,7 @@
         <div class="form-group tw-mr-3">
             <label for="tipe" class="col-form-label">Tipe:</label>
             <div class="dropdown tw-mb-4">
-                <select class="custom-select input-select2" id="tipe" name="tipe_id">
+                <select class="custom-select input-select2" id="tipe" name="tipe">
                     @foreach ($tipe as $t)
                         <option value="{{ $t->id }}" @if ($t->id == $data->tipe_id) selected @endif>
                             {{ Str::ucfirst($t->nama_tipe) }}</option>
@@ -28,7 +28,7 @@
         <div class="form-group">
             <label for="merk" class="col-form-label">Merk:</label>
             <div class="dropdown tw-mb-4">
-                <select class="custom-select input-select2" id="merk" name="merek_id">
+                <select class="custom-select input-select2" id="merk" name="merk">
                     @foreach ($merek as $m)
                         <option value="{{ $m->id }}" @if ($m->id == $data->merek_id) selected @endif>
                             {{ Str::ucfirst($m->nama_merek) }}</option>
@@ -36,6 +36,30 @@
                 </select>
             </div>
         </div>
+    </div>
+
+    <div class="tw-grid tw-grid-cols-2">
+        <div class="form-group tw-mr-3">
+            <label for="satuan" class="col-form-label">Satuan:</label>
+            <div class="dropdown tw-mb-4">
+                <select class="custom-select input-select2" id="satuan" name="satuan">
+                    @foreach ($satuan as $s)
+                    <option value="{{ $s->id }}" @if($s->id == $data->satuan_id) selected @endif>
+                        {{ Str::ucfirst($s->nama_satuan) }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+        <!-- <div class="form-group">
+            <label for="supplier" class="col-form-label">Supplier:</label>
+            <div class="dropdown tw-mb-4">
+                <select class="custom-select input-select2" id="supplier" name="supplier">
+                @foreach ($supplier as $sup)
+                    <option value="{{ $sup->id }}" @if($sup->id == $data->supplier_id) selected @endif>{{ Str::ucfirst($sup->nama_supplier) }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div> -->
     </div>
 
     <div class="tw-grid tw-grid-cols-2">

@@ -1289,7 +1289,7 @@ class MasterController extends Controller
                 'tipe_id' => $request->tipe,
                 'merek_id' => $request->merk,
                 'satuan_id' => $request->satuan,
-                'supplier_id' => $request->supplier,
+                // 'supplier_id' => $request->supplier,
                 'harga_jual' => str_replace(",", "", $request->harga_jual),
                 'harga_beli' => str_replace(",", "", $request->harga_beli),
                 'stok' => $request->stok
@@ -1394,8 +1394,8 @@ class MasterController extends Controller
         $validator = Validator::make($request->all(), [
             'kode_barang' => ['required', 'unique:barang,kode_barang,' . $id],
             'nama_barang' => ['required'],
-            'tipe_id' => ['required'],
-            'merek_id' => ['required'],
+            'tipe' => ['required'],
+            'merk' => ['required'],
             'harga_jual' => ['required'],
             'harga_beli' => ['required'],
             'stok' => ['required'],
@@ -1411,7 +1411,7 @@ class MasterController extends Controller
                 $barang->tipe_id = $request->tipe;
                 $barang->merek_id = $request->merk;
                 $barang->satuan_id = $request->satuan;
-                $barang->supplier_id = $request->supplier;
+                // $barang->supplier_id = $request->supplier;
                 $barang->harga_jual = str_replace(",", "", $request->harga_jual);
                 $barang->harga_beli = str_replace(",", "", $request->harga_beli);
                 $barang->stok = $request->stok;
@@ -1449,7 +1449,9 @@ class MasterController extends Controller
         $data = Barang::find($id);
         $tipe = Tipe::all();
         $merek = Merek::all();
-        return view('layouts.modal.barang-modal-edit', ['tipe' => $tipe, 'merek' => $merek, 'data' => $data]);
+        $supplier = Supplier::all();
+        $satuan = Satuan::all();
+        return view('layouts.modal.barang-modal-edit', ['tipe' => $tipe, 'merek' => $merek, 'supplier' => $supplier, 'satuan' => $satuan, 'data' => $data]);
     }
     public function master_barang_select_data(Request $request)
     {

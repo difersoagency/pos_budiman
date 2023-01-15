@@ -154,6 +154,10 @@ $(document).ready(function() {
                 $('#input_giro').attr('hidden', false);
             }
         })
+        $(document).on('keyup change', '#total_bayar', function(){
+            var tes = $(this).val().replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            $(this).val(tes);
+        });
         $(document).on('click', '#btndetail', function(event) {
             var id = $(this).attr('data-id');
             $.ajax({
