@@ -116,6 +116,7 @@
                                     <div class="form-group">
                                         <input type="number" class="form-control jumlah" name="jumlah[]" min="0" value="{{$brg->jumlah}}">
                                     </div>
+                                    <small class="text-danger" id="msg-alert"></small>
                                 </td>
                                 <td>
                                     <div class="form-group">
@@ -123,8 +124,8 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <div class="form-group promo_input" id="promo_input{{$kb + $count}}">
-                                    <select class="custom-select promo_id tw-text-prim-white" id="promo_id{{$kb + $count}}" name="promo_id[{{$kb + $count}}]">
+                                    <div class="form-group promo_input" id="promo_input{{$kb}}">
+                                    <select class="custom-select promo_id tw-text-prim-white" id="promo_id{{$kb}}" name="promo_id[{{$kb}}]">
                                         @if($brg->promo_id != NULL)
                                         <option value="{{$brg->promo_id}}" selected>{{$brg->Promo->kode_promo}} - {{$brg->Promo->nama_promo}}</option>
                                         @endif
@@ -170,6 +171,7 @@
                                 <div class="form-group">
                                     <input type="number" class="form-control jumlah" name="jumlah[]" min="0" value="1">
                                 </div>
+                                <small class="text-danger" id="msg-alert"></small>
                             </td>
                             <td>
                                 <div class="form-group">
@@ -258,6 +260,18 @@
 <script>
 $(function(){
     $('.promo_id').select2();
+
+    $(document).on('change keyup', '#barangtable .jumlah', function(e) {
+                var stok = $(this).closest('tr').find('.barang_id').select2('data')[0].stok;
+                var jumlah = $(this).val();
+
+                if (jumlah > stok) {
+                    $(this).closest('tr').find('#msg-alert').html('Barang hanya tersedia ' + stok);
+                }
+                else{
+                    $(this).closest('tr').find('#msg-alert').html('');
+                }
+            });
     $(document).on('submit', '#formjual', function(event) {
         event.preventDefault();
         var action = $(this).attr('action');
@@ -321,6 +335,7 @@ $(function(){
                     $(el).find('.promo_id').attr('id', 'promo_id'+j);
                     $(el).find('.promo_id').attr('name', 'promo_id['+j+']');
                     select_barang();
+                    $('.promo_id').select2();
                     c++;
                 });
             }
@@ -354,6 +369,7 @@ $(function(){
                                 <div class="form-group">
                                     <input type="number" class="form-control jumlah" name="jumlah[]" min="0">
                                 </div>
+                                <small class="text-danger" id="msg-alert"></small>
                             </td>
                             <td>
                                 <div class="form-group">
@@ -387,7 +403,7 @@ $(function(){
     })
 
     $(document).on('keyup change', '.harga', function(){
-        var tes = $(this).val().replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        var tes = $(this).val().replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         $(this).val(tes);
         sum_subtotal_harga($(this).closest('tr'));
     })
@@ -546,7 +562,9 @@ $(function(){
         var id = $(this).closest('tr').find('.promo_id').attr('id');
         var no = id.substring(8);
         $(this).closest('tr').find('.jenis_brg').val($(this).select2('data')[0].jenis);
-        $(this).closest('tr').find('.harga').val(number_format($(this).select2('data')[0].harga));
+        if($(this).select2('data')[0].harga != undefined){
+            $(this).closest('tr').find('.harga').val(number_format($(this).select2('data')[0].harga));
+        }
         promo_aktif(no, $(this).closest('tr').find('.barang_id').val(), $(this).closest('tr').find('.jenis_brg').val(), $(this).closest('tr').find('.jumlah').val());
         sum_subtotal_harga($(this).closest('tr'));
         sum_total_harga();

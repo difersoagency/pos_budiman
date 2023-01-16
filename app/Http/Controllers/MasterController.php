@@ -34,7 +34,7 @@ class MasterController extends Controller
 {
     public function barang_select(Request $r)
     {
-        $d1 = Barang::where('nama_barang', 'LIKE', '%' . $r->input('term', '') . '%')->selectRaw('kode_barang as id_item, nama_barang as nama, IF(id IS NULL, "", "barang") as jenis, harga_jual as harga')->get();
+        $d1 = Barang::where('nama_barang', 'LIKE', '%' . $r->input('term', '') . '%')->selectRaw('kode_barang as id_item, nama_barang as nama, IF(id IS NULL, "", "barang") as jenis, stok as stok, harga_jual as harga')->get();
         $d2 = Jasa::where('nama_jasa', 'LIKE', '%' . $r->input('term', '') . '%')->selectRaw('id as id_item, nama_jasa as nama, IF(id IS NULL, "", "jasa") as jenis, harga as harga')->get();
         $data = array();
         $count = 0;
@@ -44,6 +44,7 @@ class MasterController extends Controller
                 $data[$key] = array(
                     'id' => $d->id_item,
                     'nama' => $d->nama,
+                    'stok' => $d->stok,
                     'jenis' => $d->jenis,
                     'harga' => $d->harga
                 );
@@ -54,6 +55,7 @@ class MasterController extends Controller
                 $data[$count + $key] = array(
                     'id' => $d->id_item,
                     'nama' => $d->nama,
+                    'stok' => 100000000,
                     'jenis' => $d->jenis,
                     'harga' => $d->harga
                 );
@@ -824,12 +826,12 @@ class MasterController extends Controller
             ->addColumn('action', function ($data) {
                 return  '<div class="grid grid-cols-2">
                     <button id="btnedit" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->nama_barang . '" >
-                                                            <i class="fa fa-pen tw-text-prim-blue"></i>
-                                                        </button>
-                                                        <button id="btndelete" data-id="' . $data->id . '" data-nama="' . $data->nama_barang . '"
-                                                            class="tw-bg-transparent tw-border-none">
-                                                            <i class="fa fa-trash tw-text-prim-red"></i>
-                                                        </button>
+                        <i class="fa fa-pen tw-text-prim-blue"></i>
+                    </button>
+                    <button id="btndelete" data-id="' . $data->id . '" data-nama="' . $data->nama_barang . '"
+                        class="tw-bg-transparent tw-border-none">
+                        <i class="fa fa-trash tw-text-prim-red"></i>
+                    </button>
                 </div>';
             })
             ->rawColumns(['action'])
@@ -1228,6 +1230,7 @@ class MasterController extends Controller
     //Store
     public function koreksi_store(Request $request)
     {
+        $bool = true;
         //  dd($request);
         $validator = Validator::make($request->all(), [
             'koreksi_tanggal' => ['required'],
@@ -1257,10 +1260,30 @@ class MasterController extends Controller
                 'jumlah' => $request->koreksi_jumlah,
                 'jenis' => $request->koreksi_jenis,
                 'keterangan' => $request->koreksi_keterangan,
-
             ]);
 
-            if ($c) {
+            if($c){
+                if($request->koreksi_jenis == "in"){
+                    $b = Barang::find($request->koreksi_barang);
+                    $b->stok = $b->stok + $request->koreksi_jumlah;
+                    $u = $b->save();
+                    if(!$u){
+                        $bool = false;
+                    }
+                }
+                else{
+                    $b = Barang::find($request->koreksi_barang);
+                    $b->stok = $b->stok - $request->koreksi_jumlah;
+                    $u = $b->save();
+                    if(!$u){
+                        $bool = false;
+                    }
+                }
+            }else{
+                $bool = false;
+            }
+
+            if ($bool == true) {
                 return response()->json(['data' => 'success', 'msg' => "Data berhasil di Tambah"]);
             } else {
                 return response()->json(['data' => 'error', 'msg' => "Tambah data Gagal, periksa kembali"]);
@@ -1324,7 +1347,7 @@ class MasterController extends Controller
                     return $data->jumlah;
                 })
                 ->addColumn('ket', function ($data) {
-                    return $data->ket;
+                    return $data->keterangan;
                 })
 
                 ->addColumn('button', function ($data) {

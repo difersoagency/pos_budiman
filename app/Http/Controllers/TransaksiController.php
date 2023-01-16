@@ -196,8 +196,13 @@ class TransaksiController extends Controller
     }
 
     public function delete_retur_jual(Request $r){
-        $drj = DReturJual::where('hretur_jual_id', $r->id)->count();
-        if($drj > 0){
+        $drj = DReturJual::where('hretur_jual_id', $r->id)->get();
+        if($count(drj) > 0){
+            foreach($drj as $i => $res){
+                $b = Barang::find($res->barang_id[$i]);
+                $b->stok = $b->stok - $res->jumlah[$i];
+                $b->save();
+            }
             $drjd = DReturJual::where('hretur_jual_id', $r->id)->delete();
         }
         $del = ReturJual::where('id', $r->id)->delete();
@@ -377,6 +382,37 @@ class TransaksiController extends Controller
         }
     }
 
+    public function tambah_detail_hutang($id)
+    {
+        $p = Pembayaran::all();
+        return view('layouts.modal.hutang-modal-create', ['id' => $id, 'p' => $p]);
+    }
+
+    public function store_detail_hutang(Request $r, $id)
+    {
+        $validator = Validator::make($r->all(), [
+            'tgl_hutang' => ['required'],
+            'total_bayar' => ['required']
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', "Gagal menambahkan, periksa kembali form anda");
+        } else {
+            $d = DTransHutang::create([
+                'h_hutang_id' => $id,
+                'tgl_bayar' => $r->tgl_hutang,
+                'total_bayar' => str_replace(",", "", $r->total_bayar),
+                'no_giro' => $r->no_giro,
+                'pembayaran_id' => $r->pembayaran_id
+            ]);
+
+            if ($d) {
+                return redirect()->back()->with('success', "Data berhasil disimpan");
+            } else {
+                return redirect()->back()->with('error', "Data gagal disimpan");
+            }
+        }
+    }
+
     public function store_detail_piutang(Request $r, $id)
     {
         $validator = Validator::make($r->all(), [
@@ -495,19 +531,18 @@ class TransaksiController extends Controller
 
     public function delete_retur_beli(Request $request)
     {
-
-
-
         $tb = DReturBeli::where('hretur_beli_id', $request->id)->get();
 
         if (count($tb) > 0) {
+            foreach($tb as $i => $res){
+                $b = Barang::find($res->barang_id[$i]);
+                $b->stok = $b->stok + $res->jumlah[$i];
+                $b->save();
+            }
             DReturBeli::where('hretur_beli_id', $request->id)->delete();
         }
 
         $retur_beli =  ReturBeli::find($request->id)->delete();
-
-
-
 
         if ($retur_beli) {
             return response()->json(['info' => 'success', 'msg' => 'Data berhasil di hapus']);
@@ -554,7 +589,7 @@ class TransaksiController extends Controller
                 ]);
 
                 $b = Barang::find($request->barang_id[$i]);
-                $b->stok = $b->stok + $request->jumlah[$i];
+                $b->stok = $b->stok - $request->jumlah[$i];
                 $b->save();
             }
 
@@ -787,7 +822,11 @@ class TransaksiController extends Controller
     }
     public function data_hutang()
     {
-        $data = TransHutang::all();
+        $data = TransHutang::addSelect(['sum_total' => function ($q) {
+            $q->selectRaw('coalesce(SUM(d_hutang.total_bayar), 0)')
+                ->from('d_hutang')
+                ->whereColumn('d_hutang.h_hutang_id', 'h_hutang.id');
+        }])->get();
         return datatables()->of($data)
             ->addIndexColumn()
             ->addColumn('no_pembelian', function ($data) {
@@ -797,16 +836,19 @@ class TransaksiController extends Controller
                 return  $data->TransBeli->Supplier->nama_supplier;
             })
             ->addColumn('total_hutang', function ($data) {
-                return  number_format($data->TransBeli->total - $data->TransBeli->total_bayar);
+                // return  number_format($data->TransBeli->total - $data->TransBeli->total_bayar);
+                return number_format($data->total_hutang);
             })
             ->addColumn('lunas', function ($data) {
-                return  number_format($data->bayar_hutang);
+                // return  number_format($data->bayar_hutang);
+                return number_format($data->sum_total);
             })
             ->addColumn('sisa_hutang', function ($data) {
-                return  number_format(($data->TransBeli->total - $data->TransBeli->total_bayar) - $data->bayar_hutang);
+                // return  number_format(($data->TransBeli->total - $data->TransBeli->total_bayar) - $data->bayar_hutang);
+                return number_format((float)$data->total_hutang - (float)$data->sum_total);
             })
             ->addColumn('action', function ($data) {
-                return  '<div class="grid grid-cols-2">
+                $lama =  '<div class="grid grid-cols-2">
                 <button id="btndetail" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '"  >
                                                         <i class="fas fa-eye tw-text-prim-blue"></i>
                                                     </button>
@@ -814,7 +856,21 @@ class TransaksiController extends Controller
                                                         <i class="fa fa-pen tw-text-prim-blue"></i>
                                                     </a>
 
-            </div>';
+                </div>';
+
+            $sisahutang = (float)$data->total_hutang - (float)$data->sum_total;
+            $res = '<div class="grid grid-cols-3">
+            <button id="btndetail" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '"  >
+                                                        <i class="fas fa-eye tw-text-prim-blue"></i>
+                                                    </button>';
+            if($sisahutang > 0){
+            $res .= '<button id="btnbayar" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="Hutang ' . $data->TransBeli->no_trans_beli . '" >
+                                                    <i class="fas fa-money-check-alt tw-text-prim-blue"></i>
+                                                </button>';
+            }
+            
+            $res .= '</div>';
+            return $res;
             })
             ->rawColumns(['action'])
             ->make(true);
@@ -844,7 +900,7 @@ class TransaksiController extends Controller
     }
     public function data_transaksi_beli()
     {
-        $data = TransBeli::with('Supplier', 'Pembayaran')->orderBy('tgl_trans_beli', 'desc')->get();
+        $data = TransBeli::with('Supplier', 'Pembayaran', 'ReturBeli', 'TransHutang')->orderBy('tgl_trans_beli', 'desc')->get();
         return datatables()->of($data)
             ->addIndexColumn()
             ->addColumn('tgl_trans_beli', function ($data) {
@@ -866,7 +922,7 @@ class TransaksiController extends Controller
                 return  $data->Pembayaran->nama_bayar;
             })
             ->addColumn('action', function ($data) {
-                return '<div class="grid grid-cols-3 tw-contents">
+                $lama = '<div class="grid grid-cols-3 tw-contents">
                                                 <a href="' . route('edit-beli', $data->id) . '" class="mr-4 tw-bg-transparent tw-border-none" data-toggle="tooltip" title="Edit">
                                                     <i class="fa fa-pen tw-text-prim-blue"></i>
                                                 </a>
@@ -877,6 +933,22 @@ class TransaksiController extends Controller
                                                     <i class="fa fa-trash tw-text-prim-red"></i>
                                                 </button>
                                             </div>';
+
+                $res = '<div class="grid grid-cols-3">
+                <button data-toggle="tooltip" title="Detail"  data-id="' . $data->id . '" id="btndetail" class="tw-mr-4 tw-bg-transparent tw-border-none">
+                                                    <i class="fa fa-info tw-text-prim-black"></i>
+                                                </button>';
+                if(!isset($data->TransHutang) || isset($data->TransHutang)){
+                    if(count($data->ReturBeli) <= 0){
+                    $res .= '<a href="' . route('edit-beli', $data->id) . '" class="mr-4 tw-bg-transparent tw-border-none" data-toggle="tooltip" title="Edit">
+                            <i class="fa fa-pen tw-text-prim-blue"></i>
+                        </a>
+                        <button data-nama="' . $data->nomor_po . '" data-id="' . $data->id . '" data-toggle="tooltip" title="Hapus" class="tw-bg-transparent tw-border-none" id="btndelete">
+                                                    <i class="fa fa-trash tw-text-prim-red"></i>
+                                                </button>';}
+                }
+                $res .= '</div>';
+                return $res;
             })
             ->rawColumns(['action'])
             ->make(true);
@@ -948,7 +1020,7 @@ class TransaksiController extends Controller
         return datatables()->of($data)
             ->addIndexColumn()
             ->addColumn('promo', function($data){
-                return $data;
+                return $data->promo_name;
             })
             ->make(true);
     }

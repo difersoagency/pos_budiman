@@ -49,7 +49,7 @@
                         </p>
                     </a>
                 </li>
-                @if (in_array(Auth::user()->LevelUser->nama_level, ['admin', 'owner']))
+                @if (in_array(Auth::user()->LevelUser->nama_level, ['owner']))
                 <li class="nav-item has-submenu">
                     <a href="/master" class="tw-cursor-pointer nav-link">
                         <i class="nav-icon fa fa-globe tw-text-prim-white"></i>
@@ -58,6 +58,8 @@
                         </p>
                     </a>
                 </li>
+                @endif
+                
                 <li class="nav-item has-submenu">
                     <a class="tw-cursor-pointer nav-link" href="/transaksi">
                         <i class="nav-icon fa fa-credit-card tw-text-prim-white"></i>
@@ -66,6 +68,7 @@
                         </p>
                     </a>
                 </li>
+                @if (in_array(Auth::user()->LevelUser->nama_level, ['owner']))
                 <li class="nav-item">
                     <a href="{{ route('barang') }}" class="nav-link">
                         <i class="nav-icon fa fa-barcode tw-text-prim-white"></i>
@@ -74,15 +77,15 @@
                         </p>
                     </a>
                 </li>
+                @endif
                 <li class="nav-item has-submenu">
-                    <a class="tw-cursor-pointer nav-link" href="{{ route('laporan') }}"">
+                    <a class="tw-cursor-pointer nav-link" href="{{ route('laporan') }}">
                         <i class="nav-icon fa fa-file tw-text-prim-white"></i>
                         <p class="tw-text-prim-red tw-font-bold focus:tw-text-prim-white">
                             Laporan
                         </p>
                     </a>
                 </li>
-                @endif
 
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('logout') }}" onclick="event.preventDefault();

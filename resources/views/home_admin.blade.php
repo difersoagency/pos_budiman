@@ -27,7 +27,7 @@
               <div class="card">
                 <div class="card-header border-0">
                   <div class="d-flex justify-content-between">
-                    <h3 class="card-title">Selamat datang Admin {{Auth::user()}}</h3>
+                    <h3 class="card-title">Selamat datang Admin</h3>
                   </div>
                 </div>
               </div>

@@ -188,6 +188,38 @@ function detail_hutang_table(id){
               
             ]
         });
+        $(document).on('click', '#btnbayar', function(event) {
+            var id = $(this).attr('data-id');
+            $.ajax({
+                url: "/transaksi/hutang/tambah_detail/"+id,
+                beforeSend: function() {
+                    $('#loader').show();
+                },
+                // return the result
+                success: function(result) {
+                    $('#modalPop').modal("show");
+                    $('.modal-title').html("Pembayaran Hutang");
+                    $('#modal-body').html(result).show();
+                    $('.pembayaran_id').select2({dropdownParent: $("#modalPop")});
+                    
+                    
+                },
+            })
+        });
+
+        $(document).on('change', '#pembayaran_id', function(e) {
+            if($(this).val() == "1"){
+                $('#input_giro').attr('hidden', true);
+                $('#no_giro').val('');
+            }
+            else{
+                $('#input_giro').attr('hidden', false);
+            }
+        })
+        $(document).on('keyup change', '#total_bayar', function(){
+            var tes = $(this).val().replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            $(this).val(tes);
+        });
 </script>
 @stop
 @endsection

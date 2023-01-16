@@ -76,6 +76,7 @@
                                             <input type="number" class="form-control jumlah" name="jumlah[]" value="{{$i['jumlah']}}"
                                                 min="0">
                                         </div>
+                                        <small class="text-danger" id="msg-alert"></small>
                                     </td>
 
                                     <td>
@@ -151,7 +152,8 @@
                                     id: obj.id,
                                     text: obj.nama,
                                     jenis: obj.jenis,
-                                    harga: obj.harga
+                                    harga: obj.harga,
+                                    stok: obj.stok
                                 };
                             })
                         };
@@ -227,7 +229,8 @@
                                         id: obj.id,
                                         text: obj.nama,
                                         jenis: obj.jenis,
-                                        harga: obj.harga
+                                        harga: obj.harga,
+                                        stok: obj.stok
                                     };
                                 })
                             };
@@ -257,6 +260,18 @@
                 }
             });
 
+            $(document).on('change keyup', '#barang_booking .jumlah', function(e) {
+                var stok = $(this).closest('tr').find('.barang_id').select2('data')[0].stok;
+                var jumlah = $(this).val();
+
+                if (jumlah > stok) {
+                    $(this).closest('tr').find('#msg-alert').html('Barang hanya tersedia ' + stok);
+                }
+                else{
+                    $(this).closest('tr').find('#msg-alert').html('');
+                }
+            });
+
             $(document).on('click', '#tambahbarang', function() {
                 $('#barang_booking tbody tr:last').after(`
         <tr>
@@ -277,6 +292,7 @@
                                 <div class="form-group">
                                     <input type="number" class="form-control jumlah" name="jumlah[]" min="0">
                                 </div>
+                                <small class="text-danger" id="msg-alert"></small>
                             </td>
 
                             <td>

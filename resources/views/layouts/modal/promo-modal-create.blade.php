@@ -17,6 +17,7 @@
                 <label for="barang_id" class="col-form-label">Barang :</label>
                 <div class="dropdown tw-mb-4">
                     <select class="custom-select input-select2" id="barang_id" name="barang_id">
+                        <option value=""></option>
                         @foreach ($data as $d)
                             <option value="{{ $d->id }}">{{ Str::ucfirst($d->nama_barang) }}</option>
                         @endforeach
@@ -28,6 +29,7 @@
                 <label for="jasa_id" class="col-form-label">Jasa :</label>
                 <div class="dropdown tw-mb-4">
                     <select class="custom-select input-select2" id="jasa_id" name="jasa_id">
+                        <option value=""></option>
                         @foreach ($jasa as $j)
                             <option value="{{ $j->id }}">{{ Str::ucfirst($j->nama_jasa) }}</option>
                         @endforeach

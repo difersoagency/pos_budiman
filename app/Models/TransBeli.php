@@ -29,7 +29,7 @@ class TransBeli extends Model
 
     public function ReturBeli()
     {
-        return $this->hasMany(ReturBeli::class);
+        return $this->hasMany(ReturBeli::class, 'htrans_beli_id');
     }
     public function TransHutang()
     {

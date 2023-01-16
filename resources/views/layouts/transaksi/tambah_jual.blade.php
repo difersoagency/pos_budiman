@@ -115,6 +115,7 @@
                                 <div class="form-group">
                                     <input type="number" class="form-control jumlah" name="jumlah[]" min="0">
                                 </div>
+                                <small class="text-danger" id="msg-alert"></small>
                             </td>
                             <td>
                                 <div class="form-group">
@@ -279,6 +280,19 @@ $(function(){
         }
     })
 
+    $(document).on('change keyup', '#barangtable .jumlah', function(e) {
+                var stok = $(this).closest('tr').find('.barang_id').select2('data')[0].stok;
+                var jumlah = $(this).val();
+
+                if (jumlah > stok) {
+                    $(this).closest('tr').find('#msg-alert').html('Barang hanya tersedia ' + stok);
+                }
+                else{
+                    $(this).closest('tr').find('#msg-alert').html('');
+                }
+            });
+
+
 
 
     $('#btntambah').on('click', function(){
@@ -298,6 +312,7 @@ $(function(){
                                 <div class="form-group">
                                     <input type="number" class="form-control jumlah" name="jumlah[]" min="0">
                                 </div>
+                                <small class="text-danger" id="msg-alert"></small>
                             </td>
                             <td>
                                 <div class="form-group">
@@ -557,6 +572,7 @@ $(function(){
                                 <div class="form-group">
                                     <input type="number" class="form-control jumlah" name="jumlah[`+i+`]" min="0" value="`+jumlah+`">
                                 </div>
+                                <small class="text-danger" id="msg-alert"></small>
                             </td>
                             <td>
                                 <div class="form-group">

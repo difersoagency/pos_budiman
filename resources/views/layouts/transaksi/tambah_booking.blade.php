@@ -75,6 +75,7 @@
                                             <input type="number" class="form-control jumlah" name="jumlah[]"
                                                 min="0">
                                         </div>
+                                        <small class="text-danger" id="msg-alert"></small>
                                     </td>
 
                                     <td>
@@ -150,7 +151,8 @@
                                     id: obj.id,
                                     text: obj.nama,
                                     jenis: obj.jenis,
-                                    harga: obj.harga
+                                    harga: obj.harga,
+                                    stok: obj.stok
                                 };
                             })
                         };
@@ -161,7 +163,20 @@
             $(document).on('change', '#barang_beli .barang_id', function() {
                 var val = $(this).select2('data')[0].jenis;
                 $(this).closest('tr').find('#jenis_brg').val(val);
-            })
+            });
+
+            $(document).on('change keyup', '#barang_booking .jumlah', function(e) {
+                var stok = $(this).closest('tr').find('.barang_id').select2('data')[0].stok;
+                var jumlah = $(this).val();
+
+                if (jumlah > stok) {
+                    $(this).closest('tr').find('#msg-alert').html('Barang hanya tersedia ' + stok);
+                }
+                else{
+                    $(this).closest('tr').find('#msg-alert').html('');
+                }
+            });
+
 
             $('.customer_id').prepend('<option selected=""></option>').select2({
                 placeholder: "Pilih Customer",
@@ -276,6 +291,7 @@
                                 <div class="form-group">
                                     <input type="number" class="form-control jumlah" name="jumlah[]" min="0">
                                 </div>
+                                <small class="text-danger" id="msg-alert"></small>
                             </td>
 
                             <td>
