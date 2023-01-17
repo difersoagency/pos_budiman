@@ -3,7 +3,7 @@
 @section('content')
     <div class="content-wrapper tw-py-6 tw-px-5">
         <section class="tambahBeli">
-            <form id="retur_beli" action="{{ route('update-retur-beli', ['id' => $data->id]) }}" method="POST">
+            <form id="editretur_beli" action="{{ route('update-retur-beli', ['id' => $data->id]) }}" method="POST">
                 @csrf
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">

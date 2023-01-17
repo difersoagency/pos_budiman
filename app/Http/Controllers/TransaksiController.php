@@ -25,7 +25,7 @@ use App\Models\TransHutang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
-
+use Auth;
 
 class TransaksiController extends Controller
 {
@@ -197,10 +197,10 @@ class TransaksiController extends Controller
 
     public function delete_retur_jual(Request $r){
         $drj = DReturJual::where('hretur_jual_id', $r->id)->get();
-        if($count(drj) > 0){
-            foreach($drj as $i => $res){
-                $b = Barang::find($res->barang_id[$i]);
-                $b->stok = $b->stok - $res->jumlah[$i];
+        if(count($drj) > 0){
+            foreach($drj as $res){
+                $b = Barang::find($res->barang_id);
+                $b->stok = $b->stok - $res->jumlah;
                 $b->save();
             }
             $drjd = DReturJual::where('hretur_jual_id', $r->id)->delete();
@@ -392,7 +392,8 @@ class TransaksiController extends Controller
     {
         $validator = Validator::make($r->all(), [
             'tgl_hutang' => ['required'],
-            'total_bayar' => ['required']
+            'total_bayar' => ['required'],
+
         ]);
         if ($validator->fails()) {
             return redirect()->back()->with('error', "Gagal menambahkan, periksa kembali form anda");
@@ -489,6 +490,7 @@ class TransaksiController extends Controller
                 $trans_beli = TransBeli::find($id);
                 $trans_beli->supplier_id = $request->supplier;
                 $trans_beli->pembayaran_id = $request->pembayaran_id;
+                $trans_beli->no_giro = $request->no_giro;
                 $trans_beli->nomor_po = $request->no_beli;
                 $trans_beli->tgl_trans_beli = $request->tgl_beli;
                 $trans_beli->tgl_max_garansi = $request->tgl_beli_garansi;
@@ -664,6 +666,7 @@ class TransaksiController extends Controller
                 $header =  TransBeli::create([
                     'supplier_id' => $request->supplier,
                     'pembayaran_id' => $request->pembayaran_id,
+                    'no_giro' => $request->no_giro,
                     'nomor_po' => $request->no_beli,
                     'tgl_trans_beli' => $request->tgl_beli,
                     'tgl_max_garansi' => $request->tgl_beli_garansi,
@@ -919,7 +922,11 @@ class TransaksiController extends Controller
                 return  $data->Supplier->nama_supplier;
             })
             ->addColumn('pembayaran', function ($data) {
-                return  $data->Pembayaran->nama_bayar;
+                $res = $data->Pembayaran->nama_bayar;
+                if($data->no_giro != ''){
+                $res .= '<div><small class="text-danger">Nomor: '.$data->no_giro.'</small></div>';
+                }
+                return $res;
             })
             ->addColumn('action', function ($data) {
                 $lama = '<div class="grid grid-cols-3 tw-contents">
@@ -950,7 +957,7 @@ class TransaksiController extends Controller
                 $res .= '</div>';
                 return $res;
             })
-            ->rawColumns(['action'])
+            ->rawColumns(['action', 'pembayaran'])
             ->make(true);
     }
 
@@ -1061,6 +1068,7 @@ class TransaksiController extends Controller
                 'no_trans_jual' => $r->no_trans_jual,
                 'tgl_trans_jual' => $r->tgl_trans_jual,
                 'tgl_max_garansi' => $r->tgl_max_garansi,
+                'user_id' => Auth::user()->id,
                 'total_jual' => str_replace(",", "", $r->total_jual),
                 'bayar_jual' => str_replace(",", "", $r->bayar_jual),
                 'kembali_jual' => str_replace(",", "", $r->kembali_jual),
@@ -1335,22 +1343,38 @@ class TransaksiController extends Controller
     public function selectdata_beli(Request $r, $id)
     {
         if ($id == 0) {
+            $array = array();
             $data = TransBeli::where('nomor_po', 'LIKE', '%' . $r->input('term', '') . '%')->select('id', 'nomor_po')->get();
-            echo json_encode($data);
+            foreach($data as $key => $i){
+                $array[$key] = array('id' => $i->id, 'nomor_po' => $i->nomor_po);
+            }
+            echo json_encode($array);
         } else {
+            $array = array();
             $data = TransBeli::find($id);
             $tgl_trans_beli_short = Carbon::createFromFormat('Y-m-d', $data->tgl_trans_beli)->isoFormat('D MMMM Y');
             $tgl_max_garansi_short = Carbon::createFromFormat('Y-m-d', $data->tgl_max_garansi)->isoFormat('D MMMM Y');
-
-            echo json_encode([
+            
+            $array = array(
                 'poid' => $data->id,
                 'supplier' => $data->Supplier->nama_supplier,
                 'alamat' => $data->Supplier->alamat,
                 'telp' => $data->Supplier->telepon,
                 'total' =>  number_format($data->total, 0, ',', '.'),
                 'tgl_transaksi' => $tgl_trans_beli_short,
-                'tgl_max_garansi' =>  $tgl_max_garansi_short
-            ]);
+                'tgl_max_garansi' =>  $tgl_max_garansi_short,
+                'detail' => array()
+            );
+
+            foreach($data->DTransBeli as $key => $i){
+                $array['detail'][$key] = array(
+                    'id' => $i->barang_id,
+                    'nama' => $i->Barang->nama_barang,
+                    'jumlah' => $i->jumlah,
+                    'harga' => $i->harga
+                );
+            }
+            echo json_encode($array);
         }
     }
 

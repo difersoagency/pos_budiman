@@ -11,7 +11,7 @@
 @section('content')
 <div class="content-wrapper tw-py-6 tw-px-5">
     <section class="tambahBeli">
-        <form id="trans_beli" action="{{route('update-beli',['id' => $data->id])}}" method="POST">
+        <form id="edittrans_beli" action="{{route('update-beli',['id' => $data->id])}}" method="POST">
             @csrf
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
@@ -67,18 +67,10 @@
                         </select>
                     </div>
                 </div>
-                {{-- <div class="my-4 mx-2">
-                    <label for="user_beli">Batas Garansi</label>
-                    <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_garansi" name="tgl_beli_garansi" id="tgl_retur_beli">
-                </div> --}}
-                {{-- <div class="mb-4 mx-2 float-right">
-                    <label for="user_beli">Dibuat Oleh</label>
-                    <div class="dropdown">
-                        <select class="custom-select select-user tw-text-prim-white tw-w-full" id="pembayaran_id" name="pembayaran_id">
-                            <option value="0">Semua</option>
-                        </select>
-                    </div>
-                </div> --}}
+                <div class="my-4 mx-2 tw-row-span-2" id="input_giro" @if($data->Pembayaran->nama_bayar == "Cash") hidden="true" @endif>
+                    <label for="no_giro">Nomor</label>
+                    <input type="text" placeholder="Nomor Giro/Debit/Kredit" class="form-control no_giro" name="no_giro" id="no_giro" value="{{$data->no_giro}}">
+                </div>
             </div>
 
             <div class="tw-bg-white tw-px-5 tw-py-3 ">
@@ -254,6 +246,15 @@
 @section('script')
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    $(document).on('change', '#pembayaran_id', function(e) {
+        if($(this).val() == "1"){
+            $('#input_giro').attr('hidden', true);
+            $('#no_giro').val('');
+        }
+        else{
+            $('#input_giro').attr('hidden', false);
+        }
+    })
     select_barang();
     //  select_satuan();
     function replaceAll(string, search, replace) {
@@ -373,6 +374,7 @@
                                     <!-- Dropdown -->
                                     <div class="dropdown tw-mb-7 md:tw-mb-0 ">
                                         <select name="barang[]" id="0" class="custom-select  tw-text-prim-white barang" style="width: 100%">
+                                            <option value="" selected></option>
                                             @foreach ($barang as $b)
                                             <option value="{{$b->id}}">{{$b->nama_barang}}</option>
                                             @endforeach

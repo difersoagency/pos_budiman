@@ -6,7 +6,7 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/master">Master</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Substitusi</li>
+            <li class="breadcrumb-item active" aria-current="page">Koreksi</li>
         </ol>
     </nav>
     <!-- Main content -->

@@ -35,8 +35,13 @@
             <div class="my-4">
                 <label for="user_beli" class="mx-2">Dibuat Oleh</label>
                 <dl class="mx-2">
+                    @if($d->user_id == NULL)
                     <dd>{{Auth::user()->pegawai->nama_pegawai}}</dd>
                     <dd>{{Auth::user()->LevelUSer->nama_level}} - {{Auth::user()->pegawai->kode_pegawai}}</dd>
+                    @else
+                    <dd>{{$d->User->pegawai->nama_pegawai}}</dd>
+                    <dd>{{$d->User->LevelUSer->nama_level}} - {{$d->User->pegawai->kode_pegawai}}</dd>
+                    @endif
                 </dl>
             </div>
             <div class="my-4 mx-2">

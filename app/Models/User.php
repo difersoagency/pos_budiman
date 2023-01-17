@@ -55,6 +55,11 @@ class User extends Authenticatable
         return $this->belongsTo(Pegawai::class, 'pegawai_id');
     }
 
+    public function TransJual()
+    {
+        return $this->hasMany(TransJual::class, 'user_id');
+    }
+
     public function hasRole($role)
     {
         $data = LevelUser::where('nama_level', $role)->limit(1);

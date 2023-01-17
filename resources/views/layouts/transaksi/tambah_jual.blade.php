@@ -217,7 +217,10 @@ $(function(){
                         text: result.msg,
                         icon: 'success',
                     });
-                    window.location.href = "{{route('trans-jual')}}";
+                    $('#formjual')[0].reset();
+                    $('#formjual').each(function(){
+                        location.reload();
+                    });
                 } else {
                     Swal.fire({
                         title: 'Gagal',

@@ -34,7 +34,7 @@ $(document).ready(function () {
 // Select 2
 $(document).ready(function() {
   $('.select-edit').select2();
-  $('.select-2').prepend('<option selected=""></option>').select2({placeholder: "Pilih Data", allowClear:true});
+  $('.select-2').prepend('<option selected=""></option>').select2({placeholder: "Pilih Data"});
   $('.select-user').prepend('<option selected=""></option>').select2({placeholder: "Pilih Data"});
   $('.select-trans').prepend('<option selected=""></option>').select2({placeholder: "Pilih Barang"});
   $(".input-select2").select2({
@@ -241,10 +241,11 @@ $(function() {
                     'Transaksi berhasil ditambahkan',
                     'success'
                 );
+                $('#trans_beli')[0].reset();
                 $( '#trans_beli' ).each(function(){
                   location.reload();
               });
-              window.location.href = "/transaksi/beli";
+              // window.location.reload();
           } else if(response['data'] == "dibayar"){
                 swal.fire(
                     'Gagal',
@@ -268,7 +269,57 @@ $(function() {
         }
     });
     return false;
-})
+});
+
+$(document).on('submit', '#edittrans_beli', function(e) {
+  e.preventDefault();
+  var $form = $(this);
+  var serializedData = $form.serialize();
+  var action = $(this).attr('action');
+  $.ajax({
+      headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      },
+      type: "POST",
+      url: action,
+      data: serializedData,
+      dataType: 'JSON',
+      success: function(response) {
+        if (response['data'] == "success") {
+              swal.fire(
+                  'Berhasil',
+                  'Transaksi berhasil diubah',
+                  'success'
+              );
+            //   $( '#edittrans_beli' ).each(function(){
+            //     location.reload();
+            // });
+            window.location.href = "/transaksi/beli";
+        } else if(response['data'] == "dibayar"){
+              swal.fire(
+                  'Gagal',
+                  'Total dibayar harus lebih kecil dari total transaksi',
+                  'warning'
+              );
+        } else {
+              swal.fire(
+                  'Gagal',
+                  'Lengkapi Form',
+                  'warning'
+              );
+        }
+      },
+      error: function(response) {
+        swal.fire(
+          'Gagal',
+          'Lengkapi Form',
+          'warning'
+      );
+      }
+  });
+  return false;
+});
+
   $(document).on('submit', '#retur_beli', function(e) {
      e.preventDefault();
      var $form = $(this);
@@ -289,10 +340,12 @@ $(function() {
                     'Transaksi berhasil ditambahkan',
                     'success'
                 );
-                $( '#trans_beli' ).each(function(){
+                $('#retur_beli')[0].reset();
+                $( '#retur_beli' ).each(function(){
                   location.reload();
               });
-              window.location.href = "/transaksi/retur-beli";
+              
+              // window.location.reload();
            } else if(response['data'] == "dibayar"){
                 swal.fire(
                     'Gagal',
@@ -318,6 +371,57 @@ $(function() {
     });
     return false;
 })
+
+$(document).on('submit', '#editretur_beli', function(e) {
+  e.preventDefault();
+  var $form = $(this);
+ var serializedData = $form.serialize();
+ var action = $(this).attr('action');
+ $.ajax({
+     headers: {
+         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+     },
+     type: "POST",
+     url: action,
+     data: serializedData,
+     dataType: 'JSON',
+     success: function(response) {
+        if (response['data'] == "success") {
+             swal.fire(
+                 'Berhasil',
+                 'Transaksi berhasil ditambahkan',
+                 'success'
+             );
+          //    $( '#editretur_beli' ).each(function(){
+          //      location.reload();
+          //  });
+           window.location.href = "/transaksi/retur-beli";
+        } else if(response['data'] == "dibayar"){
+             swal.fire(
+                 'Gagal',
+                 'Total dibayar harus lebih kecil dari total transaksi',
+                 'warning'
+             );
+        } else {
+             swal.fire(
+                 'Gagal',
+                 'Lengkapi Form',
+                 'warning'
+             );
+        }
+    
+     },
+     error: function(xhr, status, error) {
+       swal.fire(
+         'Gagal',
+         'Lengkapi Form',
+         'warning'
+     );
+     }
+ });
+ return false;
+})
+
   $(document).on('submit', '#trans_hutang', function(e) {
      e.preventDefault();
      var $form = $(this);

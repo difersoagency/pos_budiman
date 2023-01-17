@@ -67,6 +67,10 @@
                         </select>
                     </div>
                 </div>
+                <div class="my-4 mx-2 tw-row-span-2" id="input_giro" hidden="true">
+                    <label for="no_giro">Nomor</label>
+                    <input type="text" placeholder="Nomor Giro/Debit/Kredit" class="form-control no_giro" name="no_giro" id="no_giro">
+                </div>
                 {{-- <div class="my-4 mx-2">
                     <label for="user_beli">Batas Garansi</label>
                     <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_garansi" name="tgl_beli_garansi" id="tgl_retur_beli">
@@ -249,6 +253,15 @@
 @section('script')
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    $(document).on('change', '#pembayaran_id', function(e) {
+        if($(this).val() == "1"){
+            $('#input_giro').attr('hidden', true);
+            $('#no_giro').val('');
+        }
+        else{
+            $('#input_giro').attr('hidden', false);
+        }
+    })
     select_barang();
     //  select_satuan();
     function replaceAll(string, search, replace) {

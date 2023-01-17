@@ -155,7 +155,10 @@
                         text: result.msg,
                         icon: 'success',
                     });
-                    window.location.href = "{{route('retur-penjualan')}}";
+                    $('#formreturjual')[0].reset();
+                    $('#formreturjual').each(function(){
+                        location.reload();
+                    });
                 } else {
                     Swal.fire({
                         title: 'Gagal',

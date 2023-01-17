@@ -204,7 +204,6 @@
         })
 
         $(document).on('submit', '#formedit_barang', function(event) {
-            alert("tes");
             event.preventDefault();
             var action = $(this).attr('action');
             $.ajax({

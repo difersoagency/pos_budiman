@@ -97,7 +97,22 @@
 
 </div>
 @section('script')
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    @if(Session::has('error'))
+    Swal.fire({
+        title: 'Gagal',
+        text: "{{ Session::get('error') }}",
+        icon: 'error',
+    });
+    @endif
+    @if(Session::has('success'))
+    Swal.fire({
+        title: 'Berhasil',
+        text: "{{ Session::get('success') }}",
+        icon: 'success',
+    });
+    @endif
 
 $(document).on('click', '#btndetail', function(event) {
              var id = $(this).attr('data-id');

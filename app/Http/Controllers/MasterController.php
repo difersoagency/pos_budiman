@@ -141,7 +141,8 @@ class MasterController extends Controller
     }
     public function master_supplier()
     {
-        $kota = Kota::Has('Supplier')->get();
+        // $kota = Kota::Has('Supplier')->get();
+        $kota = Kota::all();
         return view('layouts.master.supplier', ['kotas' => $kota]);
     }
     public function customer_create()
@@ -1298,7 +1299,6 @@ class MasterController extends Controller
             'tipe' => ['required'],
             'merk' => ['required'],
             'satuan' => ['required'],
-            'supplier' => ['required'],
             'harga_jual' => ['required'],
             'harga_beli' => ['required'],
             'stok' => ['required'],

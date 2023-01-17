@@ -177,7 +177,7 @@
                 }
              });
 
-
+    
     function addrows(table){
     $('#' + table + ' tr:last').after(`<tr>
         <td scope="row" class="d-none"   style="width:100%;">1</td>
@@ -281,17 +281,64 @@ $('#retur').on('click', '#removerow', function(e) {
                         type: 'GET',
                         dataType: 'json',
                         success: function(data) {
-                            console.log(data);
                             $('#tgl_beli').text('Transaksi pada ' + data.tgl_transaksi);
                             $('#tgl_garansi').text('Garansi hingga ' + data.tgl_max_garansi);
                             $('#supplier').text(data.supplier);
                             $('#alamat_supplier').text(data.alamat);
                             $('#telp_supplier').text(data.telp);
-                            select_barang(value)
+                            after_select(data.detail);
+                            select_barang(value);
                         }
                     });
                  
                 });
+            }
+
+            function after_select(value){
+                $('#retur tbody').empty();
+                for(var i = 0; i < value.length; i++){
+                if($('#retur .barang').val() == null){
+                    $('#retur tbody').empty();
+                }
+                var ids = value[i].id;
+                var namas = value[i].nama;
+                var jumlah = value[i].jumlah;
+                var harga = value[i].harga;
+
+                $('#retur tbody').append(`<tr>
+                    <td scope="row" class="d-none"   style="width:100%;">`+(i + 1)+`</td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <select class="custom-select  tw-text-prim-white barang" id="`+i+`" name="barang_id[`+i+`]" width="100%">
+                                                    <option value="`+ids+`" selected>`+namas+`</option>
+                                                </select>
+                                            </div>
+                                        
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control jumlah" id="jumlah`+i+`"  name="jumlah[`+i+`]" min="0"  value="`+jumlah+`" style="width:100%;">
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control harga" id="harga`+i+`" name="harga[`+i+`]" min="0" value="`+harga+`"  style="width:100%;">
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+                                                <input type="text" class="form-control subtotal" name="subtotal[`+i+`]" min="0"  id="subtotal`+i+`" readonly value="`+(harga * jumlah)+`"   style="width:100%;">
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <button type="button" id="removerow" class="tw-bg-transparent tw-border-none">
+                                                <i class="fa fa-trash tw-text-prim-red"></i>
+                                            </button>
+                                        </td>
+                </tr>`);
+                }
+                total();
             }
 
             function select_barang(id) {
