@@ -74,6 +74,7 @@
                                 <div class="form-group">
                                     <input type="text" class="form-control jumlah" name="jumlah[]" min="0" value="">
                                 </div>
+                                <small class="text-danger" id="msg-alert"></small>
                             </td>
                             <td>
                                 <div class="form-group">
@@ -220,7 +221,6 @@
 
         $('.htrans_jual_id').select2({
         placeholder: "Pilih No Transaksi",
-
                 ajax: {
                     dataType: 'json',
                     type: 'GET',
@@ -270,6 +270,7 @@
         $('#tgl_max_garansi').text($(this).select2('data')[0].tgl_max_garansi);
 
         var d_barang = $(this).select2('data')[0].detail;
+        $('#barangtable tbody').empty();
         if($(this).val() != ""){
             $('#btntambah').removeAttr('disabled');
             $('.barang_id').removeAttr('disabled');
@@ -286,13 +287,14 @@
                 $('#barangtable tbody').append(`<tr>
                             <td>
                                 <select class="custom-select barang_id tw-text-prim-white" name="barang_id[`+i+`]">
-                                    <option value="`+ids+`" selected>`+namas+`</option>
+                                    <option value="`+ids+`" data-jumlah="`+jumlah+`" selected>`+namas+`</option>
                                 </select>
                             </td>
                             <td>
                                 <div class="form-group">
                                     <input type="text" class="form-control jumlah" name="jumlah[`+i+`]" min="0" value="`+jumlah+`">
                                 </div>
+                                <small class="text-danger" id="msg-alert"></small>
                             </td>
                             <td>
                                 <div class="form-group">
@@ -334,6 +336,13 @@
 
         $(document).on('keyup change', '#barangtable .jumlah', function(){
             var table = $(this).closest('tr');
+            var jumlah = $(this).closest('tr').find('.barang_id').select2('data')[0].jumlah;
+         
+            if(jumlah < $(this).val()){
+                table.find('#msg-alert').html('Jumlah barang dijual hanya '+jumlah);
+            }else{
+                table.find('#msg-alert').html('');
+            }
             sum_subtotal_harga(table)
         });
 

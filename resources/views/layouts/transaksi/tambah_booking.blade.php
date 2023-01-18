@@ -120,7 +120,10 @@
                                 text: result.msg,
                                 icon: 'success',
                             });
-                            window.location.href="{{route('master_booking')}}";
+                            $('#formbooking')[0].reset();
+                            $( '#formbooking' ).each(function(){
+                                location.reload();
+                            });
                         } else {
                             Swal.fire({
                                 title: 'Gagal',
@@ -160,7 +163,7 @@
                 }
             });
 
-            $(document).on('change', '#barang_beli .barang_id', function() {
+            $(document).on('change', '#barang_booking .barang_id', function() {
                 var val = $(this).select2('data')[0].jenis;
                 $(this).closest('tr').find('#jenis_brg').val(val);
             });
@@ -168,7 +171,6 @@
             $(document).on('change keyup', '#barang_booking .jumlah', function(e) {
                 var stok = $(this).closest('tr').find('.barang_id').select2('data')[0].stok;
                 var jumlah = $(this).val();
-
                 if (jumlah > stok) {
                     $(this).closest('tr').find('#msg-alert').html('Barang hanya tersedia ' + stok);
                 }
@@ -241,6 +243,7 @@
                                         id: obj.id,
                                         text: obj.nama,
                                         jenis: obj.jenis,
+                                        stok: obj.stok,
                                         harga: obj.harga
                                     };
                                 })

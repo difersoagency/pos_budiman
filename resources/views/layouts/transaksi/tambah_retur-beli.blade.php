@@ -74,6 +74,7 @@
                                 <div class="form-group">
                                     <input type="text" class="form-control jumlah" id="jumlah0"  name="jumlah[]" min="0"   style="width:100%;">
                                 </div>
+                                <small class="text-danger" id="msg-alert"></small>
                             </td>
                             <td>
                                 <div class="form-group">
@@ -166,15 +167,24 @@
              $("#retur").on('keyup change', '.jumlah', function() {
                $(this).val();
                var jumlah = $(this).closest('tr').find('.jumlah').val();
+               var jbeli = $(this).closest('tr').find('.barang').select2('data')[0].jumlah;
                  var harga = replaceAll($(this).closest('tr').find('.harga').val(), '.', '');
                 var subtotal = $(this).closest('tr').find('.subtotal');
                 if (jumlah != "" && harga != "") {
                     subtotal.val(formatmoney(jumlah * parseInt(harga)));
                     total();
+                    console.log(jbeli);
+                    if(jumlah > jbeli){
+                        $(this).closest('tr').find('#msg-alert').html('Jumlah barang dijual hanya '+jbeli);
+                    }else{
+                        $(this).closest('tr').find('#msg-alert').html('');
+                    }
                 }else{
                     total();
                     subtotal.val(0);
                 }
+
+                
              });
 
     
@@ -192,6 +202,7 @@
                                 <div class="form-group">
                                     <input type="text" class="form-control jumlah" id="jumlah0"  name="jumlah[]" min="0"   style="width:100%;">
                                 </div>
+                                <small class="text-danger" id="msg-alert"></small>
                             </td>
                             <td>
                                 <div class="form-group">
@@ -310,7 +321,7 @@ $('#retur').on('click', '#removerow', function(e) {
                                         <td>
                                             <div class="dropdown">
                                                 <select class="custom-select  tw-text-prim-white barang" id="`+i+`" name="barang_id[`+i+`]" width="100%">
-                                                    <option value="`+ids+`" selected>`+namas+`</option>
+                                                    <option value="`+ids+`" data-jumlah="`+jumlah+`" selected>`+namas+`</option>
                                                 </select>
                                             </div>
                                         
@@ -319,6 +330,7 @@ $('#retur').on('click', '#removerow', function(e) {
                                             <div class="form-group">
                                                 <input type="text" class="form-control jumlah" id="jumlah`+i+`"  name="jumlah[`+i+`]" min="0"  value="`+jumlah+`" style="width:100%;">
                                             </div>
+                                            <small class="text-danger" id="msg-alert"></small>
                                         </td>
                                         <td>
                                             <div class="form-group">
@@ -361,7 +373,8 @@ $('#retur').on('click', '#removerow', function(e) {
                                 results: $.map(data, function(obj) {
                                     return {
                                         id: obj.id,
-                                        text: obj.nama_barang
+                                        text: obj.nama_barang,
+                                        jumlah: obj.jumlah
                                     };
                                 })
                             };

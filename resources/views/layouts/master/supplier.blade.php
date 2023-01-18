@@ -18,7 +18,7 @@
                         <div class="dropdown tw-mb-7 md:tw-mb-0 tw-w-2/4">
                                 <select class="custom-select select-2 tw-bg-prim-blue tw-text-prim-white" id="kotafilter" placeholder="Pilih Data"
                                     name="state">
-                                    <option value=""></option>
+                                    <option value="0">Semua</option>
                                     @foreach ($kotas as $kotas)
                                         <option value="{{ $kotas->nama_kota }}">{{ $kotas->nama_kota }}</option>
                                     @endforeach
@@ -105,7 +105,7 @@
             processing: true,
             serverSide: true,
             ajax: {
-                'url': '/master/supplier/data',
+                'url': '/master/supplier/data/0',
                 'method': 'POST',
                 'headers': {
                     'X-CSRF-TOKEN': '{{csrf_token()}}'
@@ -154,10 +154,10 @@
         });
 
         // Refilter the table
-        $('#kotafilter').on('change', function () {
-            table.search( this.value ).draw();
+        $('#kotafilter').change(function() {
+            var kota_id = $(this).val();
+            $('#showtable').DataTable().ajax.url('/master/supplier/data/' + kota_id).load();
         });
-
         $(document).on('click', '#tambah_supplier', function(event) {
             event.preventDefault();
             $.ajax({

@@ -34,6 +34,7 @@
                                 <th>Tgl Bayar</th>
                                 <th>Pembayaran</th>
                                 <th>Total Bayar</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody></tbody>

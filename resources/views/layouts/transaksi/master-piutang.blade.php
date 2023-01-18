@@ -142,6 +142,8 @@ $(document).ready(function() {
                 }, {
                     data: 'total_bayar',
                     render: DataTable.render.number(',', '.', 2, '')
+                },{
+                    data: 'action',
                 }]
             });
         }
@@ -232,6 +234,25 @@ $(document).ready(function() {
                 success: function(result) {
                     $('#modalPop').modal("show");
                     $('.modal-title').html("Pembayaran Piutang");
+                    $('#modal-body').html(result).show();
+                    $('.pembayaran_id').select2({dropdownParent: $("#modalPop")});
+                    
+                    
+                },
+            })
+        });
+
+        $(document).on('click', '#btnedit', function(event) {
+            var id = $(this).attr('data-id');
+            $.ajax({
+                url: "/transaksi/piutang/edit_detail/"+id,
+                beforeSend: function() {
+                    $('#loader').show();
+                },
+                // return the result
+                success: function(result) {
+                    $('#modalPop').modal("show");
+                    $('.modal-title').html("Edit Pembayaran Piutang");
                     $('#modal-body').html(result).show();
                     $('.pembayaran_id').select2({dropdownParent: $("#modalPop")});
                     

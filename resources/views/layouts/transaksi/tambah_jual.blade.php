@@ -202,7 +202,7 @@
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(function(){
-    $('.promo_id').select2();
+    $('.promo_id').select2({placeholder: 'Pilih Promo', allowClear: true});
     $(document).on('submit', '#formjual', function(event) {
         event.preventDefault();
         var action = $(this).attr('action');
@@ -282,18 +282,6 @@ $(function(){
             $('#input_giro').attr('hidden', false);
         }
     })
-
-    $(document).on('change keyup', '#barangtable .jumlah', function(e) {
-                var stok = $(this).closest('tr').find('.barang_id').select2('data')[0].stok;
-                var jumlah = $(this).val();
-
-                if (jumlah > stok) {
-                    $(this).closest('tr').find('#msg-alert').html('Barang hanya tersedia ' + stok);
-                }
-                else{
-                    $(this).closest('tr').find('#msg-alert').html('');
-                }
-            });
 
 
 
@@ -424,6 +412,7 @@ $(function(){
         $('#promo_input'+$currtable).attr('hidden', false);
         $('#promo_id'+$currtable).select2({
             placeholder: "Pilih Promo",
+            allowClear: true,
             delay: 250,
                 ajax: {
                     dataType: 'json',
@@ -524,6 +513,15 @@ $(function(){
         promo_aktif(no, $(this).closest('tr').find('.barang_id').val(), $(this).closest('tr').find('.jenis_brg').val(), $(this).closest('tr').find('.jumlah').val());
         sum_subtotal_harga($(this).closest('tr'));
         sum_total_harga();
+        var stok = $(this).closest('tr').find('.barang_id').select2('data')[0].stok;
+        var jumlah = $(this).val();
+
+        if (jumlah > stok) {
+            $(this).closest('tr').find('#msg-alert').html('Barang hanya tersedia ' + stok);
+        }
+        else{
+            $(this).closest('tr').find('#msg-alert').html('');
+        }
     });
 
     $(document).on('keyup change', '#barangtable .disc', function(){
@@ -541,9 +539,8 @@ $(function(){
         $('#customer_alamat').html($(this).select2('data')[0].alamat);
         $('#customer_telp').html($(this).select2('data')[0].telp);
         var d_booking = $(this).select2('data')[0].detail;
-
+        $('#barangtable tbody').empty();
         if($(this).val() != ""){
-            console.log(d_booking);
             $('#btntambah').removeAttr('disabled');
             $('.barang_id').removeAttr('disabled');
             for(var i = 0; i < d_booking.length; i++){
@@ -553,12 +550,11 @@ $(function(){
                 var ids = d_booking[i].barang_id != null ? d_booking[i].barang.kode_barang : d_booking[i].jasa_id;
                 var namas = d_booking[i].barang_id != null ? d_booking[i].barang.nama_barang : d_booking[i].jasa.nama_jasa;
                 var jumlah = d_booking[i].jumlah;
+                var stok = d_booking[i].barang_id != null ? d_booking[i].barang.stok : 1000000;
                 var harga = d_booking[i].barang_id != null ? d_booking[i].barang.harga_jual : d_booking[i].jasa.harga;
                 var jenis = d_booking[i].barang_id != null ? "barang" : "jasa";
 
-                
-
-                $('#barangtable tbody').append(`<tr>
+                var data = `<tr>
                 <td>
                                 <!-- Dropdown -->
                                 <div class="dropdown ">
@@ -574,9 +570,11 @@ $(function(){
                             <td>
                                 <div class="form-group">
                                     <input type="number" class="form-control jumlah" name="jumlah[`+i+`]" min="0" value="`+jumlah+`">
-                                </div>
-                                <small class="text-danger" id="msg-alert"></small>
-                            </td>
+                                </div><small class="text-danger" id="msg-alert">`;
+                if(jumlah > stok){
+                    data += 'Barang hanya tersedia ' + stok;
+                }
+                data += `</small></td>
                             <td>
                                 <div class="form-group">
                                     <input type="text" class="form-control harga" name="harga[`+i+`]" min="0"  value="`+number_format(harga)+`">
@@ -608,7 +606,9 @@ $(function(){
                                     <i class="fa fa-trash tw-text-prim-red"></i>
                                 </button>
                             </td>
-                </tr>`);
+                </tr>`;
+
+                $('#barangtable tbody').append(data);
                 promo_aktif(i, ids, jenis, jumlah);
                 select_barang();
                 // $('select[name="barang_id['+i+']').val($(".barang_id option:contains('"+namas+"')").val()).change();

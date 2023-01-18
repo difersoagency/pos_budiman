@@ -19,6 +19,7 @@ use App\Models\Satuan;
 use App\Models\Supplier;
 use App\Models\Tipe;
 use App\Models\TransBeli;
+use App\Models\DTransBeli;
 use App\Models\User;
 use App\Models\TransJual;
 use App\Models\DTransJual;
@@ -73,7 +74,7 @@ class MasterController extends Controller
     public function garansi_transaksi_jual_select()
     {
         $date = Carbon::now()->toDateString();
-        $res = TransJual::where('tgl_max_garansi', '>=', $date)->with('Booking.Customer', 'DTransJual.Barang')->has('DTransJual')->get();
+        $res = TransJual::where('tgl_max_garansi', '>=', $date)->with('Booking.Customer', 'DTransJual.Barang')->has('DTransJual')->DoesntHave('ReturJual')->get();
         $data = array();
 
         foreach ($res as $i => $p) {
@@ -1084,9 +1085,15 @@ class MasterController extends Controller
 
 
     //SUPPLIER
-    public function master_supplier_data()
+    public function master_supplier_data($id)
     {
-        $data = Supplier::with('Kota')->get();
+        $data = NULL;
+        if($id == "0"){
+            $data = Supplier::with('Kota')->get();
+        }else{
+            $data = Supplier::with('Kota')->where('kota_id', $id)->get();
+        }
+        
         return datatables()->of($data)
             ->addIndexColumn()
             ->editColumn('kota_id', function ($data) {
@@ -1263,24 +1270,7 @@ class MasterController extends Controller
                 'keterangan' => $request->koreksi_keterangan,
             ]);
 
-            if($c){
-                if($request->koreksi_jenis == "in"){
-                    $b = Barang::find($request->koreksi_barang);
-                    $b->stok = $b->stok + $request->koreksi_jumlah;
-                    $u = $b->save();
-                    if(!$u){
-                        $bool = false;
-                    }
-                }
-                else{
-                    $b = Barang::find($request->koreksi_barang);
-                    $b->stok = $b->stok - $request->koreksi_jumlah;
-                    $u = $b->save();
-                    if(!$u){
-                        $bool = false;
-                    }
-                }
-            }else{
+            if(!$c){
                 $bool = false;
             }
 
@@ -1491,10 +1481,16 @@ class MasterController extends Controller
     public function master_barang_select_data_po(Request $request, $id)
     {
 
-        $data = Barang::whereHas('DTransBeli', function ($q) use ($id) {
-            $q->where('htrans_beli_id', $id);
-        })->where('nama_barang', 'LIKE', '%' . $request->input('term', '') . '%')->get();
-
-        echo json_encode($data);
+        // $data = Barang::whereHas('DTransBeli', function ($q) use ($id) {
+        //     $q->where('htrans_beli_id', $id);
+        // })->where('nama_barang', 'LIKE', '%' . $request->input('term', '') . '%')->get();
+        $array = array();
+        $data = DTransBeli::where('htrans_beli_id', $id)->with('Barang')->get();
+        foreach($data as $key => $i){
+            $array[$key] = array('id' => $i->Barang->id, 
+            'nama_barang' => $i->Barang->nama_barang, 
+            'jumlah' => $i->jumlah);
+        }
+        echo json_encode($array);
     }
 }

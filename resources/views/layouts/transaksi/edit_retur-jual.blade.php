@@ -273,6 +273,13 @@
 
         $(document).on('keyup change', '#barangtable .jumlah', function(){
             var table = $(this).closest('tr');
+            var jumlah = $(this).closest('tr').find('.barang_id').select2('data')[0].jumlah;
+         
+            if(jumlah < $(this).val()){
+                table.find('#msg-alert').html('Jumlah barang dijual hanya '+jumlah);
+            }else{
+                table.find('#msg-alert').html('');
+            }
             sum_subtotal_harga(table)
         });
 

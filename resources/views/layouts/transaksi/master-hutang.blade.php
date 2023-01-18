@@ -155,6 +155,8 @@ function detail_hutang_table(id){
                     data: 'pembayaran',
                 }, {
                     data: 'total_bayar',
+                },{
+                    data: 'action',
                 }]
         });
 }
@@ -214,6 +216,25 @@ function detail_hutang_table(id){
                 success: function(result) {
                     $('#modalPop').modal("show");
                     $('.modal-title').html("Pembayaran Hutang");
+                    $('#modal-body').html(result).show();
+                    $('.pembayaran_id').select2({dropdownParent: $("#modalPop")});
+                    
+                    
+                },
+            })
+        });
+
+        $(document).on('click', '#btnedit', function(event) {
+            var id = $(this).attr('data-id');
+            $.ajax({
+                url: "/transaksi/hutang/edit_detail/"+id,
+                beforeSend: function() {
+                    $('#loader').show();
+                },
+                // return the result
+                success: function(result) {
+                    $('#modalPop').modal("show");
+                    $('.modal-title').html("Edit Pembayaran Hutang");
                     $('#modal-body').html(result).show();
                     $('.pembayaran_id').select2({dropdownParent: $("#modalPop")});
                     

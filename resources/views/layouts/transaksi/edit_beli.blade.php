@@ -27,7 +27,7 @@
                     <div class="dropdown" style="width:100%;">
                         <select class="custom-select select-edit tw-text-prim-white" id="suuplier" name="supplier">
                             @foreach ($supplier as $s)
-                            <option value="{{$s->id}}" @if($s->id == $s->supplier_id) selected @endif >{{$s->nama_supplier}}</option>
+                            <option value="{{$s->id}}" @if($s->id == $data->supplier_id) selected @endif >{{$s->nama_supplier}}</option>
                             @endforeach
                         </select>
                     </div>

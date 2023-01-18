@@ -90,6 +90,7 @@ class TransaksiController extends Controller
 
     public function store_retur_jual(Request $r)
     {
+        $bool = true;
         $validator = Validator::make($r->all(), [
             'htrans_jual_id' => ['required'],
             'no_retur_jual' => ['required', 'unique:hretur_jual,no_retur_jual'],
@@ -99,36 +100,47 @@ class TransaksiController extends Controller
         if ($validator->fails()) {
             return response()->json(['data' => 'error', 'msg' => "Gagal menambahkan, periksa kembali form anda"]);
         } else {
-            $c = ReturJual::create([
-                'htrans_jual_id' => $r->htrans_jual_id,
-                'no_retur_jual' => $r->no_retur_jual,
-                'tgl_retur_jual' => $r->tgl_retur_jual,
-                'total_retur_jual' => str_replace(",", "", $r->total_retur_jual)
-            ]);
-            $bool = true;
-            $dc = NULL;
-            $jb = '';
-            if ($c) {
-                for ($i = 0; $i < count($r->barang_id); $i++) {
-                    $dc = DReturJual::create([
-                        'hretur_jual_id' => $c->id,
-                        'barang_id' => $r->barang_id[$i],
-                        'harga' => str_replace(",", "", $r->harga[$i]),
-                        'jumlah' => $r->jumlah[$i]
-                    ]);
-                    if (!$dc) {
-                        $bool = false;
-                    } else {
-                        $b = Barang::find($r->barang_id[$i]);
-                        $b->stok = $b->stok + $r->jumlah[$i];
-                        $b->save();
-                    }
+            for ($i = 0; $i < count($r->barang_id); $i++) {
+                $dtjc = DTransJual::where([ ['htrans_jual_id', '=', $r->htrans_jual_id], ['barang_id', '=', $r->barang_id[$i]] ])->first();
+                if($dtjc->jumlah < $r->jumlah[$i]){
+                    $bool = false;
                 }
             }
-            if ($bool == true) {
-                return response()->json(['data' => 'success', 'msg' => "Data berhasil di tambah"]);
-            } else {
-                return response()->json(['data' => 'error', 'msg' => "Gagal Menambahkan, periksa kembali"]);
+            if($bool == false){
+                return response()->json(['data' => 'error', 'msg' => "Gagal menambahkan, jumlah pengembalian melebihi permintaan"]);
+            }
+            else{
+                $c = ReturJual::create([
+                    'htrans_jual_id' => $r->htrans_jual_id,
+                    'no_retur_jual' => $r->no_retur_jual,
+                    'tgl_retur_jual' => $r->tgl_retur_jual,
+                    'total_retur_jual' => str_replace(",", "", $r->total_retur_jual)
+                ]);
+                
+                $dc = NULL;
+                $jb = '';
+                if ($c) {
+                    for ($i = 0; $i < count($r->barang_id); $i++) {
+                        $dc = DReturJual::create([
+                            'hretur_jual_id' => $c->id,
+                            'barang_id' => $r->barang_id[$i],
+                            'harga' => str_replace(",", "", $r->harga[$i]),
+                            'jumlah' => $r->jumlah[$i]
+                        ]);
+                        if (!$dc) {
+                            $bool = false;
+                        } else {
+                            $b = Barang::find($r->barang_id[$i]);
+                            $b->stok = $b->stok + $r->jumlah[$i];
+                            $b->save();
+                        }
+                    }
+                }
+                if ($bool == true) {
+                    return response()->json(['data' => 'success', 'msg' => "Data berhasil di tambah"]);
+                } else {
+                    return response()->json(['data' => 'error', 'msg' => "Gagal Menambahkan, periksa kembali"]);
+                }
             }
         }
     }
@@ -150,47 +162,59 @@ class TransaksiController extends Controller
         if ($validator->fails()) {
             return response()->json(['data' => 'error', 'msg' => "Gagal menambahkan, periksa kembali form anda"]);
         } else {
-            $drj = DReturJual::where('hretur_jual_id', $r->id)->count();
-            if($drj > 0){
-                $drjs = DReturJual::where('hretur_jual_id', $r->id)->get();
-                foreach($drjs as $i){
-                    $b = Barang::find($i->barang_id);
-                    $b->stok = $b->stok - $i->jumlah;
-                    $b->save();
+            $rjg = ReturJual::find($id);
+            for ($i = 0; $i < count($r->barang_id); $i++) {
+                $dtjc = DTransJual::where([ ['htrans_jual_id', '=', $rjg->htrans_jual_id], ['barang_id', '=', $r->barang_id[$i]] ])->first();
+                if($dtjc->jumlah < $r->jumlah[$i]){
+                    $bool = false;
                 }
-                
-                $drjd = DReturJual::where('hretur_jual_id', $r->id)->delete();
             }
-            $u = ReturJual::find($id);
-            $u->no_retur_jual = $r->no_retur_jual;
-            $u->tgl_retur_jual = $r->tgl_retur_jual;
-            $u->total_retur_jual = str_replace(",", "", $r->total_retur_jual);
-            $u->save();
-
-            $bool = true;
-            $dc = NULL;
-            $jb = '';
-            if ($u) {
-                for ($i = 0; $i < count($r->barang_id); $i++) {
-                    $dc = DReturJual::create([
-                        'hretur_jual_id' => $id,
-                        'barang_id' => $r->barang_id[$i],
-                        'harga' => str_replace(",", "", $r->harga[$i]),
-                        'jumlah' => $r->jumlah[$i]
-                    ]);
-                    if (!$dc) {
-                        $bool = false;
-                    } else {
-                        $b = Barang::find($r->barang_id[$i]);
-                        $b->stok = $b->stok + $r->jumlah[$i];
+            if($bool == false){
+                return response()->json(['data' => 'error', 'msg' => "Gagal menambahkan, jumlah pengembalian melebihi permintaan"]);
+            }
+            else{
+                $drj = DReturJual::where('hretur_jual_id', $r->id)->count();
+                if($drj > 0){
+                    $drjs = DReturJual::where('hretur_jual_id', $r->id)->get();
+                    foreach($drjs as $i){
+                        $b = Barang::find($i->barang_id);
+                        $b->stok = $b->stok - $i->jumlah;
                         $b->save();
                     }
+                    
+                    $drjd = DReturJual::where('hretur_jual_id', $r->id)->delete();
                 }
-            }
-            if ($bool == true) {
-                return response()->json(['data' => 'success', 'msg' => "Data berhasil di edit"]);
-            } else {
-                return response()->json(['data' => 'error', 'msg' => "Gagal Mengedit, periksa kembali"]);
+                $u = ReturJual::find($id);
+                $u->no_retur_jual = $r->no_retur_jual;
+                $u->tgl_retur_jual = $r->tgl_retur_jual;
+                $u->total_retur_jual = str_replace(",", "", $r->total_retur_jual);
+                $u->save();
+
+                $bool = true;
+                $dc = NULL;
+                $jb = '';
+                if ($u) {
+                    for ($i = 0; $i < count($r->barang_id); $i++) {
+                        $dc = DReturJual::create([
+                            'hretur_jual_id' => $id,
+                            'barang_id' => $r->barang_id[$i],
+                            'harga' => str_replace(",", "", $r->harga[$i]),
+                            'jumlah' => $r->jumlah[$i]
+                        ]);
+                        if (!$dc) {
+                            $bool = false;
+                        } else {
+                            $b = Barang::find($r->barang_id[$i]);
+                            $b->stok = $b->stok + $r->jumlah[$i];
+                            $b->save();
+                        }
+                    }
+                }
+                if ($bool == true) {
+                    return response()->json(['data' => 'success', 'msg' => "Data berhasil di edit"]);
+                } else {
+                    return response()->json(['data' => 'error', 'msg' => "Gagal Mengedit, periksa kembali"]);
+                }
             }
         }
     }
@@ -259,12 +283,12 @@ class TransaksiController extends Controller
                                                         <i class="fas fa-money-check-alt tw-text-prim-blue"></i>
                                                     </button>';
                 }
-                if($data->sum_total <= 0){
-                $res .= '<button id="btndelete" data-id="' . $data->id . '" data-nama="Piutang ' . $data->TransJual->no_trans_jual . '"
-                                                        class="tw-bg-transparent tw-border-none">
-                                                        <i class="fa fa-trash tw-text-prim-red"></i>
-                                                    </button>';
-                }
+                // if($data->sum_total <= 0){
+                // $res .= '<button id="btndelete" data-id="' . $data->id . '" data-nama="Piutang ' . $data->TransJual->no_trans_jual . '"
+                //                                         class="tw-bg-transparent tw-border-none">
+                //                                         <i class="fa fa-trash tw-text-prim-red"></i>
+                //                                     </button>';
+                // }
             $res .= '</div>';
             return $res;
             })
@@ -295,7 +319,12 @@ class TransaksiController extends Controller
                 }
                 return $res;
             })
-            ->rawColumns(['pembayaran'])
+            ->addColumn('action', function($data){
+                return '<button id="btnedit" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '">
+                    <i class="fa fa-pen tw-text-prim-blue"></i>
+                </button>';
+            })
+            ->rawColumns(['pembayaran', 'action'])
             ->make(true);
     }
 
@@ -388,6 +417,14 @@ class TransaksiController extends Controller
         return view('layouts.modal.hutang-modal-create', ['id' => $id, 'p' => $p]);
     }
 
+    public function edit_detail_hutang($id)
+    {
+        $data = DTransHutang::find($id);
+        $p = Pembayaran::all();
+        
+        return view('layouts.modal.hutang-modal-edit', ['id' => $id, 'p' => $p, 'data' => $data]);
+    }
+
     public function store_detail_hutang(Request $r, $id)
     {
         $validator = Validator::make($r->all(), [
@@ -414,6 +451,38 @@ class TransaksiController extends Controller
         }
     }
 
+    public function update_detail_hutang(Request $r, $id)
+    {
+        $validator = Validator::make($r->all(), [
+            'tgl_hutang' => ['required'],
+            'total_bayar' => ['required'],
+
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', "Gagal menambahkan, periksa kembali form anda");
+        } else {
+            $d = DTransHutang::find($id);
+            $d->tgl_bayar = $r->tgl_hutang;
+            $d->total_bayar = str_replace(",", "", $r->total_bayar);
+            $d->no_giro = $r->no_giro;
+            $d->pembayaran_id = $r->pembayaran_id;
+            $u = $d->save();
+
+            if ($u) {
+                return redirect()->back()->with('success', "Data berhasil disimpan");
+            } else {
+                return redirect()->back()->with('error', "Data gagal disimpan");
+            }
+        }
+    }
+
+    public function edit_detail_piutang($id)
+    {
+        $data = DPiutang::find($id);
+        $p = Pembayaran::all();
+        return view('layouts.modal.piutang-modal-edit', ['id' => $id, 'p' => $p, 'data' => $data]);
+    }
+
     public function store_detail_piutang(Request $r, $id)
     {
         $validator = Validator::make($r->all(), [
@@ -432,6 +501,30 @@ class TransaksiController extends Controller
             ]);
 
             if ($d) {
+                return redirect()->back()->with('success', "Data berhasil disimpan");
+            } else {
+                return redirect()->back()->with('error', "Data gagal disimpan");
+            }
+        }
+    }
+
+    public function update_detail_piutang(Request $r, $id)
+    {
+        $validator = Validator::make($r->all(), [
+            'tgl_piutang' => ['required'],
+            'total_bayar' => ['required']
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', "Gagal menambahkan, periksa kembali form anda");
+        } else {
+            $d = DPiutang::find($id);
+            $d->tgl_piutang = $r->tgl_piutang;
+            $d->total_bayar = str_replace(",", "", $r->total_bayar);
+            $d->no_giro = $r->no_giro;
+            $d->pembayaran_id = $r->pembayaran_id;
+            $u = $d->save();
+
+            if ($u) {
                 return redirect()->back()->with('success', "Data berhasil disimpan");
             } else {
                 return redirect()->back()->with('error', "Data gagal disimpan");
@@ -487,7 +580,9 @@ class TransaksiController extends Controller
             if (str_replace('.', "", $request->total_dibayar) > str_replace('.', "", $request->total_bayar)) {
                 return response()->json(['data' => 'dibayar']);
             } else {
+                
                 $trans_beli = TransBeli::find($id);
+
                 $trans_beli->supplier_id = $request->supplier;
                 $trans_beli->pembayaran_id = $request->pembayaran_id;
                 $trans_beli->no_giro = $request->no_giro;
@@ -502,6 +597,11 @@ class TransaksiController extends Controller
                 $tb = DTransBeli::where('htrans_beli_id', $id)->get();
 
                 if (count($tb) > 0) {
+                    foreach($tb as $i){
+                        $ub = Barang::find($i->barang_id);
+                        $ub->stok = $ub->stok - $i->jumlah;
+                        $ub->save();
+                    }
                     DTransBeli::where('htrans_beli_id', $id)->delete();
                 }
 
@@ -554,7 +654,7 @@ class TransaksiController extends Controller
     }
     public function update_retur_beli(Request $request, $id)
     {
-
+        $bool = true;
         $validator = Validator::make(
             $request->all(),
             [
@@ -568,38 +668,52 @@ class TransaksiController extends Controller
         if ($validator->fails()) {
             return response()->json(['data' => 'error']);
         } else {
-
-            $retur_beli = ReturBeli::find($id);
-            $retur_beli->tgl_retur_beli = $request->tgl_retur_beli;
-            $retur_beli->total_retur_beli = str_replace('.', "", $request->total);
-            $retur_beli->save();
-
-            $tb = DReturBeli::where('hretur_beli_id', $id)->get();
-
-
-            if (count($tb) > 0) {
-                DReturBeli::where('hretur_beli_id', $id)->delete();
-            }
-
-
+            $rb = ReturBeli::find($id);
             for ($i = 0; $i < count($request->barang_id); $i++) {
-                DReturBeli::create([
-                    'hretur_beli_id' =>  $id,
-                    'barang_id' => $request->barang_id[$i],
-                    'jumlah' => $request->jumlah[$i],
-                    'harga' =>  str_replace('.', "", $request->harga[$i]),
-                ]);
-
-                $b = Barang::find($request->barang_id[$i]);
-                $b->stok = $b->stok - $request->jumlah[$i];
-                $b->save();
+                $drb = DTransBeli::where([['barang_id', '=', $request->barang_id[$i]], ['htrans_beli_id', '=', $rb->htrans_beli_id]])->first();
+                if($drb->jumlah < $request->jumlah[$i]){
+                    $bool = false;
+                }
             }
 
-            return response()->json(['data' => 'success']);
+            if($bool == false){
+                return response()->json(['data' => 'error']);
+            }
+            else
+            {
+                $retur_beli = ReturBeli::find($id);
+                $retur_beli->tgl_retur_beli = $request->tgl_retur_beli;
+                $retur_beli->total_retur_beli = str_replace('.', "", $request->total);
+                $retur_beli->save();
+
+                $tb = DReturBeli::where('hretur_beli_id', $id)->get();
+
+
+                if (count($tb) > 0) {
+                    DReturBeli::where('hretur_beli_id', $id)->delete();
+                }
+
+
+                for ($i = 0; $i < count($request->barang_id); $i++) {
+                    DReturBeli::create([
+                        'hretur_beli_id' =>  $id,
+                        'barang_id' => $request->barang_id[$i],
+                        'jumlah' => $request->jumlah[$i],
+                        'harga' =>  str_replace('.', "", $request->harga[$i]),
+                    ]);
+
+                    $b = Barang::find($request->barang_id[$i]);
+                    $b->stok = $b->stok - $request->jumlah[$i];
+                    $b->save();
+                }
+
+                return response()->json(['data' => 'success']);
+            }
         }
     }
     public function store_retur_beli(Request $request)
     {
+        $bool = true;
         $validator = Validator::make(
             $request->all(),
             [
@@ -614,28 +728,41 @@ class TransaksiController extends Controller
         if ($validator->fails()) {
             return response()->json(['data' => 'error']);
         } else {
-            $h = ReturBeli::create([
-                'htrans_beli_id' => $request->no_po,
-                'tgl_retur_beli' => $request->tgl_retur_beli,
-                'total_retur_beli' => str_replace('.', "", $request->total)
-            ]);
-
-
             for ($i = 0; $i < count($request->barang_id); $i++) {
-                DReturBeli::create([
-                    'hretur_beli_id' =>  $h->id,
-                    'barang_id' => $request->barang_id[$i],
-                    'jumlah' => $request->jumlah[$i],
-                    'harga' =>  str_replace('.', "", $request->harga[$i]),
-                ]);
-
-                $b = Barang::find($request->barang_id[$i]);
-                $b->stok = $b->stok - $request->jumlah[$i];
-                $b->save();
+                $drb = DTransBeli::where([['barang_id', '=', $request->barang_id[$i]], ['htrans_beli_id', '=', $request->no_po]])->first();
+                if($drb->jumlah < $request->jumlah[$i]){
+                    $bool = false;
+                }
             }
 
+            if($bool == false){
+                return response()->json(['data' => 'error']);
+            }
+            else
+            {
+                $h = ReturBeli::create([
+                    'htrans_beli_id' => $request->no_po,
+                    'tgl_retur_beli' => $request->tgl_retur_beli,
+                    'total_retur_beli' => str_replace('.', "", $request->total)
+                ]);
 
-            return response()->json(['data' => 'success']);
+
+                for ($i = 0; $i < count($request->barang_id); $i++) {
+                    DReturBeli::create([
+                        'hretur_beli_id' =>  $h->id,
+                        'barang_id' => $request->barang_id[$i],
+                        'jumlah' => $request->jumlah[$i],
+                        'harga' =>  str_replace('.', "", $request->harga[$i]),
+                    ]);
+
+                    $b = Barang::find($request->barang_id[$i]);
+                    $b->stok = $b->stok - $request->jumlah[$i];
+                    $b->save();
+                }
+
+
+                return response()->json(['data' => 'success']);
+            }
         }
     }
 
@@ -820,7 +947,12 @@ class TransaksiController extends Controller
             ->addColumn('total_bayar', function ($data) {
                 return number_format(($data->total_bayar), 0, ',', '.');
             })
-            ->rawColumns(['pembayaran'])
+            ->addColumn('action', function($data){
+                return '<button id="btnedit" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '">
+                                                        <i class="fa fa-pen tw-text-prim-blue"></i>
+                                                    </button>';
+            })
+            ->rawColumns(['pembayaran', 'action'])
             ->make(true);
     }
     public function data_hutang()

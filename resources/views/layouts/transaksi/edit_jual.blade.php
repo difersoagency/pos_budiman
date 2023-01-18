@@ -264,7 +264,7 @@
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(function(){
-    $('.promo_id').select2();
+    $('.promo_id').select2({placeholder: 'Pilih Promo', allowClear:true});
 
     $(document).on('change keyup', '#barangtable .jumlah', function(e) {
                 var stok = $(this).closest('tr').find('.barang_id').select2('data')[0].stok;
@@ -479,6 +479,7 @@ $(function(){
         $('#promo_input'+$currtable).attr('hidden', false);
         $('#promo_id'+$currtable).select2({
             placeholder: "Pilih Promo",
+            allowClear:true,
             delay: 250,
                 ajax: {
                     dataType: 'json',

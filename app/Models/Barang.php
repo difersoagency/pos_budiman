@@ -40,7 +40,7 @@ class Barang extends Model
     }
     public function DTransBeli()
     {
-        return $this->hasMany(DTransBeli::class);
+        return $this->hasMany(DTransBeli::class, 'barang_id');
     }
     public function DReturJual()
     {
