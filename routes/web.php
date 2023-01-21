@@ -177,6 +177,7 @@ Route::group(['prefix' => '/transaksi'], function () {
         Route::get('/', [App\Http\Controllers\TransaksiController::class, 'transaksi_beli'])->name('pembelian');
         Route::get('/tambah', [App\Http\Controllers\TransaksiController::class, 'tambah_beli'])->name('tambah-beli');
         Route::post('/store', [App\Http\Controllers\TransaksiController::class, 'store_beli'])->name('store-beli');
+        Route::get('/nota/{id}', [App\Http\Controllers\TransaksiController::class, 'nota_beli'])->name('nota-beli');
         Route::post('/data', [App\Http\Controllers\TransaksiController::class, 'data_transaksi_beli'])->name('pembelian.data');
         Route::post('/data/{id}', [App\Http\Controllers\TransaksiController::class, 'detail_data_transaksi_beli'])->name('pembelian.data.detail');
         Route::get('/edit/{id}', [App\Http\Controllers\TransaksiController::class, 'edit_beli'])->name('edit-beli');
@@ -188,6 +189,7 @@ Route::group(['prefix' => '/transaksi'], function () {
 
     Route::group(['prefix' => '/jual'], function () {
         Route::get('/', [App\Http\Controllers\TransaksiController::class, 'transaksi_jual'])->name('trans-jual');
+        Route::get('/nota/{id}', [App\Http\Controllers\TransaksiController::class, 'nota_jual'])->name('nota-jual');
         Route::post('/data', [App\Http\Controllers\TransaksiController::class, 'data_transaksi_jual'])->name('data_jual');
         Route::get('/detail/{id}', [App\Http\Controllers\TransaksiController::class, 'detail_jual'])->name('detail_jual');
         Route::post('/data_detail/{id}', [App\Http\Controllers\TransaksiController::class, 'data_detail_jual'])->name('data_detail_jual');

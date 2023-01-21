@@ -26,6 +26,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Auth;
+use PDF;
 
 class TransaksiController extends Controller
 {
@@ -834,6 +835,21 @@ class TransaksiController extends Controller
     {
         return view('layouts.transaksi.master-jual');
     }
+
+    public function nota_jual($id)
+    {
+        $jual = TransJual::find($id);
+        $pdf = PDF::loadview('layouts.transaksi.nota-jual', ['jual' => $jual])->setPaper('a4', 'landscape');
+        return $pdf->stream();
+    }
+
+    public function nota_beli($id)
+    {
+        $beli = TransBeli::find($id);
+        $pdf = PDF::loadview('layouts.transaksi.nota-beli', ['beli' => $beli])->setPaper('a4', 'landscape');
+        return $pdf->stream();
+    }
+
     public function detail_data_retur_beli($id)
     {
         $data = DReturBeli::where('hretur_beli_id', $id)->get();
@@ -907,10 +923,13 @@ class TransaksiController extends Controller
                 return $res;
             })
             ->addColumn('action', function ($data) {
-                $res = '<div class="grid grid-cols-2">
+                $res = '<div class="grid grid-cols-4">
                 <button id="btndetail" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->no_trans_jual . '" >
                                                         <i class="fas fa-eye tw-text-prim-blue"></i>
-                                                    </button>';
+                                                    </button>
+                <a href="/transaksi/jual/nota/'.$data->id.'"><button class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->no_trans_jual . '" >
+                    <i class="fas fa-file tw-text-prim-blue"></i>
+                </button></a>';
                 if(!isset($data->Piutang) || isset($data->Piutang)){
                     if(count($data->ReturJual) <= 0){
                     $res .= '<a href="/transaksi/jual/edit/'.$data->id.'"><button id="btnedit" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->no_trans_jual . '" >
@@ -921,7 +940,8 @@ class TransaksiController extends Controller
                                                         <i class="fa fa-trash tw-text-prim-red"></i>
                                                     </button>';}
                 }
-                $res .= '</div>';
+                $res .= '
+                </div>';
                 return $res;
 
             })
@@ -1073,10 +1093,13 @@ class TransaksiController extends Controller
                                                 </button>
                                             </div>';
 
-                $res = '<div class="grid grid-cols-3">
+                $res = '<div class="grid grid-cols-4">
                 <button data-toggle="tooltip" title="Detail"  data-id="' . $data->id . '" id="btndetail" class="tw-mr-4 tw-bg-transparent tw-border-none">
                                                     <i class="fa fa-info tw-text-prim-black"></i>
-                                                </button>';
+                                                </button>
+                                                <a href="/transaksi/beli/nota/'.$data->id.'"><button class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->no_trans_jual . '" >
+                    <i class="fas fa-file tw-text-prim-blue"></i>
+                </button></a>';
                 if(!isset($data->TransHutang) || isset($data->TransHutang)){
                     if(count($data->ReturBeli) <= 0){
                     $res .= '<a href="' . route('edit-beli', $data->id) . '" class="mr-4 tw-bg-transparent tw-border-none" data-toggle="tooltip" title="Edit">

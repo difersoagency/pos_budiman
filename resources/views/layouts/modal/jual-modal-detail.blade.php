@@ -16,7 +16,7 @@
                         <p class="text-sm">{{$data->tgl_trans_jual}}</p>
                     </div>
                 </div>
-                <div class="tw-grid tw-grid-cols-2">
+                <div class="tw-grid tw-grid-cols-4">
                     <div class="tw-bg-grey-dark tw-text-grey-light" role="alert">
                         <p><b>Nama Customer</b></p>
                         <p class="text-sm">{{$data->Booking->Customer->nama_customer}}</p>
@@ -24,6 +24,14 @@
                     <div class="tw-bg-grey-dark tw-text-grey-light" role="alert">
                         <p><b>Tgl Batas Garansi</b></p>
                         <p class="text-sm">{{$data->tgl_max_garansi}}</p>
+                    </div>
+                    <div class="tw-bg-grey-dark tw-text-grey-light" role="alert">
+                        <p><b>Total Bayar</b></p>
+                        <p class="text-sm">{{$data->bayar_jual}}</p>
+                    </div>
+                    <div class="tw-bg-grey-dark tw-text-grey-light" role="alert">
+                        <p><b>Kembali</b></p>
+                        <p class="text-sm">{{$data->kembali_jual}}</p>
                     </div>
                 </div>
             </div>
