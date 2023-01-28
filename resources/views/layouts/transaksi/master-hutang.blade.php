@@ -99,22 +99,34 @@
 @section('script')
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    @if(Session::has('error'))
-    Swal.fire({
-        title: 'Gagal',
-        text: "{{ Session::get('error') }}",
-        icon: 'error',
+    $(document).on('submit', '#formhutang', function(event) {
+        event.preventDefault();
+        var action = $(this).attr('action');
+        $.ajax({
+            url: action,
+            type: 'POST',
+            data: $('#formhutang').serialize(),
+            success: function(result) {
+                if (result.data == "success") {
+                    Swal.fire({
+                        title: 'Berhasil',
+                        text: 'Data Berhasil disimpan',
+                        icon: 'success',
+                    });
+                    window.location.reload();
+                } else {
+                    Swal.fire({
+                        title: 'Gagal',
+                        text: 'Data Gagal disimpan',
+                        icon: 'error',
+                    });
+                }
+            }
+        });
     });
-    @endif
-    @if(Session::has('success'))
-    Swal.fire({
-        title: 'Berhasil',
-        text: "{{ Session::get('success') }}",
-        icon: 'success',
-    });
-    @endif
 
 $(document).on('click', '#btndetail', function(event) {
+    
              var id = $(this).attr('data-id');
             // var nama = $(this).attr('data-nama');
         $.ajax({

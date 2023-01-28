@@ -86,6 +86,7 @@
                                                     name="jumlah[]" min="0" style="width:100%;"
                                                     value="{{ $d->jumlah }}">
                                             </div>
+                                            <small class="text-danger" id="msg-alert"></small>
                                         </td>
                                         <td>
                                             <div class="form-group">
@@ -186,14 +187,28 @@
             }
         });
 
-        $("#retur").on('keyup change', '.jumlah', function() {
-            $(this).val();
+        $(document).on('keyup change', '#retur .jumlah', function() {
+            var table = $(this).closest('tr');
             var jumlah = $(this).closest('tr').find('.jumlah').val();
+            var barang = $(this).closest('tr').find('.barang').val();
             var harga = replaceAll($(this).closest('tr').find('.harga').val(), '.', '');
             var subtotal = $(this).closest('tr').find('.subtotal');
             if (jumlah != "" && harga != "") {
                 subtotal.val(formatmoney(jumlah * parseInt(harga)));
                 total();
+                $.ajax({
+                        url: "/api/cek_jumlah_beli/"+'{{$data->htrans_beli_id}}'+'/'+barang,
+                        type: 'GET',
+                        dataType: 'json', // added data type
+                        success: function(res) {
+                            if(jumlah > res){
+                                table.find('#msg-alert').html('Jumlah barang dibeli hanya '+res);
+                                console.log(table.find('#msg-alert').length);
+                            }else{
+                                table.find('#msg-alert').html('');
+                            }
+                        }
+                    });
             } else {
                 total();
                 subtotal.val(0);
@@ -215,6 +230,7 @@
                                 <div class="form-group">
                                     <input type="text" class="form-control jumlah" id="jumlah0"  name="jumlah[]" min="0"   style="width:100%;">
                                 </div>
+                                <small class="text-danger" id="msg-alert"></small>
                             </td>
                             <td>
                                 <div class="form-group">

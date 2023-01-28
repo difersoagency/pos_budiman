@@ -1,4 +1,4 @@
-<form action="{{route( 'store_detail_piutang', ['id' => $id] )}}" method="POST">
+<form action="{{route( 'store_detail_piutang', ['id' => $id] )}}" method="POST" id="formpiutang">
 @csrf
             <div class="form-group tw-mr-3">
               <label for="tgl_piutang" class="col-form-label">Tgl Piutang:</label>

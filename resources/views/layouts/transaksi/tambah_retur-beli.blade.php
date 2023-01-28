@@ -164,21 +164,27 @@
                 }
              });
 
-             $("#retur").on('keyup change', '.jumlah', function() {
-               $(this).val();
-               var jumlah = $(this).closest('tr').find('.jumlah').val();
-               var jbeli = $(this).closest('tr').find('.barang').select2('data')[0].jumlah;
-                 var harga = replaceAll($(this).closest('tr').find('.harga').val(), '.', '');
+             $(document).on('keyup change', '#retur .jumlah', function() {
+               var jumlah = $(this).val();
+               var barang = $(this).closest('tr').find('.barang').val();
+                var harga = replaceAll($(this).closest('tr').find('.harga').val(), '.', '');
+                var table = $(this).closest('tr');
                 var subtotal = $(this).closest('tr').find('.subtotal');
                 if (jumlah != "" && harga != "") {
                     subtotal.val(formatmoney(jumlah * parseInt(harga)));
                     total();
-                    console.log(jbeli);
-                    if(jumlah > jbeli){
-                        $(this).closest('tr').find('#msg-alert').html('Jumlah barang dijual hanya '+jbeli);
-                    }else{
-                        $(this).closest('tr').find('#msg-alert').html('');
-                    }
+                    $.ajax({
+                        url: "/api/cek_jumlah_beli/"+$('#no_po').val()+'/'+barang,
+                        type: 'GET',
+                        dataType: 'json', // added data type
+                        success: function(res) {
+                            if(jumlah > res){
+                                table.find('#msg-alert').html('Jumlah barang dibeli hanya '+res);
+                            }else{
+                                table.find('#msg-alert').html('');
+                            }
+                        }
+                    });
                 }else{
                     total();
                     subtotal.val(0);

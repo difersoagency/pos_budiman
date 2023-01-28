@@ -74,21 +74,33 @@
 @section('script')
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    @if(Session::has('error'))
-    Swal.fire({
-        title: 'Gagal',
-        text: "{{ Session::get('error') }}",
-        icon: 'error',
-    });
-    @endif
-    @if(Session::has('success'))
-    Swal.fire({
-        title: 'Berhasil',
-        text: "{{ Session::get('success') }}",
-        icon: 'success',
-    });
-    @endif
+    
 $(document).ready(function() {
+    $(document).on('submit', '#formpiutang', function(event) {
+        event.preventDefault();
+        var action = $(this).attr('action');
+        $.ajax({
+            url: action,
+            type: 'POST',
+            data: $('#formpiutang').serialize(),
+            success: function(result) {
+                if (result.data == "success") {
+                    Swal.fire({
+                        title: 'Berhasil',
+                        text: 'Data Berhasil disimpan',
+                        icon: 'success',
+                    });
+                    window.location.reload();
+                } else {
+                    Swal.fire({
+                        title: 'Gagal',
+                        text: 'Data Gagal disimpan',
+                        icon: 'error',
+                    });
+                }
+            }
+        });
+    });
         function select_pembayaran(){
             $('.pembayaran_id').select2({
                 placeholder: "Pilih Pembayaran",

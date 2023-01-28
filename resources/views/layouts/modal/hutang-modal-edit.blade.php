@@ -1,4 +1,4 @@
-<form action="{{route( 'update_detail_hutang', ['id' => $id] )}}" method="POST">
+<form action="{{route( 'update_detail_hutang', ['id' => $id] )}}" method="POST" id="formhutang">
 @csrf
             <div class="form-group tw-mr-3">
               <label for="tgl_hutang" class="col-form-label">Tgl Hutang:</label>

@@ -445,9 +445,9 @@ class TransaksiController extends Controller
             ]);
 
             if ($d) {
-                return redirect()->back()->with('success', "Data berhasil disimpan");
+                return response()->json(['data' => 'success']);
             } else {
-                return redirect()->back()->with('error', "Data gagal disimpan");
+                return response()->json(['data' => 'error']);
             }
         }
     }
@@ -470,9 +470,9 @@ class TransaksiController extends Controller
             $u = $d->save();
 
             if ($u) {
-                return redirect()->back()->with('success', "Data berhasil disimpan");
+                return response()->json(['data' => 'success']);
             } else {
-                return redirect()->back()->with('error', "Data gagal disimpan");
+                return response()->json(['data' => 'error']);
             }
         }
     }
@@ -502,9 +502,9 @@ class TransaksiController extends Controller
             ]);
 
             if ($d) {
-                return redirect()->back()->with('success', "Data berhasil disimpan");
+                return response()->json(['data' => 'success']);
             } else {
-                return redirect()->back()->with('error', "Data gagal disimpan");
+                return response()->json(['data' => 'error']);
             }
         }
     }
@@ -526,9 +526,9 @@ class TransaksiController extends Controller
             $u = $d->save();
 
             if ($u) {
-                return redirect()->back()->with('success', "Data berhasil disimpan");
+                return response()->json(['data' => 'success']);
             } else {
-                return redirect()->back()->with('error', "Data gagal disimpan");
+                return response()->json(['data' => 'error']);
             }
         }
     }
@@ -546,6 +546,11 @@ class TransaksiController extends Controller
     {
 
         return view('layouts.transaksi.master-beli');
+    }
+
+    public function cek_jumlah_beli($po, $barang){
+        $d = DTransBeli::where([['htrans_beli_id', '=', $po], ['barang_id', '=', $barang]])->first();
+        return $d->jumlah;
     }
     public function tambah_beli()
     {
