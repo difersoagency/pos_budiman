@@ -219,6 +219,7 @@ Route::group(['prefix' => '/transaksi'], function () {
         Route::post('/store_detail/{id}', [App\Http\Controllers\TransaksiController::class, 'store_detail_hutang'])->name('store_detail_hutang');
         Route::get('/edit_detail/{id}', [App\Http\Controllers\TransaksiController::class, 'edit_detail_hutang'])->name('edit_detail_hutang');
         Route::post('/update_detail/{id}', [App\Http\Controllers\TransaksiController::class, 'update_detail_hutang'])->name('update_detail_hutang');
+        Route::delete('/delete_detail', [App\Http\Controllers\TransaksiController::class, 'delete_detail_hutang'])->name('delete_detail_hutang');
     });
 
     Route::group(['prefix' => '/piutang'], function () {
@@ -232,6 +233,7 @@ Route::group(['prefix' => '/transaksi'], function () {
         Route::post('/store_detail/{id}', [App\Http\Controllers\TransaksiController::class, 'store_detail_piutang'])->name('store_detail_piutang');
         Route::get('/edit_detail/{id}', [App\Http\Controllers\TransaksiController::class, 'edit_detail_piutang'])->name('edit_detail_piutang');
         Route::post('/update_detail/{id}', [App\Http\Controllers\TransaksiController::class, 'update_detail_piutang'])->name('update_detail_piutang');
+        Route::delete('/delete_detail', [App\Http\Controllers\TransaksiController::class, 'delete_detail_piutang'])->name('delete_detail_piutang');
 
         Route::delete('/delete', [App\Http\Controllers\TransaksiController::class, 'delete_piutang'])->name('delete_piutang');
     });

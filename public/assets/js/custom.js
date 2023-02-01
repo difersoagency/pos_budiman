@@ -286,35 +286,16 @@ $(document).on('submit', '#edittrans_beli', function(e) {
       dataType: 'JSON',
       success: function(response) {
         if (response['data'] == "success") {
-              swal.fire(
-                  'Berhasil',
-                  'Transaksi berhasil diubah',
-                  'success'
-              );
-            //   $( '#edittrans_beli' ).each(function(){
-            //     location.reload();
-            // });
+            swal.fire('Berhasil','Transaksi berhasil diubah','success');
             window.location.href = "/transaksi/beli";
         } else if(response['data'] == "dibayar"){
-              swal.fire(
-                  'Gagal',
-                  'Total dibayar harus lebih kecil dari total transaksi',
-                  'warning'
-              );
+            swal.fire('Gagal','Total dibayar harus lebih kecil dari total transaksi','warning');
         } else {
-              swal.fire(
-                  'Gagal',
-                  'Lengkapi Form',
-                  'warning'
-              );
+            swal.fire('Gagal','Lengkapi Form','warning');
         }
       },
       error: function(response) {
-        swal.fire(
-          'Gagal',
-          'Lengkapi Form',
-          'warning'
-      );
+        swal.fire('Gagal','Lengkapi Form','warning');
       }
   });
   return false;
@@ -387,36 +368,16 @@ $(document).on('submit', '#editretur_beli', function(e) {
      dataType: 'JSON',
      success: function(response) {
         if (response['data'] == "success") {
-             swal.fire(
-                 'Berhasil',
-                 'Transaksi berhasil ditambahkan',
-                 'success'
-             );
-          //    $( '#editretur_beli' ).each(function(){
-          //      location.reload();
-          //  });
-           window.location.href = "/transaksi/retur-beli";
-        } else if(response['data'] == "dibayar"){
-             swal.fire(
-                 'Gagal',
-                 'Total dibayar harus lebih kecil dari total transaksi',
-                 'warning'
-             );
+            swal.fire('Berhasil','Transaksi berhasil ditambahkan','success');
+            window.location.href = "/transaksi/retur-beli";
+        } else if(response['data'] == "kelebihan"){
+            swal.fire('Gagal','Barang yang di Retur lebih banyak dari Barang yang dibeli','error');
         } else {
-             swal.fire(
-                 'Gagal',
-                 'Lengkapi Form',
-                 'warning'
-             );
+            swal.fire('Gagal','Lengkapi Form', 'warning');
         }
-    
      },
      error: function(xhr, status, error) {
-       swal.fire(
-         'Gagal',
-         'Lengkapi Form',
-         'warning'
-     );
+       swal.fire('Gagal', 'Lengkapi Form', 'warning');
      }
  });
  return false;

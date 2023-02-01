@@ -137,7 +137,8 @@ class MasterController extends Controller
 
     public function master_customer()
     {
-        $kota = Kota::Has('Customer')->get();
+        // $kota = Kota::Has('Customer')->get();
+        $kota = Kota::all();
         return view('layouts.master.customer', ['kota' => $kota]);
     }
     public function master_supplier()

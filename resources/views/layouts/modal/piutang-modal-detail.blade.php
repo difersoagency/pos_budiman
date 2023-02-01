@@ -19,6 +19,7 @@
                         <p class="font-bold">Total Piutang</p>
                         <p class="text-sm">{{$data->total_piutang}}</p>
                     </div>
+                    <span class="text-sm" id="sisa_htg" hidden="true"></span>
                 </div>
             </div>
         </div>

@@ -19,6 +19,7 @@
                         <p class="font-bold"><b>Total Hutang</b></p>
                         <p class="text-sm">{{  number_format(($data->TransBeli->total - $data->TransBeli->total_bayar), 0, ',', '.') }}</p>
                     </div>
+                    <span class="text-sm" id="sisa_htg" hidden="true"></span>
                 </div>
             </div>
         </div>

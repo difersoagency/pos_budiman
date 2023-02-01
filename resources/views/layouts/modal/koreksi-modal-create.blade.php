@@ -16,7 +16,7 @@
     <div class="mx-2 mt-4">
         <label for="booking_id">Nama Barang</label>
         <div class="dropdown" style="width:100%;">
-            <select class="custom-select barang tw-text-prim-white" id="koreksi_barang" name="koreksi_barang">
+            <select class="custom-select selects barang tw-text-prim-white" id="koreksi_barang" name="koreksi_barang">
             </select>
         </div>
     </div>

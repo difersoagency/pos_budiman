@@ -76,6 +76,42 @@
 <script>
     
 $(document).ready(function() {
+    var piutangtable = "";
+    var piutang = $('#piutang').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: {
+                'url': '{{route("data_piutang")}}',
+                'method': 'POST',
+                'headers': {
+                    'X-CSRF-TOKEN': '{{csrf_token()}}'
+                }
+            },
+            language: {
+                processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
+            },
+            columns: [{
+                data: 'DT_RowIndex',
+                className: 'nowrap-text align-center',
+                orderable: false,
+                searchable: false
+            }, {
+                data: 'no_trans_jual',
+            }, {
+                data: 'total_piutang',
+                render: DataTable.render.number(',', '.', 2, '')
+            }, {
+                data: 'sum_total',
+                render: DataTable.render.number(',', '.', 2, '')
+            },{
+                data: 'sisa_hutang',
+                render: DataTable.render.number(',', '.', 2, '')
+            }, {
+                data: 'action',
+                orderable: false,
+                searchable: false
+            }]
+        });
     $(document).on('submit', '#formpiutang', function(event) {
         event.preventDefault();
         var action = $(this).attr('action');
@@ -129,7 +165,7 @@ $(document).ready(function() {
             });
         }
         function data_detail(id){
-            $('#piutangtable').DataTable({
+            piutangtable = $('#piutangtable').DataTable({
             processing: true,
             serverSide: true,
             ajax: {
@@ -169,11 +205,23 @@ $(document).ready(function() {
             }
         })
         $(document).on('keyup change', '#total_bayar', function(){
+            var value = parseInt($(this).val().replace(/\D/g, ""));
+            var sisa = parseInt($('#sisa').val());
+            if(value > sisa){
+                $('#msg-alert').html('Pembayaran yang anda input melebihi Total Piutang');
+            }
+            else{
+                $('#msg-alert').html('');
+            }
             var tes = $(this).val().replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             $(this).val(tes);
         });
         $(document).on('click', '#btndetail', function(event) {
+            event.preventDefault();
+            var rows = piutang.rows($(this).parents('tr')).data();
+            var sisa = rows[0]['sisa_hutang'];
             var id = $(this).attr('data-id');
+            
             $.ajax({
                 url: "/transaksi/piutang/detail/"+id,
                 beforeSend: function() {
@@ -184,7 +232,7 @@ $(document).ready(function() {
                     $('#modalPop').modal("show");
                     $('.modal-title').html("Detail Pembayaran Piutang");
                     $('.modal-body').html(result).show();
-
+                    $('.modal-body').find('#sisa_htg').html(sisa);
                     data_detail(id);
                 },
             })
@@ -192,10 +240,9 @@ $(document).ready(function() {
 
         $(document).on('click', '#btndelete', function() {
             var id = $(this).attr('data-id');
-            var nama = $(this).attr('data-nama');
             Swal.fire({
                 title: 'Hapus',
-                text: "Hapus " + nama,
+                text: "Anda yakin ingin menghapus data ini",
                 icon: "warning",
                 showCancelButton: true,
                 cancelButtonText: 'Tidak',
@@ -205,7 +252,7 @@ $(document).ready(function() {
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: '/transaksi/piutang/delete',
+                        url: '/transaksi/piutang/delete_detail',
                         type: 'DELETE',
                         dataType: 'json',
                         data: {
@@ -235,7 +282,11 @@ $(document).ready(function() {
 
         })
 
+
         $(document).on('click', '#btnbayar', function(event) {
+            event.preventDefault();
+            var rows = piutang.rows($(this).parents('tr')).data();
+            var sisa = rows[0]['sisa_hutang'];
             var id = $(this).attr('data-id');
             $.ajax({
                 url: "/transaksi/piutang/tambah_detail/"+id,
@@ -244,18 +295,21 @@ $(document).ready(function() {
                 },
                 // return the result
                 success: function(result) {
+
                     $('#modalPop').modal("show");
                     $('.modal-title').html("Pembayaran Piutang");
                     $('#modal-body').html(result).show();
+                    $('#modal-body').find('#sisa').val(sisa);
                     $('.pembayaran_id').select2({dropdownParent: $("#modalPop")});
-                    
-                    
                 },
             })
         });
 
         $(document).on('click', '#btnedit', function(event) {
             var id = $(this).attr('data-id');
+            var sisahtg = $('#sisa_htg').html();
+            var rows = piutangtable.rows($(this).parents('tr')).data();
+            var sisa = rows[0]['total_bayar'];
             $.ajax({
                 url: "/transaksi/piutang/edit_detail/"+id,
                 beforeSend: function() {
@@ -266,6 +320,7 @@ $(document).ready(function() {
                     $('#modalPop').modal("show");
                     $('.modal-title').html("Edit Pembayaran Piutang");
                     $('#modal-body').html(result).show();
+                    $('.modal-body').find('#sisa').val(sisahtg - sisa);
                     $('.pembayaran_id').select2({dropdownParent: $("#modalPop")});
                     
                     
@@ -273,41 +328,7 @@ $(document).ready(function() {
             })
         });
 
-        $('#piutang').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: {
-                'url': '{{route("data_piutang")}}',
-                'method': 'POST',
-                'headers': {
-                    'X-CSRF-TOKEN': '{{csrf_token()}}'
-                }
-            },
-            language: {
-                processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
-            },
-            columns: [{
-                data: 'DT_RowIndex',
-                className: 'nowrap-text align-center',
-                orderable: false,
-                searchable: false
-            }, {
-                data: 'no_trans_jual',
-            }, {
-                data: 'total_piutang',
-                render: DataTable.render.number(',', '.', 2, '')
-            }, {
-                data: 'sum_total',
-                render: DataTable.render.number(',', '.', 2, '')
-            },{
-                data: 'sisa_hutang',
-                render: DataTable.render.number(',', '.', 2, '')
-            }, {
-                data: 'action',
-                orderable: false,
-                searchable: false
-            }]
-        });
+       
     });
 </script>
 @endsection

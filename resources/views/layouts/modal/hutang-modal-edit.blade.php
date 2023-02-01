@@ -19,6 +19,11 @@
               <input type="text" class="form-control" id="no_giro" name="no_giro" value="{{$data->no_giro}}" placeholder="Nomor Giro/Debit/Kredit">
             </div>
 
+            <div class="form-group tw-mr-3" hidden="true">
+              <label for="sisa" class="col-form-label">Nomor:</label>
+              <input type="text" class="form-control" id="sisa" name="sisa" value="" placeholder="Nomor Giro/Debit/Kredit">
+            </div>
+
             <div class="form-group tw-mr-3">
               <label for="harga-jasa" class="col-form-label">Total Bayar:</label>
               <div class="input-group mb-3">
@@ -27,6 +32,7 @@
                 </div>
                 <input type="text" class="form-control" aria-label="" id="total_bayar" name="total_bayar"  value="{{$data->total_bayar}}">
               </div>
+              <small class="text-muted text-danger" id="msg-alert"></small>
             </div>
 
             <div class="row">

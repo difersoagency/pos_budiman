@@ -323,6 +323,9 @@ class TransaksiController extends Controller
             ->addColumn('action', function($data){
                 return '<button id="btnedit" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '">
                     <i class="fa fa-pen tw-text-prim-blue"></i>
+                </button>
+                <button id="btndelete" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '">
+                    <i class="fa fa-trash tw-text-prim-red"></i>
                 </button>';
             })
             ->rawColumns(['pembayaran', 'action'])
@@ -477,6 +480,17 @@ class TransaksiController extends Controller
         }
     }
 
+    public function delete_detail_hutang(Request $r)
+    {
+        $del = DTransHutang::find($r->id);
+        $d = $del->delete();
+        if ($d) {
+            return response()->json(['info' => 'success']);
+        } else {
+            return response()->json(['info' => 'error']);
+        }
+    }
+
     public function edit_detail_piutang($id)
     {
         $data = DPiutang::find($id);
@@ -530,6 +544,17 @@ class TransaksiController extends Controller
             } else {
                 return response()->json(['data' => 'error']);
             }
+        }
+    }
+
+    public function delete_detail_piutang(Request $r)
+    {
+        $del = DPiutang::find($r->id);
+        $d = $del->delete();
+        if ($d) {
+            return response()->json(['info' => 'success']);
+        } else {
+            return response()->json(['info' => 'error']);
         }
     }
 
@@ -683,7 +708,7 @@ class TransaksiController extends Controller
             }
 
             if($bool == false){
-                return response()->json(['data' => 'error']);
+                return response()->json(['data' => 'kelebihan']);
             }
             else
             {
@@ -970,12 +995,15 @@ class TransaksiController extends Controller
                 return $res;
             })
             ->addColumn('total_bayar', function ($data) {
-                return number_format(($data->total_bayar), 0, ',', '.');
+                return $data->total_bayar;
             })
             ->addColumn('action', function($data){
                 return '<button id="btnedit" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '">
                                                         <i class="fa fa-pen tw-text-prim-blue"></i>
-                                                    </button>';
+                                                    </button>
+                                                    <button id="btndelete" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '">
+                    <i class="fa fa-trash tw-text-prim-red"></i>
+                </button>';
             })
             ->rawColumns(['pembayaran', 'action'])
             ->make(true);
@@ -1005,7 +1033,7 @@ class TransaksiController extends Controller
             })
             ->addColumn('sisa_hutang', function ($data) {
                 // return  number_format(($data->TransBeli->total - $data->TransBeli->total_bayar) - $data->bayar_hutang);
-                return number_format((float)$data->total_hutang - (float)$data->sum_total);
+                return (float)$data->total_hutang - (float)$data->sum_total;
             })
             ->addColumn('action', function ($data) {
                 $lama =  '<div class="grid grid-cols-2">

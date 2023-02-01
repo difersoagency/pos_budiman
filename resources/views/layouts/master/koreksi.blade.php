@@ -46,12 +46,6 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {{-- <td>1</td>
-                                    <td>12/12/12</td>
-                                    <td>Lampu</td>
-                                    <td>Lampu Depan Merah</td>
-                                    <td>5</td>
-                                    <td>Opname</td> --}}
                                 </tbody>
                             </table>
                         </div>
@@ -103,6 +97,7 @@
     function select_barang() {
         $('.barang').select2({
             placeholder: "Pilih Barang",
+            dropdownParent: $("#modalPop"),
             ajax: {
                 minimumResultsForSearch: 20,
                 dataType: 'json',

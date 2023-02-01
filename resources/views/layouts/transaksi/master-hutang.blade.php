@@ -99,52 +99,9 @@
 @section('script')
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    $(document).on('submit', '#formhutang', function(event) {
-        event.preventDefault();
-        var action = $(this).attr('action');
-        $.ajax({
-            url: action,
-            type: 'POST',
-            data: $('#formhutang').serialize(),
-            success: function(result) {
-                if (result.data == "success") {
-                    Swal.fire({
-                        title: 'Berhasil',
-                        text: 'Data Berhasil disimpan',
-                        icon: 'success',
-                    });
-                    window.location.reload();
-                } else {
-                    Swal.fire({
-                        title: 'Gagal',
-                        text: 'Data Gagal disimpan',
-                        icon: 'error',
-                    });
-                }
-            }
-        });
-    });
-
-$(document).on('click', '#btndetail', function(event) {
-    
-             var id = $(this).attr('data-id');
-            // var nama = $(this).attr('data-nama');
-        $.ajax({
-            url: "/transaksi/hutang/detail/" + id,
-            beforeSend: function() {
-                $('#loader').show();
-            },
-            // return the result
-            success: function(result) {
-                $('#modalPop').modal("show");
-                $('#modal-body').html(result).show();
-                detail_hutang_table(id)
-            },
-        })
-    });
-
-function detail_hutang_table(id){
-    $('#hutangtable').DataTable({
+    var hutangtable = '';
+    function detail_hutang_table(id){
+    hutangtable = $('#hutangtable').DataTable({
             destroy: true,
             processing: true,
             serverSide: true,
@@ -167,12 +124,13 @@ function detail_hutang_table(id){
                     data: 'pembayaran',
                 }, {
                     data: 'total_bayar',
+                    render: DataTable.render.number(',', '.', 2, '')
                 },{
                     data: 'action',
                 }]
         });
 }
-    var table_promo = $('#example').DataTable({
+    var hutangs = $('#example').DataTable({
             destroy: true,
             processing: true,
             serverSide: true,
@@ -208,6 +166,7 @@ function detail_hutang_table(id){
                 {
                     data: 'sisa_hutang',
                     className: 'nowrap-text align-center',
+                    render: DataTable.render.number(',', '.', 2, '')
                 }
               ,
                 {
@@ -217,8 +176,100 @@ function detail_hutang_table(id){
               
             ]
         });
+    $(document).on('submit', '#formhutang', function(event) {
+        event.preventDefault();
+        var action = $(this).attr('action');
+        $.ajax({
+            url: action,
+            type: 'POST',
+            data: $('#formhutang').serialize(),
+            success: function(result) {
+                if (result.data == "success") {
+                    Swal.fire({
+                        title: 'Berhasil',
+                        text: 'Data Berhasil disimpan',
+                        icon: 'success',
+                    });
+                    window.location.reload();
+                } else {
+                    Swal.fire({
+                        title: 'Gagal',
+                        text: 'Data Gagal disimpan',
+                        icon: 'error',
+                    });
+                }
+            }
+        });
+    });
+
+$(document).on('click', '#btndetail', function(event) {
+    
+             var id = $(this).attr('data-id');
+             var rows = hutangs.rows($(this).parents('tr')).data();
+            var sisa = rows[0]['sisa_hutang'];
+            // var nama = $(this).attr('data-nama');
+        $.ajax({
+            url: "/transaksi/hutang/detail/" + id,
+            beforeSend: function() {
+                $('#loader').show();
+            },
+            // return the result
+            success: function(result) {
+                $('#modalPop').modal("show");
+                $('#modal-body').html(result).show();
+                $('#modal-body').find('#sisa_htg').html(sisa);
+                detail_hutang_table(id)
+            },
+        })
+    });
+    $(document).on('click', '#btndelete', function() {
+            var id = $(this).attr('data-id');
+            Swal.fire({
+                title: 'Hapus',
+                text: "Anda yakin ingin menghapus data ini",
+                icon: "warning",
+                showCancelButton: true,
+                cancelButtonText: 'Tidak',
+                confirmButtonText: 'Iya',
+
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/transaksi/hutang/delete_detail',
+                        type: 'DELETE',
+                        dataType: 'json',
+                        data: {
+                            "id": id,
+                            "_method": "DELETE",
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(result) {
+                            if (result.info == "success") {
+                                Swal.fire({
+                                    title: 'Berhasil',
+                                    text: 'Data berhasil di hapus',
+                                    icon: 'success',
+                                });
+                                window.location.reload();
+                            } else {
+                                Swal.fire({
+                                    title: 'Gagal',
+                                    text: 'Data gagal di hapus',
+                                    icon: 'error',
+                                });
+                            }
+                        }
+                    });
+                }
+            })
+
+        })
+
         $(document).on('click', '#btnbayar', function(event) {
             var id = $(this).attr('data-id');
+            var rows = hutangs.rows($(this).parents('tr')).data();
+            var sisa = rows[0]['sisa_hutang'];
             $.ajax({
                 url: "/transaksi/hutang/tambah_detail/"+id,
                 beforeSend: function() {
@@ -229,6 +280,7 @@ function detail_hutang_table(id){
                     $('#modalPop').modal("show");
                     $('.modal-title').html("Pembayaran Hutang");
                     $('#modal-body').html(result).show();
+                    $('#modal-body').find('#sisa').val(sisa);
                     $('.pembayaran_id').select2({dropdownParent: $("#modalPop")});
                     
                     
@@ -238,6 +290,9 @@ function detail_hutang_table(id){
 
         $(document).on('click', '#btnedit', function(event) {
             var id = $(this).attr('data-id');
+            var sisahtg = $('#sisa_htg').html();
+            var rows = hutangtable.rows($(this).parents('tr')).data();
+            var sisa = rows[0]['total_bayar'];
             $.ajax({
                 url: "/transaksi/hutang/edit_detail/"+id,
                 beforeSend: function() {
@@ -248,6 +303,7 @@ function detail_hutang_table(id){
                     $('#modalPop').modal("show");
                     $('.modal-title').html("Edit Pembayaran Hutang");
                     $('#modal-body').html(result).show();
+                    $('#modal-body').find('#sisa').val(sisahtg - sisa);
                     $('.pembayaran_id').select2({dropdownParent: $("#modalPop")});
                     
                     
@@ -265,6 +321,14 @@ function detail_hutang_table(id){
             }
         })
         $(document).on('keyup change', '#total_bayar', function(){
+            var value = parseInt($(this).val().replace(/\D/g, ""));
+            var sisa = parseInt($('#sisa').val());
+            if(value > sisa){
+                $('#msg-alert').html('Pembayaran yang anda input melebihi Total Hutang');
+            }
+            else{
+                $('#msg-alert').html('');
+            }
             var tes = $(this).val().replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             $(this).val(tes);
         });
