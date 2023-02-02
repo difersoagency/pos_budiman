@@ -439,18 +439,25 @@ class TransaksiController extends Controller
         if ($validator->fails()) {
             return redirect()->back()->with('error', "Gagal menambahkan, periksa kembali form anda");
         } else {
-            $d = DTransHutang::create([
-                'h_hutang_id' => $id,
-                'tgl_bayar' => $r->tgl_hutang,
-                'total_bayar' => str_replace(",", "", $r->total_bayar),
-                'no_giro' => $r->no_giro,
-                'pembayaran_id' => $r->pembayaran_id
-            ]);
-
-            if ($d) {
-                return response()->json(['data' => 'success']);
-            } else {
+            $total_bayar = str_replace(",", "", $r->total_bayar);
+            $sisa = str_replace(",", "", $r->sisa);
+            if($total_bayar > $sisa){
                 return response()->json(['data' => 'error']);
+            }
+            else{
+                $d = DTransHutang::create([
+                    'h_hutang_id' => $id,
+                    'tgl_bayar' => $r->tgl_hutang,
+                    'total_bayar' => str_replace(",", "", $r->total_bayar),
+                    'no_giro' => $r->no_giro,
+                    'pembayaran_id' => $r->pembayaran_id
+                ]);
+
+                if ($d) {
+                    return response()->json(['data' => 'success']);
+                } else {
+                    return response()->json(['data' => 'error']);
+                }
             }
         }
     }
@@ -465,17 +472,24 @@ class TransaksiController extends Controller
         if ($validator->fails()) {
             return redirect()->back()->with('error', "Gagal menambahkan, periksa kembali form anda");
         } else {
-            $d = DTransHutang::find($id);
-            $d->tgl_bayar = $r->tgl_hutang;
-            $d->total_bayar = str_replace(",", "", $r->total_bayar);
-            $d->no_giro = $r->no_giro;
-            $d->pembayaran_id = $r->pembayaran_id;
-            $u = $d->save();
-
-            if ($u) {
-                return response()->json(['data' => 'success']);
-            } else {
+            $total_bayar = str_replace(",", "", $r->total_bayar);
+            $sisa = str_replace(",", "", $r->sisa);
+            if($total_bayar > $sisa){
                 return response()->json(['data' => 'error']);
+            }
+            else{
+                $d = DTransHutang::find($id);
+                $d->tgl_bayar = $r->tgl_hutang;
+                $d->total_bayar = str_replace(",", "", $r->total_bayar);
+                $d->no_giro = $r->no_giro;
+                $d->pembayaran_id = $r->pembayaran_id;
+                $u = $d->save();
+
+                if ($u) {
+                    return response()->json(['data' => 'success']);
+                } else {
+                    return response()->json(['data' => 'error']);
+                }
             }
         }
     }
@@ -507,18 +521,25 @@ class TransaksiController extends Controller
         if ($validator->fails()) {
             return redirect()->back()->with('error', "Gagal menambahkan, periksa kembali form anda");
         } else {
-            $d = DPiutang::create([
-                'h_piutang_id' => $id,
-                'tgl_piutang' => $r->tgl_piutang,
-                'total_bayar' => str_replace(",", "", $r->total_bayar),
-                'no_giro' => $r->no_giro,
-                'pembayaran_id' => $r->pembayaran_id
-            ]);
-
-            if ($d) {
-                return response()->json(['data' => 'success']);
-            } else {
+            $total_bayar = str_replace(",", "", $r->total_bayar);
+            $sisa = str_replace(",", "", $r->sisa);
+            if($total_bayar > $sisa){
                 return response()->json(['data' => 'error']);
+            }
+            else{
+                $d = DPiutang::create([
+                    'h_piutang_id' => $id,
+                    'tgl_piutang' => $r->tgl_piutang,
+                    'total_bayar' => str_replace(",", "", $r->total_bayar),
+                    'no_giro' => $r->no_giro,
+                    'pembayaran_id' => $r->pembayaran_id
+                ]);
+
+                if ($d) {
+                    return response()->json(['data' => 'success']);
+                } else {
+                    return response()->json(['data' => 'error']);
+                }
             }
         }
     }
@@ -532,17 +553,24 @@ class TransaksiController extends Controller
         if ($validator->fails()) {
             return redirect()->back()->with('error', "Gagal menambahkan, periksa kembali form anda");
         } else {
-            $d = DPiutang::find($id);
-            $d->tgl_piutang = $r->tgl_piutang;
-            $d->total_bayar = str_replace(",", "", $r->total_bayar);
-            $d->no_giro = $r->no_giro;
-            $d->pembayaran_id = $r->pembayaran_id;
-            $u = $d->save();
-
-            if ($u) {
-                return response()->json(['data' => 'success']);
-            } else {
+            $total_bayar = str_replace(",", "", $r->total_bayar);
+            $sisa = str_replace(",", "", $r->sisa);
+            if($total_bayar > $sisa){
                 return response()->json(['data' => 'error']);
+            }
+            else{
+                $d = DPiutang::find($id);
+                $d->tgl_piutang = $r->tgl_piutang;
+                $d->total_bayar = str_replace(",", "", $r->total_bayar);
+                $d->no_giro = $r->no_giro;
+                $d->pembayaran_id = $r->pembayaran_id;
+                $u = $d->save();
+
+                if ($u) {
+                    return response()->json(['data' => 'success']);
+                } else {
+                    return response()->json(['data' => 'error']);
+                }
             }
         }
     }

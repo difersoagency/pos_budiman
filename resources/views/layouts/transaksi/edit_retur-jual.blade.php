@@ -73,6 +73,7 @@
                                 <div class="form-group">
                                     <input type="text" class="form-control jumlah" name="jumlah[{{$k}}]" min="0" value="{{$data->jumlah}}">
                                 </div>
+                                <small class="text-danger" id="msg-alert"></small>
                             </td>
                             <td>
                                 <div class="form-group">
@@ -311,6 +312,7 @@
                                 <div class="form-group">
                                     <input type="number" class="form-control jumlah" name="jumlah[]" min="0">
                                 </div>
+                                <small class="text-danger" id="msg-alert"></small>
                             </td>
                             <td>
                                 <div class="form-group">
