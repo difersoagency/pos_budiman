@@ -31,7 +31,7 @@
                                 <thead class="tw-bg-prim-blue">
                                     <tr>
                                         <th class="tw-text-prim-white tw-w-24">No</th>
-                                        <th class="tw-text-prim-white tw-w-24">Nama Pelanggan</th>
+                                        <th class="tw-text-prim-white tw-w-24">No Penjualan</th>
                                         <th class="tw-text-prim-white tw-w-48">Total Piutang Usaha</th>
                                         <th class="tw-text-prim-white tw-w-48">Lunas</th>
                                         <th class="tw-text-prim-white tw-w-48">Sisa Hutang</th>

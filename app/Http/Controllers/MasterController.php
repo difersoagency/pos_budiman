@@ -74,7 +74,7 @@ class MasterController extends Controller
     public function garansi_transaksi_jual_select()
     {
         $date = Carbon::now()->toDateString();
-        $res = TransJual::where('tgl_max_garansi', '>=', $date)->with('Booking.Customer', 'DTransJual.Barang')->has('DTransJual')->get();
+        $res = TransJual::where('tgl_max_garansi', '>=', $date)->with('Booking.Customer', 'DTransJual.Barang')->has('DTransJual')->doesntHave('ReturJual')->get();
         $data = array();
 
         foreach ($res as $i => $p) {

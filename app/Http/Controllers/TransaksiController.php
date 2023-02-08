@@ -340,6 +340,7 @@ class TransaksiController extends Controller
 
     public function delete_piutang(Request $r){
         $del = Piutang::where('id', $r->id)->delete();
+
         if ($del) {
             return response()->json(['info' => 'success', 'msg' => 'Data berhasil di hapus']);
         } else {
@@ -453,6 +454,11 @@ class TransaksiController extends Controller
                     'pembayaran_id' => $r->pembayaran_id
                 ]);
 
+                $sum = DTransHutang::where('h_hutang_id', $id)->sum('total_bayar');
+                $th = TransHutang::find($d->h_hutang_id);
+                $th->bayar_hutang = $sum;
+                $th->save();
+
                 if ($d) {
                     return response()->json(['data' => 'success']);
                 } else {
@@ -485,6 +491,10 @@ class TransaksiController extends Controller
                 $d->pembayaran_id = $r->pembayaran_id;
                 $u = $d->save();
 
+                $sum = DTransHutang::where('h_hutang_id', $d->h_hutang_id)->sum('total_bayar');
+                $th = TransHutang::find($d->h_hutang_id);
+                $th->bayar_hutang = $sum;
+                $th->save();
                 if ($u) {
                     return response()->json(['data' => 'success']);
                 } else {
@@ -497,7 +507,14 @@ class TransaksiController extends Controller
     public function delete_detail_hutang(Request $r)
     {
         $del = DTransHutang::find($r->id);
+        $h = $del->h_hutang_id;
+        
         $d = $del->delete();
+
+        $sum = DTransHutang::where('h_hutang_id', $h)->sum('total_bayar');
+        $th = TransHutang::find($h);
+        $th->bayar_hutang = $sum;
+        $th->save();
         if ($d) {
             return response()->json(['info' => 'success']);
         } else {
@@ -639,7 +656,7 @@ class TransaksiController extends Controller
             if (str_replace('.', "", $request->total_dibayar) > str_replace('.', "", $request->total_bayar)) {
                 return response()->json(['data' => 'dibayar']);
             } else {
-                
+                TransHutang::where('htrans_beli_id', $id)->delete();
                 $trans_beli = TransBeli::find($id);
 
                 $trans_beli->supplier_id = $request->supplier;
@@ -681,6 +698,16 @@ class TransaksiController extends Controller
                     if(!$u){
                         $bool = false;
                     }
+                }
+
+                if (str_replace('.', "", $request->total_dibayar) != str_replace('.', "", $request->total_bayar)) {
+                    TransHutang::create([
+                        'pembayaran_id' => $request->pembayaran_id,
+                        'htrans_beli_id' =>  $id,
+                        'tgl_hutang' =>  $request->tgl_beli,
+                        'total_hutang' => str_replace('.', "", $request->total_bayar) - str_replace('.', "", $request->total_dibayar),
+                        'bayar_hutang' => 0
+                    ]);
                 }
 
                 return response()->json(['data' => 'success']);
@@ -795,7 +822,7 @@ class TransaksiController extends Controller
             }
 
             if($bool == false){
-                return response()->json(['data' => 'error']);
+                return response()->json(['data' => 'kelebihan']);
             }
             else
             {
@@ -988,16 +1015,17 @@ class TransaksiController extends Controller
                 <a href="/transaksi/jual/nota/'.$data->id.'"><button class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->no_trans_jual . '" >
                     <i class="fas fa-file tw-text-prim-blue"></i>
                 </button></a>';
-                if(!isset($data->Piutang) || isset($data->Piutang)){
-                    if(count($data->ReturJual) <= 0){
+                // if(!isset($data->Piutang) || isset($data->Piutang)){
+                //     if(count($data->ReturJual) <= 0){
                     $res .= '<a href="/transaksi/jual/edit/'.$data->id.'"><button id="btnedit" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->no_trans_jual . '" >
                                                         <i class="fa fa-pen tw-text-prim-blue"></i>
                                                     </button></a>
                                                     <button id="btndelete" data-id="' . $data->id . '" data-nama="' . $data->no_trans_jual . '"
                                                         class="tw-bg-transparent tw-border-none">
                                                         <i class="fa fa-trash tw-text-prim-red"></i>
-                                                    </button>';}
-                }
+                                                    </button>';
+                //                                 }
+                // }
                 $res .= '
                 </div>';
                 return $res;
@@ -1161,15 +1189,16 @@ class TransaksiController extends Controller
                                                 <a href="/transaksi/beli/nota/'.$data->id.'"><button class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->no_trans_jual . '" >
                     <i class="fas fa-file tw-text-prim-blue"></i>
                 </button></a>';
-                if(!isset($data->TransHutang) || isset($data->TransHutang)){
-                    if(count($data->ReturBeli) <= 0){
+                // if(!isset($data->TransHutang) || isset($data->TransHutang)){
+                //     if(count($data->ReturBeli) <= 0){
                     $res .= '<a href="' . route('edit-beli', $data->id) . '" class="mr-4 tw-bg-transparent tw-border-none" data-toggle="tooltip" title="Edit">
                             <i class="fa fa-pen tw-text-prim-blue"></i>
                         </a>
                         <button data-nama="' . $data->nomor_po . '" data-id="' . $data->id . '" data-toggle="tooltip" title="Hapus" class="tw-bg-transparent tw-border-none" id="btndelete">
                                                     <i class="fa fa-trash tw-text-prim-red"></i>
-                                                </button>';}
-                }
+                                                </button>';
+                //                             }
+                // }
                 $res .= '</div>';
                 return $res;
             })
@@ -1179,20 +1208,31 @@ class TransaksiController extends Controller
 
     public function delete_beli(Request $request)
     {
-        $dtb = DTransBeli::where('htrans_beli_id', $request->id)->get();
-        if (count($dtb) > 0) {
-            foreach($dtb as $i){
-                $b = Barang::find($i->barang_id);
-                $b->stok = $b->stok - $i->jumlah;
-                $bu = $b->save();
-            }
-            DTransBeli::where('htrans_beli_id', $request->id)->delete();
+        $dth = DTransHutang::whereHas('TransHutang', function($q) use($request){
+            $q->where('htrans_beli_id', $request->id);
+        })->count();
+        $rb = ReturBeli::where('htrans_beli_id', $request->id)->count();
+
+        if($dth > 0 || $rb > 0){
+            return response()->json(['info' => 'error', 'msg' => 'Transaksi ini memiliki Hutang atau Retur']);
         }
-        $tb = TransBeli::find($request->id)->delete();
-        if ($tb) {
-            return response()->json(['info' => 'success', 'msg' => 'Data berhasil di hapus']);
-        } else {
-            return response()->json(['info' => 'error', 'msg' => 'Hapus Gagal, periksa kembali']);
+        else{
+            $dth = TransHutang::where('htrans_beli_id', $request->id)->delete();
+            $dtb = DTransBeli::where('htrans_beli_id', $request->id)->get();
+            if (count($dtb) > 0) {
+                foreach($dtb as $i){
+                    $b = Barang::find($i->barang_id);
+                    $b->stok = $b->stok - $i->jumlah;
+                    $bu = $b->save();
+                }
+                DTransBeli::where('htrans_beli_id', $request->id)->delete();
+            }
+            $tb = TransBeli::find($request->id)->delete();
+            if ($tb) {
+                return response()->json(['info' => 'success', 'msg' => 'Data berhasil di hapus']);
+            } else {
+                return response()->json(['info' => 'error', 'msg' => 'Hapus Gagal, periksa kembali']);
+            }
         }
     }
 
@@ -1204,11 +1244,20 @@ class TransaksiController extends Controller
 
     public function edit_beli($id)
     {
-        $data = TransBeli::find($id);
-        $supplier = Supplier::all();
-        $barang = Barang::all();
-        $bayar = Pembayaran::all();
-        return view('layouts.transaksi.edit_beli', ['supplier' => $supplier, 'barang' => $barang, 'bayar' => $bayar, 'data' => $data]);
+        $dth = DTransHutang::whereHas('TransHutang', function($q) use($id){
+            $q->where('htrans_beli_id', $id);
+        })->count();
+        $rb = ReturBeli::where('htrans_beli_id', $id)->count();
+
+        if($dth > 0 || $rb > 0){
+            return redirect()->back()->with('gagal', 'Gagal Edit');
+        }else{
+            $data = TransBeli::find($id);
+            $supplier = Supplier::all();
+            $barang = Barang::all();
+            $bayar = Pembayaran::all();
+            return view('layouts.transaksi.edit_beli', ['supplier' => $supplier, 'barang' => $barang, 'bayar' => $bayar, 'data' => $data]);
+        }
     }
 
     public function detail_jual($id)
@@ -1353,12 +1402,22 @@ class TransaksiController extends Controller
     }
 
     public function edit_jual($id){
-        $d = TransJual::find($id);
-        $b = DTransJual::where('htrans_jual_id', $id)->get();
-        $j = DTransJualJasa::where('htrans_jual_id', $id)->get();
-        $date = Carbon::now()->toDateString();
-        $promo = Promo::where('tgl_mulai', '<=', $date)->where('tgl_selesai', '>=', $date)->get();
-        return view('layouts.transaksi.edit_jual', ['id' => $id, 'd' => $d, 'b' => $b, 'j' => $j, 'promo' => $promo]);
+        $dpu = DPiutang::whereHas('Piutang', function($q) use($id){
+            $q->where('htrans_jual_id', $id);
+        })->count();
+        $drj = ReturJual::where('htrans_jual_id', $id)->count();
+
+        if($dpu > 0 || $drj > 0){
+            return redirect()->back()->with('gagal', "Gagal edit");
+        }
+        else{
+            $d = TransJual::find($id);
+            $b = DTransJual::where('htrans_jual_id', $id)->get();
+            $j = DTransJualJasa::where('htrans_jual_id', $id)->get();
+            $date = Carbon::now()->toDateString();
+            $promo = Promo::where('tgl_mulai', '<=', $date)->where('tgl_selesai', '>=', $date)->get();
+            return view('layouts.transaksi.edit_jual', ['id' => $id, 'd' => $d, 'b' => $b, 'j' => $j, 'promo' => $promo]);
+        }
     }
 
     public function update_jual(Request $r, $id)
@@ -1460,29 +1519,38 @@ class TransaksiController extends Controller
     }
 
     public function delete_jual(Request $r){
-        $pu = Piutang::where('htrans_jual_id', $r->id)->count();
-        if($pu > 0){
-            $pud = Piutang::where('htrans_jual_id', $r->id)->delete();
-        }
-        $dtjj = DTransJualJasa::where('htrans_jual_id', $r->id)->count();
-        if($dtjj > 0){
-            $dtjjd = DTransJualJasa::where('htrans_jual_id', $r->id)->delete();
-        }
-        $dtj = DTransJual::where('htrans_jual_id', $r->id)->count();
-        if($dtj > 0){
-            $dtjs = DTransJual::where('htrans_jual_id', $r->id)->get();
-                foreach($dtjs as $i){
-                    $b = Barang::find($i->barang_id);
-                    $b->stok = $b->stok + $i->jumlah;
-                    $bu = $b->save();
-                }
-            $dtj = DTransJual::where('htrans_jual_id', $r->id)->delete();
-        }
-        $del = TransJual::where('id', $r->id)->delete();
-        if ($del) {
-            return response()->json(['info' => 'success', 'msg' => 'Data berhasil di hapus']);
-        } else {
-            return response()->json(['info' => 'error', 'msg' => 'Hapus Gagal, periksa kembali']);
+        $dpu = DPiutang::whereHas('Piutang', function($q) use($r){
+            $q->where('htrans_jual_id', $r->id);
+        })->count();
+        $drj = ReturJual::where('htrans_jual_id', $r->id)->count();
+
+        if($dpu > 0 || $drj > 0){
+            return response()->json(['info' => 'error', 'msg' => 'Transaksi ini memiliki Piutang atau Retur']);
+        }else{
+            $pu = Piutang::where('htrans_jual_id', $r->id)->count();
+            if($pu > 0){
+                $pud = Piutang::where('htrans_jual_id', $r->id)->delete();
+            }
+            $dtjj = DTransJualJasa::where('htrans_jual_id', $r->id)->count();
+            if($dtjj > 0){
+                $dtjjd = DTransJualJasa::where('htrans_jual_id', $r->id)->delete();
+            }
+            $dtj = DTransJual::where('htrans_jual_id', $r->id)->count();
+            if($dtj > 0){
+                $dtjs = DTransJual::where('htrans_jual_id', $r->id)->get();
+                    foreach($dtjs as $i){
+                        $b = Barang::find($i->barang_id);
+                        $b->stok = $b->stok + $i->jumlah;
+                        $bu = $b->save();
+                    }
+                $dtj = DTransJual::where('htrans_jual_id', $r->id)->delete();
+            }
+            $del = TransJual::where('id', $r->id)->delete();
+            if ($del) {
+                return response()->json(['info' => 'success', 'msg' => 'Data berhasil di hapus']);
+            } else {
+                return response()->json(['info' => 'error', 'msg' => 'Hapus Gagal, periksa kembali']);
+            }
         }
     }
 
@@ -1560,7 +1628,7 @@ class TransaksiController extends Controller
     {
         if ($id == 0) {
             $array = array();
-            $data = TransBeli::where('nomor_po', 'LIKE', '%' . $r->input('term', '') . '%')->select('id', 'nomor_po')->get();
+            $data = TransBeli::where('nomor_po', 'LIKE', '%' . $r->input('term', '') . '%')->select('id', 'nomor_po')->doesntHave('ReturBeli')->get();
             foreach($data as $key => $i){
                 $array[$key] = array('id' => $i->id, 'nomor_po' => $i->nomor_po);
             }

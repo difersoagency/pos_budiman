@@ -114,7 +114,7 @@
 
                             <td>
                                 No Transaksi: {{$beli->nomor_po}}<br>
-                                Tgl Penjualan: {{$beli->tgl_trans_beli}}<br>
+                                Tgl Pembelian: {{$beli->tgl_trans_beli}}<br>
                                 Tgl Garansi: {{$beli->tgl_max_garansi}}
                             </td>
                         </tr>

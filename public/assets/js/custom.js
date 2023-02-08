@@ -333,7 +333,9 @@ $(document).on('submit', '#edittrans_beli', function(e) {
                     'Total dibayar harus lebih kecil dari total transaksi',
                     'warning'
                 );
-           } else {
+           }else if(response['data'] == "kelebihan"){
+            swal.fire('Gagal','Barang yang di Retur lebih banyak dari Barang yang dibeli','error');
+        }  else {
                 swal.fire(
                     'Gagal',
                     'Lengkapi Form',

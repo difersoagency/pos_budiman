@@ -83,6 +83,13 @@
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function() {
+    @if (Session::has('gagal'))
+            Swal.fire({
+                title: 'Edit Gagal',
+                text: "Edit Gagal dikarenakan transaksi memiliki Hutang atau Retur",
+                icon: 'error',
+            });
+        @endif
     function data_detail(id){
             $('#transjualdetail').DataTable({
             processing: true,
@@ -162,14 +169,14 @@ $(document).ready(function() {
                             if (result.info == "success") {
                                 Swal.fire({
                                     title: 'Berhasil',
-                                    text: 'Data berhasil di hapus',
+                                    text: result.msg,
                                     icon: 'success',
                                 });
                                 window.location.reload();
                             } else {
                                 Swal.fire({
                                     title: 'Gagal',
-                                    text: 'Data gagal di hapus',
+                                    text: result.msg,
                                     icon: 'error',
                                 });
                             }

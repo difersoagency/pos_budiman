@@ -116,6 +116,13 @@
 @section('script')
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        @if (Session::has('gagal'))
+            Swal.fire({
+                title: 'Edit Gagal',
+                text: "Edit Gagal dikarenakan transaksi memiliki Hutang atau Retur",
+                icon: 'error',
+            });
+        @endif
         $(document).ready(function() {
             $(document).on('click', '#btndetail', function(event) {
                 var id = $(this).attr('data-id');
@@ -193,7 +200,7 @@
                                 if (result.info == "success") {
                                     Swal.fire({
                                         title: 'Berhasil',
-                                        text: 'Data berhasil di hapus',
+                                        text: result.msg,
                                         icon: 'success',
                                     });
 
@@ -201,7 +208,7 @@
                                 } else {
                                     Swal.fire({
                                         title: 'Gagal',
-                                        text: 'Data gagal di hapus',
+                                        text: result.msg,
                                         icon: 'error',
                                     });
                                 }
