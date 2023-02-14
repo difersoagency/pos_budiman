@@ -60,6 +60,10 @@
                 <label for="user_beli">Nomor</label>
                 <input type="text" placeholder="Nomor Giro/Debit/Kredit" class="form-control no_giro" name="no_giro" id="no_giro">
             </div>
+            <div class="mb-4 mx-2" id="input_tgl_jatuh_tempo" hidden="true">
+                <label for="tgl_jatuh_tempo">Tanggal Jatuh Tempo</label>
+                <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_jatuh_tempo" name="tgl_jatuh_tempo" id="tgl_jatuh_tempo" value="">
+            </div>
         </div>
         <!-- <div class="tw-rounded-lg promobox mb-4 tw-py-2 tw-px-4">
             <h2 class="tw-text-md tw-text-prim-white">Promo</h2>
@@ -274,12 +278,20 @@ $(function(){
             });
     
     $(document).on('change', '#pembayaran_id', function(e) {
+        $('#tgl_jatuh_tempo').val('');
         if($(this).val() == "1"){
             $('#input_giro').attr('hidden', true);
+            $('#input_tgl_jatuh_tempo').attr('hidden', true);
             $('#no_giro').val('');
         }
         else{
             $('#input_giro').attr('hidden', false);
+            if($(this).val() == 4){
+                $('#input_tgl_jatuh_tempo').attr('hidden', false);
+            }
+            else{
+                $('#input_tgl_jatuh_tempo').attr('hidden', true);
+            }
         }
     })
 

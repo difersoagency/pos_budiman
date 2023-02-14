@@ -24,6 +24,11 @@
               <input type="text" class="form-control" id="sisa" name="sisa" value="" placeholder="Nomor Giro/Debit/Kredit">
             </div>
 
+            <div class="form-group tw-mr-3" id="input_tgl_jatuh_tempo" @if($data->Pembayaran->nama_bayar != "Giro") hidden="true" @endif>
+                <label for="tgl_jatuh_tempo">Tanggal Jatuh Tempo</label>
+                <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_jatuh_tempo" name="tgl_jatuh_tempo" id="tgl_jatuh_tempo" value="{{$data->tgl_jatuh_tempo}}">
+            </div>
+
             <div class="form-group tw-mr-3">
               <label for="harga-jasa" class="col-form-label">Total Bayar:</label>
               <div class="input-group mb-3">

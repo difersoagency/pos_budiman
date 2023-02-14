@@ -19,8 +19,13 @@
               <input type="text" class="form-control" id="no_giro" name="no_giro" value="" placeholder="Nomor Giro/Debit/Kredit">
             </div>
 
+            <div class="form-group tw-mr-3" id="input_tgl_jatuh_tempo" hidden="true">
+                <label for="tgl_jatuh_tempo">Tanggal Jatuh Tempo</label>
+                <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_jatuh_tempo" name="tgl_jatuh_tempo" id="tgl_jatuh_tempo" value="">
+            </div>
+
             <div class="form-group tw-mr-3" hidden="true">
-              <label for="sisa" class="col-form-label">Nomor:</label>
+              <label for="sisa" class="col-form-label">Sisa:</label>
               <input type="text" class="form-control" id="sisa" name="sisa" value="" placeholder="Nomor Giro/Debit/Kredit">
             </div>
 

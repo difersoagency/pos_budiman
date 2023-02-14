@@ -14,7 +14,8 @@ class DPiutang extends Model
     'tgl_piutang',
     'total_bayar',
     'pembayaran_id',
-    'no_giro'
+    'no_giro',
+    'tgl_jatuh_tempo'
 ];
 
     public function Piutang()

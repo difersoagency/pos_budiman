@@ -32,7 +32,79 @@ use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 
 class MasterController extends Controller
-{
+{   
+    public function jual_dashboard(){
+        $data = TransJual::with('Booking.Customer')->whereDate('tgl_jatuh_tempo', '>=', date('Y-m-d'))->whereNotNull('tgl_jatuh_tempo')->orderBy('tgl_jatuh_tempo', 'asc');
+        return datatables()->of($data)
+            ->addIndexColumn()
+            ->addColumn('pembayaran', function($data){
+                $res = $data->Pembayaran->nama_bayar;
+                if($data->Pembayaran->id != '1'){
+                $res .= '<div><small class="text-danger">Nomor: '.$data->no_giro.'</small></div>';
+                }
+                return $res;
+            })
+            ->addColumn('action', function ($data) {
+                $res = '<div class="grid grid-cols-4">
+                <button id="btndetail" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->no_trans_jual . '" >
+                                                        <i class="fas fa-eye tw-text-prim-blue"></i>
+                                                    </button>
+                <a href="/transaksi/jual/nota/'.$data->id.'"><button class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->no_trans_jual . '" >
+                    <i class="fas fa-file tw-text-prim-blue"></i>
+                </button></a><a href="/transaksi/jual/edit/'.$data->id.'"><button id="btnedit" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->no_trans_jual . '" >
+                                                        <i class="fa fa-pen tw-text-prim-blue"></i>
+                                                    </button></a>
+                                                    <button id="btndelete" data-id="' . $data->id . '" data-nama="' . $data->no_trans_jual . '"
+                                                        class="tw-bg-transparent tw-border-none">
+                                                        <i class="fa fa-trash tw-text-prim-red"></i>
+                                                    </button>
+                </div>';
+                return $res;
+
+            })
+            ->rawColumns(['action', 'pembayaran'])
+            ->make(true);
+    }
+    public function barang_dashboard(){
+        $data = Barang::orderBy('stok', 'ASC')->limit(10)->get();
+        return datatables()->of($data)
+            ->addIndexColumn()
+            ->addColumn('kode', function ($data) {
+                return $data->kode_barang;
+            })
+            ->addColumn('nama', function ($data) {
+                return $data->nama_barang;
+            })
+            ->addColumn('merk', function ($data) {
+                return ucfirst($data->Merek->nama_merek);
+            })
+            ->addColumn('tipe', function ($data) {
+                return  ucfirst($data->Tipe->nama_tipe);
+            })
+            ->addColumn('harga_beli', function ($data) {
+                return $data->harga_beli;
+            })
+            ->addColumn('harga_jual', function ($data) {
+                return $data->harga_jual;
+            })
+            ->addColumn('stok', function ($data) {
+                return $data->stok;
+            })
+            ->addColumn('button', function ($data) {
+                return ' <div class="grid grid-cols-2 tw-contents">
+                                                    <button id="btnedit" class="mr-4 tw-bg-transparent tw-border-none"
+                                                      data-id="' . $data->id . '"   data-nama="' . $data->nama_barang . '" >
+                                                        <i class="fa fa-pen tw-text-prim-blue"></i>
+                                                    </button>
+                                                    <button id="btndelete"       data-id="' . $data->id . '"   data-nama="' . $data->nama_barang . '"
+                                                        class="tw-bg-transparent tw-border-none">
+                                                        <i class="fa fa-trash tw-text-prim-red"></i>
+                                                    </button>
+                                                </div>';
+            })
+            ->rawColumns(['button'])
+            ->make(true);
+    }
     public function barang_select(Request $r)
     {
         $d1 = Barang::where('nama_barang', 'LIKE', '%' . $r->input('term', '') . '%')->selectRaw('kode_barang as id_item, nama_barang as nama, IF(id IS NULL, "", "barang") as jenis, stok as stok, harga_jual as harga')->get();

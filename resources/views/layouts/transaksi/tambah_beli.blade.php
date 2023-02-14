@@ -71,6 +71,10 @@
                     <label for="no_giro">Nomor</label>
                     <input type="text" placeholder="Nomor Giro/Debit/Kredit" class="form-control no_giro" name="no_giro" id="no_giro">
                 </div>
+                <div class="my-4 mx-2" id="input_tgl_jatuh_tempo" hidden="true">
+                <label for="tgl_jatuh_tempo">Tanggal Jatuh Tempo</label>
+                <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_jatuh_tempo" name="tgl_jatuh_tempo" id="tgl_jatuh_tempo" value="">
+            </div>
                 {{-- <div class="my-4 mx-2">
                     <label for="user_beli">Batas Garansi</label>
                     <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_garansi" name="tgl_beli_garansi" id="tgl_retur_beli">
@@ -254,12 +258,20 @@
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     $(document).on('change', '#pembayaran_id', function(e) {
+        $('#tgl_jatuh_tempo').val('');
         if($(this).val() == "1"){
             $('#input_giro').attr('hidden', true);
+            $('#input_tgl_jatuh_tempo').attr('hidden', true);
             $('#no_giro').val('');
         }
         else{
             $('#input_giro').attr('hidden', false);
+            if($(this).val() == 4){
+                $('#input_tgl_jatuh_tempo').attr('hidden', false);
+            }
+            else{
+                $('#input_tgl_jatuh_tempo').attr('hidden', true);
+            }
         }
     })
     select_barang();

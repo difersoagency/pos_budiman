@@ -31,6 +31,7 @@
                                 <thead class="tw-bg-prim-blue">
                                     <tr>
                                         <th class="tw-text-prim-white tw-w-48">No Pembelian</th>
+                                        <th class="tw-text-prim-white tw-w-48">Tgl Transaksi</th>
                                         <th class="tw-text-prim-white tw-w-24">Nama Supplier</th>
                                      
                                         <th class="tw-text-prim-white tw-w-48">Total Hutang</th>
@@ -79,7 +80,7 @@
 
 
     <div class="modal fade" id="modalPop" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog tw-min-w-[60%]" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Detail Hutang</h5>
@@ -147,7 +148,11 @@
                     data: 'no_pembelian',
                     className: 'nowrap-text align-center',
                 }
-              ,
+              , {
+                    data: 'tgl_trans_beli',
+                    className: 'nowrap-text align-center',
+                }
+              ,  
                 {
                     data: 'supplier',
                     className: 'nowrap-text align-center',
@@ -312,12 +317,20 @@ $(document).on('click', '#btndetail', function(event) {
         });
 
         $(document).on('change', '#pembayaran_id', function(e) {
+            $('#tgl_jatuh_tempo').val('');
             if($(this).val() == "1"){
                 $('#input_giro').attr('hidden', true);
+                $('#input_tgl_jatuh_tempo').attr('hidden', true);
                 $('#no_giro').val('');
             }
             else{
                 $('#input_giro').attr('hidden', false);
+                if($(this).val() == 4){
+                    $('#input_tgl_jatuh_tempo').attr('hidden', false);
+                }
+                else{
+                    $('#input_tgl_jatuh_tempo').attr('hidden', true);
+                }
             }
         })
         $(document).on('keyup change', '#total_bayar', function(){

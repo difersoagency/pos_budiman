@@ -20,6 +20,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 });
 
+Route::get('/jual_dashboard', [App\Http\Controllers\MasterController::class, 'jual_dashboard'])->name('jual.dashboard');
+Route::get('/barang_dashboard', [App\Http\Controllers\MasterController::class, 'barang_dashboard'])->name('barang.dashboard'); 
 Route::get('/booking_select', [App\Http\Controllers\MasterController::class, 'booking_select'])->name('booking.select'); 
     Route::get('/barang_select', [App\Http\Controllers\MasterController::class, 'barang_select'])->name('barang.select');
     Route::get('/customer_select', [App\Http\Controllers\MasterController::class, 'customer_select'])->name('customer.select'); 

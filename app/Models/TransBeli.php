@@ -10,7 +10,7 @@ class TransBeli extends Model
     use HasFactory;
     protected $table = 'htrans_beli';
     public $timestamps = false;
-    protected $fillable = ['supplier_id', 'pembayaran_id', 'no_giro', 'nomor_po', 'tgl_trans_beli', 'tgl_max_garansi', 'disc', 'total_bayar', 'total'];
+    protected $fillable = ['supplier_id', 'pembayaran_id', 'no_giro','tgl_jatuh_tempo', 'nomor_po', 'tgl_trans_beli', 'tgl_max_garansi', 'disc', 'total_bayar', 'total'];
 
     public function Supplier()
     {

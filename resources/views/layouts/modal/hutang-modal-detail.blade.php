@@ -4,11 +4,11 @@
             <div class="card-body">
                 <div class="tw-grid tw-grid-cols-2">
                     <div class="tw-bg-grey-dark tw-text-grey-light" role="alert">
-                        <p class="font-bold"><b>No Penjualan</b></p>
+                        <p class="font-bold"><b>No Pembelian</b></p>
                         <p class="text-sm">{{$data->TransBeli->nomor_po}}</p>
                     </div>
                     <div class="tw-bg-green-100 tw-text-green-700" role="alert">
-                        <p class="font-bold"><b>Tgl Penjualan</b></p>
+                        <p class="font-bold"><b>Tgl Pembelian</b></p>
                         <p class="text-sm">{{$data->TransBeli->tgl_trans_beli}}</p>
                     </div>
                     <div class="tw-bg-grey-dark tw-text-grey-light" role="alert">

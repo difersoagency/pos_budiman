@@ -32,6 +32,7 @@
                                     <tr>
                                         <th class="tw-text-prim-white tw-w-24">No</th>
                                         <th class="tw-text-prim-white tw-w-24">No Penjualan</th>
+                                        <th class="tw-text-prim-white tw-w-24">Tgl Transaksi</th>
                                         <th class="tw-text-prim-white tw-w-48">Total Piutang Usaha</th>
                                         <th class="tw-text-prim-white tw-w-48">Lunas</th>
                                         <th class="tw-text-prim-white tw-w-48">Sisa Hutang</th>
@@ -97,6 +98,8 @@ $(document).ready(function() {
                 searchable: false
             }, {
                 data: 'no_trans_jual',
+            }, {
+                data: 'tgl_trans_jual',
             }, {
                 data: 'total_piutang',
                 render: DataTable.render.number(',', '.', 2, '')
@@ -196,12 +199,20 @@ $(document).ready(function() {
             });
         }
         $(document).on('change', '#pembayaran_id', function(e) {
+            $('#tgl_jatuh_tempo').val('');
             if($(this).val() == "1"){
                 $('#input_giro').attr('hidden', true);
+                $('#input_tgl_jatuh_tempo').attr('hidden', true);
                 $('#no_giro').val('');
             }
             else{
                 $('#input_giro').attr('hidden', false);
+                if($(this).val() == 4){
+                    $('#input_tgl_jatuh_tempo').attr('hidden', false);
+                }
+                else{
+                    $('#input_tgl_jatuh_tempo').attr('hidden', true);
+                }
             }
         })
         $(document).on('keyup change', '#total_bayar', function(){
