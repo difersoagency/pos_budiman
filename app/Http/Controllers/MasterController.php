@@ -19,10 +19,12 @@ use App\Models\Satuan;
 use App\Models\Supplier;
 use App\Models\Tipe;
 use App\Models\TransBeli;
+use App\Models\TransHutang;
 use App\Models\DTransBeli;
 use App\Models\User;
 use App\Models\TransJual;
 use App\Models\DTransJual;
+use App\Models\DPiutang;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Database\Eloquent\Relations\Pivot;
@@ -34,7 +36,11 @@ use Carbon\Carbon;
 class MasterController extends Controller
 {   
     public function jual_dashboard(){
-        $data = TransJual::with('Booking.Customer')->whereDate('tgl_jatuh_tempo', '>=', date('Y-m-d'))->whereNotNull('tgl_jatuh_tempo')->orderBy('tgl_jatuh_tempo', 'asc');
+        $data = TransJual::with('Booking.Customer')->whereDate('tgl_jatuh_tempo', '>=', date('Y-m-d'))->whereNotNull('tgl_jatuh_tempo')
+        ->addSelect(['count_piutang' => DPiutang::selectRaw('coalesce(SUM(total_bayar),0)')
+            ->join('h_piutang', 'd_piutang.h_piutang_id', '=', 'h_piutang.id')
+            ->whereColumn('h_piutang.htrans_jual_id', 'htrans_jual.id')
+    ])->havingRaw('(count_piutang + (bayar_jual - kembali_jual)) < total_jual')->get();
         return datatables()->of($data)
             ->addIndexColumn()
             ->addColumn('pembayaran', function($data){
@@ -65,6 +71,46 @@ class MasterController extends Controller
             ->rawColumns(['action', 'pembayaran'])
             ->make(true);
     }
+
+    public function beli_dashboard(){
+        $data = TransBeli::with('Supplier', 'Pembayaran', 'ReturBeli')->whereDate('tgl_jatuh_tempo', '>=', date('Y-m-d'))->whereNotNull('tgl_jatuh_tempo')
+                ->addSelect(['count_hutang' => TransHutang::selectRaw('coalesce(bayar_hutang,0)')
+                    ->whereColumn('h_hutang.htrans_beli_id', 'htrans_beli.id')
+                ])->havingRaw('(count_hutang + (total_bayar)) < total')->get();
+        return datatables()->of($data)
+            ->addIndexColumn()
+            ->addColumn('tgl_trans_beli', function ($data) {
+                return  $data->tgl_trans_beli;
+            })
+            ->addColumn('tgl_max_garansi', function ($data) {
+                return  $data->tgl_max_garansi;
+            })
+            ->addColumn('total_bayar', function ($data) {
+                return  number_format($data->total);
+            })
+            ->editColumn('nomor_po', function ($data) {
+                return  $data->nomor_po;
+            })
+            ->addColumn('supplier', function ($data) {
+                return  $data->Supplier->nama_supplier;
+            })
+            ->addColumn('pembayaran', function ($data) {
+                $res = $data->Pembayaran->nama_bayar;
+                if($data->no_giro != ''){
+                $res .= '<div><small class="text-danger">Nomor: '.$data->no_giro.'</small></div>';
+                if($data->tgl_jatuh_tempo != NULL){
+                    $res .= '<div><small>Jatuh Tempo '.$data->tgl_jatuh_tempo.'</small></div>';
+                }
+                }
+                return $res;
+            })
+            ->addColumn('tgl_jatuh_tempo', function ($data) {
+                return  $data->tgl_jatuh_tempo;
+            })
+            ->rawColumns(['pembayaran'])
+            ->make(true);
+    }
+
     public function barang_dashboard(){
         $data = Barang::orderBy('stok', 'ASC')->limit(10)->get();
         return datatables()->of($data)

@@ -77,6 +77,30 @@
                         <!-- END : Tabel Tablet + Desktop -->
                     </div>
             </div>
+
+            <div class="card tw-w-full tw-px-6 tw-py-5 tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-items-center">
+            <div class="tw-w-full tw-col-span-2 md:tw-col-span-1">
+                            <h1 class="tw-m-0 tw-text-2xl tw-font-bold">Pembelian Mendekati Jatuh Tempo</h1>
+                        </div>
+
+                        <div class="table_master_beli tw-mt-5 tw-col-span-2" data-current-page="1">
+            <table id="transbeli" class="table table-bordered responsive nowrap" style="width:100%">
+                                    <thead class="tw-bg-prim-blue">
+                                        <tr>
+                                            <th class="tw-text-prim-white">No.Pembelian</th>
+                                            <th class="tw-text-prim-white">Supplier</th>
+                                            <th class="tw-text-prim-white">Tgl Pembelian</th>
+                                            <th class="tw-text-prim-white tw-w-48">Pembayaran</th>
+                                            <th class="tw-text-prim-white tw-w-28">Total Harga</th>
+                                            <th class="tw-text-prim-white">Tgl Jatuh Tempo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+
+                                </table>
+                                        </div>
+                </div>
             <!-- /.col-md-6 -->
           </div>
           <!-- /.row -->
@@ -170,6 +194,43 @@ $(document).ready(function() {
                 data: 'tgl_jatuh_tempo'
             }]
         });
+
+        $('#transbeli').DataTable({
+                destroy: true,
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    'url': '/api/beli_dashboard',
+                    'method': 'GET',
+                    'headers': {
+                        'X-CSRF-TOKEN': '{{csrf_token()}}'
+                    }
+                },
+                columns: [{
+                        data: 'nomor_po',
+                        className: 'nowrap-text align-center',
+                    }, {
+                        data: 'supplier',
+                        className: 'nowrap-text align-center',
+                    },
+
+                    {
+                        data: 'tgl_trans_beli',
+                        className: 'nowrap-text align-center',
+                    }, {
+                        data: 'pembayaran',
+                        className: 'nowrap-text align-center',
+                    }, {
+                        data: 'total_bayar',
+                        className: 'nowrap-text align-center',
+                    },
+                    {
+                        data: 'tgl_jatuh_tempo'
+                    },
+
+
+                ]
+            });
     });
 </script>
 @endsection

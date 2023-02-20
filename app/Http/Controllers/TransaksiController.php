@@ -448,16 +448,21 @@ class TransaksiController extends Controller
         } else {
             $total_bayar = str_replace(",", "", $r->total_bayar);
             $sisa = str_replace(",", "", $r->sisa);
+            
             if($total_bayar > $sisa){
                 return response()->json(['data' => 'error']);
             }
             else{
+                $tgl_jatuh_tempo = NULL;
+                if($r->pembayaran_id == "4"){
+                    $tgl_jatuh_tempo = $r->tgl_jatuh_tempo;
+                }
                 $d = DTransHutang::create([
                     'h_hutang_id' => $id,
                     'tgl_bayar' => $r->tgl_hutang,
                     'total_bayar' => str_replace(",", "", $r->total_bayar),
                     'no_giro' => $r->no_giro,
-                    'tgl_jatuh_tempo' => $r->tgl_jatuh_tempo,
+                    'tgl_jatuh_tempo' => $tgl_jatuh_tempo,
                     'pembayaran_id' => $r->pembayaran_id
                 ]);
 
@@ -491,12 +496,16 @@ class TransaksiController extends Controller
                 return response()->json(['data' => 'error']);
             }
             else{
+                $tgl_jatuh_tempo = NULL;
+                if($r->pembayaran_id == "4"){
+                    $tgl_jatuh_tempo = $r->tgl_jatuh_tempo;
+                }
                 $d = DTransHutang::find($id);
                 $d->tgl_bayar = $r->tgl_hutang;
                 $d->total_bayar = str_replace(",", "", $r->total_bayar);
                 $d->no_giro = $r->no_giro;
                 $d->pembayaran_id = $r->pembayaran_id;
-                $d->tgl_jatuh_tempo = $r->tgl_jatuh_tempo;
+                $d->tgl_jatuh_tempo = $tgl_jatuh_tempo;
                 $u = $d->save();
 
                 $sum = DTransHutang::where('h_hutang_id', $d->h_hutang_id)->sum('total_bayar');
@@ -548,16 +557,21 @@ class TransaksiController extends Controller
         } else {
             $total_bayar = str_replace(",", "", $r->total_bayar);
             $sisa = str_replace(",", "", $r->sisa);
+            
             if($total_bayar > $sisa){
                 return response()->json(['data' => 'error']);
             }
             else{
+                $tgl_jatuh_tempo = NULL;
+                if($r->pembayaran_id == "4"){
+                    $tgl_jatuh_tempo = $r->tgl_jatuh_tempo;
+                }
                 $d = DPiutang::create([
                     'h_piutang_id' => $id,
                     'tgl_piutang' => $r->tgl_piutang,
                     'total_bayar' => str_replace(",", "", $r->total_bayar),
                     'no_giro' => $r->no_giro,
-                    'tgl_jatuh_tempo' => $r->tgl_jatuh_tempo,
+                    'tgl_jatuh_tempo' => $tgl_jatuh_tempo,
                     'pembayaran_id' => $r->pembayaran_id
                 ]);
 
@@ -585,11 +599,15 @@ class TransaksiController extends Controller
                 return response()->json(['data' => 'error']);
             }
             else{
+                $tgl_jatuh_tempo = NULL;
+                if($r->pembayaran_id == "4"){
+                    $tgl_jatuh_tempo = $r->tgl_jatuh_tempo;
+                }
                 $d = DPiutang::find($id);
                 $d->tgl_piutang = $r->tgl_piutang;
                 $d->total_bayar = str_replace(",", "", $r->total_bayar);
                 $d->no_giro = $r->no_giro;
-                $d->tgl_jatuh_tempo = $r->tgl_jatuh_tempo;
+                $d->tgl_jatuh_tempo = $tgl_jatuh_tempo;
                 $d->pembayaran_id = $r->pembayaran_id;
                 $u = $d->save();
 
@@ -666,6 +684,10 @@ class TransaksiController extends Controller
             if (str_replace('.', "", $request->total_dibayar) > str_replace('.', "", $request->total_bayar)) {
                 return response()->json(['data' => 'dibayar']);
             } else {
+                $tgl_jatuh_tempo = NULL;
+                if($request->pembayaran_id == "4"){
+                    $tgl_jatuh_tempo = $request->tgl_jatuh_tempo;
+                }
                 TransHutang::where('htrans_beli_id', $id)->delete();
                 $trans_beli = TransBeli::find($id);
 
@@ -674,7 +696,7 @@ class TransaksiController extends Controller
                 $trans_beli->no_giro = $request->no_giro;
                 $trans_beli->nomor_po = $request->no_beli;
                 $trans_beli->tgl_trans_beli = $request->tgl_beli;
-                $trans_beli->tgl_jatuh_tempo = $request->tgl_jatuh_tempo;
+                $trans_beli->tgl_jatuh_tempo = $tgl_jatuh_tempo;
                 $trans_beli->tgl_max_garansi = $request->tgl_beli_garansi;
                 $trans_beli->disc = $request->disc;
                 $trans_beli->total_bayar = str_replace('.', "", $request->total_dibayar);
@@ -887,6 +909,10 @@ class TransaksiController extends Controller
             if (str_replace('.', "", $request->total_dibayar) > str_replace('.', "", $request->total_bayar)) {
                 return response()->json(['data' => 'dibayar']);
             } else {
+                $tgl_jatuh_tempo = NULL;
+                if($request->pembayaran_id == "4"){
+                    $tgl_jatuh_tempo = $request->tgl_jatuh_tempo;
+                }
                 $header =  TransBeli::create([
                     'supplier_id' => $request->supplier,
                     'pembayaran_id' => $request->pembayaran_id,
@@ -894,7 +920,7 @@ class TransaksiController extends Controller
                     'nomor_po' => $request->no_beli,
                     'tgl_trans_beli' => $request->tgl_beli,
                     'tgl_max_garansi' => $request->tgl_beli_garansi,
-                    'tgl_jatuh_tempo' => $request->tgl_jatuh_tempo,
+                    'tgl_jatuh_tempo' => $tgl_jatuh_tempo,
                     'disc' => $request->diskon_total,
                     'total_bayar' =>  str_replace('.', "", $request->total_dibayar),
                     'total' =>  str_replace('.', "", $request->total_bayar)
@@ -1352,12 +1378,16 @@ class TransaksiController extends Controller
         if ($validator->fails()) {
             return response()->json(['data' => 'error', 'msg' => "Gagal menambahkan, periksa kembali form anda"]);
         } else {
+            $tgl_jatuh_tempo = NULL;
+            if($r->pembayaran_id == "4"){
+                $tgl_jatuh_tempo = $r->tgl_jatuh_tempo;
+            }
             $c = TransJual::create([
                 'booking_id' => $r->booking_id,
                 'no_trans_jual' => $r->no_trans_jual,
                 'tgl_trans_jual' => $r->tgl_trans_jual,
                 'tgl_max_garansi' => $r->tgl_max_garansi,
-                'tgl_jatuh_tempo' => $r->tgl_jatuh_tempo,
+                'tgl_jatuh_tempo' => $tgl_jatuh_tempo,
                 'user_id' => Auth::user()->id,
                 'total_jual' => str_replace(",", "", $r->total_jual),
                 'bayar_jual' => str_replace(",", "", $r->bayar_jual),
@@ -1473,11 +1503,16 @@ class TransaksiController extends Controller
                 $dtjd = DTransJual::where('htrans_jual_id', $id)->delete();
             }
 
+            $tgl_jatuh_tempo = NULL;
+            if($r->pembayaran_id == "4"){
+                $tgl_jatuh_tempo = $r->tgl_jatuh_tempo;
+            }
+
             $u = TransJual::find($id);
             $u->no_trans_jual = $r->no_trans_jual;
             $u->tgl_trans_jual = $r->tgl_trans_jual;
             $u->tgl_max_garansi = $r->tgl_max_garansi;
-            $r->tgl_jatuh_tempo = $r->tgl_jatuh_tempo;
+            $u->tgl_jatuh_tempo = $tgl_jatuh_tempo;
             $u->total_jual = str_replace(",", "", $r->total_jual);
             $u->bayar_jual = str_replace(",", "", $r->bayar_jual);
             $u->kembali_jual = str_replace(",", "", $r->kembali_jual);
