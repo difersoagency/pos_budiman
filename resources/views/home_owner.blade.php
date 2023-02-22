@@ -184,7 +184,7 @@ $(document).ready(function() {
             }, {
                 data: 'no_trans_jual',
             }, {
-                data: 'booking.customer.nama_customer',
+                data: 'customer',
             },{
                 data: 'total_jual',
                 render: DataTable.render.number(',', '.', 2, '')

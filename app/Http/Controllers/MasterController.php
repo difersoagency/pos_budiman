@@ -36,76 +36,99 @@ use Carbon\Carbon;
 class MasterController extends Controller
 {   
     public function jual_dashboard(){
-        $data = TransJual::with('Booking.Customer')->whereDate('tgl_jatuh_tempo', '>=', date('Y-m-d'))->whereNotNull('tgl_jatuh_tempo')
-        ->addSelect(['count_piutang' => DPiutang::selectRaw('coalesce(SUM(total_bayar),0)')
+        $data = TransJual::with('Booking.Customer')->addSelect(['count_piutang' => function ($q) {
+            $q->selectRaw('coalesce(SUM(total_bayar),0)')
+            ->from('d_piutang')
             ->join('h_piutang', 'd_piutang.h_piutang_id', '=', 'h_piutang.id')
-            ->whereColumn('h_piutang.htrans_jual_id', 'htrans_jual.id')
-    ])->havingRaw('(count_piutang + (bayar_jual - kembali_jual)) < total_jual')->get();
-        return datatables()->of($data)
-            ->addIndexColumn()
-            ->addColumn('pembayaran', function($data){
-                $res = $data->Pembayaran->nama_bayar;
-                if($data->Pembayaran->id != '1'){
-                $res .= '<div><small class="text-danger">Nomor: '.$data->no_giro.'</small></div>';
-                }
-                return $res;
-            })
-            ->addColumn('action', function ($data) {
-                $res = '<div class="grid grid-cols-4">
-                <button id="btndetail" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->no_trans_jual . '" >
-                                                        <i class="fas fa-eye tw-text-prim-blue"></i>
-                                                    </button>
-                <a href="/transaksi/jual/nota/'.$data->id.'"><button class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->no_trans_jual . '" >
-                    <i class="fas fa-file tw-text-prim-blue"></i>
-                </button></a><a href="/transaksi/jual/edit/'.$data->id.'"><button id="btnedit" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->no_trans_jual . '" >
-                                                        <i class="fa fa-pen tw-text-prim-blue"></i>
-                                                    </button></a>
-                                                    <button id="btndelete" data-id="' . $data->id . '" data-nama="' . $data->no_trans_jual . '"
-                                                        class="tw-bg-transparent tw-border-none">
-                                                        <i class="fa fa-trash tw-text-prim-red"></i>
-                                                    </button>
-                </div>';
-                return $res;
+            ->whereColumn('h_piutang.htrans_jual_id', 'htrans_jual.id');
+        }])->whereDate('tgl_jatuh_tempo', '>=', date('Y-m-d'))->whereNotNull('tgl_jatuh_tempo')
+        ->get();
+       
+        $array = array();
+        $c = 0;
+        foreach($data as $i){
+            if(($i->count_piutang + ($i->bayar_jual - $i->kembali_jual)) < $i->total_jual){
+                $array[$c] = array('id' => $i->id,
+                                        'tgl_trans_jual' => $i->tgl_trans_jual,
+                                        'no_trans_jual' => $i->no_trans_jual,
+                                        'customer' => $i->booking->customer->nama_customer,
+                                        'total_jual' => $i->total_jual,
+                                        'pembayaran' => $i->Pembayaran->nama_bayar,
+                                        'no_giro' => $i->no_giro,
+                                        'tgl_jatuh_tempo' => $i->tgl_jatuh_tempo);
+                $c++;
+            }
+        }
 
+
+        return datatables()->of($array)
+            ->addIndexColumn()
+            ->addColumn('tgl_trans_jual', function($data){
+                return $data['tgl_trans_jual'];
             })
-            ->rawColumns(['action', 'pembayaran'])
+            ->addColumn('no_trans_jual', function($data){
+                return $data['no_trans_jual'];
+            })
+            ->addColumn('customer', function($data){
+                return $data['customer'];
+            })
+            ->addColumn('total_jual', function($data){
+                return $data['total_jual'];
+            })
+            ->addColumn('pembayaran', function($data){
+                return $data['pembayaran'].'<div><small class="text-danger">Nomor: '.$data['no_giro'].'</small></div>';
+            })
+            ->addColumn('tgl_jatuh_tempo', function($data){
+                return $data['tgl_jatuh_tempo'];
+            })
+            ->rawColumns(['pembayaran'])
             ->make(true);
     }
 
     public function beli_dashboard(){
         $data = TransBeli::with('Supplier', 'Pembayaran', 'ReturBeli')->whereDate('tgl_jatuh_tempo', '>=', date('Y-m-d'))->whereNotNull('tgl_jatuh_tempo')
-                ->addSelect(['count_hutang' => TransHutang::selectRaw('coalesce(bayar_hutang,0)')
+                ->addSelect(['count_hutang'  => function ($q) { $q->selectRaw('coalesce(h_hutang.bayar_hutang,0)')
+                    ->from('h_hutang')
                     ->whereColumn('h_hutang.htrans_beli_id', 'htrans_beli.id')
-                ])->havingRaw('(count_hutang + (total_bayar)) < total')->get();
-        return datatables()->of($data)
+                    ->limit(1);
+                }])->get();
+        $array = array();
+        $c = 0;
+        foreach($data as $i){
+            if(($i->count_hutang + $i->total_bayar) < $i->total){
+                $array[$c] = array('tgl_trans_beli' => $i->tgl_trans_beli, 
+                'tgl_max_garansi' => $i->tgl_max_garansi, 
+                'total' => number_format($i->total), 
+                'nomor_po' => $i->nomor_po, 
+                'supplier' => $i->Supplier->nama_supplier, 
+                'pembayaran' => $i->Pembayaran->nama_bayar, 
+                'no_giro' => $i->no_giro, 
+                'tgl_jatuh_tempo' => $i->tgl_jatuh_tempo);
+                $c++;
+            }
+        }
+        return datatables()->of($array)
             ->addIndexColumn()
             ->addColumn('tgl_trans_beli', function ($data) {
-                return  $data->tgl_trans_beli;
+                return  $data['tgl_trans_beli'];
             })
             ->addColumn('tgl_max_garansi', function ($data) {
-                return  $data->tgl_max_garansi;
+                return  $data['tgl_max_garansi'];
             })
             ->addColumn('total_bayar', function ($data) {
-                return  number_format($data->total);
+                return  $data['total'];
             })
             ->editColumn('nomor_po', function ($data) {
-                return  $data->nomor_po;
+                return  $data['nomor_po'];
             })
             ->addColumn('supplier', function ($data) {
-                return  $data->Supplier->nama_supplier;
+                return  $data['supplier'];
             })
             ->addColumn('pembayaran', function ($data) {
-                $res = $data->Pembayaran->nama_bayar;
-                if($data->no_giro != ''){
-                $res .= '<div><small class="text-danger">Nomor: '.$data->no_giro.'</small></div>';
-                if($data->tgl_jatuh_tempo != NULL){
-                    $res .= '<div><small>Jatuh Tempo '.$data->tgl_jatuh_tempo.'</small></div>';
-                }
-                }
-                return $res;
+                return $data['pembayaran'].'<div><small class="text-danger">Nomor: '.$data['no_giro'].'</small></div>';
             })
             ->addColumn('tgl_jatuh_tempo', function ($data) {
-                return  $data->tgl_jatuh_tempo;
+                return  $data['tgl_jatuh_tempo'];
             })
             ->rawColumns(['pembayaran'])
             ->make(true);
