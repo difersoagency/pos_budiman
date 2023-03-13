@@ -9,6 +9,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Datatable CDN -->
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.12.1/af-2.4.0/b-2.2.3/b-colvis-2.2.3/b-html5-2.2.3/date-1.1.2/fh-3.2.4/r-2.3.0/sc-2.0.7/sb-1.3.4/sp-2.0.2/sl-1.4.0/datatables.min.css" />
+
   <!-- Tailwind Styling -->
   <link rel="stylesheet" href="{{ asset('assets/css/tailwind.css') }}">
   <link rel="stylesheet" href="{{ asset('assets/css/custom.css') }}">
@@ -105,6 +106,7 @@
   </script>
   <!--Datatable CDN JS -->
   <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.12.1/af-2.4.0/b-2.2.3/b-colvis-2.2.3/b-html5-2.2.3/date-1.1.2/fh-3.2.4/r-2.3.0/sc-2.0.7/sb-1.3.4/sp-2.0.2/sl-1.4.0/datatables.min.js">
+
   </script>
   <!-- Custom JS -->
   <script src="{{ asset('assets/js/custom.js') }}"></script>

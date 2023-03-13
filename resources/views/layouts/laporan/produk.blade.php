@@ -26,36 +26,25 @@
 
                         </div>
 
-                        <div class="table_master_beli tw-mt-5 tw-col-span-2" data-current-page="1">
+                        <div class="viewtable tw-mt-5 tw-col-span-2" data-current-page="1" >
                             <table id="showtable" class="table main-table table-bordered responsive nowrap" style="width:100%">
                                 <thead class="tw-bg-prim-blue">
+                                    <tr class="tw-bg-prim-white">
+                                        <th colspan="7">
+                                        <a href="/laporan/data/produk" id="btncetak"><button type="button"  class="tw-w-48 tw-bg-prim-red tw-border-0  tw-text-center tw-text-white tw-py-2 tw-rounded-lg hover:tw-bg-red-700 tw-transition-all float-bottom" >Cetak Laporan</button></a>
+                                        </th>
+                                    </tr>
                                     <tr>
-                                        <th class="tw-text-prim-white">Periode</th>
-                                        <th class="tw-text-prim-white ">Total Produk Masuk</th>
-                                        <th class="tw-text-prim-white ">Total Produk Keluar</th>
-                                        <th class="tw-text-prim-white tw-w-20">Action</th>
+                                        <th class="tw-text-prim-white">Kode</th>
+                                        <th class="tw-text-prim-white">Merek</th>
+                                        <th class="tw-text-prim-white">Nama</th>
+                                        <th class="tw-text-prim-white">Satuan</th>
+                                        <th class="tw-text-prim-white">Stok</th>
+                                        <th class="tw-text-prim-white">Harga Beli</th>
+                                        <th class="tw-text-prim-white">Harga Jual</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>Oktober 2022</td>
-                                        <td>
-                                            50
-                                        </td>
-                                        <td>
-                                            100
-                                        </td>
-                                        <td>
-                                            <div class="tw-text-center">
-                                                <button data-toggle="tooltip" title="Detail" class="tw-mr-4 tw-bg-prim-red tw-px-3 tw-py-1 tw-text-prim-white tw-rounded-lg tw-border-none">
-                                                    Download
-                                                </button>
-                                            </div>
-                                        </td>
-
-                                    </tr>
-
-
                                 </tbody>
                             </table>
                         </div>
@@ -68,4 +57,61 @@
         </div>
     </section>
 </div>
+@endsection
+@section('script')
+<script>
+    $(function(){
+            $('#showtable').DataTable({
+                destroy: true,
+                processing: true,
+                serverSide: false,
+                ajax: {
+                    'type': 'POST',
+                    'datatype': 'JSON',
+                    'url': '/laporan/table/produk',
+                    'headers': {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                },
+                columns: [{
+                        data: 'kode',
+                        className: 'nowrap-text align-center',
+                    },
+                    {
+                        data: 'merek',
+                        className: 'nowrap-text align-center',
+                    },
+                    {
+                        data: 'nama',
+                        className: 'nowrap-text align-center',
+                    },
+                    {
+                        data: 'satuan',
+                        className: 'nowrap-text align-center',
+                    },
+                    {
+                        data: 'stok',
+                        className: 'nowrap-text align-center',
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: 'harga_beli',
+                        className: 'nowrap-text align-center',
+                        orderable: false,
+                        searchable: false,
+                        render: $.fn.dataTable.render.number(',', '.', 2),
+                    },
+                    {
+                        data: 'harga_jual',
+                        className: 'nowrap-text align-center',
+                        orderable: false,
+                        searchable: false,
+                        render: $.fn.dataTable.render.number(',', '.', 2),
+                    },
+                    
+                ]
+            });
+    })
+</script>
 @endsection
