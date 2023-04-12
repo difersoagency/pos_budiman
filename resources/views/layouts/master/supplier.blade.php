@@ -20,7 +20,7 @@
                                     name="state">
                                     <option value="0">Semua</option>
                                     @foreach ($kotas as $kotas)
-                                        <option value="{{ $kotas->nama_kota }}">{{ $kotas->nama_kota }}</option>
+                                        <option value="{{ $kotas->id }}">{{ $kotas->nama_kota }}</option>
                                     @endforeach
                                 </select>
                             </div>

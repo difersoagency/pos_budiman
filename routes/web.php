@@ -323,4 +323,13 @@ Route::group(['prefix' => '/laporan'], function () {
         Route::post('/top_penjualan/{tgl_awal}/{tgl_akhir}', [App\Http\Controllers\LaporanController::class, 'data_top_penjualan'])->name('table.laporan.top_penjualan');
         Route::post('/produk', [App\Http\Controllers\LaporanController::class, 'data_produk'])->name('table.laporan.produk');
     });
+    Route::group(['prefix' => '/grafik'], function () {
+        Route::get('/laba_rugi', [App\Http\Controllers\LaporanController::class, 'grafik_laba_rugi'])->name('grafik.laporan.laba_rugi');
+        Route::get('/pembelian', [App\Http\Controllers\LaporanController::class, 'grafik_pembelian'])->name('grafik.laporan.pembelian');
+        Route::get('/penjualan', [App\Http\Controllers\LaporanController::class, 'grafik_penjualan'])->name('grafik.laporan.penjualan');
+        Route::get('/retur_beli', [App\Http\Controllers\LaporanController::class, 'grafik_retur_beli'])->name('grafik.laporan.retur_beli');
+        Route::get('/retur_jual', [App\Http\Controllers\LaporanController::class, 'grafik_retur_jual'])->name('grafik.laporan.retur_jual');
+        Route::get('/hutang', [App\Http\Controllers\LaporanController::class, 'grafik_hutang'])->name('grafik.laporan.hutang');
+        Route::get('/piutang', [App\Http\Controllers\LaporanController::class, 'grafik_piutang'])->name('grafik.laporan.piutang');
+    });
 });

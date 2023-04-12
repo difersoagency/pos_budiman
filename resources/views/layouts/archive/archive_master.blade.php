@@ -14,8 +14,7 @@
             <button class='one supplier' onclick="location.href = '/master/supplier'">Daftar Supplier</button>
             <button class='one tipe' onclick="location.href = '/master/tipe'">Daftar Tipe Barang</button>
             <button class='one user' onclick="location.href = '/master/user'">Daftar User</button>
-            <button class='one sub' onclick="location.href = '/master/substitusi'">Substitusi</button>
-            <button class='one koreksi' onclick="location.href = '/master/koreksi'">Koreksi</button>
+            
 
     </section>
     <!-- /.content -->

@@ -253,8 +253,7 @@ class LaporanController extends Controller
                 ->get();
         foreach($data as $key => $i){
             $array[$key] = array(
-            'no_trans_jual' => $i->no_trans_jual,
-            'customer' => $i->customer,
+            'no_trans_jual' => $i->no_trans_jual." (Customer: ".$i->customer.")",
             'tgl_bayar' => \Carbon\Carbon::createFromFormat('Y-m-d', $i->tgl_piutang)->format('d-m-Y'), 
             'pembayaran' => $i->pembayaran,
             'no_giro' => $i->no_giro,
@@ -288,8 +287,7 @@ class LaporanController extends Controller
                 ->get();
         foreach($data as $key => $i){
             $array[$key] = array(
-            'no_po' => $i->no_po,
-            'supplier' => $i->supplier,
+            'no_po' => $i->no_po." (Supplier: ".$i->supplier.")",
             'tgl_bayar' => \Carbon\Carbon::createFromFormat('Y-m-d', $i->tgl_bayar)->format('d-m-Y'), 
             'pembayaran' => $i->pembayaran,
             'no_giro' => $i->no_giro,
@@ -324,10 +322,8 @@ class LaporanController extends Controller
                 ->get();
         foreach($data as $key => $i){
             $array[$key] = array(
-            'no_trans_jual' => $i->no_trans_jual,
-            'customer' => $i->customer,
-            'no_retur_jual' => $i->no_retur_jual,
-            'tgl_retur_jual' => \Carbon\Carbon::createFromFormat('Y-m-d', $i->tgl_retur_jual)->format('d-m-Y'), 
+            'no_trans_jual' => "Penjualan: ".$i->no_trans_jual." (Customer: ".$i->customer.")",
+            'no_retur_jual' => "Retur: ".$i->no_retur_jual." (Tanggal: ".\Carbon\Carbon::createFromFormat('Y-m-d', $i->tgl_retur_jual)->format('d-m-Y').")",
             'barang' => $i->barang,
             'jumlah' => $i->jumlah,
             'harga' => $i->harga,
@@ -359,9 +355,8 @@ class LaporanController extends Controller
                 ->get();
         foreach($data as $key => $i){
             $array[$key] = array(
-            'no_po' => $i->nomor_po,
-            'supplier' => $i->supplier,
-            'tgl_retur_beli' => \Carbon\Carbon::createFromFormat('Y-m-d', $i->tgl_retur_beli)->format('d-m-Y'), 
+            'no_po' => "Pembelian: ".$i->nomor_po." (Supplier: ".$i->supplier.")",
+            'tgl_retur_beli' => "Tgl Retur: ".\Carbon\Carbon::createFromFormat('Y-m-d', $i->tgl_retur_beli)->format('d-m-Y'), 
             'barang' => $i->barang,
             'jumlah' => $i->jumlah,
             'harga' => $i->harga,
@@ -546,6 +541,182 @@ class LaporanController extends Controller
             'stok' => $i->stok,
             'harga_beli' => $i->harga_beli,
             'harga_jual' => $i->harga_jual);
+        }
+        return response()->json(['data' => $array]);
+    }
+
+    //GRAFIK
+    public function grafik_penjualan(Request $r){
+        $bulan = $r->bulan;
+        $tahun = $r->tahun;
+
+        $from = $tahun.'-'.$bulan.'-01';
+        $to = $tahun.'-'.$bulan.'-31';
+
+        // $data = DB::table('dtrans_jual')
+        //         ->join('htrans_jual', 'htrans_jual.id', '=', 'dtrans_jual.htrans_jual_id')
+        //         ->join('barang', 'barang.id', '=', 'dtrans_jual.barang_id')
+        //         ->whereBetween('htrans_jual.tgl_trans_jual', [$from, $to])
+        //         ->selectRaw('barang.id as barang_id,
+        //         barang.nama_barang as nama_barang,
+        //         SUM(dtrans_jual.jumlah) as jumlah'
+        //         )
+        //         ->orderByRaw('SUM(dtrans_jual.jumlah) DESC')
+        //         ->groupByRaw('barang.id, barang.nama_barang')
+        //         ->get();
+
+        $data = DB::table('htrans_jual')
+                ->whereBetween('htrans_jual.tgl_trans_jual', [$from, $to])
+                ->selectRaw('htrans_jual.tgl_trans_jual as nama_barang,
+                SUM(htrans_jual.total_jual) as jumlah'
+                )
+                ->groupByRaw('htrans_jual.tgl_trans_jual')
+                ->get();
+        $array = array('nama' => array(), 'jumlah' => array());
+        foreach($data as $key => $i){
+            $array['nama'][$key] = $i->nama_barang;
+            $array['jumlah'][$key] = $i->jumlah;
+        }
+        return response()->json(['data' => $array]);
+    }
+
+    public function grafik_pembelian(Request $r){
+        $bulan = $r->bulan;
+        $tahun = $r->tahun;
+
+        $from = $tahun.'-'.$bulan.'-01';
+        $to = $tahun.'-'.$bulan.'-31';
+
+        $data = DB::table('htrans_beli')
+                ->whereBetween('htrans_beli.tgl_trans_beli', [$from, $to])
+                ->selectRaw('htrans_beli.tgl_trans_beli as nama_barang,
+                SUM(htrans_beli.total) as jumlah'
+                )
+                ->groupByRaw('htrans_beli.tgl_trans_beli')
+                ->get();
+        $array = array('nama' => array(), 'jumlah' => array());
+        foreach($data as $key => $i){
+            $array['nama'][$key] = $i->nama_barang;
+            $array['jumlah'][$key] = $i->jumlah;
+        }
+        return response()->json(['data' => $array]);
+    }
+
+    public function grafik_retur_jual(Request $r){
+        $bulan = $r->bulan;
+        $tahun = $r->tahun;
+
+        $from = $tahun.'-'.$bulan.'-01';
+        $to = $tahun.'-'.$bulan.'-31';
+
+        $data = DB::table('hretur_jual')
+                ->whereBetween('hretur_jual.tgl_retur_jual', [$from, $to])
+                ->selectRaw('hretur_jual.tgl_retur_jual as nama_barang,
+                SUM(hretur_jual.total_retur_jual) as jumlah'
+                )
+                ->groupByRaw('hretur_jual.tgl_retur_jual')
+                ->get();
+        $array = array('nama' => array(), 'jumlah' => array());
+        foreach($data as $key => $i){
+            $array['nama'][$key] = $i->nama_barang;
+            $array['jumlah'][$key] = $i->jumlah;
+        }
+        return response()->json(['data' => $array]);
+    }
+
+    public function grafik_retur_beli(Request $r){
+        $bulan = $r->bulan;
+        $tahun = $r->tahun;
+
+        $from = $tahun.'-'.$bulan.'-01';
+        $to = $tahun.'-'.$bulan.'-31';
+
+        $data = DB::table('hretur_beli')
+                ->whereBetween('hretur_beli.tgl_retur_beli', [$from, $to])
+                ->selectRaw('hretur_beli.tgl_retur_beli as nama_barang,
+                SUM(hretur_beli.total_retur_beli) as jumlah'
+                )
+                ->groupByRaw('hretur_beli.tgl_retur_beli')
+                ->get();
+        $array = array('nama' => array(), 'jumlah' => array());
+        foreach($data as $key => $i){
+            $array['nama'][$key] = $i->nama_barang;
+            $array['jumlah'][$key] = $i->jumlah;
+        }
+        return response()->json(['data' => $array]);
+    }
+
+    public function grafik_piutang(Request $r){
+        $bulan = $r->bulan;
+        $tahun = $r->tahun;
+
+        $from = $tahun.'-'.$bulan.'-01';
+        $to = $tahun.'-'.$bulan.'-31';
+
+        $data = DB::table('d_piutang')
+                ->whereBetween('d_piutang.tgl_piutang', [$from, $to])
+                ->selectRaw('d_piutang.tgl_piutang as nama_barang,
+                SUM(d_piutang.total_bayar) as jumlah'
+                )
+                ->groupByRaw('d_piutang.tgl_piutang')
+                ->get();
+        $array = array('nama' => array(), 'jumlah' => array());
+        foreach($data as $key => $i){
+            $array['nama'][$key] = $i->nama_barang;
+            $array['jumlah'][$key] = $i->jumlah;
+        }
+        return response()->json(['data' => $array]);
+    }
+
+    public function grafik_hutang(Request $r){
+        $bulan = $r->bulan;
+        $tahun = $r->tahun;
+
+        $from = $tahun.'-'.$bulan.'-01';
+        $to = $tahun.'-'.$bulan.'-31';
+
+        $data = DB::table('d_hutang')
+                ->whereBetween('d_hutang.tgl_bayar', [$from, $to])
+                ->selectRaw('d_hutang.tgl_bayar as nama_barang,
+                  SUM(d_hutang.total_bayar) as jumlah')
+                ->groupByRaw('d_hutang.tgl_bayar')
+                ->get();
+        $array = array('nama' => array(), 'jumlah' => array());
+        foreach($data as $key => $i){
+            $array['nama'][$key] = $i->nama_barang;
+            $array['jumlah'][$key] = $i->jumlah;
+        }
+        return response()->json(['data' => $array]);
+    }
+
+    public function grafik_laba_rugi(Request $r){
+        $bulan = $r->bulan;
+        $tahun = $r->tahun;
+
+        $from = $tahun.'-'.$bulan.'-01';
+        $to = $tahun.'-'.$bulan.'-31';
+
+        $laba = DB::table('htrans_jual')
+                ->whereBetween('htrans_jual.tgl_trans_jual', [$from, $to])
+                ->selectRaw('SUM(htrans_jual.total_jual) as jumlah')
+                ->get();
+        $array = array('nama' => array(), 'jumlah' => array());
+        $array['nama'][0] = "Pemasukan";
+        $array['jumlah'][0] = 0;
+        foreach($laba as $key => $i){
+            $array['nama'][0] = "Pemasukan";
+            $array['jumlah'][0] = $i->jumlah;
+        }
+
+        $rugi = DB::table('htrans_beli')
+                ->whereBetween('htrans_beli.tgl_trans_beli', [$from, $to])
+                ->selectRaw('SUM(htrans_beli.total) as jumlah')
+                ->get();
+        $array['nama'][1] = "Pengeluaran";
+        $array['jumlah'][1] = $i->jumlah;
+        foreach($rugi as $key => $i){
+            $array['nama'][1] = "Pengeluaran";
+            $array['jumlah'][1] = $i->jumlah;
         }
         return response()->json(['data' => $array]);
     }

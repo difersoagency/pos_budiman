@@ -13,19 +13,6 @@
                 </nav>
                 <div class="row">
                     <div class="col-lg-12">
-                        <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-items-end tw-mb-4">
-                            <!-- Dropdown -->
-                            <div class="dropdown tw-mb-7 md:tw-mb-0 tw-w-2/4">
-
-                                <select class="custom-select select-2 tw-bg-prim-blue tw-text-prim-white" id="po_id"
-                                    name="state">
-                                    <option value="0">Semua</option>
-
-                                </select>
-                            </div>
-                            <!-- End Dropdown  -->
-
-                        </div>
                         <div
                             class="card tw-w-full tw-px-6 tw-py-5 tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-items-center">
                             <div class="tw-w-full tw-col-span-2 md:tw-col-span-1">

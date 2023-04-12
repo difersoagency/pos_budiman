@@ -35,6 +35,40 @@ use Carbon\Carbon;
 
 class MasterController extends Controller
 {   
+    public function all_jatuh_tempo(){
+        $data = array();
+        $c = 0;
+
+        $jual = TransJual::with('Booking.Customer')
+                ->whereBetween('tgl_jatuh_tempo', [Carbon::now(), Carbon::now()->addDays(7)])->whereNotNull('tgl_jatuh_tempo')
+                ->get();
+
+        foreach($jual as $i){
+                $data[$c] = array('tgl_transaksi' => $i->tgl_trans_jual,
+                                        'nomor' => $i->no_trans_jual,
+                                        'jenis' => 'jual',
+                                        'user' => 'Customer: '.$i->booking->customer->nama_customer,
+                                        'total' => 'Total: '.number_format($i->total_jual),
+                                        'tgl_jatuh_tempo' => $i->tgl_jatuh_tempo);
+                $c++;
+        }
+
+        $beli = TransBeli::with('Supplier', 'Pembayaran', 'ReturBeli')->whereBetween('tgl_jatuh_tempo', [Carbon::now(), Carbon::now()->addDays(7)])->whereNotNull('tgl_jatuh_tempo')
+                ->get();
+
+        foreach($beli as $i){
+                        $data[$c] = array('tgl_trans_beli' => $i->tgl_trans_beli, 
+                        'tgl_transaksi' => $i->tgl_trans_beli, 
+                        'jenis' => 'beli',
+                        'total' => 'Total: '.number_format($i->total), 
+                        'nomor' => $i->nomor_po, 
+                        'user' => 'Supplier: '.$i->Supplier->nama_supplier,
+                        'tgl_jatuh_tempo' => $i->tgl_jatuh_tempo);
+                        $c++;
+        }
+
+        return response()->json(['notif' => $data]);
+    }
     public function jual_dashboard(){
         $data = TransJual::with('Booking.Customer')->addSelect(['count_piutang' => function ($q) {
             $q->selectRaw('coalesce(SUM(total_bayar),0)')
@@ -1027,9 +1061,11 @@ class MasterController extends Controller
 
             $data = $request->all();
             $jasa = Jasa::find($id);
-            $jasa->update($data);
+            $jasa->nama_jasa = $request->nama_jasa;
+            $jasa->harga = str_replace(",", "", $request->harga);
+            $save = $jasa->save();
 
-            if ($jasa) {
+            if ($save) {
                 return response()->json(['data' => 'success', 'msg' => "Data berhasil di Ubah"]);
             } else {
                 return response()->json(['data' => 'error', 'msg' => "Ubah data Gagal, periksa kembali"]);
@@ -1230,10 +1266,10 @@ class MasterController extends Controller
     public function master_supplier_data($id)
     {
         $data = NULL;
-        if($id == "0"){
-            $data = Supplier::with('Kota')->get();
+        if($id != 0){
+            $data = Supplier::with(['Kota'])->where('kota_id', $id)->get();
         }else{
-            $data = Supplier::with('Kota')->where('kota_id', $id)->get();
+            $data = Supplier::with(['Kota'])->get();
         }
         
         return datatables()->of($data)

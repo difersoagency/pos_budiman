@@ -321,6 +321,7 @@ $(document).ready(function() {
             var sisahtg = $('#sisa_htg').html();
             var rows = piutangtable.rows($(this).parents('tr')).data();
             var sisa = rows[0]['total_bayar'];
+            var sisa_res = parseInt(sisahtg) + parseInt(sisa);
             $.ajax({
                 url: "/transaksi/piutang/edit_detail/"+id,
                 beforeSend: function() {
@@ -331,7 +332,7 @@ $(document).ready(function() {
                     $('#modalPop').modal("show");
                     $('.modal-title').html("Edit Pembayaran Piutang");
                     $('#modal-body').html(result).show();
-                    $('.modal-body').find('#sisa').val(sisahtg - sisa);
+                    $('.modal-body').find('#sisa').val(sisa_res);
                     $('.pembayaran_id').select2({dropdownParent: $("#modalPop")});
                     
                     

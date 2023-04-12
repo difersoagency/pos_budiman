@@ -298,6 +298,7 @@ $(document).on('click', '#btndetail', function(event) {
             var sisahtg = $('#sisa_htg').html();
             var rows = hutangtable.rows($(this).parents('tr')).data();
             var sisa = rows[0]['total_bayar'];
+            var sisa_res = parseInt(sisahtg) + parseInt(sisa);
             $.ajax({
                 url: "/transaksi/hutang/edit_detail/"+id,
                 beforeSend: function() {
@@ -308,7 +309,7 @@ $(document).on('click', '#btndetail', function(event) {
                     $('#modalPop').modal("show");
                     $('.modal-title').html("Edit Pembayaran Hutang");
                     $('#modal-body').html(result).show();
-                    $('#modal-body').find('#sisa').val(sisahtg - sisa);
+                    $('#modal-body').find('#sisa').val(sisa_res);
                     $('.pembayaran_id').select2({dropdownParent: $("#modalPop")});
                     
                     

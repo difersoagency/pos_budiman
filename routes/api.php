@@ -20,6 +20,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 });
 
+Route::get('/notif', [App\Http\Controllers\MasterController::class, 'all_jatuh_tempo'])->name('notif.dashboard');
 Route::get('/jual_dashboard', [App\Http\Controllers\MasterController::class, 'jual_dashboard'])->name('jual.dashboard');
 Route::get('/barang_dashboard', [App\Http\Controllers\MasterController::class, 'barang_dashboard'])->name('barang.dashboard'); 
 Route::get('/beli_dashboard', [App\Http\Controllers\MasterController::class, 'beli_dashboard'])->name('beli.dashboard'); 

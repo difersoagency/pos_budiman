@@ -6,8 +6,18 @@
             <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars tw-text-prim-white"></i></a>
         </li>
     </ul>
+    @if(Auth::user()->LevelUser->nama_level != "kasir")
+    <ul class="navbar-nav ml-auto">
+        <li>
+            <a class="nav-link" data-toggle="dropdown" href="#" aria-expanded="false">
+                <i class="far fa-bell tw-text-prim-white"></i>
+            </a>
+            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;" id="isi_notif">
 
-
+            </div>
+        </li>
+    </ul>
+    @endif
 </nav>
 
 

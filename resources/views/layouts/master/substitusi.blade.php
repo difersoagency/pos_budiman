@@ -5,7 +5,7 @@
 <div class="content-wrapper tw-py-6 tw-px-5">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/master">Master</a></li>
+            <li class="breadcrumb-item"><a href="\transaksi">Transaksi</a></li>
             <li class="breadcrumb-item active" aria-current="page">Substitusi</li>
         </ol>
     </nav>

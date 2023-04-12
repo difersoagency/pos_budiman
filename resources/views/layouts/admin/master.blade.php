@@ -130,7 +130,35 @@
   <!-- <script src="{{ asset('themes/plugins/fastclick/fastclick.js') }}"></script> -->
   <!-- AdminLTE App -->
   <script src="{{ asset('themes/dist/js/adminlte.js') }}"></script>
-
+  <script>
+    $(function(){
+      $(document).ready(function(){
+        $.ajax({
+            url: "/api/notif",
+            type: 'GET',
+            success: function(result) {
+                var data = ''
+                for(var i=0; i<result.notif.length; i++){
+                  data += `<a href="#" class="dropdown-item">
+                      <div class="media">
+                          <div class="media-body">
+                              <h3 class="dropdown-item-title">
+                              `+result.notif[i]['nomor']+`
+                              </h3>
+                              <p class="text-sm"><i class="far fa-user mr-1"></i>`+result.notif[i]['user']+`</p>
+                              <p class="text-sm text-muted"><i class="fas fa-money-bill mr-1"></i>`+result.notif[i]['total']+`</p>
+                              <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> Jatuh Tempo: `+result.notif[i]['tgl_jatuh_tempo']+`</p>
+                          </div>
+                      </div>
+                  </a>
+                  <div class="dropdown-divider"></div>`;
+                }
+                $('#isi_notif').html(data);
+            }
+        });
+      })
+    })
+  </script>
   <!-- Font Awesome -->
   <!-- <script type="text/javascript" src="{{ asset('themes/plugins/fontawesome-free/js/all.min.js') }}"></script>
  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
