@@ -85,7 +85,6 @@
                                 <th scope="row" class="tw-text-left tw-border-t-0 d-none ">No</th>
                                 <th scope="row" class="tw-text-left tw-border-t-0 ">Jenis Barang / Jasa</th>
                                 <th scope="row" class="tw-text-left tw-border-t-0 tw-w-24">Jumlah</th>
-                                {{-- <th scope="row" class="tw-text-left tw-border-t-0 tw-w-30">Satuan</th> --}}
                                 <th scope="row" class="tw-text-left tw-border-t-0 tw-w-36">Harga Satuan</th>
                                 <th scope="row" class="tw-text-left tw-border-t-0 tw-w-24">Diskon(%)</th>
                                 <th scope="row" class="tw-text-left tw-border-t-0 tw-w-36">Total</th>
@@ -112,58 +111,36 @@
                                         <input type="number" class="form-control jumlah_beli" name="jumlah_beli[]" id="jumlah_beli0" min="0" value="{{$d->jumlah}}">
                                     </div>
                                 </td>
-                                {{-- <td data-label="Satuan">
-                                    <div class="dropdown tw-mb-7 md:tw-mb-0 ">
-                                        <select name="satuan[]" id="satuan0" class="custom-select select-satuan tw-text-prim-white satuan"  style="width: 100%">
-                                            @foreach ($satuan as $s)
-                                            <option value="{{$s->id}}">{{$s->nama_satuan}}</option>
-                                @endforeach
-
-                                </select>
+                                <td data-label="Harga Satuan">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control harga_satuan" name="harga_satuan[]" id="harga_satuan0" min="0" value="{{ number_format($d->harga, 0, ',', '.') }}">
+                                    </div>
+                                </td>
+                                <td data-label="diskon-beli">
+                                    <div class="form-group">
+                                        <input type="number" class="form-control diskon_beli" name="diskon_beli[]" id="diskon_beli0" min="0" max="100" value="{{$d->disc}}">
+                                    </div>
+                                </td>
+                                <td data-label="Total">
+                                    <input type="text" readonly class="form-control subtotal" name="subtotal[]" id="subtotal0" min="0" value="{{number_format($d->harga * $d->jumlah - ($d->harga * $d->disc / 100),0, ',', '.' )}}">
+                                </td>
+                                <td data-label="#">
+                                    <button class="tw-bg-transparent tw-border-none">
+                                        <button class="tw-bg-transparent tw-border-none" id="removerow" type="button">
+                                            <i class="fa fa-trash tw-text-prim-red"></i>
+                                        </button>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
-                </td> --}}
-                <td data-label="Harga Satuan">
-                    <div class="form-group">
-                        <input type="text" class="form-control harga_satuan" name="harga_satuan[]" id="harga_satuan0" min="0" value="{{ number_format($d->harga, 0, ',', '.') }}">
-                    </div>
-                </td>
-                <td data-label="diskon-beli">
-                    <div class="form-group">
-                        <input type="number" class="form-control diskon_beli" name="diskon_beli[]" id="diskon_beli0" min="0" max="100" value="{{$d->disc}}">
-                    </div>
-                </td>
-                <td data-label="Total">
-                    <input type="text" readonly class="form-control subtotal" name="subtotal[]" id="subtotal0" min="0" value="{{number_format($d->harga * $d->jumlah - ($d->harga * $d->disc / 100),0, ',', '.' )}}">
-                </td>
-                <td data-label="#">
-                    <button class="tw-bg-transparent tw-border-none">
-                        <button class="tw-bg-transparent tw-border-none" id="removerow" type="button">
-                            <i class="fa fa-trash tw-text-prim-red"></i>
-                        </button>
-                </td>
-                </tr>
-                @endforeach
-                </tbody>
-                </table>
-            </div>
-            <button class="tw-bg-prim-red  tw-border-0 tw-w-full tw-text-center tw-py-2 tw-rounded-lg hover:tw-bg-red-700 tw-transition-all" onclick="addrow('barang_beli')" type="button">
-                <p class="tw-m-0 tw-text-white">+ Tambah Barang</p>
-            </button>
+                <button class="tw-bg-prim-red  tw-border-0 tw-w-full tw-text-center tw-py-2 tw-rounded-lg hover:tw-bg-red-700 tw-transition-all" onclick="addrow('barang_beli')" type="button">
+                    <p class="tw-m-0 tw-text-white">+ Tambah Barang</p>
+                </button>
             <div class="totalPrice tw-mt-9">
                 <table id="prices" class="table table-sm">
                     <tbody>
-                        {{-- <tr>
-                                <td colspan="3" class="item">Total Item : 1 Item</td>
-                                <td>Biaya Lain</td>
-                                <td>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">Rp.</span>
-                                        </div>
-                                        <input type="number" class="form-control tw-w-1" aria-label="Amount" id="harga-jual" name="harga_jual" placeholder="0">
-                                    </div>
-                                </td>
-                            </tr> --}}
                         <tr>
                             <td class="item" colspan="3">Total Item : {{count($data->DTransBeli)}} Item</td>
                             <td class="">Diskon Transaksi %</td>
@@ -176,33 +153,6 @@
                                 </div>
                             </td>
                         </tr>
-                        {{-- <tr>
-                                <td class="tw-border-none" colspan="3"></td>
-                                <td class="tw-border-none">Pajak (11%)</td>
-                                <td class="tw-border-none">
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text tw-bg-transparent tw-border-transparent">Rp.</span>
-                                        </div>
-                                        <input type="number" class="form-control tw-w-1 tw-bg-transparent tw-border-transparent" aria-label="Amount" id="harga-jual" name="harga_jual" value="0" disabled>
-                                    </div>
-                                </td>
-                            </tr> --}}
-                        {{-- <tr>
-                                <td class="tw-border-none"></td>
-                            </tr> --}}
-                        {{-- <tr>
-                                <td class="" colspan="3"></td>
-                                <td class="">Subtotal</td>
-                                <td class="">
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text tw-bg-transparent tw-border-transparent">Rp.</span>
-                                        </div>
-                                        <input type="number" class="form-control tw-w-1 tw-bg-transparent tw-border-transparent" aria-label="Amount" id="harga-jual" name="harga_jual" value="0" disabled>
-                                    </div>
-                                </td>
-                            </tr> --}}
                         <tr>
                             <td class="tw-border-none" colspan="3"></td>
                             <td class="tw-border-none">Total Bayar</td>
@@ -211,7 +161,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Rp.</span>
                                     </div>
-                                    <input type="number" class="form-control tw-w-1 total_dibayar" aria-label="Amount" id="total_dibayar" name="total_dibayar" value="{{number_format($data->total_bayar, 0, ',', '.')}}">
+                                    <input type="text" class="form-control tw-w-1 total_dibayar" id="total_dibayar" name="total_dibayar" value="{{number_format($data->total_bayar, 0, ',', '.')}}">
                                 </div>
                             </td>
                         </tr>
@@ -250,241 +200,244 @@
 @section('script')
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    $(document).on('change', '#pembayaran_id', function(e) {
-        $('#tgl_jatuh_tempo').val('');
-        if($(this).val() == "1"){
-            $('#input_giro').attr('hidden', true);
-            $('#input_tgl_jatuh_tempo').attr('hidden', true);
-            $('#no_giro').val('');
-        }
-        else{
-            $('#input_giro').attr('hidden', false);
-            if($(this).val() == 4){
-                $('#input_tgl_jatuh_tempo').attr('hidden', false);
+    $(function(){
+        $(document).on('change', '#pembayaran_id', function(e) {
+            $('#tgl_jatuh_tempo').val('');
+            if($(this).val() == "1"){
+                $('#input_giro').attr('hidden', true);
+                $('#input_tgl_jatuh_tempo').attr('hidden', true);
+                $('#no_giro').val('');
             }
             else{
-                $('#input_tgl_jatuh_tempo').attr('hidden', true);
+                $('#input_giro').attr('hidden', false);
+                if($(this).val() == 4){
+                    $('#input_tgl_jatuh_tempo').attr('hidden', false);
+                }
+                else{
+                    $('#input_tgl_jatuh_tempo').attr('hidden', true);
+                }
             }
+        })
+        select_barang();
+        //  select_satuan();
+        function replaceAll(string, search, replace) {
+            return string.split(search).join(replace);
+        }
+
+        function total() {
+            var totalharga = 0;
+            $('#barang_beli').find('tr .subtotal').each(function() {
+                var subtotal = replaceAll($(this).val(), '.', '');
+                var dis_tot = $('#diskon_total').val();
+                totalharga = parseInt(totalharga) + parseInt(subtotal);
+                $("#total_bayar").val(formatmoney(totalharga - (totalharga * dis_tot / 100)));
+            })
+        }
+
+        $("#diskon_total").on('keyup', function() {
+            total();
+        });
+
+        $(document).on('keyup change', ".total_dibayar", function() {
+            var restotal = $(this).val().replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            $(this).val(restotal);
+        });
+
+        $("#barang_beli").on('keyup change', '.diskon_beli', function() {
+            $(this).val();
+            var diskon = $(this).closest('tr').find('.diskon_beli').val();
+            var jumlah = $(this).closest('tr').find('.jumlah_beli').val();
+            var harga = replaceAll($(this).closest('tr').find('.harga_satuan').val(), '.', '');
+
+            var subtotal = $(this).closest('tr').find('.subtotal');
+            if (jumlah != "" && harga != "") {
+                subtotal.val(formatmoney((jumlah * parseInt(harga)) - (harga * diskon / 100)));
+                total();
+            } else {
+                total();
+                subtotal.val(0);
+            }
+        });
+        $("#barang_beli").on('keyup change', '.harga_satuan', function() {
+            var result = $(this).val().replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            $(this).val(result);
+            // $(this).val();
+            var diskon = $(this).closest('tr').find('.diskon_beli').val();
+            var jumlah = $(this).closest('tr').find('.jumlah_beli').val();
+            var harga = replaceAll($(this).closest('tr').find('.harga_satuan').val(), '.', '');
+            var subtotal = $(this).closest('tr').find('.subtotal');
+            if (jumlah != "" && harga != "") {
+                subtotal.val(formatmoney((jumlah * parseInt(harga)) - (harga * diskon / 100)));
+                total();
+            } else {
+                total();
+                subtotal.val(0);
+            }
+        });
+
+        $("#barang_beli").on('keyup change', '.jumlah_beli', function() {
+            $(this).val();
+            var diskon = $(this).closest('tr').find('.diskon_beli').val();
+            var jumlah = $(this).closest('tr').find('.jumlah_beli').val();
+            var harga = replaceAll($(this).closest('tr').find('.harga_satuan').val(), '.', '');
+            var subtotal = $(this).closest('tr').find('.subtotal');
+            if (jumlah != "" && harga != "") {
+                subtotal.val(formatmoney((jumlah * parseInt(harga)) - (harga * diskon / 100)));
+                total();
+            } else {
+                total();
+                subtotal.val(0);
+            }
+        });
+
+        function numberRows(table) {
+            var c = 0 - 2;
+            $("#" + table + "").find("tr").each(function(ind, el) {
+                $(el).find("td:eq(0)").html(++c);
+                var j = c;
+                $(el).find('.barang').attr('name', 'barang[' + j + ']');
+                $(el).find('.barang').attr('id', j);
+                $(el).find('.jumlah_beli').attr('name', 'jumlah_beli[' + j + ']');
+                $(el).find('.jumlah_beli').attr('id', 'jumlah_beli' + j);
+                $(el).find('.satuan').attr('name', 'satuan[' + j + ']');
+                $(el).find('.satuan').attr('id', 'satuan' + j);
+                $(el).find('.harga_satuan').attr('name', 'harga_satuan[' + j + ']');
+                $(el).find('.harga_satuan').attr('id', 'harga_satuan' + j);
+                $(el).find('.diskon_beli').attr('name', 'diskon_beli[' + j + ']');
+                $(el).find('.diskon_beli').attr('id', 'diskon_beli' + j);
+                $(el).find('.subtotal').attr('name', 'subtotal[' + j + ']');
+                $(el).find('.subtotal').attr('id', 'subtotal' + j);
+
+                select_barang();
+                //select_satuan();
+                $("#prices").find(".item").html('Total Item : ' + (c + 1) + ' Item');
+            });
+
+
+        }
+
+        $('#barang_beli').on('click', '#removerow', function(e) {
+            if ($('#barang_beli > tbody > tr').length > 1) {
+                $(this).closest('tr').remove();
+            } else {
+                swal.fire(
+                    'Gagal',
+                    'Transaksi membutuhkan minimal 1 Item',
+                    'warning'
+                );
+            }
+            numberRows("barang_beli");
+            total();
+        });
+
+
+        function addrow(table) {
+            $('#' + table + ' tr:last').after(`<tr>
+            <td class="d-none"></td>
+            <td data-label="Jenis Barang / Jasa" scope="row">
+                                        <!-- Dropdown -->
+                                        <div class="dropdown tw-mb-7 md:tw-mb-0 ">
+                                            <select name="barang[]" id="0" class="custom-select  tw-text-prim-white barang" style="width: 100%">
+                                                <option value="" selected></option>
+                                                @foreach ($barang as $b)
+                                                <option value="{{$b->id}}">{{$b->nama_barang}}</option>
+                                                @endforeach
+
+                                            </select>
+                                        </div>
+                                        <!-- End Dropdown  -->
+                                    </td>
+                                    <td data-label="Jumlah">
+                                        <div class="form-group">
+                                            <input type="number" class="form-control jumlah_beli" name="jumlah_beli[]" id="jumlah_beli0" min="0">
+                                        </div>
+                                    </td>
+                                
+                                    <td data-label="Harga Satuan">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control harga_satuan" name="harga_satuan[]" id="harga_satuan0" min="0">
+                                        </div>
+                                    </td>
+                                    <td data-label="diskon-beli">
+                                        <div class="form-group">
+                                            <input type="number" class="form-control diskon_beli" name="diskon_beli[]" id="diskon_beli0" min="0" max="100">
+                                        </div>
+                                    </td>
+                                    <td data-label="Total">
+                                        <input type="text" readonly class="form-control subtotal" name="subtotal[]" id="subtotal0" min="0">
+                                    </td>
+                                    <td data-label="#">
+                                        <button class="tw-bg-transparent tw-border-none">
+                                            <button class="tw-bg-transparent tw-border-none" id="removerow" type="button">
+                                                <i class="fa fa-trash tw-text-prim-red"></i>
+                                            </button>
+                                    </td>
+            </tr>`);
+            // validasi();
+            numberRows(table);
+        }
+
+        // function select_satuan(){
+        //     $('.select-satuan').select2({placeholder: "Pilih Satuan"});
+        // }
+        function select_barang() {
+            $('.barang').select2({
+                placeholder: "Pilih Barang",
+                ajax: {
+                    minimumResultsForSearch: 20,
+                    dataType: 'json',
+                    theme: "bootstrap",
+                    delay: 250,
+                    type: 'GET',
+                    url: '{{route("barang.selectdata")}}',
+                    data: function(params) {
+                        return {
+                            term: params.term,
+                        }
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(obj) {
+                                return {
+                                    id: obj.id,
+                                    text: obj.nama_barang
+                                };
+                            })
+                        };
+                    },
+                }
+            })
+        }
+
+
+        $("#barang_beli").on('keyup change', '.barang', function() {
+            var index = $(this).attr('id');
+            var id = $(this).val();
+            $.ajax({
+                url: '/barang/selectdata/' + id,
+                type: 'GET',
+                dataType: 'json',
+                success: function(res) {
+                    $('#harga_satuan' + index).val(formatmoney(res.harga_jual));
+                    $('#jumlah_beli' + index).val(1);
+                    $('#diskon_beli' + index).val(0);
+                    $('#subtotal' + index).val(formatmoney(res.harga_jual * 1));
+                    total();
+                }
+            });
+        });
+
+        function formatmoney(bilangan) {
+            var number_string = bilangan.toString(),
+                sisa = number_string.length % 3,
+                rupiah = number_string.substr(0, sisa),
+                ribuan = number_string.substr(sisa).match(/\d{3}/g);
+            if (ribuan) {
+                separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
+            }
+            return rupiah;
         }
     })
-    select_barang();
-    //  select_satuan();
-    function replaceAll(string, search, replace) {
-        return string.split(search).join(replace);
-    }
-
-    function total() {
-        var totalharga = 0;
-        $('#barang_beli').find('tr .subtotal').each(function() {
-            var subtotal = replaceAll($(this).val(), '.', '');
-            var dis_tot = $('#diskon_total').val();
-            totalharga = parseInt(totalharga) + parseInt(subtotal);
-            $("#total_bayar").val(formatmoney(totalharga - (totalharga * dis_tot / 100)));
-        })
-    }
-
-    $("#diskon_total").on('keyup', function() {
-        total();
-    });
-
-    $("#total_dibayar").on('keyup change', function() {
-        $(this).val().replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-    });
-
-    $("#barang_beli").on('keyup change', '.diskon_beli', function() {
-        $(this).val();
-        var diskon = $(this).closest('tr').find('.diskon_beli').val();
-        var jumlah = $(this).closest('tr').find('.jumlah_beli').val();
-        var harga = replaceAll($(this).closest('tr').find('.harga_satuan').val(), '.', '');
-
-        var subtotal = $(this).closest('tr').find('.subtotal');
-        if (jumlah != "" && harga != "") {
-            subtotal.val(formatmoney((jumlah * parseInt(harga)) - (harga * diskon / 100)));
-            total();
-        } else {
-            total();
-            subtotal.val(0);
-        }
-    });
-    $("#barang_beli").on('keyup change', '.harga_satuan', function() {
-        var result = $(this).val().replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-        $(this).val(result);
-        // $(this).val();
-        var diskon = $(this).closest('tr').find('.diskon_beli').val();
-        var jumlah = $(this).closest('tr').find('.jumlah_beli').val();
-        var harga = replaceAll($(this).closest('tr').find('.harga_satuan').val(), '.', '');
-        var subtotal = $(this).closest('tr').find('.subtotal');
-        if (jumlah != "" && harga != "") {
-            subtotal.val(formatmoney((jumlah * parseInt(harga)) - (harga * diskon / 100)));
-            total();
-        } else {
-            total();
-            subtotal.val(0);
-        }
-    });
-
-    $("#barang_beli").on('keyup change', '.jumlah_beli', function() {
-        $(this).val();
-        var diskon = $(this).closest('tr').find('.diskon_beli').val();
-        var jumlah = $(this).closest('tr').find('.jumlah_beli').val();
-        var harga = replaceAll($(this).closest('tr').find('.harga_satuan').val(), '.', '');
-        var subtotal = $(this).closest('tr').find('.subtotal');
-        if (jumlah != "" && harga != "") {
-            subtotal.val(formatmoney((jumlah * parseInt(harga)) - (harga * diskon / 100)));
-            total();
-        } else {
-            total();
-            subtotal.val(0);
-        }
-    });
-
-    function numberRows(table) {
-        var c = 0 - 2;
-        $("#" + table + "").find("tr").each(function(ind, el) {
-            $(el).find("td:eq(0)").html(++c);
-            var j = c;
-            $(el).find('.barang').attr('name', 'barang[' + j + ']');
-            $(el).find('.barang').attr('id', j);
-            $(el).find('.jumlah_beli').attr('name', 'jumlah_beli[' + j + ']');
-            $(el).find('.jumlah_beli').attr('id', 'jumlah_beli' + j);
-            $(el).find('.satuan').attr('name', 'satuan[' + j + ']');
-            $(el).find('.satuan').attr('id', 'satuan' + j);
-            $(el).find('.harga_satuan').attr('name', 'harga_satuan[' + j + ']');
-            $(el).find('.harga_satuan').attr('id', 'harga_satuan' + j);
-            $(el).find('.diskon_beli').attr('name', 'diskon_beli[' + j + ']');
-            $(el).find('.diskon_beli').attr('id', 'diskon_beli' + j);
-            $(el).find('.subtotal').attr('name', 'subtotal[' + j + ']');
-            $(el).find('.subtotal').attr('id', 'subtotal' + j);
-
-            select_barang();
-            //select_satuan();
-            $("#prices").find(".item").html('Total Item : ' + (c + 1) + ' Item');
-        });
-
-
-    }
-
-    $('#barang_beli').on('click', '#removerow', function(e) {
-        if ($('#barang_beli > tbody > tr').length > 1) {
-            $(this).closest('tr').remove();
-        } else {
-            swal.fire(
-                'Gagal',
-                'Transaksi membutuhkan minimal 1 Item',
-                'warning'
-            );
-        }
-        numberRows("barang_beli");
-        total();
-    });
-
-
-    function addrow(table) {
-        $('#' + table + ' tr:last').after(`<tr>
-        <td class="d-none"></td>
-        <td data-label="Jenis Barang / Jasa" scope="row">
-                                    <!-- Dropdown -->
-                                    <div class="dropdown tw-mb-7 md:tw-mb-0 ">
-                                        <select name="barang[]" id="0" class="custom-select  tw-text-prim-white barang" style="width: 100%">
-                                            <option value="" selected></option>
-                                            @foreach ($barang as $b)
-                                            <option value="{{$b->id}}">{{$b->nama_barang}}</option>
-                                            @endforeach
-
-                                        </select>
-                                    </div>
-                                    <!-- End Dropdown  -->
-                                </td>
-                                <td data-label="Jumlah">
-                                    <div class="form-group">
-                                        <input type="number" class="form-control jumlah_beli" name="jumlah_beli[]" id="jumlah_beli0" min="0">
-                                    </div>
-                                </td>
-                            
-                                <td data-label="Harga Satuan">
-                                    <div class="form-group">
-                                        <input type="text" class="form-control harga_satuan" name="harga_satuan[]" id="harga_satuan0" min="0">
-                                    </div>
-                                </td>
-                                <td data-label="diskon-beli">
-                                    <div class="form-group">
-                                        <input type="number" class="form-control diskon_beli" name="diskon_beli[]" id="diskon_beli0" min="0" max="100">
-                                    </div>
-                                </td>
-                                <td data-label="Total">
-                                    <input type="text" readonly class="form-control subtotal" name="subtotal[]" id="subtotal0" min="0">
-                                </td>
-                                <td data-label="#">
-                                    <button class="tw-bg-transparent tw-border-none">
-                                        <button class="tw-bg-transparent tw-border-none" id="removerow" type="button">
-                                            <i class="fa fa-trash tw-text-prim-red"></i>
-                                        </button>
-                                </td>
-    </tr>`);
-        // validasi();
-        numberRows(table);
-    }
-
-    // function select_satuan(){
-    //     $('.select-satuan').select2({placeholder: "Pilih Satuan"});
-    // }
-    function select_barang() {
-        $('.barang').select2({
-            placeholder: "Pilih Barang",
-            ajax: {
-                minimumResultsForSearch: 20,
-                dataType: 'json',
-                theme: "bootstrap",
-                delay: 250,
-                type: 'GET',
-                url: '{{route("barang.selectdata")}}',
-                data: function(params) {
-                    return {
-                        term: params.term,
-                    }
-                },
-                processResults: function(data) {
-                    return {
-                        results: $.map(data, function(obj) {
-                            return {
-                                id: obj.id,
-                                text: obj.nama_barang
-                            };
-                        })
-                    };
-                },
-            }
-        })
-    }
-
-
-    $("#barang_beli").on('keyup change', '.barang', function() {
-        var index = $(this).attr('id');
-        var id = $(this).val();
-        $.ajax({
-            url: '/barang/selectdata/' + id,
-            type: 'GET',
-            dataType: 'json',
-            success: function(res) {
-                $('#harga_satuan' + index).val(formatmoney(res.harga_jual));
-                $('#jumlah_beli' + index).val(1);
-                $('#diskon_beli' + index).val(0);
-                $('#subtotal' + index).val(formatmoney(res.harga_jual * 1));
-                total();
-            }
-        });
-    });
-
-    function formatmoney(bilangan) {
-        var number_string = bilangan.toString(),
-            sisa = number_string.length % 3,
-            rupiah = number_string.substr(0, sisa),
-            ribuan = number_string.substr(sisa).match(/\d{3}/g);
-        if (ribuan) {
-            separator = sisa ? '.' : '';
-            rupiah += separator + ribuan.join('.');
-        }
-        return rupiah;
-    }
 </script>
 @stop

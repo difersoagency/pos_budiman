@@ -59,7 +59,15 @@
                         </p>
                     </a>
                 </li>
-                @if (in_array(Auth::user()->LevelUser->nama_level, ['owner']))
+                @if (in_array(Auth::user()->LevelUser->nama_level, ['owner', 'admin']))
+                <li class="nav-item">
+                    <a href="{{ route('barang') }}" class="nav-link">
+                        <i class="nav-icon fa fa-barcode tw-text-prim-white"></i>
+                        <p class="tw-text-prim-red tw-font-bold">
+                            Barang
+                        </p>
+                    </a>
+                </li>
                 <li class="nav-item has-submenu">
                     <a href="/master" class="tw-cursor-pointer nav-link">
                         <i class="nav-icon fa fa-globe tw-text-prim-white"></i>
@@ -78,16 +86,6 @@
                         </p>
                     </a>
                 </li>
-                @if (in_array(Auth::user()->LevelUser->nama_level, ['owner']))
-                <li class="nav-item">
-                    <a href="{{ route('barang') }}" class="nav-link">
-                        <i class="nav-icon fa fa-barcode tw-text-prim-white"></i>
-                        <p class="tw-text-prim-red tw-font-bold">
-                            Barang
-                        </p>
-                    </a>
-                </li>
-                @endif
                 <li class="nav-item has-submenu">
                     <a class="tw-cursor-pointer nav-link" href="{{ route('laporan') }}">
                         <i class="nav-icon fa fa-file tw-text-prim-white"></i>

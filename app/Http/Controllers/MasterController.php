@@ -433,6 +433,32 @@ class MasterController extends Controller
         }
     }
 
+    public function subtitusi_cek($id, $jumlah)
+    {
+        $data = array();
+        $count = 0;
+        
+        $brg1 = Subtitusi::whereHas('Barang2', function($q) use($id){
+            $q->where('kode_barang', $id);
+        })->whereHas('Barang1', function($q) use($jumlah){
+            $q->where('stok', '>', $jumlah);
+        })->get();
+        $brg2 = Subtitusi::whereHas('Barang1', function($q) use($id){
+            $q->where('kode_barang', $id);
+        })->whereHas('Barang2', function($q) use($jumlah){
+            $q->where('stok', '>', $jumlah);
+        })->get();
+        foreach($brg1 as $i){
+            $data[$count] = $i->Barang1->nama_barang." (".$i->Barang1->stok." pcs)";
+            $count++;
+        }
+        foreach($brg2 as $i){
+            $data[$count] = $i->Barang2->nama_barang." (".$i->Barang2->stok." pcs)";
+            $count++;
+        }
+        return response()->json(['data' => $data]);
+    }
+
     public function customer_edit($id)
     {
         $kota = Kota::all();

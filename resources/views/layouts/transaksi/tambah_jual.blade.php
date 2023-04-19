@@ -527,9 +527,28 @@ $(function(){
         sum_total_harga();
         var stok = $(this).closest('tr').find('.barang_id').select2('data')[0].stok;
         var jumlah = $(this).val();
+        var barang_id = $(this).closest('tr').find('.barang_id').select2('data')[0].id;
+        var msg = $(this).closest('tr').find('#msg-alert');
 
         if (jumlah > stok) {
-            $(this).closest('tr').find('#msg-alert').html('Barang hanya tersedia ' + stok);
+            var data = 'Barang hanya tersedia ' + stok;
+            $.ajax({
+                url: '/api/subtitusi_cek/' + barang_id +'/'+jumlah,
+                type: 'GET',
+                dataType: 'json',
+                success: function(res) {
+                    if(res.data.length > 0){
+                        data += '<br>Barang dapat digantikan dengan:';
+                        for(var i=0; i < res.data.length; i++){
+                            data += '<br>'+(i+1)+". " + res.data[i]+"";
+                        }
+                        msg.html(data);  
+                    }
+                    else{
+                        msg.html(data);
+                    }
+                }
+            });
         }
         else{
             $(this).closest('tr').find('#msg-alert').html('');
@@ -545,6 +564,26 @@ $(function(){
         sum_subtotal_harga($(this).closest('tr'));
         sum_total_harga();
     });
+
+    function cek_subtitusi(ids, jumlah){
+        var data = "";
+        $.ajax({
+            async: false,
+                                url: '/api/subtitusi_cek/' + ids +'/'+jumlah,
+                                type: 'GET',
+                                dataType: 'json',
+                                success: function(res) {
+                                    if(res.data.length > 0){
+                                        data += '<br>Barang dapat digantikan dengan:';
+                                        for(var i=0; i < res.data.length; i++){
+                                            data += '<br>'+(i+1)+". " + res.data[i]+"";
+                                        }   
+                                    }
+                                                                        
+                                }
+                            });
+                            return data;
+    }
 
     $(document).on('change', '.booking_id', function(){
         $('#customer_id').html($(this).select2('data')[0].cust);
@@ -566,15 +605,15 @@ $(function(){
                 var harga = d_booking[i].barang_id != null ? d_booking[i].barang.harga_jual : d_booking[i].jasa.harga;
                 var jenis = d_booking[i].barang_id != null ? "barang" : "jasa";
 
+                
+                
                 var data = `<tr>
                 <td>
-                                <!-- Dropdown -->
                                 <div class="dropdown ">
                                     <select class="custom-select barang_id tw-text-prim-white" name="barang_id[`+i+`]">
                                         <option value="`+ids+`" selected>`+namas+`</option>
                                     </select>
                                 </div>
-                                <!-- End Dropdown  -->
                             </td>
                             <td hidden="true">
                                     <input type="text" class="form-control jenis_brg" name="jenis_brg[`+i+`]" value="`+jenis+`">
@@ -583,10 +622,14 @@ $(function(){
                                 <div class="form-group">
                                     <input type="number" class="form-control jumlah" name="jumlah[`+i+`]" min="0" value="`+jumlah+`">
                                 </div><small class="text-danger" id="msg-alert">`;
-                if(jumlah > stok){
-                    data += 'Barang hanya tersedia ' + stok;
+                                if(jumlah > stok){
+                    data += "Barang yang tersedia hanya "+ stok;
+                    data += cek_subtitusi(ids, jumlah);
+                            
+                    console.log(cek_subtitusi(ids, jumlah))
+                            
                 }
-                data += `</small></td>
+                            data += `</small></td>
                             <td>
                                 <div class="form-group">
                                     <input type="text" class="form-control harga" name="harga[`+i+`]" min="0"  value="`+number_format(harga)+`">
@@ -623,10 +666,13 @@ $(function(){
                 $('#barangtable tbody').append(data);
                 promo_aktif(i, ids, jenis, jumlah);
                 select_barang();
+                sum_total_harga();
+                
+                
                 // $('select[name="barang_id['+i+']').val($(".barang_id option:contains('"+namas+"')").val()).change();
             }
         }
-        sum_total_harga();
+        
     });
 
     $('.pembayaran_id').prepend('<option selected=""></option>').select2({

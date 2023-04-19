@@ -594,6 +594,34 @@ $(function(){
         promo_aktif(no, $(this).closest('tr').find('.barang_id').val(), $(this).closest('tr').find('.jenis_brg').val(), $(this).closest('tr').find('.jumlah').val());
         sum_subtotal_harga($(this).closest('tr'));
         sum_total_harga();
+        var stok = $(this).closest('tr').find('.barang_id').select2('data')[0].stok;
+        var jumlah = $(this).val();
+        var barang_id = $(this).closest('tr').find('.barang_id').select2('data')[0].id;
+        var msg = $(this).closest('tr').find('#msg-alert');
+
+        if (jumlah > stok) {
+            var data = 'Barang hanya tersedia ' + stok;
+            $.ajax({
+                url: '/api/subtitusi_cek/' + barang_id +'/'+jumlah,
+                type: 'GET',
+                dataType: 'json',
+                success: function(res) {
+                    if(res.data.length > 0){
+                        data += '<br>Barang dapat digantikan dengan:';
+                        for(var i=0; i < res.data.length; i++){
+                            data += '<br>'+(i+1)+". " + res.data[i]+"";
+                        }
+                        msg.html(data);  
+                    }
+                    else{
+                        msg.html(data);
+                    }
+                }
+            });
+        }
+        else{
+            $(this).closest('tr').find('#msg-alert').html('');
+        }
     });
 
     $(document).on('keyup change', '#barangtable .disc', function(){

@@ -30,6 +30,768 @@ use PDF;
 
 class TransaksiController extends Controller
 {
+    public function archive_trans()
+    {
+        return view('layouts.archive.archive-trans');
+    }
+
+    //HUTANG
+    //Mengarahkan user ke view untuk menampilkan Hutang
+    public function master_hutang()
+    {
+        return view('layouts.transaksi.master-hutang');
+    }
+
+    //Mengambil seluruh data hutang yang ada di Database 
+    public function data_hutang()
+    {
+        $data = TransHutang::addSelect(['sum_total' => function ($q) {
+            $q->selectRaw('coalesce(SUM(d_hutang.total_bayar), 0)')
+                ->from('d_hutang')
+                ->whereColumn('d_hutang.h_hutang_id', 'h_hutang.id');
+        }])->get();
+        return datatables()->of($data)
+            ->addIndexColumn()
+            ->addColumn('no_pembelian', function ($data) {
+                return  $data->TransBeli->nomor_po;
+            })
+            ->addColumn('tgl_trans_beli', function ($data) {
+                return $data->TransBeli->tgl_trans_beli;
+            })
+            ->addColumn('supplier', function ($data) {
+                return  $data->TransBeli->Supplier->nama_supplier;
+            })
+            ->addColumn('total_hutang', function ($data) {
+                // return  number_format($data->TransBeli->total - $data->TransBeli->total_bayar);
+                return number_format($data->total_hutang);
+            })
+            ->addColumn('lunas', function ($data) {
+                // return  number_format($data->bayar_hutang);
+                return number_format($data->sum_total);
+            })
+            ->addColumn('sisa_hutang', function ($data) {
+                // return  number_format(($data->TransBeli->total - $data->TransBeli->total_bayar) - $data->bayar_hutang);
+                return (float)$data->total_hutang - (float)$data->sum_total;
+            })
+            ->addColumn('action', function ($data) {
+                $lama =  '<div class="grid grid-cols-2">
+                <button id="btndetail" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '"  >
+                                                        <i class="fas fa-eye tw-text-prim-blue"></i>
+                                                    </button>
+                <a id="btnedit" href="/transaksi/hutang/edit/' . $data->id . '" class="mr-4 tw-bg-transparent tw-border-none" >
+                                                        <i class="fa fa-pen tw-text-prim-blue"></i>
+                                                    </a>
+
+                </div>';
+
+            $sisahutang = (float)$data->total_hutang - (float)$data->sum_total;
+            $res = '<div class="grid grid-cols-3">
+            <button id="btndetail" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '"  >
+                                                        <i class="fas fa-eye tw-text-prim-blue"></i>
+                                                    </button>';
+            if($sisahutang > 0){
+            $res .= '<button id="btnbayar" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="Hutang ' . $data->TransBeli->no_trans_beli . '" >
+                                                    <i class="fas fa-money-check-alt tw-text-prim-blue"></i>
+                                                </button>';
+            }
+            
+            $res .= '</div>';
+            return $res;
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+    }
+
+    //Mengarahkan user ke halaman bayar hutang
+    public function bayar_hutang()
+    {
+        return view('layouts.transaksi.bayar-hutang');
+    }
+
+    //Mengarahkan user ke modal view detail hutang dan mengambil data hutang sesuai ID
+    public function detail_hutang($id)
+    {
+        $data = TransHutang::find($id);
+        return view('layouts.modal.hutang-modal-detail', ['data' => $data]);
+    }
+
+    //Mengambil data untuk rincian pembayaran hutang sesuai ID
+    public function detail_data_hutang($id)
+    {
+        $data = DTransHutang::where('h_hutang_id', $id)->get();
+        return datatables()->of($data)
+            ->addIndexColumn()
+            ->addColumn('tgl_bayar', function ($data) {
+                return  $data->tgl_bayar;
+            })
+            ->addColumn('pembayaran', function($data){
+                $res = $data->Pembayaran->nama_bayar;
+                if($data->Pembayaran->id != '1'){
+                    $res .= '<div><small class="text-danger">Nomor: '.$data->no_giro.'</small></div>';
+                    if($data->tgl_jatuh_tempo != NULL){
+                        $res .= '<div><small>Jatuh Tempo '.$data->tgl_jatuh_tempo.'</small></div>';
+                    }
+                }
+                return $res;
+            })
+            ->addColumn('total_bayar', function ($data) {
+                return $data->total_bayar;
+            })
+            ->addColumn('action', function($data){
+                return '<button id="btnedit" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '">
+                                                        <i class="fa fa-pen tw-text-prim-blue"></i>
+                                                    </button>
+                                                    <button id="btndelete" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '">
+                    <i class="fa fa-trash tw-text-prim-red"></i>
+                </button>';
+            })
+            ->rawColumns(['pembayaran', 'action'])
+            ->make(true);
+    }
+    
+    //Menyimpan data penambahan hutang
+    public function store_hutang(Request $request)
+    {
+        //dd($request);
+        $validator = Validator::make($request->all(), [
+            'tgl_beli.*' => 'required',
+            'pembayaran_hutang.*' => 'required',
+            'beli_id' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['data' => 'error']);
+        } else {
+            if (str_replace('.', "", $request->total_dibayar) > str_replace('.', "", $request->sisa_hutang)) {
+                return response()->json(['data' => 'total_gagal']);
+            } else {
+
+                for ($i = 0; $i < count($request->tgl_beli); $i++) {
+                    DTransHutang::create([
+                        'h_hutang_id' =>  $request->hutang_id,
+                        'tgl_bayar' => $request->tgl_beli[$i],
+                        'total_bayar' =>  str_replace('.', "", $request->pembayaran_hutang[$i]),
+                    ]);
+                }
+
+                $trans_hutang  = TransHutang::find($request->hutang_id);
+                $trans_hutang->bayar_hutang = $trans_hutang->bayar_hutang + str_replace('.', "", $request->total_dibayar);
+                $trans_hutang->save();
+                return response()->json(['data' => 'success']);
+            }
+        }
+    }
+
+    //Mengarahkan ke halaman edit hutang
+    public function edit_hutang($id)
+    {
+        $data = TransHutang::find($id);
+        $p = Pembayaran::all();
+        return view('layouts.transaksi.edit-hutang', ['data' => $data, 'p' => $p]);
+    }
+
+    //Menyimpan 
+    public function update_hutang(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'tgl_beli.*' => 'required',
+            'pembayaran_hutang.*' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['data' => 'error']);
+        } else {
+
+            if (str_replace('.', "", $request->total_dibayar) > str_replace('.', "", $request->sisa_hutang)) {
+                return response()->json(['data' => 'total_gagal']);
+            } else {
+                $tb = DTransHutang::where('h_hutang_id', $id)->get();
+                if (count($tb) > 0) {
+                    DTransHutang::where('h_hutang_id', $id)->delete();
+                }
+
+                for ($i = 0; $i < count($request->tgl_beli); $i++) {
+                    DTransHutang::create([
+                        'h_hutang_id' =>  $id,
+                        'tgl_bayar' => $request->tgl_beli[$i],
+                        'pembayaran_id' => $request->pembayaran_id,
+                        'no_giro' => $request->no_giro,
+                        'total_bayar' =>  str_replace('.', "", $request->pembayaran_hutang[$i]),
+                    ]);
+                }
+                $trans_hutang  = TransHutang::find($id);
+                $trans_hutang->bayar_hutang = str_replace('.', "", $request->total_dibayar);
+                $trans_hutang->save();
+                return response()->json(['data' => 'success']);
+            }
+        }
+    }
+
+    public function tambah_detail_hutang($id)
+    {
+        $p = Pembayaran::all();
+        return view('layouts.modal.hutang-modal-create', ['id' => $id, 'p' => $p]);
+    }
+
+    public function store_detail_hutang(Request $r, $id)
+    {
+        $validator = Validator::make($r->all(), [
+            'tgl_hutang' => ['required'],
+            'total_bayar' => ['required'],
+
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', "Gagal menambahkan, periksa kembali form anda");
+        } else {
+            $total_bayar = str_replace(",", "", $r->total_bayar);
+            $sisa = str_replace(",", "", $r->sisa);
+            
+            if($total_bayar > $sisa){
+                return response()->json(['data' => 'error']);
+            }
+            else{
+                $tgl_jatuh_tempo = NULL;
+                if($r->pembayaran_id == "4"){
+                    $tgl_jatuh_tempo = $r->tgl_jatuh_tempo;
+                }
+                $d = DTransHutang::create([
+                    'h_hutang_id' => $id,
+                    'tgl_bayar' => $r->tgl_hutang,
+                    'total_bayar' => str_replace(",", "", $r->total_bayar),
+                    'no_giro' => $r->no_giro,
+                    'tgl_jatuh_tempo' => $tgl_jatuh_tempo,
+                    'pembayaran_id' => $r->pembayaran_id
+                ]);
+
+                $sum = DTransHutang::where('h_hutang_id', $id)->sum('total_bayar');
+                $th = TransHutang::find($d->h_hutang_id);
+                $th->bayar_hutang = $sum;
+                $th->save();
+
+                if ($d) {
+                    return response()->json(['data' => 'success']);
+                } else {
+                    return response()->json(['data' => 'error']);
+                }
+            }
+        }
+    }
+
+    public function edit_detail_hutang($id)
+    {
+        $data = DTransHutang::find($id);
+        $p = Pembayaran::all();
+        
+        return view('layouts.modal.hutang-modal-edit', ['id' => $id, 'p' => $p, 'data' => $data]);
+    }
+
+    public function update_detail_hutang(Request $r, $id)
+    {
+        $validator = Validator::make($r->all(), [
+            'tgl_hutang' => ['required'],
+            'total_bayar' => ['required'],
+
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', "Gagal menambahkan, periksa kembali form anda");
+        } else {
+            $total_bayar = str_replace(",", "", $r->total_bayar);
+            $sisa = str_replace(",", "", $r->sisa);
+            if($total_bayar > $sisa){
+                return response()->json(['data' => 'error']);
+            }
+            else{
+                $tgl_jatuh_tempo = NULL;
+                if($r->pembayaran_id == "4"){
+                    $tgl_jatuh_tempo = $r->tgl_jatuh_tempo;
+                }
+                $d = DTransHutang::find($id);
+                $d->tgl_bayar = $r->tgl_hutang;
+                $d->total_bayar = str_replace(",", "", $r->total_bayar);
+                $d->no_giro = $r->no_giro;
+                $d->pembayaran_id = $r->pembayaran_id;
+                $d->tgl_jatuh_tempo = $tgl_jatuh_tempo;
+                $u = $d->save();
+
+                $sum = DTransHutang::where('h_hutang_id', $d->h_hutang_id)->sum('total_bayar');
+                $th = TransHutang::find($d->h_hutang_id);
+                $th->bayar_hutang = $sum;
+                $th->save();
+                if ($u) {
+                    return response()->json(['data' => 'success']);
+                } else {
+                    return response()->json(['data' => 'error']);
+                }
+            }
+        }
+    }
+
+    public function delete_detail_hutang(Request $r)
+    {
+        $del = DTransHutang::find($r->id);
+        $h = $del->h_hutang_id;
+        
+        $d = $del->delete();
+
+        $sum = DTransHutang::where('h_hutang_id', $h)->sum('total_bayar');
+        $th = TransHutang::find($h);
+        $th->bayar_hutang = $sum;
+        $th->save();
+        if ($d) {
+            return response()->json(['info' => 'success']);
+        } else {
+            return response()->json(['info' => 'error']);
+        }
+    }
+
+    public function selectdata_hutang(Request $r, $id)
+    {
+        if ($id == 0) {
+            $data = TransBeli::whereHas('TransHutang')->where('nomor_po', 'LIKE', '%' . $r->input('term', '') . '%')->select('id', 'nomor_po')->get();
+            echo json_encode($data);
+        } else {
+            $data = TransBeli::find($id);
+            echo json_encode([
+                'hutang_id' => $data->TransHutang->id,
+                'supplier' => $data->Supplier->nama_supplier,
+                'total' =>  number_format($data->total, 0, ',', '.'),
+                'tgl_transaksi' => $data->tgl_trans_beli,
+                'sisa_hutang' =>  number_format(($data->total - $data->total_bayar) - $data->TransHutang->bayar_hutang, 0, ',', '.')
+            ]);
+        }
+    }
+
+    //PIUTANG
+    public function master_piutang()
+    {
+        return view('layouts.transaksi.master-piutang');
+    }
+
+    public function data_piutang()
+    {
+        $data = Piutang::with('TransJual')->addSelect(['sum_total' => function ($q) {
+            $q->selectRaw('coalesce(SUM(d_piutang.total_bayar), 0)')
+                ->from('d_piutang')
+                ->whereColumn('d_piutang.h_piutang_id', 'h_piutang.id');
+        }])->get();
+        return datatables()->of($data)
+            ->addIndexColumn()
+            ->addColumn('no_trans_jual', function ($data) {
+                return $data->TransJual->no_trans_jual;
+            })
+            ->addColumn('tgl_trans_jual', function ($data) {
+                return $data->TransJual->tgl_trans_jual;
+            })
+            ->editColumn('sum_total', function ($data) {
+                return strval($data->sum_total);
+            })
+            ->addColumn('sisa_hutang', function ($data) {
+                return (float)$data->total_piutang - (float)$data->sum_total;
+            })
+            ->addColumn('action', function ($data) {
+                $sisahutang = (float)$data->total_piutang - (float)$data->sum_total;
+                $res = '<div class="grid grid-cols-3">
+                <button id="btndetail" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="Piutang ' . $data->TransJual->no_trans_jual . '" >
+                                                        <i class="fas fa-eye tw-text-prim-blue"></i>
+                                                    </button>';
+                if($sisahutang > 0){
+                $res .= '<button id="btnbayar" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="Piutang ' . $data->TransJual->no_trans_jual . '" >
+                                                        <i class="fas fa-money-check-alt tw-text-prim-blue"></i>
+                                                    </button>';
+                }
+                // if($data->sum_total <= 0){
+                // $res .= '<button id="btndelete" data-id="' . $data->id . '" data-nama="Piutang ' . $data->TransJual->no_trans_jual . '"
+                //                                         class="tw-bg-transparent tw-border-none">
+                //                                         <i class="fa fa-trash tw-text-prim-red"></i>
+                //                                     </button>';
+                // }
+            $res .= '</div>';
+            return $res;
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+    }
+
+    public function detail_piutang($id)
+    {
+        $data = Piutang::where('id', $id)->with('TransJual.Booking.Customer')->first();
+        return view('layouts.modal.piutang-modal-detail', ['id' => $id, 'data' => $data]);
+    }
+
+    public function data_detail_piutang($id)
+    {
+        $data = DPiutang::where('h_piutang_id', $id)->get();
+        return datatables()->of($data)
+            ->addIndexColumn()
+            ->addColumn('pembayaran', function($data){
+                $res = $data->Pembayaran->nama_bayar;
+                if($data->Pembayaran->id != '1'){
+                $res .= '<div><small class="text-danger">Nomor: '.$data->no_giro.'</small></div>';
+                if($data->tgl_jatuh_tempo != NULL){
+                    $res .= '<div><small>Jatuh Tempo '.$data->tgl_jatuh_tempo.'</small></div>';
+                }
+                }
+                return $res;
+            })
+            ->addColumn('action', function($data){
+                return '<button id="btnedit" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '">
+                    <i class="fa fa-pen tw-text-prim-blue"></i>
+                </button>
+                <button id="btndelete" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '">
+                    <i class="fa fa-trash tw-text-prim-red"></i>
+                </button>';
+            })
+            ->rawColumns(['pembayaran', 'action'])
+            ->make(true);
+    }
+
+    public function tambah_detail_piutang($id)
+    {
+        $p = Pembayaran::all();
+        return view('layouts.modal.piutang-modal-create', ['id' => $id, 'p' => $p]);
+    }
+
+    public function bayar_piutang()
+    {
+        return view('layouts.transaksi.bayar-piutang');
+    }
+
+    public function store_detail_piutang(Request $r, $id)
+    {
+        $validator = Validator::make($r->all(), [
+            'tgl_piutang' => ['required'],
+            'total_bayar' => ['required']
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', "Gagal menambahkan, periksa kembali form anda");
+        } else {
+            $total_bayar = str_replace(",", "", $r->total_bayar);
+            $sisa = str_replace(",", "", $r->sisa);
+            
+            if($total_bayar > $sisa){
+                return response()->json(['data' => 'error']);
+            }
+            else{
+                $tgl_jatuh_tempo = NULL;
+                if($r->pembayaran_id == "4"){
+                    $tgl_jatuh_tempo = $r->tgl_jatuh_tempo;
+                }
+                $d = DPiutang::create([
+                    'h_piutang_id' => $id,
+                    'tgl_piutang' => $r->tgl_piutang,
+                    'total_bayar' => str_replace(",", "", $r->total_bayar),
+                    'no_giro' => $r->no_giro,
+                    'tgl_jatuh_tempo' => $tgl_jatuh_tempo,
+                    'pembayaran_id' => $r->pembayaran_id
+                ]);
+
+                if ($d) {
+                    return response()->json(['data' => 'success']);
+                } else {
+                    return response()->json(['data' => 'error']);
+                }
+            }
+        }
+    }
+
+    public function edit_detail_piutang($id)
+    {
+        $data = DPiutang::find($id);
+        $p = Pembayaran::all();
+        return view('layouts.modal.piutang-modal-edit', ['id' => $id, 'p' => $p, 'data' => $data]);
+    }
+
+    public function update_detail_piutang(Request $r, $id)
+    {
+        $validator = Validator::make($r->all(), [
+            'tgl_piutang' => ['required'],
+            'total_bayar' => ['required']
+        ]);
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', "Gagal menambahkan, periksa kembali form anda");
+        } else {
+            $total_bayar = str_replace(",", "", $r->total_bayar);
+            $sisa = str_replace(",", "", $r->sisa);
+            if($total_bayar > $sisa){
+                return response()->json(['data' => 'error']);
+            }
+            else{
+                $tgl_jatuh_tempo = NULL;
+                if($r->pembayaran_id == "4"){
+                    $tgl_jatuh_tempo = $r->tgl_jatuh_tempo;
+                }
+                $d = DPiutang::find($id);
+                $d->tgl_piutang = $r->tgl_piutang;
+                $d->total_bayar = str_replace(",", "", $r->total_bayar);
+                $d->no_giro = $r->no_giro;
+                $d->tgl_jatuh_tempo = $tgl_jatuh_tempo;
+                $d->pembayaran_id = $r->pembayaran_id;
+                $u = $d->save();
+
+                if ($u) {
+                    return response()->json(['data' => 'success']);
+                } else {
+                    return response()->json(['data' => 'error']);
+                }
+            }
+        }
+    }
+
+    public function delete_piutang(Request $r)
+    {
+        $del = Piutang::where('id', $r->id)->delete();
+
+        if ($del) {
+            return response()->json(['info' => 'success', 'msg' => 'Data berhasil di hapus']);
+        } else {
+            return response()->json(['info' => 'error', 'msg' => 'Hapus Gagal, periksa kembali']);
+        }
+    }
+
+    public function delete_detail_piutang(Request $r)
+    {
+        $del = DPiutang::find($r->id);
+        $d = $del->delete();
+        if ($d) {
+            return response()->json(['info' => 'success']);
+        } else {
+            return response()->json(['info' => 'error']);
+        }
+    }
+
+
+    //RETUR BELI
+    //Mengarahkan user ke halaman Retur Beli
+    public function transaksi_retur_beli()
+    {
+        return view('layouts.transaksi.retur-beli');
+    }
+
+    //Mengambil seluruh data Retur Beli di Database
+    public function data_retur_beli()
+    {
+        $data = ReturBeli::orderBy('tgl_retur_beli', 'desc')->get();
+        return datatables()->of($data)
+            ->addIndexColumn()
+            ->addColumn('no_pembelian', function ($data) {
+                return  $data->TransBeli->nomor_po;
+            })
+            ->addColumn('tgl_pembelian', function ($data) {
+                return  $data->TransBeli->tgl_trans_beli;
+            })
+            ->addColumn('tgl_retur', function ($data) {
+                return  $data->tgl_retur_beli;
+            })
+            ->addColumn('supplier', function ($data) {
+                return  $data->TransBeli->Supplier->nama_supplier;
+            })
+            ->addColumn('total', function ($data) {
+                return  number_format($data->total_retur_beli);
+            })
+
+            ->addColumn('action', function ($data) {
+                return  '<div class="grid grid-cols-2">
+                <button id="btndetail" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '"  >
+                                                        <i class="fas fa-eye tw-text-prim-blue"></i>
+                                                    </button>
+                <a id="btnedit" href="/transaksi/retur-beli/edit/' . $data->id . '" class="mr-4 tw-bg-transparent tw-border-none" >
+                                                        <i class="fa fa-pen tw-text-prim-blue"></i>
+                                                    </a>
+                                                    <button id="btndelete" data-id="' . $data->id . '" data-nama="' . $data->TransBeli->nomor_po . '"
+                                                            class="tw-bg-transparent tw-border-none">
+                                                            <i class="fa fa-trash tw-text-prim-red"></i>
+                                                        </button>
+
+            </div>';
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+    }
+
+    //Mengambil data Retur Beli sesuai ID dan Mengarahkan user ke modal Detail Retur Beli
+    public function detail_retur_beli($id)
+    {
+        $data = ReturBeli::find($id);
+        return view('layouts.modal.retur-beli-modal-detail', ['data' => $data]);
+    }
+
+    //Mengambil seluruh data Barang yang dilakukan Retur Beli sesuai ID
+    public function detail_data_retur_beli($id)
+    {
+        $data = DReturBeli::where('hretur_beli_id', $id)->get();
+        return datatables()->of($data)
+            ->addIndexColumn()
+            ->addColumn('produk', function ($data) {
+                return  $data->Barang->nama_barang;
+            })
+            ->addColumn('jumlah', function ($data) {
+                return  $data->jumlah;
+            })
+            ->addColumn('harga', function ($data) {
+                return number_format($data->harga);
+            })
+            ->addColumn('total', function ($data) {
+                return  number_format($data->total_retur_beli * $data->jumlah);
+            })
+
+            ->rawColumns(['action'])
+            ->make(true);
+    }
+
+    //Mengarahkan user ke view tambah retur beli
+    public function tambah_retur_beli()
+    {
+        return view('layouts.transaksi.tambah_retur-beli');
+    }
+
+    //Menyimpan hasil Insert (Store) Retur Beli yang Baru
+    public function store_retur_beli(Request $request)
+    {
+        $bool = true;
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'no_po' => 'required',
+                'tgl_retur_beli' => 'required',
+                'barang_id.*' => 'required',
+                'jumlah.*' => 'required',
+                'harga.*' => 'required',
+            ]
+        );
+
+        if ($validator->fails()) {
+            return response()->json(['data' => 'error']);
+        } else {
+            for ($i = 0; $i < count($request->barang_id); $i++) {
+                $drb = DTransBeli::where([['barang_id', '=', $request->barang_id[$i]], ['htrans_beli_id', '=', $request->no_po]])->first();
+                if($drb->jumlah < $request->jumlah[$i]){
+                    $bool = false;
+                }
+            }
+
+            if($bool == false){
+                return response()->json(['data' => 'kelebihan']);
+            }
+            else
+            {
+                $h = ReturBeli::create([
+                    'htrans_beli_id' => $request->no_po,
+                    'tgl_retur_beli' => $request->tgl_retur_beli,
+                    'total_retur_beli' => str_replace('.', "", $request->total)
+                ]);
+
+
+                for ($i = 0; $i < count($request->barang_id); $i++) {
+                    DReturBeli::create([
+                        'hretur_beli_id' =>  $h->id,
+                        'barang_id' => $request->barang_id[$i],
+                        'jumlah' => $request->jumlah[$i],
+                        'harga' =>  str_replace('.', "", $request->harga[$i]),
+                    ]);
+
+                    $b = Barang::find($request->barang_id[$i]);
+                    $b->stok = $b->stok - $request->jumlah[$i];
+                    $b->save();
+                }
+
+
+                return response()->json(['data' => 'success']);
+            }
+        }
+    }
+
+    //Mengambil data Retur Beli sesuai ID fan 
+    public function edit_retur_beli($id)
+    {
+        $data = ReturBeli::find($id);
+        return view('layouts.transaksi.edit_retur-beli', ['data' => $data]);
+    }
+
+    //Menyimpan hasil Edit (Update) Retur Beli
+    public function update_retur_beli(Request $request, $id)
+    {
+        $bool = true;
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'tgl_retur_beli' => 'required',
+                'barang_id.*' => 'required',
+                'jumlah.*' => 'required',
+                'harga.*' => 'required',
+            ]
+        );
+
+        if ($validator->fails()) {
+            return response()->json(['data' => 'error']);
+        } else {
+            $rb = ReturBeli::find($id);
+            for ($i = 0; $i < count($request->barang_id); $i++) {
+                $drb = DTransBeli::where([['barang_id', '=', $request->barang_id[$i]], ['htrans_beli_id', '=', $rb->htrans_beli_id]])->first();
+                if($drb->jumlah < $request->jumlah[$i]){
+                    $bool = false;
+                }
+            }
+
+            if($bool == false){
+                return response()->json(['data' => 'kelebihan']);
+            }
+            else
+            {
+                $retur_beli = ReturBeli::find($id);
+                $retur_beli->tgl_retur_beli = $request->tgl_retur_beli;
+                $retur_beli->total_retur_beli = str_replace('.', "", $request->total);
+                $retur_beli->save();
+
+                $tb = DReturBeli::where('hretur_beli_id', $id)->get();
+
+
+                if (count($tb) > 0) {
+                    DReturBeli::where('hretur_beli_id', $id)->delete();
+                }
+
+
+                for ($i = 0; $i < count($request->barang_id); $i++) {
+                    DReturBeli::create([
+                        'hretur_beli_id' =>  $id,
+                        'barang_id' => $request->barang_id[$i],
+                        'jumlah' => $request->jumlah[$i],
+                        'harga' =>  str_replace('.', "", $request->harga[$i]),
+                    ]);
+
+                    $b = Barang::find($request->barang_id[$i]);
+                    $b->stok = $b->stok - $request->jumlah[$i];
+                    $b->save();
+                }
+
+                return response()->json(['data' => 'success']);
+            }
+        }
+    }
+
+    //Menghapus Retur Beli sesuai ID yang di request
+    public function delete_retur_beli(Request $request)
+    {
+        $tb = DReturBeli::where('hretur_beli_id', $request->id)->get();
+
+        if (count($tb) > 0) {
+            foreach($tb as $i => $res){
+                $b = Barang::find($res->barang_id[$i]);
+                $b->stok = $b->stok + $res->jumlah[$i];
+                $b->save();
+            }
+            DReturBeli::where('hretur_beli_id', $request->id)->delete();
+        }
+
+        $retur_beli =  ReturBeli::find($request->id)->delete();
+
+        if ($retur_beli) {
+            return response()->json(['info' => 'success', 'msg' => 'Data berhasil di hapus']);
+        } else {
+            return response()->json(['info' => 'error', 'msg' => 'Hapus Gagal, periksa kembali']);
+        }
+    }
+
+    //RETUR JUAL
     public function transaksi_retur_jual()
     {
         return view('layouts.transaksi.retur-jual');
@@ -155,6 +917,7 @@ class TransaksiController extends Controller
 
     public function update_retur_jual(Request $r, $id)
     {
+        $bool = true;
         $validator = Validator::make($r->all(), [
             'no_retur_jual' => ['required'],
             'tgl_retur_jual' => ['required'],
@@ -220,7 +983,8 @@ class TransaksiController extends Controller
         }
     }
 
-    public function delete_retur_jual(Request $r){
+    public function delete_retur_jual(Request $r)
+    {
         $drj = DReturJual::where('hretur_jual_id', $r->id)->get();
         if(count($drj) > 0){
             foreach($drj as $res){
@@ -238,87 +1002,35 @@ class TransaksiController extends Controller
         }
     }
 
-    public function tambah_retur_beli()
+    //PEMBELIAN
+    public function transaksi_beli()
     {
-        return view('layouts.transaksi.tambah_retur-beli');
-    }
-    public function edit_retur_beli($id)
-    {
-        $data = ReturBeli::find($id);
-        return view('layouts.transaksi.edit_retur-beli', ['data' => $data]);
-    }
-    public function master_hutang()
-    {
-        return view('layouts.transaksi.master-hutang');
-    }
-    public function master_piutang()
-    {
-        return view('layouts.transaksi.master-piutang');
-    }
-    public function data_piutang()
-    {
-        $data = Piutang::with('TransJual')->addSelect(['sum_total' => function ($q) {
-            $q->selectRaw('coalesce(SUM(d_piutang.total_bayar), 0)')
-                ->from('d_piutang')
-                ->whereColumn('d_piutang.h_piutang_id', 'h_piutang.id');
-        }])->get();
-        return datatables()->of($data)
-            ->addIndexColumn()
-            ->addColumn('no_trans_jual', function ($data) {
-                return $data->TransJual->no_trans_jual;
-            })
-            ->addColumn('tgl_trans_jual', function ($data) {
-                return $data->TransJual->tgl_trans_jual;
-            })
-            ->editColumn('sum_total', function ($data) {
-                return strval($data->sum_total);
-            })
-            ->addColumn('sisa_hutang', function ($data) {
-                return (float)$data->total_piutang - (float)$data->sum_total;
-            })
-            ->addColumn('action', function ($data) {
-                $sisahutang = (float)$data->total_piutang - (float)$data->sum_total;
-                $res = '<div class="grid grid-cols-3">
-                <button id="btndetail" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="Piutang ' . $data->TransJual->no_trans_jual . '" >
-                                                        <i class="fas fa-eye tw-text-prim-blue"></i>
-                                                    </button>';
-                if($sisahutang > 0){
-                $res .= '<button id="btnbayar" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="Piutang ' . $data->TransJual->no_trans_jual . '" >
-                                                        <i class="fas fa-money-check-alt tw-text-prim-blue"></i>
-                                                    </button>';
-                }
-                // if($data->sum_total <= 0){
-                // $res .= '<button id="btndelete" data-id="' . $data->id . '" data-nama="Piutang ' . $data->TransJual->no_trans_jual . '"
-                //                                         class="tw-bg-transparent tw-border-none">
-                //                                         <i class="fa fa-trash tw-text-prim-red"></i>
-                //                                     </button>';
-                // }
-            $res .= '</div>';
-            return $res;
-            })
-            ->rawColumns(['action'])
-            ->make(true);
+        return view('layouts.transaksi.master-beli');
     }
 
-    public function detail_piutang($id)
+    public function data_transaksi_beli()
     {
-        $data = Piutang::where('id', $id)->with('TransJual.Booking.Customer')->first();
-        return view('layouts.modal.piutang-modal-detail', ['id' => $id, 'data' => $data]);
-    }
-    public function detail_retur_beli($id)
-    {
-        $data = ReturBeli::find($id);
-        return view('layouts.modal.retur-beli-modal-detail', ['data' => $data]);
-    }
-
-    public function data_detail_piutang($id)
-    {
-        $data = DPiutang::where('h_piutang_id', $id)->get();
+        $data = TransBeli::with('Supplier', 'Pembayaran', 'ReturBeli', 'TransHutang')->orderBy('tgl_trans_beli', 'desc')->get();
         return datatables()->of($data)
             ->addIndexColumn()
-            ->addColumn('pembayaran', function($data){
+            ->addColumn('tgl_trans_beli', function ($data) {
+                return  $data->tgl_trans_beli;
+            })
+            ->addColumn('tgl_max_garansi', function ($data) {
+                return  $data->tgl_max_garansi;
+            })
+            ->addColumn('total_bayar', function ($data) {
+                return  number_format($data->total);
+            })
+            ->addColumn('nomor_po', function ($data) {
+                return  $data->nomor_po;
+            })
+            ->addColumn('supplier', function ($data) {
+                return  $data->Supplier->nama_supplier;
+            })
+            ->addColumn('pembayaran', function ($data) {
                 $res = $data->Pembayaran->nama_bayar;
-                if($data->Pembayaran->id != '1'){
+                if($data->no_giro != ''){
                 $res .= '<div><small class="text-danger">Nomor: '.$data->no_giro.'</small></div>';
                 if($data->tgl_jatuh_tempo != NULL){
                     $res .= '<div><small>Jatuh Tempo '.$data->tgl_jatuh_tempo.'</small></div>';
@@ -326,330 +1038,78 @@ class TransaksiController extends Controller
                 }
                 return $res;
             })
-            ->addColumn('action', function($data){
-                return '<button id="btnedit" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '">
-                    <i class="fa fa-pen tw-text-prim-blue"></i>
-                </button>
-                <button id="btndelete" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '">
-                    <i class="fa fa-trash tw-text-prim-red"></i>
-                </button>';
+            ->addColumn('action', function ($data) {
+                $lama = '<div class="grid grid-cols-3 tw-contents">
+                                                <a href="' . route('edit-beli', $data->id) . '" class="mr-4 tw-bg-transparent tw-border-none" data-toggle="tooltip" title="Edit">
+                                                    <i class="fa fa-pen tw-text-prim-blue"></i>
+                                                </a>
+                                                <button data-toggle="tooltip" title="Detail"  data-id="' . $data->id . '" id="btndetail" class="tw-mr-4 tw-bg-transparent tw-border-none">
+                                                    <i class="fa fa-info tw-text-prim-black"></i>
+                                                </button>
+                                                <button data-nama="' . $data->nomor_po . '" data-id="' . $data->id . '" data-toggle="tooltip" title="Hapus" class="tw-bg-transparent tw-border-none" id="btndelete">
+                                                    <i class="fa fa-trash tw-text-prim-red"></i>
+                                                </button>
+                                            </div>';
+
+                $res = '<div class="grid grid-cols-4">
+                <button data-toggle="tooltip" title="Detail"  data-id="' . $data->id . '" id="btndetail" class="tw-mr-4 tw-bg-transparent tw-border-none">
+                                                    <i class="fa fa-info tw-text-prim-black"></i>
+                                                </button>
+                                                <a href="/transaksi/beli/nota/'.$data->id.'"><button class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->no_trans_jual . '" >
+                    <i class="fas fa-file tw-text-prim-blue"></i>
+                </button></a>';
+                // if(!isset($data->TransHutang) || isset($data->TransHutang)){
+                //     if(count($data->ReturBeli) <= 0){
+                    $res .= '<a href="' . route('edit-beli', $data->id) . '" class="mr-4 tw-bg-transparent tw-border-none" data-toggle="tooltip" title="Edit">
+                            <i class="fa fa-pen tw-text-prim-blue"></i>
+                        </a>
+                        <button data-nama="' . $data->nomor_po . '" data-id="' . $data->id . '" data-toggle="tooltip" title="Hapus" class="tw-bg-transparent tw-border-none" id="btndelete">
+                                                    <i class="fa fa-trash tw-text-prim-red"></i>
+                                                </button>';
+                //                             }
+                // }
+                $res .= '</div>';
+                return $res;
             })
-            ->rawColumns(['pembayaran', 'action'])
+            ->rawColumns(['action', 'pembayaran'])
             ->make(true);
     }
 
-    public function tambah_detail_piutang($id)
+    public function detail_beli($id)
     {
-        $p = Pembayaran::all();
-        return view('layouts.modal.piutang-modal-create', ['id' => $id, 'p' => $p]);
+        $data = TransBeli::find($id);
+        return view('layouts.modal.beli-modal-detail', ['data' => $data]);
     }
 
-    public function delete_piutang(Request $r){
-        $del = Piutang::where('id', $r->id)->delete();
-
-        if ($del) {
-            return response()->json(['info' => 'success', 'msg' => 'Data berhasil di hapus']);
-        } else {
-            return response()->json(['info' => 'error', 'msg' => 'Hapus Gagal, periksa kembali']);
-        }
-    }
-
-    public function update_hutang(Request $request, $id)
+    public function detail_data_transaksi_beli($id)
     {
-        $validator = Validator::make($request->all(), [
-            'tgl_beli.*' => 'required',
-            'pembayaran_hutang.*' => 'required',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['data' => 'error']);
-        } else {
-
-            if (str_replace('.', "", $request->total_dibayar) > str_replace('.', "", $request->sisa_hutang)) {
-                return response()->json(['data' => 'total_gagal']);
-            } else {
-                $tb = DTransHutang::where('h_hutang_id', $id)->get();
-                if (count($tb) > 0) {
-                    DTransHutang::where('h_hutang_id', $id)->delete();
-                }
-
-                for ($i = 0; $i < count($request->tgl_beli); $i++) {
-                    DTransHutang::create([
-                        'h_hutang_id' =>  $id,
-                        'tgl_bayar' => $request->tgl_beli[$i],
-                        'pembayaran_id' => $request->pembayaran_id,
-                        'no_giro' => $request->no_giro,
-                        'total_bayar' =>  str_replace('.', "", $request->pembayaran_hutang[$i]),
-                    ]);
-                }
-                $trans_hutang  = TransHutang::find($id);
-                $trans_hutang->bayar_hutang = str_replace('.', "", $request->total_dibayar);
-                $trans_hutang->save();
-                return response()->json(['data' => 'success']);
-            }
-        }
+        $data = DTransBeli::where('htrans_beli_id', $id)->get();
+        return datatables()->of($data)
+            ->addIndexColumn()
+            ->addColumn('barang', function ($data) {
+                return  $data->Barang->nama_barang;
+            })
+            ->addColumn('jumlah', function ($data) {
+                return  $data->jumlah;
+            })
+            ->addColumn('harga', function ($data) {
+                return number_format($data->harga, 0, ',', '.');
+            })
+            ->addColumn('disc', function ($data) {
+                return  $data->disc . ' %';
+            })
+            ->addColumn('total', function ($data) {
+                return number_format(($data->harga * $data->jumlah) - (($data->harga * $data->jumlah) * $data->disc / 100), 0, ',', '.');
+            })
+            ->make(true);
     }
 
-    public function store_hutang(Request $request)
+    public function cek_jumlah_beli($po, $barang)
     {
-        //dd($request);
-        $validator = Validator::make($request->all(), [
-            'tgl_beli.*' => 'required',
-            'pembayaran_hutang.*' => 'required',
-            'beli_id' => 'required'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['data' => 'error']);
-        } else {
-            if (str_replace('.', "", $request->total_dibayar) > str_replace('.', "", $request->sisa_hutang)) {
-                return response()->json(['data' => 'total_gagal']);
-            } else {
-
-                for ($i = 0; $i < count($request->tgl_beli); $i++) {
-                    DTransHutang::create([
-                        'h_hutang_id' =>  $request->hutang_id,
-                        'tgl_bayar' => $request->tgl_beli[$i],
-                        'total_bayar' =>  str_replace('.', "", $request->pembayaran_hutang[$i]),
-                    ]);
-                }
-
-                $trans_hutang  = TransHutang::find($request->hutang_id);
-                $trans_hutang->bayar_hutang = $trans_hutang->bayar_hutang + str_replace('.', "", $request->total_dibayar);
-                $trans_hutang->save();
-                return response()->json(['data' => 'success']);
-            }
-        }
-    }
-
-    public function tambah_detail_hutang($id)
-    {
-        $p = Pembayaran::all();
-        return view('layouts.modal.hutang-modal-create', ['id' => $id, 'p' => $p]);
-    }
-
-    public function edit_detail_hutang($id)
-    {
-        $data = DTransHutang::find($id);
-        $p = Pembayaran::all();
-        
-        return view('layouts.modal.hutang-modal-edit', ['id' => $id, 'p' => $p, 'data' => $data]);
-    }
-
-    public function store_detail_hutang(Request $r, $id)
-    {
-        $validator = Validator::make($r->all(), [
-            'tgl_hutang' => ['required'],
-            'total_bayar' => ['required'],
-
-        ]);
-        if ($validator->fails()) {
-            return redirect()->back()->with('error', "Gagal menambahkan, periksa kembali form anda");
-        } else {
-            $total_bayar = str_replace(",", "", $r->total_bayar);
-            $sisa = str_replace(",", "", $r->sisa);
-            
-            if($total_bayar > $sisa){
-                return response()->json(['data' => 'error']);
-            }
-            else{
-                $tgl_jatuh_tempo = NULL;
-                if($r->pembayaran_id == "4"){
-                    $tgl_jatuh_tempo = $r->tgl_jatuh_tempo;
-                }
-                $d = DTransHutang::create([
-                    'h_hutang_id' => $id,
-                    'tgl_bayar' => $r->tgl_hutang,
-                    'total_bayar' => str_replace(",", "", $r->total_bayar),
-                    'no_giro' => $r->no_giro,
-                    'tgl_jatuh_tempo' => $tgl_jatuh_tempo,
-                    'pembayaran_id' => $r->pembayaran_id
-                ]);
-
-                $sum = DTransHutang::where('h_hutang_id', $id)->sum('total_bayar');
-                $th = TransHutang::find($d->h_hutang_id);
-                $th->bayar_hutang = $sum;
-                $th->save();
-
-                if ($d) {
-                    return response()->json(['data' => 'success']);
-                } else {
-                    return response()->json(['data' => 'error']);
-                }
-            }
-        }
-    }
-
-    public function update_detail_hutang(Request $r, $id)
-    {
-        $validator = Validator::make($r->all(), [
-            'tgl_hutang' => ['required'],
-            'total_bayar' => ['required'],
-
-        ]);
-        if ($validator->fails()) {
-            return redirect()->back()->with('error', "Gagal menambahkan, periksa kembali form anda");
-        } else {
-            $total_bayar = str_replace(",", "", $r->total_bayar);
-            $sisa = str_replace(",", "", $r->sisa);
-            if($total_bayar > $sisa){
-                return response()->json(['data' => 'error']);
-            }
-            else{
-                $tgl_jatuh_tempo = NULL;
-                if($r->pembayaran_id == "4"){
-                    $tgl_jatuh_tempo = $r->tgl_jatuh_tempo;
-                }
-                $d = DTransHutang::find($id);
-                $d->tgl_bayar = $r->tgl_hutang;
-                $d->total_bayar = str_replace(",", "", $r->total_bayar);
-                $d->no_giro = $r->no_giro;
-                $d->pembayaran_id = $r->pembayaran_id;
-                $d->tgl_jatuh_tempo = $tgl_jatuh_tempo;
-                $u = $d->save();
-
-                $sum = DTransHutang::where('h_hutang_id', $d->h_hutang_id)->sum('total_bayar');
-                $th = TransHutang::find($d->h_hutang_id);
-                $th->bayar_hutang = $sum;
-                $th->save();
-                if ($u) {
-                    return response()->json(['data' => 'success']);
-                } else {
-                    return response()->json(['data' => 'error']);
-                }
-            }
-        }
-    }
-
-    public function delete_detail_hutang(Request $r)
-    {
-        $del = DTransHutang::find($r->id);
-        $h = $del->h_hutang_id;
-        
-        $d = $del->delete();
-
-        $sum = DTransHutang::where('h_hutang_id', $h)->sum('total_bayar');
-        $th = TransHutang::find($h);
-        $th->bayar_hutang = $sum;
-        $th->save();
-        if ($d) {
-            return response()->json(['info' => 'success']);
-        } else {
-            return response()->json(['info' => 'error']);
-        }
-    }
-
-    public function edit_detail_piutang($id)
-    {
-        $data = DPiutang::find($id);
-        $p = Pembayaran::all();
-        return view('layouts.modal.piutang-modal-edit', ['id' => $id, 'p' => $p, 'data' => $data]);
-    }
-
-    public function store_detail_piutang(Request $r, $id)
-    {
-        $validator = Validator::make($r->all(), [
-            'tgl_piutang' => ['required'],
-            'total_bayar' => ['required']
-        ]);
-        if ($validator->fails()) {
-            return redirect()->back()->with('error', "Gagal menambahkan, periksa kembali form anda");
-        } else {
-            $total_bayar = str_replace(",", "", $r->total_bayar);
-            $sisa = str_replace(",", "", $r->sisa);
-            
-            if($total_bayar > $sisa){
-                return response()->json(['data' => 'error']);
-            }
-            else{
-                $tgl_jatuh_tempo = NULL;
-                if($r->pembayaran_id == "4"){
-                    $tgl_jatuh_tempo = $r->tgl_jatuh_tempo;
-                }
-                $d = DPiutang::create([
-                    'h_piutang_id' => $id,
-                    'tgl_piutang' => $r->tgl_piutang,
-                    'total_bayar' => str_replace(",", "", $r->total_bayar),
-                    'no_giro' => $r->no_giro,
-                    'tgl_jatuh_tempo' => $tgl_jatuh_tempo,
-                    'pembayaran_id' => $r->pembayaran_id
-                ]);
-
-                if ($d) {
-                    return response()->json(['data' => 'success']);
-                } else {
-                    return response()->json(['data' => 'error']);
-                }
-            }
-        }
-    }
-
-    public function update_detail_piutang(Request $r, $id)
-    {
-        $validator = Validator::make($r->all(), [
-            'tgl_piutang' => ['required'],
-            'total_bayar' => ['required']
-        ]);
-        if ($validator->fails()) {
-            return redirect()->back()->with('error', "Gagal menambahkan, periksa kembali form anda");
-        } else {
-            $total_bayar = str_replace(",", "", $r->total_bayar);
-            $sisa = str_replace(",", "", $r->sisa);
-            if($total_bayar > $sisa){
-                return response()->json(['data' => 'error']);
-            }
-            else{
-                $tgl_jatuh_tempo = NULL;
-                if($r->pembayaran_id == "4"){
-                    $tgl_jatuh_tempo = $r->tgl_jatuh_tempo;
-                }
-                $d = DPiutang::find($id);
-                $d->tgl_piutang = $r->tgl_piutang;
-                $d->total_bayar = str_replace(",", "", $r->total_bayar);
-                $d->no_giro = $r->no_giro;
-                $d->tgl_jatuh_tempo = $tgl_jatuh_tempo;
-                $d->pembayaran_id = $r->pembayaran_id;
-                $u = $d->save();
-
-                if ($u) {
-                    return response()->json(['data' => 'success']);
-                } else {
-                    return response()->json(['data' => 'error']);
-                }
-            }
-        }
-    }
-
-    public function delete_detail_piutang(Request $r)
-    {
-        $del = DPiutang::find($r->id);
-        $d = $del->delete();
-        if ($d) {
-            return response()->json(['info' => 'success']);
-        } else {
-            return response()->json(['info' => 'error']);
-        }
-    }
-
-    public function bayar_hutang()
-    {
-        return view('layouts.transaksi.bayar-hutang');
-    }
-    public function bayar_piutang()
-    {
-        return view('layouts.transaksi.bayar-piutang');
-    }
-
-    public function transaksi_beli()
-    {
-
-        return view('layouts.transaksi.master-beli');
-    }
-
-    public function cek_jumlah_beli($po, $barang){
         $d = DTransBeli::where([['htrans_beli_id', '=', $po], ['barang_id', '=', $barang]])->first();
         return $d->jumlah;
     }
+
     public function tambah_beli()
     {
         $supplier = Supplier::all();
@@ -658,10 +1118,93 @@ class TransaksiController extends Controller
         return view('layouts.transaksi.tambah_beli', ['supplier' => $supplier, 'barang' => $barang, 'bayar' => $bayar]);
     }
 
-    public function archive_trans()
+    public function store_beli(Request $request)
     {
-        return view('layouts.archive.archive-trans');
+        //dd($request);
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'tgl_beli' => 'required',
+                'supplier' => 'required',
+                'no_beli' => 'required|unique:htrans_beli,nomor_po',
+                'tgl_beli_garansi' => 'required',
+                'total_bayar' => 'required',
+                'total_dibayar' => 'required',
+                'barang.*' => 'required',
+                'jumlah_beli.*' => 'required',
+                'harga_satuan.*' => 'required',
+            ]
+        );
+
+        if ($validator->fails()) {
+            return response()->json(['data' => 'error']);
+        } else {
+            if (str_replace('.', "", $request->total_dibayar) > str_replace('.', "", $request->total_bayar)) {
+                return response()->json(['data' => 'dibayar']);
+            } else {
+                $tgl_jatuh_tempo = NULL;
+                if($request->pembayaran_id == "4"){
+                    $tgl_jatuh_tempo = $request->tgl_jatuh_tempo;
+                }
+                $header =  TransBeli::create([
+                    'supplier_id' => $request->supplier,
+                    'pembayaran_id' => $request->pembayaran_id,
+                    'no_giro' => $request->no_giro,
+                    'nomor_po' => $request->no_beli,
+                    'tgl_trans_beli' => $request->tgl_beli,
+                    'tgl_max_garansi' => $request->tgl_beli_garansi,
+                    'tgl_jatuh_tempo' => $tgl_jatuh_tempo,
+                    'disc' => $request->diskon_total,
+                    'total_bayar' =>  str_replace('.', "", $request->total_dibayar),
+                    'total' =>  str_replace('.', "", $request->total_bayar)
+                ]);
+
+                for ($i = 0; $i < count($request->barang); $i++) {
+                    DTransBeli::create([
+                        'htrans_beli_id' => $header->id,
+                        'barang_id' => $request->barang[$i],
+                        'jumlah' => $request->jumlah_beli[$i],
+                        'harga' =>  str_replace('.', "", $request->harga_satuan[$i]),
+                        'disc' => $request->diskon_beli[$i]
+                    ]);
+
+                    $b = Barang::find($request->barang[$i]);
+                    $b->stok = $b->stok + $request->jumlah_beli[$i];
+                    $b->save();
+                }
+
+                if (str_replace('.', "", $request->total_dibayar) != str_replace('.', "", $request->total_bayar)) {
+                    TransHutang::create([
+                        'pembayaran_id' => $request->pembayaran_id,
+                        'htrans_beli_id' =>  $header->id,
+                        'tgl_hutang' =>  $request->tgl_beli,
+                        'total_hutang' => str_replace('.', "", $request->total_bayar) - str_replace('.', "", $request->total_dibayar),
+                        'bayar_hutang' => 0
+                    ]);
+                }
+                return response()->json(['data' => 'success']);
+            }
+        }
     }
+
+    public function edit_beli($id)
+    {
+        $dth = DTransHutang::whereHas('TransHutang', function($q) use($id){
+            $q->where('htrans_beli_id', $id);
+        })->count();
+        $rb = ReturBeli::where('htrans_beli_id', $id)->count();
+
+        if($dth > 0 || $rb > 0){
+            return redirect()->back()->with('gagal', 'Gagal Edit');
+        }else{
+            $data = TransBeli::find($id);
+            $supplier = Supplier::all();
+            $barang = Barang::all();
+            $bayar = Pembayaran::all();
+            return view('layouts.transaksi.edit_beli', ['supplier' => $supplier, 'barang' => $barang, 'bayar' => $bayar, 'data' => $data]);
+        }
+    }
+    
     public function update_beli(Request $request, $id)
     {
 
@@ -750,220 +1293,34 @@ class TransaksiController extends Controller
         }
     }
 
-    public function delete_retur_beli(Request $request)
+    public function delete_beli(Request $request)
     {
-        $tb = DReturBeli::where('hretur_beli_id', $request->id)->get();
+        $dth = DTransHutang::whereHas('TransHutang', function($q) use($request){
+            $q->where('htrans_beli_id', $request->id);
+        })->count();
+        $rb = ReturBeli::where('htrans_beli_id', $request->id)->count();
 
-        if (count($tb) > 0) {
-            foreach($tb as $i => $res){
-                $b = Barang::find($res->barang_id[$i]);
-                $b->stok = $b->stok + $res->jumlah[$i];
-                $b->save();
-            }
-            DReturBeli::where('hretur_beli_id', $request->id)->delete();
+        if($dth > 0 || $rb > 0){
+            return response()->json(['info' => 'error', 'msg' => 'Transaksi ini memiliki Hutang atau Retur']);
         }
-
-        $retur_beli =  ReturBeli::find($request->id)->delete();
-
-        if ($retur_beli) {
-            return response()->json(['info' => 'success', 'msg' => 'Data berhasil di hapus']);
-        } else {
-            return response()->json(['info' => 'error', 'msg' => 'Hapus Gagal, periksa kembali']);
-        }
-    }
-    public function update_retur_beli(Request $request, $id)
-    {
-        $bool = true;
-        $validator = Validator::make(
-            $request->all(),
-            [
-                'tgl_retur_beli' => 'required',
-                'barang_id.*' => 'required',
-                'jumlah.*' => 'required',
-                'harga.*' => 'required',
-            ]
-        );
-
-        if ($validator->fails()) {
-            return response()->json(['data' => 'error']);
-        } else {
-            $rb = ReturBeli::find($id);
-            for ($i = 0; $i < count($request->barang_id); $i++) {
-                $drb = DTransBeli::where([['barang_id', '=', $request->barang_id[$i]], ['htrans_beli_id', '=', $rb->htrans_beli_id]])->first();
-                if($drb->jumlah < $request->jumlah[$i]){
-                    $bool = false;
+        else{
+            $dth = TransHutang::where('htrans_beli_id', $request->id)->delete();
+            $dtb = DTransBeli::where('htrans_beli_id', $request->id)->get();
+            if (count($dtb) > 0) {
+                foreach($dtb as $i){
+                    $b = Barang::find($i->barang_id);
+                    $b->stok = $b->stok - $i->jumlah;
+                    $bu = $b->save();
                 }
+                DTransBeli::where('htrans_beli_id', $request->id)->delete();
             }
-
-            if($bool == false){
-                return response()->json(['data' => 'kelebihan']);
-            }
-            else
-            {
-                $retur_beli = ReturBeli::find($id);
-                $retur_beli->tgl_retur_beli = $request->tgl_retur_beli;
-                $retur_beli->total_retur_beli = str_replace('.', "", $request->total);
-                $retur_beli->save();
-
-                $tb = DReturBeli::where('hretur_beli_id', $id)->get();
-
-
-                if (count($tb) > 0) {
-                    DReturBeli::where('hretur_beli_id', $id)->delete();
-                }
-
-
-                for ($i = 0; $i < count($request->barang_id); $i++) {
-                    DReturBeli::create([
-                        'hretur_beli_id' =>  $id,
-                        'barang_id' => $request->barang_id[$i],
-                        'jumlah' => $request->jumlah[$i],
-                        'harga' =>  str_replace('.', "", $request->harga[$i]),
-                    ]);
-
-                    $b = Barang::find($request->barang_id[$i]);
-                    $b->stok = $b->stok - $request->jumlah[$i];
-                    $b->save();
-                }
-
-                return response()->json(['data' => 'success']);
-            }
-        }
-    }
-    public function store_retur_beli(Request $request)
-    {
-        $bool = true;
-        $validator = Validator::make(
-            $request->all(),
-            [
-                'no_po' => 'required',
-                'tgl_retur_beli' => 'required',
-                'barang_id.*' => 'required',
-                'jumlah.*' => 'required',
-                'harga.*' => 'required',
-            ]
-        );
-
-        if ($validator->fails()) {
-            return response()->json(['data' => 'error']);
-        } else {
-            for ($i = 0; $i < count($request->barang_id); $i++) {
-                $drb = DTransBeli::where([['barang_id', '=', $request->barang_id[$i]], ['htrans_beli_id', '=', $request->no_po]])->first();
-                if($drb->jumlah < $request->jumlah[$i]){
-                    $bool = false;
-                }
-            }
-
-            if($bool == false){
-                return response()->json(['data' => 'kelebihan']);
-            }
-            else
-            {
-                $h = ReturBeli::create([
-                    'htrans_beli_id' => $request->no_po,
-                    'tgl_retur_beli' => $request->tgl_retur_beli,
-                    'total_retur_beli' => str_replace('.', "", $request->total)
-                ]);
-
-
-                for ($i = 0; $i < count($request->barang_id); $i++) {
-                    DReturBeli::create([
-                        'hretur_beli_id' =>  $h->id,
-                        'barang_id' => $request->barang_id[$i],
-                        'jumlah' => $request->jumlah[$i],
-                        'harga' =>  str_replace('.', "", $request->harga[$i]),
-                    ]);
-
-                    $b = Barang::find($request->barang_id[$i]);
-                    $b->stok = $b->stok - $request->jumlah[$i];
-                    $b->save();
-                }
-
-
-                return response()->json(['data' => 'success']);
-            }
-        }
-    }
-
-    public function store_beli(Request $request)
-    {
-        //dd($request);
-        $validator = Validator::make(
-            $request->all(),
-            [
-                'tgl_beli' => 'required',
-                'supplier' => 'required',
-                'no_beli' => 'required|unique:htrans_beli,nomor_po',
-                'tgl_beli_garansi' => 'required',
-                'total_bayar' => 'required',
-                'total_dibayar' => 'required',
-                'barang.*' => 'required',
-                'jumlah_beli.*' => 'required',
-                'harga_satuan.*' => 'required',
-            ]
-        );
-
-        if ($validator->fails()) {
-            return response()->json(['data' => 'error']);
-        } else {
-            if (str_replace('.', "", $request->total_dibayar) > str_replace('.', "", $request->total_bayar)) {
-                return response()->json(['data' => 'dibayar']);
+            $tb = TransBeli::find($request->id)->delete();
+            if ($tb) {
+                return response()->json(['info' => 'success', 'msg' => 'Data berhasil di hapus']);
             } else {
-                $tgl_jatuh_tempo = NULL;
-                if($request->pembayaran_id == "4"){
-                    $tgl_jatuh_tempo = $request->tgl_jatuh_tempo;
-                }
-                $header =  TransBeli::create([
-                    'supplier_id' => $request->supplier,
-                    'pembayaran_id' => $request->pembayaran_id,
-                    'no_giro' => $request->no_giro,
-                    'nomor_po' => $request->no_beli,
-                    'tgl_trans_beli' => $request->tgl_beli,
-                    'tgl_max_garansi' => $request->tgl_beli_garansi,
-                    'tgl_jatuh_tempo' => $tgl_jatuh_tempo,
-                    'disc' => $request->diskon_total,
-                    'total_bayar' =>  str_replace('.', "", $request->total_dibayar),
-                    'total' =>  str_replace('.', "", $request->total_bayar)
-                ]);
-
-                for ($i = 0; $i < count($request->barang); $i++) {
-                    DTransBeli::create([
-                        'htrans_beli_id' => $header->id,
-                        'barang_id' => $request->barang[$i],
-                        'jumlah' => $request->jumlah_beli[$i],
-                        'harga' =>  str_replace('.', "", $request->harga_satuan[$i]),
-                        'disc' => $request->diskon_beli[$i]
-                    ]);
-
-                    $b = Barang::find($request->barang[$i]);
-                    $b->stok = $b->stok + $request->jumlah_beli[$i];
-                    $b->save();
-                }
-
-                if (str_replace('.', "", $request->total_dibayar) != str_replace('.', "", $request->total_bayar)) {
-                    TransHutang::create([
-                        'pembayaran_id' => $request->pembayaran_id,
-                        'htrans_beli_id' =>  $header->id,
-                        'tgl_hutang' =>  $request->tgl_beli,
-                        'total_hutang' => str_replace('.', "", $request->total_bayar) - str_replace('.', "", $request->total_dibayar),
-                        'bayar_hutang' => 0
-                    ]);
-                }
-                return response()->json(['data' => 'success']);
+                return response()->json(['info' => 'error', 'msg' => 'Hapus Gagal, periksa kembali']);
             }
         }
-    }
-
-    public function transaksi_jual()
-    {
-        return view('layouts.transaksi.master-jual');
-    }
-
-    public function nota_jual($id)
-    {
-        $jual = TransJual::find($id);
-        $pdf = PDF::loadview('layouts.transaksi.nota-jual', ['jual' => $jual])->setPaper('a4', 'landscape');
-        return $pdf->stream();
     }
 
     public function nota_beli($id)
@@ -973,66 +1330,52 @@ class TransaksiController extends Controller
         return $pdf->stream();
     }
 
-    public function detail_data_retur_beli($id)
+    public function selectdata_beli(Request $r, $id)
     {
-        $data = DReturBeli::where('hretur_beli_id', $id)->get();
-        return datatables()->of($data)
-            ->addIndexColumn()
-            ->addColumn('produk', function ($data) {
-                return  $data->Barang->nama_barang;
-            })
-            ->addColumn('jumlah', function ($data) {
-                return  $data->jumlah;
-            })
-            ->addColumn('harga', function ($data) {
-                return number_format($data->harga);
-            })
-            ->addColumn('total', function ($data) {
-                return  number_format($data->total_retur_beli * $data->jumlah);
-            })
+        if ($id == 0) {
+            $array = array();
+            $data = TransBeli::where('nomor_po', 'LIKE', '%' . $r->input('term', '') . '%')->select('id', 'nomor_po')->doesntHave('ReturBeli')->get();
+            foreach($data as $key => $i){
+                $array[$key] = array('id' => $i->id, 'nomor_po' => $i->nomor_po);
+            }
+            echo json_encode($array);
+        } else {
+            $array = array();
+            $data = TransBeli::find($id);
+            $tgl_trans_beli_short = Carbon::createFromFormat('Y-m-d', $data->tgl_trans_beli)->isoFormat('D MMMM Y');
+            $tgl_max_garansi_short = Carbon::createFromFormat('Y-m-d', $data->tgl_max_garansi)->isoFormat('D MMMM Y');
+            
+            $array = array(
+                'poid' => $data->id,
+                'supplier' => $data->Supplier->nama_supplier,
+                'alamat' => $data->Supplier->alamat,
+                'telp' => $data->Supplier->telepon,
+                'total' =>  number_format($data->total, 0, ',', '.'),
+                'tgl_transaksi' => $tgl_trans_beli_short,
+                'tgl_max_garansi' =>  $tgl_max_garansi_short,
+                'detail' => array()
+            );
 
-            ->rawColumns(['action'])
-            ->make(true);
+            foreach($data->DTransBeli as $key => $i){
+                $array['detail'][$key] = array(
+                    'id' => $i->barang_id,
+                    'nama' => $i->Barang->nama_barang,
+                    'jumlah' => $i->jumlah,
+                    'harga' => $i->harga
+                );
+            }
+            echo json_encode($array);
+        }
     }
-    public function data_retur_beli()
+
+    //PENJUALAN
+    //Mengarahkan user ke view Penjualan
+    public function transaksi_jual()
     {
-        $data = ReturBeli::orderBy('tgl_retur_beli', 'desc')->get();
-        return datatables()->of($data)
-            ->addIndexColumn()
-            ->addColumn('no_pembelian', function ($data) {
-                return  $data->TransBeli->nomor_po;
-            })
-            ->addColumn('tgl_pembelian', function ($data) {
-                return  $data->TransBeli->tgl_trans_beli;
-            })
-            ->addColumn('tgl_retur', function ($data) {
-                return  $data->tgl_retur_beli;
-            })
-            ->addColumn('supplier', function ($data) {
-                return  $data->TransBeli->Supplier->nama_supplier;
-            })
-            ->addColumn('total', function ($data) {
-                return  number_format($data->total_retur_beli);
-            })
-
-            ->addColumn('action', function ($data) {
-                return  '<div class="grid grid-cols-2">
-                <button id="btndetail" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '"  >
-                                                        <i class="fas fa-eye tw-text-prim-blue"></i>
-                                                    </button>
-                <a id="btnedit" href="/transaksi/retur-beli/edit/' . $data->id . '" class="mr-4 tw-bg-transparent tw-border-none" >
-                                                        <i class="fa fa-pen tw-text-prim-blue"></i>
-                                                    </a>
-                                                    <button id="btndelete" data-id="' . $data->id . '" data-nama="' . $data->TransBeli->nomor_po . '"
-                                                            class="tw-bg-transparent tw-border-none">
-                                                            <i class="fa fa-trash tw-text-prim-red"></i>
-                                                        </button>
-
-            </div>';
-            })
-            ->rawColumns(['action'])
-            ->make(true);
+        return view('layouts.transaksi.master-jual');
     }
+
+    //Mengambil seluruh data penjualan yang ditambahkan User
     public function data_transaksi_jual()
     {
         $data = TransJual::with('Booking.Customer', 'Pembayaran', 'Piutang.DPiutang', 'ReturJual')->orderBy('tgl_trans_jual', 'desc')->get();
@@ -1076,246 +1419,14 @@ class TransaksiController extends Controller
             ->make(true);
     }
 
-    public function detail_data_hutang($id)
-    {
-        $data = DTransHutang::where('h_hutang_id', $id)->get();
-        return datatables()->of($data)
-            ->addIndexColumn()
-            ->addColumn('tgl_bayar', function ($data) {
-                return  $data->tgl_bayar;
-            })
-            ->addColumn('pembayaran', function($data){
-                $res = $data->Pembayaran->nama_bayar;
-                if($data->Pembayaran->id != '1'){
-                    $res .= '<div><small class="text-danger">Nomor: '.$data->no_giro.'</small></div>';
-                    if($data->tgl_jatuh_tempo != NULL){
-                        $res .= '<div><small>Jatuh Tempo '.$data->tgl_jatuh_tempo.'</small></div>';
-                    }
-                }
-                return $res;
-            })
-            ->addColumn('total_bayar', function ($data) {
-                return $data->total_bayar;
-            })
-            ->addColumn('action', function($data){
-                return '<button id="btnedit" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '">
-                                                        <i class="fa fa-pen tw-text-prim-blue"></i>
-                                                    </button>
-                                                    <button id="btndelete" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '">
-                    <i class="fa fa-trash tw-text-prim-red"></i>
-                </button>';
-            })
-            ->rawColumns(['pembayaran', 'action'])
-            ->make(true);
-    }
-    public function data_hutang()
-    {
-        $data = TransHutang::addSelect(['sum_total' => function ($q) {
-            $q->selectRaw('coalesce(SUM(d_hutang.total_bayar), 0)')
-                ->from('d_hutang')
-                ->whereColumn('d_hutang.h_hutang_id', 'h_hutang.id');
-        }])->get();
-        return datatables()->of($data)
-            ->addIndexColumn()
-            ->addColumn('no_pembelian', function ($data) {
-                return  $data->TransBeli->nomor_po;
-            })
-            ->addColumn('tgl_trans_beli', function ($data) {
-                return $data->TransBeli->tgl_trans_beli;
-            })
-            ->addColumn('supplier', function ($data) {
-                return  $data->TransBeli->Supplier->nama_supplier;
-            })
-            ->addColumn('total_hutang', function ($data) {
-                // return  number_format($data->TransBeli->total - $data->TransBeli->total_bayar);
-                return number_format($data->total_hutang);
-            })
-            ->addColumn('lunas', function ($data) {
-                // return  number_format($data->bayar_hutang);
-                return number_format($data->sum_total);
-            })
-            ->addColumn('sisa_hutang', function ($data) {
-                // return  number_format(($data->TransBeli->total - $data->TransBeli->total_bayar) - $data->bayar_hutang);
-                return (float)$data->total_hutang - (float)$data->sum_total;
-            })
-            ->addColumn('action', function ($data) {
-                $lama =  '<div class="grid grid-cols-2">
-                <button id="btndetail" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '"  >
-                                                        <i class="fas fa-eye tw-text-prim-blue"></i>
-                                                    </button>
-                <a id="btnedit" href="/transaksi/hutang/edit/' . $data->id . '" class="mr-4 tw-bg-transparent tw-border-none" >
-                                                        <i class="fa fa-pen tw-text-prim-blue"></i>
-                                                    </a>
-
-                </div>';
-
-            $sisahutang = (float)$data->total_hutang - (float)$data->sum_total;
-            $res = '<div class="grid grid-cols-3">
-            <button id="btndetail" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '"  >
-                                                        <i class="fas fa-eye tw-text-prim-blue"></i>
-                                                    </button>';
-            if($sisahutang > 0){
-            $res .= '<button id="btnbayar" class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="Hutang ' . $data->TransBeli->no_trans_beli . '" >
-                                                    <i class="fas fa-money-check-alt tw-text-prim-blue"></i>
-                                                </button>';
-            }
-            
-            $res .= '</div>';
-            return $res;
-            })
-            ->rawColumns(['action'])
-            ->make(true);
-    }
-
-    public function detail_data_transaksi_beli($id)
-    {
-        $data = DTransBeli::where('htrans_beli_id', $id)->get();
-        return datatables()->of($data)
-            ->addIndexColumn()
-            ->addColumn('barang', function ($data) {
-                return  $data->Barang->nama_barang;
-            })
-            ->addColumn('jumlah', function ($data) {
-                return  $data->jumlah;
-            })
-            ->addColumn('harga', function ($data) {
-                return number_format($data->harga, 0, ',', '.');
-            })
-            ->addColumn('disc', function ($data) {
-                return  $data->disc . ' %';
-            })
-            ->addColumn('total', function ($data) {
-                return number_format(($data->harga * $data->jumlah) - (($data->harga * $data->jumlah) * $data->disc / 100), 0, ',', '.');
-            })
-            ->make(true);
-    }
-    public function data_transaksi_beli()
-    {
-        $data = TransBeli::with('Supplier', 'Pembayaran', 'ReturBeli', 'TransHutang')->orderBy('tgl_trans_beli', 'desc')->get();
-        return datatables()->of($data)
-            ->addIndexColumn()
-            ->addColumn('tgl_trans_beli', function ($data) {
-                return  $data->tgl_trans_beli;
-            })
-            ->addColumn('tgl_max_garansi', function ($data) {
-                return  $data->tgl_max_garansi;
-            })
-            ->addColumn('total_bayar', function ($data) {
-                return  number_format($data->total);
-            })
-            ->addColumn('nomor_po', function ($data) {
-                return  $data->nomor_po;
-            })
-            ->addColumn('supplier', function ($data) {
-                return  $data->Supplier->nama_supplier;
-            })
-            ->addColumn('pembayaran', function ($data) {
-                $res = $data->Pembayaran->nama_bayar;
-                if($data->no_giro != ''){
-                $res .= '<div><small class="text-danger">Nomor: '.$data->no_giro.'</small></div>';
-                if($data->tgl_jatuh_tempo != NULL){
-                    $res .= '<div><small>Jatuh Tempo '.$data->tgl_jatuh_tempo.'</small></div>';
-                }
-                }
-                return $res;
-            })
-            ->addColumn('action', function ($data) {
-                $lama = '<div class="grid grid-cols-3 tw-contents">
-                                                <a href="' . route('edit-beli', $data->id) . '" class="mr-4 tw-bg-transparent tw-border-none" data-toggle="tooltip" title="Edit">
-                                                    <i class="fa fa-pen tw-text-prim-blue"></i>
-                                                </a>
-                                                <button data-toggle="tooltip" title="Detail"  data-id="' . $data->id . '" id="btndetail" class="tw-mr-4 tw-bg-transparent tw-border-none">
-                                                    <i class="fa fa-info tw-text-prim-black"></i>
-                                                </button>
-                                                <button data-nama="' . $data->nomor_po . '" data-id="' . $data->id . '" data-toggle="tooltip" title="Hapus" class="tw-bg-transparent tw-border-none" id="btndelete">
-                                                    <i class="fa fa-trash tw-text-prim-red"></i>
-                                                </button>
-                                            </div>';
-
-                $res = '<div class="grid grid-cols-4">
-                <button data-toggle="tooltip" title="Detail"  data-id="' . $data->id . '" id="btndetail" class="tw-mr-4 tw-bg-transparent tw-border-none">
-                                                    <i class="fa fa-info tw-text-prim-black"></i>
-                                                </button>
-                                                <a href="/transaksi/beli/nota/'.$data->id.'"><button class="mr-4 tw-bg-transparent tw-border-none" data-id="' . $data->id . '" data-nama="' . $data->no_trans_jual . '" >
-                    <i class="fas fa-file tw-text-prim-blue"></i>
-                </button></a>';
-                // if(!isset($data->TransHutang) || isset($data->TransHutang)){
-                //     if(count($data->ReturBeli) <= 0){
-                    $res .= '<a href="' . route('edit-beli', $data->id) . '" class="mr-4 tw-bg-transparent tw-border-none" data-toggle="tooltip" title="Edit">
-                            <i class="fa fa-pen tw-text-prim-blue"></i>
-                        </a>
-                        <button data-nama="' . $data->nomor_po . '" data-id="' . $data->id . '" data-toggle="tooltip" title="Hapus" class="tw-bg-transparent tw-border-none" id="btndelete">
-                                                    <i class="fa fa-trash tw-text-prim-red"></i>
-                                                </button>';
-                //                             }
-                // }
-                $res .= '</div>';
-                return $res;
-            })
-            ->rawColumns(['action', 'pembayaran'])
-            ->make(true);
-    }
-
-    public function delete_beli(Request $request)
-    {
-        $dth = DTransHutang::whereHas('TransHutang', function($q) use($request){
-            $q->where('htrans_beli_id', $request->id);
-        })->count();
-        $rb = ReturBeli::where('htrans_beli_id', $request->id)->count();
-
-        if($dth > 0 || $rb > 0){
-            return response()->json(['info' => 'error', 'msg' => 'Transaksi ini memiliki Hutang atau Retur']);
-        }
-        else{
-            $dth = TransHutang::where('htrans_beli_id', $request->id)->delete();
-            $dtb = DTransBeli::where('htrans_beli_id', $request->id)->get();
-            if (count($dtb) > 0) {
-                foreach($dtb as $i){
-                    $b = Barang::find($i->barang_id);
-                    $b->stok = $b->stok - $i->jumlah;
-                    $bu = $b->save();
-                }
-                DTransBeli::where('htrans_beli_id', $request->id)->delete();
-            }
-            $tb = TransBeli::find($request->id)->delete();
-            if ($tb) {
-                return response()->json(['info' => 'success', 'msg' => 'Data berhasil di hapus']);
-            } else {
-                return response()->json(['info' => 'error', 'msg' => 'Hapus Gagal, periksa kembali']);
-            }
-        }
-    }
-
-    public function detail_beli($id)
-    {
-        $data = TransBeli::find($id);
-        return view('layouts.modal.beli-modal-detail', ['data' => $data]);
-    }
-
-    public function edit_beli($id)
-    {
-        $dth = DTransHutang::whereHas('TransHutang', function($q) use($id){
-            $q->where('htrans_beli_id', $id);
-        })->count();
-        $rb = ReturBeli::where('htrans_beli_id', $id)->count();
-
-        if($dth > 0 || $rb > 0){
-            return redirect()->back()->with('gagal', 'Gagal Edit');
-        }else{
-            $data = TransBeli::find($id);
-            $supplier = Supplier::all();
-            $barang = Barang::all();
-            $bayar = Pembayaran::all();
-            return view('layouts.transaksi.edit_beli', ['supplier' => $supplier, 'barang' => $barang, 'bayar' => $bayar, 'data' => $data]);
-        }
-    }
-
+    //Mengarahkan user ke view modal Detail Penjualan
     public function detail_jual($id)
     {
         $data = TransJual::where('id', $id)->with('Booking.Customer')->first();
         return view('layouts.modal.jual-modal-detail', ['id' => $id, 'data' => $data]);
     }
 
+    //Mengambil seluruh data detail penjualan sesuai ID Penjualan
     public function data_detail_jual($id)
     {
         $databrg = DTransJual::where('htrans_jual_id', $id)->select('jumlah', 'harga', 'disc', 'promo_id')->addSelect(['nama' => function ($q) {
@@ -1347,22 +1458,10 @@ class TransaksiController extends Controller
             ->make(true);
     }
 
+    //Mengarahkan user ke view Tambah Penjualan
     public function tambah_jual()
     {
         return view('layouts.transaksi.tambah_jual');
-    }
-
-    public function promo_aktif($id, $jenis, $qty){
-        $date = Carbon::now()->toDateString();
-        $promo = NULL;
-        if($jenis == 'barang'){
-            $kb = Barang::where('kode_barang', $id)->first();
-            $promo = Promo::where('tgl_mulai', '<=', $date)->where('tgl_selesai', '>=', $date)->where('barang_id', $kb->id)->where('qty_sk', '<=', $qty)->get();
-        }
-        else{
-            $promo = Promo::where('tgl_mulai', '<=', $date)->where('tgl_selesai', '>=', $date)->where('jasa_id', $id)->get();
-        }
-        echo json_encode($promo);
     }
 
     public function store_jual(Request $r)
@@ -1456,7 +1555,8 @@ class TransaksiController extends Controller
         }
     }
 
-    public function edit_jual($id){
+    public function edit_jual($id)
+    {
         $dpu = DPiutang::whereHas('Piutang', function($q) use($id){
             $q->where('htrans_jual_id', $id);
         })->count();
@@ -1579,7 +1679,8 @@ class TransaksiController extends Controller
         }
     }
 
-    public function delete_jual(Request $r){
+    public function delete_jual(Request $r)
+    {
         $dpu = DPiutang::whereHas('Piutang', function($q) use($r){
             $q->where('htrans_jual_id', $r->id);
         })->count();
@@ -1615,21 +1716,29 @@ class TransaksiController extends Controller
         }
     }
 
-    public function detail_hutang($id)
+    public function nota_jual($id)
     {
-        $data = TransHutang::find($id);
-        return view('layouts.modal.hutang-modal-detail', ['data' => $data]);
+        $jual = TransJual::find($id);
+        $pdf = PDF::loadview('layouts.transaksi.nota-jual', ['jual' => $jual])->setPaper('a4', 'landscape');
+        return $pdf->stream();
     }
 
-    public function transaksi_retur_beli()
+    public function promo_aktif($id, $jenis, $qty)
     {
-        return view('layouts.transaksi.retur-beli');
+        $date = Carbon::now()->toDateString();
+        $promo = NULL;
+        if($jenis == 'barang'){
+            $kb = Barang::where('kode_barang', $id)->first();
+            $promo = Promo::where('tgl_mulai', '<=', $date)->where('tgl_selesai', '>=', $date)->where('barang_id', $kb->id)->where('qty_sk', '<=', $qty)->get();
+        }
+        else{
+            $promo = Promo::where('tgl_mulai', '<=', $date)->where('tgl_selesai', '>=', $date)->where('jasa_id', $id)->get();
+        }
+        echo json_encode($promo);
     }
 
-    public function data_transaksi_retur_beli()
-    {
-    }
 
+    //BOOKING
     public function master_booking()
     {
         return view('layouts.transaksi.master_booking');
@@ -1667,68 +1776,6 @@ class TransaksiController extends Controller
             })
             ->rawColumns(['status', 'action'])
             ->make(true);
-    }
-
-    public function selectdata_hutang(Request $r, $id)
-    {
-        if ($id == 0) {
-            $data = TransBeli::whereHas('TransHutang')->where('nomor_po', 'LIKE', '%' . $r->input('term', '') . '%')->select('id', 'nomor_po')->get();
-            echo json_encode($data);
-        } else {
-            $data = TransBeli::find($id);
-            echo json_encode([
-                'hutang_id' => $data->TransHutang->id,
-                'supplier' => $data->Supplier->nama_supplier,
-                'total' =>  number_format($data->total, 0, ',', '.'),
-                'tgl_transaksi' => $data->tgl_trans_beli,
-                'sisa_hutang' =>  number_format(($data->total - $data->total_bayar) - $data->TransHutang->bayar_hutang, 0, ',', '.')
-            ]);
-        }
-    }
-    public function selectdata_beli(Request $r, $id)
-    {
-        if ($id == 0) {
-            $array = array();
-            $data = TransBeli::where('nomor_po', 'LIKE', '%' . $r->input('term', '') . '%')->select('id', 'nomor_po')->doesntHave('ReturBeli')->get();
-            foreach($data as $key => $i){
-                $array[$key] = array('id' => $i->id, 'nomor_po' => $i->nomor_po);
-            }
-            echo json_encode($array);
-        } else {
-            $array = array();
-            $data = TransBeli::find($id);
-            $tgl_trans_beli_short = Carbon::createFromFormat('Y-m-d', $data->tgl_trans_beli)->isoFormat('D MMMM Y');
-            $tgl_max_garansi_short = Carbon::createFromFormat('Y-m-d', $data->tgl_max_garansi)->isoFormat('D MMMM Y');
-            
-            $array = array(
-                'poid' => $data->id,
-                'supplier' => $data->Supplier->nama_supplier,
-                'alamat' => $data->Supplier->alamat,
-                'telp' => $data->Supplier->telepon,
-                'total' =>  number_format($data->total, 0, ',', '.'),
-                'tgl_transaksi' => $tgl_trans_beli_short,
-                'tgl_max_garansi' =>  $tgl_max_garansi_short,
-                'detail' => array()
-            );
-
-            foreach($data->DTransBeli as $key => $i){
-                $array['detail'][$key] = array(
-                    'id' => $i->barang_id,
-                    'nama' => $i->Barang->nama_barang,
-                    'jumlah' => $i->jumlah,
-                    'harga' => $i->harga
-                );
-            }
-            echo json_encode($array);
-        }
-    }
-
-    public function edit_hutang($id)
-
-    {
-        $data = TransHutang::find($id);
-        $p = Pembayaran::all();
-        return view('layouts.transaksi.edit-hutang', ['data' => $data, 'p' => $p]);
     }
 
     public function tambah_booking()
@@ -1853,7 +1900,6 @@ class TransaksiController extends Controller
             }
         }
     }
-
 
     public function delete_booking(Request $r){
         $id = $r->id;
