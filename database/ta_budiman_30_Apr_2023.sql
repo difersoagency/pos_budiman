@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Apr 16, 2023 at 07:03 PM
+-- Generation Time: Apr 30, 2023 at 12:09 PM
 -- Server version: 10.5.19-MariaDB-cll-lve
 -- PHP Version: 7.4.33
 
@@ -45,21 +45,22 @@ CREATE TABLE `barang` (
 --
 
 INSERT INTO `barang` (`id`, `tipe_id`, `satuan_id`, `merek_id`, `kode_barang`, `nama_barang`, `stok`, `harga_beli`, `harga_jual`) VALUES
-(1, 1, 2, 1, 'F1-OLIMOTOR', 'Super Top Oli Motor', 6, 100000, 120000),
-(2, 1, 3, 1, 'ACCU-0192', 'Accu First Choice', 2, 500000, 540000),
-(3, 4, 1, 4, 'FILTER-AC', 'FILTER AC', -1, 80000, 100000),
-(4, 6, 3, 2, 'wiper brio', 'wiper brio', 10, 15000, 40000),
-(5, 1, 3, 1, 'coba1', 'coba1', 10, 100, 500),
-(6, 1, 3, 1, 'coba2', 'coba2', 7, 500, 1000),
-(7, 8, 4, 7, 'wiper agya', 'wiper agya', 70, 25000, 40000),
-(8, 9, 3, 8, 'ban michelin 200f', 'ban michelin 200f', 15, 200000, 250000),
-(10, 9, 3, 10, 'ban IRC agya', 'ban IRC agya', 4, 200000, 255000),
-(11, 9, 3, 10, 'ban IRC avanza', 'ban IRC avanza', 1, 250000, 300000),
-(12, 8, 3, 7, 'WDA', 'WIPER DEPAN AVANZA', 1, 30000, 50000),
-(13, 1, 2, 8, 'oli123148', 'Oli Motor Top1 Super Oli', 8, 90000, 100000),
-(14, 8, 3, 7, 'wba', 'wiper belakang avanza', 5, 45000, 60000),
-(15, 1, 1, 1, 'DAB2000', 'DAB2000', 0, 50000, 30000),
-(17, 14, 3, 7, 'LMPavz', 'lampu belakang avanza', 6, 50000, 100000);
+(1, 1, 2, 1, 'F1-OLIMOTOR', 'Super Top Oli Motor', 8, 100000, 120000),
+(2, 1, 3, 1, 'ACCU-0192', 'Accu First Choice', -4, 500000, 540000),
+(3, 4, 1, 4, 'FILTER-AC', 'FILTER AC', 2, 80000, 100000),
+(4, 6, 3, 2, 'wiper brio', 'wiper brio', 9, 15000, 40000),
+(5, 1, 3, 1, 'coba1', 'coba1', 8, 100, 500),
+(6, 1, 3, 1, 'coba2', 'coba2', 15, 500, 1000),
+(7, 8, 4, 7, 'wiper agya', 'wiper agya', 74, 25000, 40000),
+(8, 9, 3, 8, 'ban michelin 200f', 'ban michelin 200f', 16, 200000, 250000),
+(10, 9, 3, 10, 'ban IRC agya', 'ban IRC agya', 7, 200000, 255000),
+(11, 9, 3, 10, 'ban IRC avanza', 'ban IRC avanza', 19, 250000, 300000),
+(12, 8, 3, 7, 'WDA', 'WIPER DEPAN AVANZA', -1, 30000, 50000),
+(13, 1, 2, 8, 'oli123148', 'Oli Motor Top1 Super Oli', 10, 90000, 100000),
+(14, 8, 3, 7, 'wba', 'wiper belakang avanza', 6, 45000, 60000),
+(15, 1, 1, 1, 'DAB2000', 'DAB2000', 4, 50000, 30000),
+(17, 14, 3, 7, 'LMPavz', 'lampu belakang avanza', 9, 50000, 100000),
+(19, 4, 3, 14, 'RKRMKTK', 'radiator karimun kotak', 2, 30000, 60000);
 
 -- --------------------------------------------------------
 
@@ -115,7 +116,15 @@ INSERT INTO `booking` (`id`, `no_booking`, `tgl_booking`, `customer_id`) VALUES
 (43, 'BK/IV/2023/001', '2023-04-15', 10),
 (44, 'BK/160423/0001', '2023-04-16', 9),
 (45, 'BK/160423/0002', '2023-04-16', 9),
-(46, 'COBA', '2023-04-16', 1);
+(46, 'COBA', '2023-04-16', 1),
+(47, 'bk/170423/0001', '2023-04-17', 1),
+(49, '000123', '2023-04-18', 3),
+(50, 'bk1904', '2023-04-19', 1),
+(51, 'BK/260423/0001', '2023-04-26', 6),
+(52, 'BK/260423/0002', '2023-04-26', 2),
+(53, 'BK/280423/0001', '2023-04-28', 4),
+(54, 'bk/280423/0002', '2023-04-28', 3),
+(55, '23123', '2023-04-29', 6);
 
 -- --------------------------------------------------------
 
@@ -182,9 +191,9 @@ INSERT INTO `dretur_beli` (`id`, `hretur_beli_id`, `barang_id`, `jumlah`, `harga
 (18, 14, 7, 10, 40000),
 (19, 15, 8, 1, 250000),
 (20, 12, 8, 1, 250000),
-(22, 16, 11, 6, 300000),
-(29, 17, 8, 1, 250000),
-(30, 17, 17, 3, 100000);
+(36, 16, 11, 7, 300000),
+(43, 22, 11, 1, 300000),
+(44, 22, 19, 2, 60000);
 
 -- --------------------------------------------------------
 
@@ -222,8 +231,8 @@ INSERT INTO `dretur_jual` (`hretur_jual_id`, `id`, `barang_id`, `jumlah`, `harga
 (24, 29, 7, 2, 40000),
 (28, 36, 6, 3, 1000),
 (28, 37, 5, 5, 500),
-(27, 38, 3, 1, 100000),
-(27, 39, 12, 2, 50000);
+(30, 44, 7, 1, 40000),
+(30, 45, 13, 2, 100000);
 
 -- --------------------------------------------------------
 
@@ -280,7 +289,14 @@ INSERT INTO `dtrans_beli` (`id`, `htrans_beli_id`, `barang_id`, `jumlah`, `harga
 (127, 50, 8, 4, 250000, 0),
 (128, 50, 17, 5, 100000, 0),
 (129, 49, 12, 2, 50000, 0),
-(130, 49, 13, 1, 100000, 0);
+(130, 49, 13, 1, 100000, 0),
+(131, 52, 10, 3, 255000, 0),
+(132, 52, 7, 3, 40000, 0),
+(133, 52, 14, 3, 60000, 0),
+(136, 53, 10, 12, 255000, 0),
+(137, 53, 11, 10, 300000, 0),
+(138, 54, 11, 5, 300000, 0),
+(139, 54, 19, 5, 60000, 0);
 
 -- --------------------------------------------------------
 
@@ -354,7 +370,20 @@ INSERT INTO `dtrans_jual` (`id`, `htrans_jual_id`, `barang_id`, `promo_id`, `jum
 (106, 63, 6, NULL, 5, 1000, NULL),
 (107, 63, 5, NULL, 5, 500, NULL),
 (108, 61, 3, NULL, 2, 100000, NULL),
-(109, 61, 4, NULL, 4, 40000, NULL);
+(109, 61, 4, NULL, 4, 40000, NULL),
+(110, 64, 10, NULL, 5, 255000, NULL),
+(111, 65, 10, NULL, 5, 255000, NULL),
+(112, 65, 2, NULL, 4, 540000, NULL),
+(115, 67, 10, NULL, 2, 255000, NULL),
+(116, 67, 2, NULL, 1, 540000, NULL),
+(117, 68, 3, NULL, 2, 100000, NULL),
+(118, 69, 1, NULL, 1, 120000, NULL),
+(119, 69, 6, 11, 2, 1000, NULL),
+(120, 69, 19, NULL, 1, 60000, NULL),
+(124, 70, 4, NULL, 1, 40000, NULL),
+(125, 70, 5, NULL, 2, 500, NULL),
+(126, 70, 2, 2, 1, 540000, NULL),
+(127, 71, 14, NULL, 2, 60000, NULL);
 
 -- --------------------------------------------------------
 
@@ -401,7 +430,10 @@ INSERT INTO `dtrans_jual_jasa` (`id`, `htrans_jual_id`, `jasa_id`, `promo_id`, `
 (46, 60, 16, NULL, 5000, NULL),
 (47, 27, 1, NULL, 200000, NULL),
 (49, 62, 13, NULL, 10000, NULL),
-(51, 61, 5, 5, 30000, NULL);
+(51, 61, 5, 5, 30000, NULL),
+(53, 67, 6, 10, 40000, NULL),
+(54, 68, 11, NULL, 5000, NULL),
+(55, 71, 5, 5, 30000, NULL);
 
 -- --------------------------------------------------------
 
@@ -499,7 +531,25 @@ INSERT INTO `d_booking` (`id`, `booking_id`, `barang_id`, `jasa_id`, `jumlah`) V
 (89, 45, 12, NULL, 4),
 (90, 45, NULL, 13, 2),
 (91, 46, 6, NULL, 5),
-(92, 46, 5, NULL, 5);
+(92, 46, 5, NULL, 5),
+(93, 47, 2, NULL, 3),
+(103, 49, 2, NULL, 3),
+(104, 49, 10, NULL, 3),
+(105, 50, 10, NULL, 5),
+(106, 50, 2, NULL, 4),
+(109, 52, 3, NULL, 2),
+(110, 52, NULL, 11, 1),
+(111, 51, 10, NULL, 2),
+(112, 51, NULL, 6, 1),
+(113, 51, 2, NULL, 1),
+(114, 53, 1, NULL, 1),
+(115, 53, 6, NULL, 2),
+(116, 53, 19, NULL, 1),
+(117, 54, 4, NULL, 2),
+(118, 54, 5, NULL, 2),
+(119, 54, 2, NULL, 1),
+(120, 55, 14, NULL, 2),
+(121, 55, NULL, 5, 1);
 
 -- --------------------------------------------------------
 
@@ -542,7 +592,9 @@ INSERT INTO `d_hutang` (`id`, `h_hutang_id`, `pembayaran_id`, `no_giro`, `tgl_ja
 (29, 9, 1, NULL, NULL, '2023-04-11', 30000),
 (30, 3, 3, '23423', NULL, '2023-04-14', 1000),
 (31, 19, 2, '31313', NULL, '2023-04-20', 1000000),
-(32, 25, 2, '42434', NULL, '2023-04-17', 200000);
+(32, 25, 2, '42434', NULL, '2023-04-17', 200000),
+(34, 28, 1, NULL, NULL, '2023-04-26', 200000),
+(35, 29, 3, '23232', NULL, '2023-04-28', 22222);
 
 -- --------------------------------------------------------
 
@@ -582,7 +634,9 @@ INSERT INTO `d_piutang` (`id`, `h_piutang_id`, `pembayaran_id`, `tgl_jatuh_tempo
 (19, 30, 4, '2023-02-28', '42424', '2023-02-27', 240000),
 (20, 29, 1, NULL, NULL, '2023-02-23', 550000),
 (21, 29, 4, '2023-02-28', '3424', '2023-02-22', 350000),
-(25, 40, 1, NULL, NULL, '2023-04-16', 560000);
+(25, 40, 1, NULL, NULL, '2023-04-16', 560000),
+(26, 48, 4, '2023-04-26', '2323', '2023-04-25', 52000),
+(27, 48, 1, NULL, NULL, '2023-04-29', 2222);
 
 -- --------------------------------------------------------
 
@@ -616,8 +670,8 @@ INSERT INTO `hretur_beli` (`id`, `htrans_beli_id`, `tgl_retur_beli`, `total_retu
 (13, 32, '2023-02-06', 500000),
 (14, 30, '2023-02-09', 400000),
 (15, 26, '2023-04-11', 250000),
-(16, 39, '2023-04-15', 1800000),
-(17, 50, '2023-04-16', 550000);
+(16, 39, '2023-04-15', 2100000),
+(22, 54, '2023-04-28', 420000);
 
 -- --------------------------------------------------------
 
@@ -651,8 +705,8 @@ INSERT INTO `hretur_jual` (`id`, `htrans_jual_id`, `no_retur_jual`, `tgl_retur_j
 (19, 40, 'coba', '2023-02-06', 2000),
 (20, 41, '231323', '2023-02-09', 400000),
 (24, 57, '122', '2023-04-15', 280000),
-(27, 62, 'RJ/160423/0001', '2023-04-16', 200000),
-(28, 63, 'sda2', '2023-04-16', 5500);
+(28, 63, 'sda2', '2023-04-16', 5500),
+(30, 51, 'RJ/280423/0001', '2023-04-28', 240000);
 
 -- --------------------------------------------------------
 
@@ -703,7 +757,10 @@ INSERT INTO `htrans_beli` (`id`, `supplier_id`, `pembayaran_id`, `no_giro`, `tgl
 (46, 2, 1, NULL, NULL, 'cobas', '2023-04-15', '2023-04-30', NULL, 1500000, 1500000),
 (49, 8, 1, NULL, NULL, 'BELITEST', '2023-04-15', '2023-07-15', NULL, 200000, 200000),
 (50, 3, 1, NULL, NULL, 'BL/160423/0001', '2023-04-16', '2023-04-30', NULL, 1500000, 1500000),
-(51, 4, 4, '3245352', '2023-04-30', 'BL/160423/0002', '2023-04-16', '2023-04-30', NULL, 0, 700000);
+(51, 4, 4, '3245352', '2023-04-30', 'BL/160423/0002', '2023-04-16', '2023-04-30', NULL, 0, 700000),
+(52, 8, 4, '728391029', '2023-04-22', 'BL/170423/0001', '2023-04-17', '2023-04-30', NULL, 0, 1065000),
+(53, 2, 4, '23323121214w', '2023-05-01', 'BL/260423/0001', '2023-04-26', '2023-05-01', NULL, 0, 6060000),
+(54, 3, 2, '23313', NULL, 'BL/280423/0001', '2023-04-28', '2023-04-30', NULL, 0, 1800000);
 
 -- --------------------------------------------------------
 
@@ -766,7 +823,14 @@ INSERT INTO `htrans_jual` (`id`, `no_trans_jual`, `no_giro`, `tgl_jatuh_tempo`, 
 (60, 'TJ/IV/2023/0001', NULL, NULL, 1, 43, 1, '2023-04-15', '1165000', '1200000', '35000', '2023-07-15'),
 (61, 'JL/160423/0001', NULL, NULL, 1, 44, 3, '2023-04-16', '360000', '400000', '40000', '2023-04-16'),
 (62, 'JL/160423/0002', '22678', '2023-04-22', 4, 45, 3, '2023-04-16', '420000', '0', '0', '2023-04-30'),
-(63, 'jl162', '3434', NULL, 2, 46, 3, '2023-04-16', '7500', '0', '0', '2023-04-30');
+(63, 'jl162', '3434', NULL, 2, 46, 3, '2023-04-16', '7500', '0', '0', '2023-04-30'),
+(64, 'TJ/IV/2023/0008', NULL, NULL, 1, 47, 3, '2023-04-18', '1275000', '127500', '0', '2023-07-18'),
+(65, 'JL190423', '23231', NULL, 2, 50, 3, '2023-04-19', '3435000', '0', '0', '2023-04-30'),
+(67, 'JL/260423/0001', NULL, NULL, 1, 51, 3, '2023-04-26', '1050000', '1100000', '50000', '2023-04-30'),
+(68, 'JL/260423/0002', 'WEQ231313', '2023-05-01', 4, 52, 3, '2023-04-26', '205000', '0', '0', '2023-05-01'),
+(69, 'JL/280423/0001', '3442323', NULL, 2, 53, 3, '2023-04-28', '181000', '0', '0', '2023-04-28'),
+(70, 'JL/280423/0002', NULL, NULL, 1, 54, 3, '2023-04-28', '554000', '570000', '16000', '2023-04-30'),
+(71, 'JL/290423/0001', '2311', NULL, 2, 55, 13, '2023-04-29', '120000', '0', '0', '2023-05-01');
 
 -- --------------------------------------------------------
 
@@ -801,7 +865,10 @@ INSERT INTO `h_hutang` (`id`, `pembayaran_id`, `htrans_beli_id`, `tgl_hutang`, `
 (19, 4, 43, '2023-04-11', '3482500', '1400000'),
 (21, 2, 44, '2023-04-11', '1265000', '1200000'),
 (24, 1, 31, '2023-02-06', '480000', '0'),
-(25, 4, 51, '2023-04-16', '700000', '200000');
+(25, 4, 51, '2023-04-16', '700000', '200000'),
+(26, 4, 52, '2023-04-17', '1065000', '0'),
+(28, 4, 53, '2023-04-26', '6060000', '200000'),
+(29, 2, 54, '2023-04-28', '1800000', '22222');
 
 -- --------------------------------------------------------
 
@@ -842,7 +909,12 @@ INSERT INTO `h_piutang` (`id`, `htrans_jual_id`, `pembayaran_id`, `tgl_piutang`,
 (40, 57, 2, '2023-04-15', '560000'),
 (41, 50, 4, '2023-04-11', '640000'),
 (44, 62, 4, '2023-04-16', '420000'),
-(45, 63, 2, '2023-04-16', '7500');
+(45, 63, 2, '2023-04-16', '7500'),
+(46, 64, 1, '2023-04-18', '1147500'),
+(47, 65, 2, '2023-04-19', '3435000'),
+(48, 68, 4, '2023-04-26', '205000'),
+(49, 69, 2, '2023-04-28', '181000'),
+(50, 71, 2, '2023-04-29', '120000');
 
 -- --------------------------------------------------------
 
@@ -872,7 +944,8 @@ INSERT INTO `jasa` (`id`, `nama_jasa`, `harga`) VALUES
 (13, 'ganti aki', 10000),
 (14, 'pasang lampu', 50000),
 (16, 'pasang aki', 5000),
-(18, 'pasang bumper', 30000);
+(18, 'pasang bumper', 30000),
+(21, 'ganti radiator', 20000);
 
 -- --------------------------------------------------------
 
@@ -905,7 +978,10 @@ INSERT INTO `koreksi` (`id`, `barang_id`, `tgl_koreksi`, `jumlah`, `jenis`, `ket
 (9, 10, '2023-04-12', 2, 'out', NULL),
 (10, 10, '2023-04-15', 22, 'in', 'sdas'),
 (11, 10, '2023-04-15', 22, 'out', 'dad'),
-(12, 3, '2023-04-16', 11, 'in', NULL);
+(12, 3, '2023-04-16', 11, 'in', NULL),
+(13, 10, '2023-04-26', 4, 'in', 'TAMBAH'),
+(14, 6, '2023-04-28', 12, 'in', 'W'),
+(15, 6, '2023-04-28', 2, 'out', NULL);
 
 -- --------------------------------------------------------
 
@@ -1486,7 +1562,8 @@ INSERT INTO `merek` (`id`, `kode_merek`, `nama_merek`) VALUES
 (11, 'dunlop', 'dunlop'),
 (13, 'mth', 'mitshubishi'),
 (14, 'dts', 'datsun'),
-(15, 'wlg', 'wuling');
+(15, 'wlg', 'wuling'),
+(19, 'suzuki', 'suzuki');
 
 -- --------------------------------------------------------
 
@@ -1568,7 +1645,9 @@ INSERT INTO `promo` (`id`, `kode_promo`, `tgl_mulai`, `tgl_selesai`, `nama_promo
 (5, 'GSW', '2023-04-11', '2023-04-30', 'free ganti wiper', NULL, 5, 1, '100'),
 (6, 'bag', '2023-01-30', '2023-02-04', 'bag', 10, NULL, 1, '10'),
 (8, 'WDAAPRL', '2023-04-01', '2023-04-30', 'wiper depan promo april', 12, NULL, 1, '25'),
-(9, 'OL1', '2023-04-15', '2023-04-30', 'oli motor 1 get 1', 13, NULL, 2, '50');
+(9, 'OL1', '2023-04-15', '2023-04-30', 'oli motor 1 get 1', 13, NULL, 2, '50'),
+(10, 'GB', '2023-04-26', '2023-05-06', 'gratis ganti ban', NULL, 6, 1, '100'),
+(11, 'cbgrts', '2023-04-28', '2023-05-06', 'coba gratis', 6, NULL, 1, '50');
 
 -- --------------------------------------------------------
 
@@ -1615,7 +1694,12 @@ INSERT INTO `subtitusi` (`tgl_subtitusi`, `id`, `barang_id_1`, `barang_id_2`) VA
 ('2023-01-27', 6, 5, 6),
 ('2023-03-15', 7, 8, 10),
 ('2023-04-11', 8, 10, 8),
-('2023-04-16', 11, 3, 1);
+('2023-04-16', 11, 3, 1),
+('2023-04-17', 12, 10, 11),
+('2023-04-17', 13, 2, 15),
+('2023-04-26', 14, 5, 2),
+('2023-04-26', 15, 5, 2),
+('2023-04-28', 18, 17, 15);
 
 -- --------------------------------------------------------
 
@@ -1669,7 +1753,9 @@ INSERT INTO `tipe` (`id`, `kode_tipe`, `nama_tipe`) VALUES
 (8, 'wiper', 'wiper'),
 (9, 'ban', 'ban'),
 (12, 'skok', 'skok'),
-(14, 'lampu', 'lampu');
+(14, 'lampu', 'lampu'),
+(19, 'drl', 'drl'),
+(20, 'spion', 'spion');
 
 -- --------------------------------------------------------
 
@@ -1700,7 +1786,7 @@ INSERT INTO `user` (`id`, `username`, `level_user_id`, `pegawai_id`, `email`, `e
 (3, 'owner1', 1, 4, 'owner@gmail.com', '2022-08-30 06:49:13', '$2y$10$vN1IiVyQTwxcKejwo6HJE.UCpqxU/YT4c/l4/DwSzinnqr/AaKGeu', NULL, NULL, NULL),
 (6, 'coba', 3, 10, 'coba@gmail.com', NULL, '$2y$10$C1wcFUjjlox8bOF6mBmy6..cVUstvBkJkQ7nLuB782OkjzInNvPu.', NULL, '2023-01-30 05:49:32', '2023-01-30 05:49:32'),
 (10, 'andri', 2, 11, 'andri@gmail.com', NULL, '$2y$10$usvbPRnSz/KGX.JmpfPvGOs3okzetDxGZm8jhmQWPbVuRemSHm4/e', NULL, '2023-04-14 18:45:53', '2023-04-14 18:45:53'),
-(11, 'budiman', 3, 8, 'budimanwicaksono@gmail.com', NULL, '$2y$10$y2KZ6KE.n9xYInzSwCq/HOGTJE98nT410HzZKDXiOkzKIWsVR.XtC', NULL, '2023-04-14 18:47:00', '2023-04-14 18:47:00');
+(13, 'budiman', 3, 8, 'budimanwicaksono@gmail.com', NULL, '$2y$10$q5VXfIGOKnVcLTr7QAbe..YVAP0uwj77YeNFSDL.GbL2.TYCH3Wpm', NULL, '2023-04-28 04:38:58', '2023-04-28 04:38:58');
 
 --
 -- Indexes for dumped tables
@@ -1932,115 +2018,115 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `barang`
 --
 ALTER TABLE `barang`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `booking`
 --
 ALTER TABLE `booking`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 
 --
 -- AUTO_INCREMENT for table `customer`
 --
 ALTER TABLE `customer`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `dretur_beli`
 --
 ALTER TABLE `dretur_beli`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- AUTO_INCREMENT for table `dretur_jual`
 --
 ALTER TABLE `dretur_jual`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- AUTO_INCREMENT for table `dtrans_beli`
 --
 ALTER TABLE `dtrans_beli`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=131;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=140;
 
 --
 -- AUTO_INCREMENT for table `dtrans_jual`
 --
 ALTER TABLE `dtrans_jual`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=110;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=128;
 
 --
 -- AUTO_INCREMENT for table `dtrans_jual_jasa`
 --
 ALTER TABLE `dtrans_jual_jasa`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 
 --
 -- AUTO_INCREMENT for table `d_booking`
 --
 ALTER TABLE `d_booking`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=93;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=122;
 
 --
 -- AUTO_INCREMENT for table `d_hutang`
 --
 ALTER TABLE `d_hutang`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT for table `d_piutang`
 --
 ALTER TABLE `d_piutang`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `hretur_beli`
 --
 ALTER TABLE `hretur_beli`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `hretur_jual`
 --
 ALTER TABLE `hretur_jual`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `htrans_beli`
 --
 ALTER TABLE `htrans_beli`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
 
 --
 -- AUTO_INCREMENT for table `htrans_jual`
 --
 ALTER TABLE `htrans_jual`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
 
 --
 -- AUTO_INCREMENT for table `h_hutang`
 --
 ALTER TABLE `h_hutang`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT for table `h_piutang`
 --
 ALTER TABLE `h_piutang`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- AUTO_INCREMENT for table `jasa`
 --
 ALTER TABLE `jasa`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `koreksi`
 --
 ALTER TABLE `koreksi`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `kota`
@@ -2058,13 +2144,13 @@ ALTER TABLE `level_user`
 -- AUTO_INCREMENT for table `merek`
 --
 ALTER TABLE `merek`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `pegawai`
 --
 ALTER TABLE `pegawai`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `pembayaran`
@@ -2076,37 +2162,37 @@ ALTER TABLE `pembayaran`
 -- AUTO_INCREMENT for table `promo`
 --
 ALTER TABLE `promo`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `satuan`
 --
 ALTER TABLE `satuan`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `subtitusi`
 --
 ALTER TABLE `subtitusi`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `supplier`
 --
 ALTER TABLE `supplier`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `tipe`
 --
 ALTER TABLE `tipe`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- Constraints for dumped tables

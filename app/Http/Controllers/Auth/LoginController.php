@@ -74,6 +74,7 @@ class LoginController extends Controller
 
     public function authenticated()
     {
+        //mengatur login setiap user
         if (auth()->user()->level_user_id == '1') {
             return redirect()->route('home_owner');
         } else if (auth()->user()->level_user_id == '2') {

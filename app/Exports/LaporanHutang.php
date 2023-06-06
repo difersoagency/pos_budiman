@@ -19,6 +19,10 @@ use DB;
 
 class LaporanHutang implements FromView, ShouldAutoSize, WithStyles, WithEvents, WithTitle
 {
+    public function supplier()
+    {
+        return $this->supplier;
+    }
     public function tgl_awal()
     {
         return $this->tgl_awal;
@@ -28,8 +32,9 @@ class LaporanHutang implements FromView, ShouldAutoSize, WithStyles, WithEvents,
         return $this->tgl_akhir;
     }
 
-    public function __construct(string $tgl_awal, string $tgl_akhir)
+    public function __construct(string $supplier, string $tgl_awal, string $tgl_akhir)
     {
+        $this->supplier = $supplier;
         $this->tgl_awal = $tgl_awal;
         $this->tgl_akhir = $tgl_akhir;
     }
@@ -95,8 +100,31 @@ class LaporanHutang implements FromView, ShouldAutoSize, WithStyles, WithEvents,
     {
         $from = date($this->tgl_awal);
         $to = date($this->tgl_akhir);
+        $supplier = $this->supplier;
         $array = array();
-        $data = DB::table('d_hutang')
+        $data = "";
+        if($supplier != "0"){
+            $data = DB::table('d_hutang')
+                ->join('h_hutang', 'h_hutang.id', '=', 'd_hutang.h_hutang_id')
+                ->join('htrans_beli', 'htrans_beli.id', '=', 'h_hutang.htrans_beli_id')
+                ->join('supplier', 'supplier.id', '=', 'htrans_beli.supplier_id')
+                ->join('pembayaran', 'pembayaran.id', '=', 'd_hutang.pembayaran_id')
+                ->whereBetween('d_hutang.tgl_bayar', [$from, $to])
+                ->where('supplier.id', $supplier)
+                ->select('htrans_beli.id as id_trans_beli',
+                'htrans_beli.nomor_po as no_po',
+                'supplier.nama_supplier as supplier',
+                'd_hutang.tgl_bayar as tgl_bayar',
+                'pembayaran.nama_bayar as pembayaran',
+                'd_hutang.no_giro as no_giro',
+                'd_hutang.tgl_jatuh_tempo as tgl_jatuh_tempo',
+                'd_hutang.total_bayar as total_bayar'
+                )
+                ->orderByRaw('htrans_beli.id ASC, d_hutang.tgl_bayar ASC')
+                ->get();
+        }
+        else{
+            $data = DB::table('d_hutang')
                 ->join('h_hutang', 'h_hutang.id', '=', 'd_hutang.h_hutang_id')
                 ->join('htrans_beli', 'htrans_beli.id', '=', 'h_hutang.htrans_beli_id')
                 ->join('supplier', 'supplier.id', '=', 'htrans_beli.supplier_id')
@@ -113,6 +141,8 @@ class LaporanHutang implements FromView, ShouldAutoSize, WithStyles, WithEvents,
                 )
                 ->orderByRaw('htrans_beli.id ASC, d_hutang.tgl_bayar ASC')
                 ->get();
+        }
+        
         $currid = "";
         $count = 0;
         $c = 0;

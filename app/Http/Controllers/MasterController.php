@@ -35,6 +35,13 @@ use Carbon\Carbon;
 
 class MasterController extends Controller
 {   
+    public function archive_master()
+    {
+        return view('layouts.archive.archive_master');
+    }
+
+    //DASHBOARD
+    //mengambil seluruh data transaksi penjualan dan pembelian yang jatuh temponya kurang dari 7 hari
     public function all_jatuh_tempo(){
         $data = array();
         $c = 0;
@@ -69,6 +76,8 @@ class MasterController extends Controller
 
         return response()->json(['notif' => $data]);
     }
+    
+    //mengambil data transaksi jual yang belum lunas piutangnya
     public function jual_dashboard(){
         $data = TransJual::with('Booking.Customer')->addSelect(['count_piutang' => function ($q) {
             $q->selectRaw('coalesce(SUM(total_bayar),0)')
@@ -119,6 +128,7 @@ class MasterController extends Controller
             ->make(true);
     }
 
+    //mengambil data transaksi beli yang belum lunas hutangnya
     public function beli_dashboard(){
         $data = TransBeli::with('Supplier', 'Pembayaran', 'ReturBeli')->whereDate('tgl_jatuh_tempo', '>=', date('Y-m-d'))->whereNotNull('tgl_jatuh_tempo')
                 ->addSelect(['count_hutang'  => function ($q) { $q->selectRaw('coalesce(h_hutang.bayar_hutang,0)')
@@ -168,6 +178,7 @@ class MasterController extends Controller
             ->make(true);
     }
 
+    //mengambil data barang dengan stok paling sedikit (10 data)
     public function barang_dashboard(){
         $data = Barang::orderBy('stok', 'ASC')->limit(10)->get();
         return datatables()->of($data)
@@ -208,304 +219,17 @@ class MasterController extends Controller
             ->rawColumns(['button'])
             ->make(true);
     }
-    public function barang_select(Request $r)
-    {
-        $d1 = Barang::where('nama_barang', 'LIKE', '%' . $r->input('term', '') . '%')->selectRaw('kode_barang as id_item, nama_barang as nama, IF(id IS NULL, "", "barang") as jenis, stok as stok, harga_jual as harga')->get();
-        $d2 = Jasa::where('nama_jasa', 'LIKE', '%' . $r->input('term', '') . '%')->selectRaw('id as id_item, nama_jasa as nama, IF(id IS NULL, "", "jasa") as jenis, harga as harga')->get();
-        $data = array();
-        $count = 0;
-        if (count($d1) > 0) {
-            $count = count($d1);
-            foreach ($d1 as $key => $d) {
-                $data[$key] = array(
-                    'id' => $d->id_item,
-                    'nama' => $d->nama,
-                    'stok' => $d->stok,
-                    'jenis' => $d->jenis,
-                    'harga' => $d->harga
-                );
-            }
-        }
-        if (count($d2) > 0) {
-            foreach ($d2 as $key => $d) {
-                $data[$count + $key] = array(
-                    'id' => $d->id_item,
-                    'nama' => $d->nama,
-                    'stok' => 100000000,
-                    'jenis' => $d->jenis,
-                    'harga' => $d->harga
-                );
-            }
-        }
-        return response()->json($data);
-    }
 
-    public function customer_select(Request $r)
-    {
-        $data = Customer::where('nama_customer', 'LIKE', '%' . $r->input('term', '') . '%')->select('id', 'nama_customer')->get();
-        echo json_encode($data);
-    }
-
-    public function garansi_transaksi_jual_select()
-    {
-        $date = Carbon::now()->toDateString();
-        $res = TransJual::where('tgl_max_garansi', '>=', $date)->with('Booking.Customer', 'DTransJual.Barang')->has('DTransJual')->doesntHave('ReturJual')->get();
-        $data = array();
-
-        foreach ($res as $i => $p) {
-            $data[$i] = array(
-                'id' => $p->id,
-                'no_trans_jual' => $p->no_trans_jual,
-                'tgl_trans_jual' => $p->tgl_trans_jual,
-                'tgl_max_garansi' => $p->tgl_max_garansi,
-                'customer' => $p->Booking->Customer->nama_customer,
-                'alamat' => $p->Booking->Customer->alamat,
-                'telepon' => $p->Booking->Customer->telepon,
-                'detail' => array()
-            );
-            foreach ($p->DTransJual as $key => $d) {
-                $data[$i]['detail'][$key] = array(
-                    'id' => $d->barang_id,
-                    'text' => $d->Barang->nama_barang,
-                    'jumlah' => $d->jumlah,
-                    'harga' => $d->harga,
-                    'disc' => $d->disc
-                );
-            }
-        }
-
-        return response()->json($data);
-    }
-
-    public function get_d_trans_jual($id)
-    {
-        $data = array();
-        $p = DTransJual::where('htrans_jual_id', $id)->get();
-        foreach ($p as $key => $d) {
-            $data[$key] = array(
-                'id' => $d->barang_id,
-                'text' => $d->Barang->nama_barang,
-                'jumlah' => $d->jumlah,
-                'harga' => $d->harga,
-                'disc' => $d->disc
-            );
-        }
-        return response()->json($data);
-    }
-    public function booking_select(Request $r)
-    {
-        $data = Booking::doesntHave('TransJual')->with('Customer', 'DBooking.Barang', 'DBooking.Jasa')->where('no_booking', 'LIKE', '%' . $r->input('term', '') . '%')->get();
-        echo json_encode($data);
-    }
-
-    public function pembayaran_select(Request $r)
-    {
-        $data = Pembayaran::where('nama_bayar', 'LIKE', '%' . $r->input('term', '') . '%')->get();
-        echo json_encode($data);
-    }
-
-    public function master_barang()
-    {
-        $merek = Merek::all();
-        return view('layouts.master.barang', ['merek' => $merek]);
-    }
-
+    //CUSTOMER
+    //menampilkan halaman master customer
     public function master_customer()
     {
         // $kota = Kota::Has('Customer')->get();
         $kota = Kota::all();
         return view('layouts.master.customer', ['kota' => $kota]);
     }
-    public function master_supplier()
-    {
-        // $kota = Kota::Has('Supplier')->get();
-        $kota = Kota::all();
-        return view('layouts.master.supplier', ['kotas' => $kota]);
-    }
-    public function customer_create()
-    {
-        $kota = Kota::all();
-        return view('layouts.modal.customer-modal-create', ['kota' => $kota]);
-    }
-    public function koreksi_create()
-    {
-        $kota = Kota::all();
-        return view('layouts.modal.koreksi-modal-create', ['kota' => $kota]);
-    }
 
-    public function substitusi_data()
-    {
-        $data = Subtitusi::all();
-        return datatables()->of($data)
-            ->addIndexColumn()
-            ->editColumn('tgl_subtitusi', function ($data) {
-                return $data->tgl_subtitusi;
-            })
-            ->editColumn('barang_id_1', function ($data) {
-                return $data->Barang1->nama_barang;
-            })
-            ->editColumn('barang_id_2', function ($data) {
-                return $data->Barang2->nama_barang;
-            })
-            ->addColumn('button', function ($data) {
-                return ' <div class="grid grid-cols-2 tw-contents">
-                    <button href="" class="mr-4 tw-bg-transparent tw-border-none" data-toggle="modal" id="editButton">
-                        <i class="fa fa-pen tw-text-prim-blue"></i>
-                    </button>
-                    <button data-toggle="modal" class="tw-bg-transparent tw-border-none" id="deletebutton">
-                        <i class="fa fa-trash tw-text-prim-red"></i>
-                    </button>
-                </div>';
-            })
-            ->rawColumns(['button'])
-            ->make(true);
-    }
-
-    public function substitusi_create()
-    {
-        $barang = Barang::all();
-        return view('layouts.modal.substitusi-modal-create', ['barang' => $barang]);
-    }
-
-    public function substitusi_store(Request $r)
-    {
-        $validator = Validator::make($r->all(), [
-            'tgl_subtitusi' => ['required'],
-            'barang_id_1' => ['required'],
-            'barang_id_2' => ['required']
-        ]);
-        if ($validator->fails()) {
-            return response()->json(['data' => 'error', 'msg' => "Periksa dan Pastikan data telah diisi dengan benar"]);
-        } else {
-            $c = Subtitusi::create([
-                'tgl_subtitusi' => $r->tgl_subtitusi,
-                'barang_id_1' => $r->barang_id_1,
-                'barang_id_2' => $r->barang_id_2
-            ]);
-
-            if ($c) {
-                return response()->json(['data' => 'success', 'msg' => "Data berhasil di tambah"]);
-            } else {
-                return response()->json(['data' => 'error', 'msg' => "Tambah data Gagal, periksa kembali"]);
-            }
-        }
-    }
-
-    public function substitusi_edit($id)
-    {
-        $data = Subtitusi::find($id);
-        $barang = Barang::all();
-        return view('layouts.modal.substitusi-modal-edit', ['barang' => $barang, 'data' => $data]);
-    }
-
-    public function substitusi_update(Request $r, $id)
-    {
-        $validator = Validator::make($r->all(), [
-            'tgl_subtitusi' => ['required'],
-            'barang_id_1' => ['required'],
-            'barang_id_2' => ['required']
-        ]);
-        if ($validator->fails()) {
-            return response()->json(['data' => 'error', 'msg' => "Periksa dan Pastikan data telah diisi dengan benar"]);
-        } else {
-            $u = Subtitusi::find($id);
-            $u->tgl_subtitusi = $r->tgl_subtitusi;
-            $u->barang_id_1 = $r->barang_id_1;
-            $u->barang_id_2 = $r->barang_id_2;
-            $u->save();
-
-            if ($u) {
-                return response()->json(['data' => 'success', 'msg' => "Data berhasil di Ubah"]);
-            } else {
-                return response()->json(['data' => 'error', 'msg' => "Ubah data Gagal, periksa kembali"]);
-            }
-        }
-    }
-
-    public function substitusi_delete(Request $request)
-    {
-        $b = Subtitusi::find($request->id);
-        $delete = $b->delete();
-        if ($delete) {
-            return response()->json(['info' => 'success', 'msg' => 'Data berhasil di hapus']);
-        } else {
-            return response()->json(['info' => 'error', 'msg' => 'Hapus Gagal, periksa kembali']);
-        }
-    }
-
-    public function subtitusi_cek($id, $jumlah)
-    {
-        $data = array();
-        $count = 0;
-        
-        $brg1 = Subtitusi::whereHas('Barang2', function($q) use($id){
-            $q->where('kode_barang', $id);
-        })->whereHas('Barang1', function($q) use($jumlah){
-            $q->where('stok', '>', $jumlah);
-        })->get();
-        $brg2 = Subtitusi::whereHas('Barang1', function($q) use($id){
-            $q->where('kode_barang', $id);
-        })->whereHas('Barang2', function($q) use($jumlah){
-            $q->where('stok', '>', $jumlah);
-        })->get();
-        foreach($brg1 as $i){
-            $data[$count] = $i->Barang1->nama_barang." (".$i->Barang1->stok." pcs)";
-            $count++;
-        }
-        foreach($brg2 as $i){
-            $data[$count] = $i->Barang2->nama_barang." (".$i->Barang2->stok." pcs)";
-            $count++;
-        }
-        return response()->json(['data' => $data]);
-    }
-
-    public function customer_edit($id)
-    {
-        $kota = Kota::all();
-        $data = Customer::find($id);
-        return view('layouts.modal.customer-modal-edit', ['kota' => $kota, 'data' => $data]);
-    }
-    public function promo_create()
-    {
-        $data = Barang::all();
-        $jasa = Jasa::all();
-        return view('layouts.modal.promo-modal-create', ['data' => $data, 'jasa' => $jasa]);
-    }
-
-    public function promo_edit($id)
-    {
-        $data = Promo::find($id);
-        $barang = Barang::all();
-        $jasa = Jasa::all();
-        return view('layouts.modal.promo-modal-edit', ['data' => $data, 'barang' => $barang, 'jasa' => $jasa]);
-    }
-    public function customer_store(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'nama_customer' => ['required', 'unique:customer,nama_customer'],
-            'alamat' => ['required'],
-            'kota_id' => ['required'],
-            'telepon' => ['required']
-        ]);
-        if ($validator->fails()) {
-            return response()->json(['data' => 'error', 'msg' => "Periksa dan Pastikan data yang sudah diisi dengan benar"]);
-        } else {
-            $c = Customer::create([
-                'nama_customer' => $request->nama_customer,
-                'alamat' => $request->alamat,
-                'kota_id' => $request->kota_id,
-                'telepon' => $request->telepon,
-            ]);
-
-            if ($c) {
-                return response()->json(['data' => 'success', 'msg' => "Data berhasil di Tambah"]);
-            } else {
-                return response()->json(['data' => 'error', 'msg' => "Tambah data Gagal, periksa kembali"]);
-            }
-        }
-    }
-
-
+    //mengambil seluruh data customer yang ada di database
     public function customer_data($id)
     {
         if ($id != 0) {
@@ -544,6 +268,49 @@ class MasterController extends Controller
             ->make(true);
     }
 
+    //menampilkan view tambah customer
+    public function customer_create()
+    {
+        $kota = Kota::all();
+        return view('layouts.modal.customer-modal-create', ['kota' => $kota]);
+    }
+
+    //menyimpan data customer yang ditambahkan
+    public function customer_store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'nama_customer' => ['required', 'unique:customer,nama_customer'],
+            'alamat' => ['required'],
+            'kota_id' => ['required'],
+            'telepon' => ['required']
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['data' => 'error', 'msg' => "Periksa dan Pastikan data yang sudah diisi dengan benar"]);
+        } else {
+            $c = Customer::create([
+                'nama_customer' => $request->nama_customer,
+                'alamat' => $request->alamat,
+                'kota_id' => $request->kota_id,
+                'telepon' => $request->telepon,
+            ]);
+
+            if ($c) {
+                return response()->json(['data' => 'success', 'msg' => "Data berhasil di Tambah"]);
+            } else {
+                return response()->json(['data' => 'error', 'msg' => "Tambah data Gagal, periksa kembali"]);
+            }
+        }
+    }
+
+    //menampilkan view edit customer
+    public function customer_edit($id)
+    {
+        $kota = Kota::all();
+        $data = Customer::find($id);
+        return view('layouts.modal.customer-modal-edit', ['kota' => $kota, 'data' => $data]);
+    }
+
+    //menyimpan data customer yang diedit
     public function customer_update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
@@ -568,6 +335,7 @@ class MasterController extends Controller
         }
     }
 
+    //menghapus data customer berdasarkan id yang dikirim
     public function customer_delete(Request $request)
     {
         $b = Customer::find($request->id);
@@ -579,79 +347,155 @@ class MasterController extends Controller
         }
     }
 
-    public function master_tipe_data()
+     
+    //SUBTITUSI
+    //menampilkan halaman master subtitusi
+    public function master_substitusi()
     {
-        $data = Tipe::all();
+        return view('layouts.master.substitusi');
+    }
+
+    //mengambil seluruh data subtitusi yang ada di database
+    public function substitusi_data()
+    {
+        $data = Subtitusi::all();
         return datatables()->of($data)
             ->addIndexColumn()
-            ->addColumn('action', function ($data) {
-                return  '<div class="grid grid-cols-2">
-                    <button id="btnedit" class="mr-4 tw-bg-transparent tw-border-none"
-                    data-id="' . $data->id . '"   data-nama="' . $data->nama_tipe . '" >
+            ->editColumn('tgl_subtitusi', function ($data) {
+                return $data->tgl_subtitusi;
+            })
+            ->editColumn('barang_id_1', function ($data) {
+                return $data->Barang1->nama_barang;
+            })
+            ->editColumn('barang_id_2', function ($data) {
+                return $data->Barang2->nama_barang;
+            })
+            ->addColumn('button', function ($data) {
+                return ' <div class="grid grid-cols-2 tw-contents">
+                    <button href="" class="mr-4 tw-bg-transparent tw-border-none" data-toggle="modal" id="editButton">
                         <i class="fa fa-pen tw-text-prim-blue"></i>
                     </button>
-                    <button id="btndelete" class="mr-4 tw-bg-transparent tw-border-none"
-                    data-id="' . $data->id . '"   data-nama="' . $data->nama_barang . '" >
+                    <button data-toggle="modal" class="tw-bg-transparent tw-border-none" id="deletebutton">
                         <i class="fa fa-trash tw-text-prim-red"></i>
                     </button>
                 </div>';
             })
-            ->rawColumns(['action'])
+            ->rawColumns(['button'])
             ->make(true);
     }
 
-    public function master_kota_data()
+    //menampilkan view tambah subtitusi
+    public function substitusi_create()
     {
-        $data = Kota::all();
-        return datatables()->of($data)
-            ->addIndexColumn()
-            ->addColumn('action', function ($data) {
-                return  '<div class="grid grid-cols-2">
-                    <a href="/api/kota/edit/' . $data->kode_kota . '" class="mr-4">
-                        <i class="fa fa-pen tw-text-prim-blue"></i>
-                    </a>
-                    <a href="/api/kota/delete/' . $data->kode_kota . '">
-                        <i class="fa fa-trash tw-text-prim-red"></i>
-                    </a>
-                </div>';
-            })
-            ->rawColumns(['action'])
-            ->make(true);
+        $barang = Barang::all();
+        return view('layouts.modal.substitusi-modal-create', ['barang' => $barang]);
     }
 
-
-
-
-    public function promo_store(Request $request)
+    //menyimpan data subtitusi yang ditambahkan
+    public function substitusi_store(Request $r)
     {
-        $validator = Validator::make($request->all(), [
-            'kode_promo' => ['required'],
-            'tgl_mulai' => ['required'],
-            'tgl_selesai' => ['required'],
-            'qty_sk' => ['required'],
-            'disc' => ['required'],
+        $validator = Validator::make($r->all(), [
+            'tgl_subtitusi' => ['required'],
+            'barang_id_1' => ['required'],
+            'barang_id_2' => ['required']
         ]);
         if ($validator->fails()) {
-            return response()->json(['data' => 'error', 'msg' => "Periksa dan Pastikan data yang sudah diisi dengan benar"]);
+            return response()->json(['data' => 'error', 'msg' => "Periksa dan Pastikan data telah diisi dengan benar"]);
         } else {
-            $c = Promo::create([
-                'kode_promo' => $request->kode_promo,
-                'tgl_mulai' => $request->tgl_mulai,
-                'tgl_selesai' => $request->tgl_selesai,
-                'nama_promo' => $request->nama_promo,
-                'barang_id' => $request->barang_id,
-                'jasa_id' => $request->jasa_id,
-                'qty_sk' => $request->qty_sk,
-                'disc' => $request->disc,
+            $c = Subtitusi::create([
+                'tgl_subtitusi' => $r->tgl_subtitusi,
+                'barang_id_1' => $r->barang_id_1,
+                'barang_id_2' => $r->barang_id_2
             ]);
 
             if ($c) {
-                return response()->json(['data' => 'success', 'msg' => "Data berhasil di Tambah"]);
+                return response()->json(['data' => 'success', 'msg' => "Data berhasil di tambah"]);
             } else {
                 return response()->json(['data' => 'error', 'msg' => "Tambah data Gagal, periksa kembali"]);
             }
         }
     }
+
+    //menampilkan view edit subtitusi
+    public function substitusi_edit($id)
+    {
+        $data = Subtitusi::find($id);
+        $barang = Barang::all();
+        return view('layouts.modal.substitusi-modal-edit', ['barang' => $barang, 'data' => $data]);
+    }
+
+    //menyimpan data subtitusi yang di edit
+    public function substitusi_update(Request $r, $id)
+    {
+        $validator = Validator::make($r->all(), [
+            'tgl_subtitusi' => ['required'],
+            'barang_id_1' => ['required'],
+            'barang_id_2' => ['required']
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['data' => 'error', 'msg' => "Periksa dan Pastikan data telah diisi dengan benar"]);
+        } else {
+            $u = Subtitusi::find($id);
+            $u->tgl_subtitusi = $r->tgl_subtitusi;
+            $u->barang_id_1 = $r->barang_id_1;
+            $u->barang_id_2 = $r->barang_id_2;
+            $u->save();
+
+            if ($u) {
+                return response()->json(['data' => 'success', 'msg' => "Data berhasil di Ubah"]);
+            } else {
+                return response()->json(['data' => 'error', 'msg' => "Ubah data Gagal, periksa kembali"]);
+            }
+        }
+    }
+
+    //menghapus data subtitusi berdasarkan id yang dikirim
+    public function substitusi_delete(Request $request)
+    {
+        $b = Subtitusi::find($request->id);
+        $delete = $b->delete();
+        if ($delete) {
+            return response()->json(['info' => 'success', 'msg' => 'Data berhasil di hapus']);
+        } else {
+            return response()->json(['info' => 'error', 'msg' => 'Hapus Gagal, periksa kembali']);
+        }
+    }
+
+    //mengecek seluruh barang yang bisa disubtitusi berdasarkan id dan jumlah yang diminta
+    public function subtitusi_cek($id, $jumlah)
+    {
+        $data = array();
+        $count = 0;
+        
+        $brg1 = Subtitusi::whereHas('Barang2', function($q) use($id){
+            $q->where('kode_barang', $id);
+        })->whereHas('Barang1', function($q) use($jumlah){
+            $q->where('stok', '>', $jumlah);
+        })->get();
+        $brg2 = Subtitusi::whereHas('Barang1', function($q) use($id){
+            $q->where('kode_barang', $id);
+        })->whereHas('Barang2', function($q) use($jumlah){
+            $q->where('stok', '>', $jumlah);
+        })->get();
+        foreach($brg1 as $i){
+            $data[$count] = $i->Barang1->nama_barang." (".$i->Barang1->stok." pcs)";
+            $count++;
+        }
+        foreach($brg2 as $i){
+            $data[$count] = $i->Barang2->nama_barang." (".$i->Barang2->stok." pcs)";
+            $count++;
+        }
+        return response()->json(['data' => $data]);
+    }
+
+    //PROMO
+    //menampilkan halaman master promo
+    public function master_promo()
+    {
+        return view('layouts.master.promo');
+    }
+
+    //untuk mengambil seluruh data promo
     public function promo_data($tgl_min, $tgl_max)
     {
         $data = NULL;
@@ -664,7 +508,7 @@ class MasterController extends Controller
         else if($tgl_min != "0" && $tgl_max == "0"){
             $data = Promo::with('Barang')->where('tgl_mulai', '<=', $tgl_min)->get();
         }
-        else if($tgl_min != "0" && $tgl_max == "0"){
+        else if($tgl_min == "0" && $tgl_max != "0"){
             $data = Promo::with('Barang')->where('tgl_selesai', '>=', $tgl_max)->get();
         }
         
@@ -707,6 +551,56 @@ class MasterController extends Controller
             ->make(true);
     }
 
+    //menampilkan view tambah promo
+    public function promo_create()
+    {
+        $data = Barang::all();
+        $jasa = Jasa::all();
+        return view('layouts.modal.promo-modal-create', ['data' => $data, 'jasa' => $jasa]);
+    }
+
+    //menyimpan data promo yang ditambahkan
+    public function promo_store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'kode_promo' => ['required'],
+            'tgl_mulai' => ['required'],
+            'tgl_selesai' => ['required'],
+            'qty_sk' => ['required'],
+            'disc' => ['required'],
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['data' => 'error', 'msg' => "Periksa dan Pastikan data yang sudah diisi dengan benar"]);
+        } else {
+            $c = Promo::create([
+                'kode_promo' => $request->kode_promo,
+                'tgl_mulai' => $request->tgl_mulai,
+                'tgl_selesai' => $request->tgl_selesai,
+                'nama_promo' => $request->nama_promo,
+                'barang_id' => $request->barang_id,
+                'jasa_id' => $request->jasa_id,
+                'qty_sk' => $request->qty_sk,
+                'disc' => $request->disc,
+            ]);
+
+            if ($c) {
+                return response()->json(['data' => 'success', 'msg' => "Data berhasil di Tambah"]);
+            } else {
+                return response()->json(['data' => 'error', 'msg' => "Tambah data Gagal, periksa kembali"]);
+            }
+        }
+    }
+
+    //menampilkan view edit promo
+    public function promo_edit($id)
+    {
+        $data = Promo::find($id);
+        $barang = Barang::all();
+        $jasa = Jasa::all();
+        return view('layouts.modal.promo-modal-edit', ['data' => $data, 'barang' => $barang, 'jasa' => $jasa]);
+    }
+
+    //menyimpan data promo yang diedit
     public function promo_update(Request $request, $id)
     {
 
@@ -749,6 +643,8 @@ class MasterController extends Controller
             }
         }
     }
+
+    //menghapus data promo berdasarkan id yang dikirim
     public function promo_delete(Request $request)
     {
         $b = Promo::find($request->id);
@@ -759,9 +655,16 @@ class MasterController extends Controller
             return response()->json(['info' => 'error', 'msg' => 'Hapus Gagal, periksa kembali']);
         }
     }
-
+    
 
     //MEREK
+    //menampilkan halaman master mererk
+    public function master_merk()
+    {
+        return view('layouts.master.merk');
+    }
+
+    //mengambil seluruh data merek di database
     public function master_merek_data()
     {
         $data = Merek::all();
@@ -781,11 +684,13 @@ class MasterController extends Controller
             ->make(true);
     }
 
+    //menampilkan view tambah merek
     public function master_merek_create()
     {
         return view('layouts.modal.merk-modal-create');
     }
 
+    //menyimpan data merek yang ditambahkan
     public function master_merek_store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -808,12 +713,14 @@ class MasterController extends Controller
         }
     }
 
+    //menampilkan view edit merek
     public function master_merek_edit($id)
     {
         $data = Merek::find($id);
         return view('layouts.modal.merk-modal-edit', ['data' => $data]);
     }
 
+    //menyimpan data merek yang diedit
     public function master_merek_update($id, Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -836,6 +743,7 @@ class MasterController extends Controller
         }
     }
 
+    //menghapus data merek sesuai id yang dikirim
     public function master_merek_delete(Request $request)
     {
         $merek = Merek::find($request->id);
@@ -848,6 +756,13 @@ class MasterController extends Controller
     }
 
     //SATUAN
+    //menampilkan halaman master satuan
+    public function master_satuan()
+    {
+        return view('layouts.master.satuan');
+    }
+
+    //mengambil seluruh data satuan yang ada di database
     public function master_satuan_data()
     {
         $data = Satuan::all();
@@ -867,11 +782,13 @@ class MasterController extends Controller
             ->make(true);
     }
 
+    //menampilkan view tambah satuan
     public function master_satuan_create()
     {
         return view('layouts.modal.satuan-modal-create');
     }
 
+    //menyimpan data satuan yang ditambahkan
     public function master_satuan_store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -894,12 +811,14 @@ class MasterController extends Controller
         }
     }
 
+    //menampilkan view edit satuan
     public function master_satuan_edit($id)
     {
         $data = Satuan::find($id);
         return view('layouts.modal.satuan-modal-edit', ['data' => $data]);
     }
 
+    //menyimpan data satuan yang di edit
     public function master_satuan_update($id, Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -922,6 +841,7 @@ class MasterController extends Controller
         }
     }
 
+    //menghapus data satuan berdasarkan id yang dikirim
     public function master_satuan_delete(Request $request)
     {
         $satuan = Satuan::find($request->id);
@@ -934,6 +854,13 @@ class MasterController extends Controller
     }
 
     //PEGAWAI
+    //menampilkan halaman master pegawai
+    public function master_pegawai()
+    {
+        return view('layouts.master.pegawai');
+    }
+
+    //mengambil seluruh data pegawai yang ada di database
     public function master_pegawai_data()
     {
         $data = Pegawai::all();
@@ -953,11 +880,13 @@ class MasterController extends Controller
             ->make(true);
     }
 
+    //menampilkan view tambah pegawai
     public function master_pegawai_create()
     {
         return view('layouts.modal.pegawai-modal-create');
     }
 
+    //menyimpan data pegawai yang ditambahkan
     public function master_pegawai_store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -982,12 +911,14 @@ class MasterController extends Controller
         }
     }
 
+    //menampilkan view edit pegawai
     public function master_pegawai_edit($id)
     {
         $data = Pegawai::find($id);
         return view('layouts.modal.pegawai-modal-edit', ['data' => $data]);
     }
 
+    //menyimpan data pegawai yang diedit 
     public function master_pegawai_update($id, Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -1010,6 +941,7 @@ class MasterController extends Controller
         }
     }
 
+    //menghapus data pegawai sesuai dengan id yang dikirim
     public function master_pegawai_delete(Request $request)
     {
         $pegawai = Pegawai::find($request->id);
@@ -1022,6 +954,13 @@ class MasterController extends Controller
     }
 
     //JASA
+    //menampilkan halaman master jasa
+    public function master_jasa()
+    {
+        return view('layouts.master.jasa');
+    }
+
+    //mengambil seluruh data jasa yang ada di database
     public function master_jasa_data()
     {
         $data = Jasa::all();
@@ -1042,11 +981,13 @@ class MasterController extends Controller
             ->make(true);
     }
 
+    //menampilkan view tambah jasa
     public function master_jasa_create()
     {
         return view('layouts.modal.jasa-modal-create');
     }
 
+    //menyimpan data jasa yang ditambahkan
     public function master_jasa_store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -1069,12 +1010,14 @@ class MasterController extends Controller
         }
     }
 
+    //menampilkan view edit jasa
     public function master_jasa_edit($id)
     {
         $data = Jasa::find($id);
         return view('layouts.modal.jasa-modal-edit', ['data' => $data]);
     }
 
+    //menyimpan data jasa yang telah diedit
     public function master_jasa_update($id, Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -1099,6 +1042,7 @@ class MasterController extends Controller
         }
     }
 
+    //menghapus data jasa sesuai dengan id yang dikirim
     public function master_jasa_delete(Request $request)
     {
         $jasa = Jasa::find($request->id);
@@ -1110,11 +1054,42 @@ class MasterController extends Controller
         }
     }
 
+    //TIPE
+    //menampilkan halaman master tipe
+    public function master_tipe()
+    {
+        return view('layouts.master.tipe');
+    }
+
+    //mengambil seluruh data tipe yang ada di database
+    public function master_tipe_data()
+    {
+        $data = Tipe::all();
+        return datatables()->of($data)
+            ->addIndexColumn()
+            ->addColumn('action', function ($data) {
+                return  '<div class="grid grid-cols-2">
+                    <button id="btnedit" class="mr-4 tw-bg-transparent tw-border-none"
+                    data-id="' . $data->id . '"   data-nama="' . $data->nama_tipe . '" >
+                        <i class="fa fa-pen tw-text-prim-blue"></i>
+                    </button>
+                    <button id="btndelete" class="mr-4 tw-bg-transparent tw-border-none"
+                    data-id="' . $data->id . '"   data-nama="' . $data->nama_barang . '" >
+                        <i class="fa fa-trash tw-text-prim-red"></i>
+                    </button>
+                </div>';
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+    }
+
+    //menampilkan view tambah tipe
     public function master_tipe_create()
     {
         return view('layouts.modal.tipe-modal-create');
     }
 
+    //menyimpan data tipe yang telah ditambahkan
     public function master_tipe_store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -1137,12 +1112,14 @@ class MasterController extends Controller
         }
     }
 
+    //menampilkan view edit tipe
     public function master_tipe_edit($id)
     {
         $data = Tipe::find($id);
         return view('layouts.modal.tipe-modal-edit', ['data' => $data]);
     }
 
+    //menyimpan hasil data tipe yang telah diedit
     public function master_tipe_update($id, Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -1165,6 +1142,7 @@ class MasterController extends Controller
         }
     }
 
+    //menghapus data tipe sesuai id yang dikirim
     public function master_tipe_delete(Request $request)
     {
         $tipe = Tipe::find($request->id);
@@ -1176,10 +1154,14 @@ class MasterController extends Controller
         }
     }
 
-
-
-
     //USER
+    //menampilkan halaman master user
+    public function master_user()
+    {
+        return view('layouts.master.user');
+    }
+
+    //mengambil seluruh data user yang ada di database
     public function master_user_data()
     {
         $data = User::with('LevelUser', 'Pegawai')->get();
@@ -1205,6 +1187,7 @@ class MasterController extends Controller
             ->make(true);
     }
 
+    //menampilkan halaman tambah user
     public function master_user_create()
     {
         $pegawai = Pegawai::doesntHave('user')->get();
@@ -1212,6 +1195,7 @@ class MasterController extends Controller
         return view('layouts.modal.user-modal-create', ['pegawai' => $pegawai, 'level_user' => $level_user]);
     }
 
+    //menyimpan data user yang telah ditambahkan
     public function master_user_store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -1240,6 +1224,7 @@ class MasterController extends Controller
         }
     }
 
+    //menampilkan view edit user
     public function master_user_edit($id)
     {
         $user = User::with('Pegawai')->where('id', $id)->first();
@@ -1247,6 +1232,7 @@ class MasterController extends Controller
         return view('layouts.modal.user-modal-edit', ['data' => $user, 'level_user' => $level_user]);
     }
 
+    //menyimpan data user yang telah di edit 
     public function master_user_update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
@@ -1261,9 +1247,7 @@ class MasterController extends Controller
             $user = User::find($id);
             $user->username = $request->username_form;
             $user->level_user_id = $request->level_user_id;
-            // if (!Hash::check($request->password, $user->password)) {
             $user->password =  Hash::make($request->password_form);
-            // }
             $user->email = $request->email_form;
             $u = $user->save();
 
@@ -1275,6 +1259,7 @@ class MasterController extends Controller
         }
     }
 
+    //menghapus data user sesuai id kirim
     public function master_user_delete(Request $request)
     {
         $b = User::find($request->id);
@@ -1286,9 +1271,16 @@ class MasterController extends Controller
         }
     }
 
-
-
     //SUPPLIER
+    //menampilkan halaman master supplier
+    public function master_supplier()
+    {
+        // $kota = Kota::Has('Supplier')->get();
+        $kota = Kota::all();
+        return view('layouts.master.supplier', ['kotas' => $kota]);
+    }
+
+    //mengambil semua data supplier yang ada di database
     public function master_supplier_data($id)
     {
         $data = NULL;
@@ -1317,12 +1309,14 @@ class MasterController extends Controller
             ->make(true);
     }
 
+    //menampilkan view tambah supplier
     public function master_supplier_create()
     {
         $kota = Kota::all();
         return view('layouts.modal.supplier-modal-create', ['kota' => $kota]);
     }
 
+    //menyimpan data supplier yang ditambahkan
     public function master_supplier_store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -1349,6 +1343,7 @@ class MasterController extends Controller
         }
     }
 
+    //menampilkan view edit master supplier
     public function master_supplier_edit($id)
     {
         $data = Supplier::find($id);
@@ -1356,6 +1351,7 @@ class MasterController extends Controller
         return view('layouts.modal.supplier-modal-edit', ['data' => $data, 'kota' => $kota]);
     }
 
+    //menyimpan data hasil edit supplier
     public function master_supplier_update($id, Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -1380,6 +1376,7 @@ class MasterController extends Controller
         }
     }
 
+    //menghapus data supplier sesuai dengan id yang dikirim
     public function master_supplier_delete(Request $request)
     {
         $supplier = Supplier::find($request->id);
@@ -1391,55 +1388,63 @@ class MasterController extends Controller
         }
     }
 
-    public function master_user()
-    {
-        return view('layouts.master.user');
-    }
-    public function master_promo()
-    {
-        return view('layouts.master.promo');
-    }
-    public function master_merk()
-    {
-        return view('layouts.master.merk');
-    }
-    public function master_tipe()
-    {
-        return view('layouts.master.tipe');
-    }
-    public function master_jasa()
-    {
-        return view('layouts.master.jasa');
-    }
-    public function master_pegawai()
-    {
-        return view('layouts.master.pegawai');
-    }
-
-    public function master_satuan()
-    {
-        return view('layouts.master.satuan');
-    }
+    //KOREKSI
+    //menampilkan halaman master koreksi
     public function master_koreksi()
     {
         return view('layouts.master.koreksi');
     }
-    public function master_substitusi()
+
+    //untuk mengambil seluruh data koreksi yang ada di database
+    public function data_koreksi($id)
     {
-        return view('layouts.master.substitusi');
+        if ($id != 0) {
+            $data = Koreksi::with(['Barang'])->where('barang_id', $id)->get();
+        } else {
+            $data = Koreksi::with(['Barang'])->get();
+            return datatables()->of($data)
+                ->addIndexColumn()
+                ->addColumn('tgl_koreksi', function ($data) {
+                    return $data->tgl_koreksi;
+                })
+                ->addColumn('jenis', function ($data) {
+                    return $data->jenis == 'in' ? 'Stok Masuk' : 'Stok Keluar';
+                })
+                ->addColumn('nama', function ($data) {
+                    return $data->Barang->nama_barang;
+                })
+                ->addColumn('jumlah', function ($data) {
+                    return $data->jumlah;
+                })
+                ->addColumn('ket', function ($data) {
+                    return $data->keterangan;
+                })
+
+                ->addColumn('button', function ($data) {
+                    return ' <div class="grid grid-cols-2 tw-contents">
+                                                    <button id="btnedit" class="mr-4 tw-bg-transparent tw-border-none"
+                                                      data-id="' . $data->id . '"   data-nama="' . $data->nama_barang . '" >
+                                                        <i class="fa fa-pen tw-text-prim-blue"></i>
+                                                    </button>
+                                                    <button id="btndelete"       data-id="' . $data->id . '"   data-nama="' . $data->nama_barang . '"
+                                                        class="tw-bg-transparent tw-border-none">
+                                                        <i class="fa fa-trash tw-text-prim-red"></i>
+                                                    </button>
+                                                </div>';
+                })
+                ->rawColumns(['button'])
+                ->make(true);
+        }
     }
 
-
-
-    public function archive_master()
+    //untuk menampilkan view tambah koreksi
+    public function koreksi_create()
     {
-        return view('layouts.archive.archive_master');
+        $kota = Kota::all();
+        return view('layouts.modal.koreksi-modal-create', ['kota' => $kota]);
     }
 
-
-
-
-    //Store
+    //untuk menyimpan data koreksi yang ditambahkan
     public function koreksi_store(Request $request)
     {
         $bool = true;
@@ -1485,81 +1490,16 @@ class MasterController extends Controller
             }
         }
     }
-    public function master_barang_store(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'kode_barang' => ['required', 'unique:barang,kode_barang'],
-            'nama_barang' => ['required'],
-            'tipe' => ['required'],
-            'merk' => ['required'],
-            'satuan' => ['required'],
-            'harga_jual' => ['required'],
-            'harga_beli' => ['required'],
-            'stok' => ['required'],
-        ]);
-        if ($validator->fails()) {
-            return response()->json(['data' => 'error', 'msg' => "Periksa dan Pastikan data yang sudah diisi dengan benar"]);
-        } else {
-            $c = Barang::create([
-                'kode_barang' => $request->kode_barang,
-                'nama_barang' => $request->nama_barang,
-                'tipe_id' => $request->tipe,
-                'merek_id' => $request->merk,
-                'satuan_id' => $request->satuan,
-                // 'supplier_id' => $request->supplier,
-                'harga_jual' => str_replace(",", "", $request->harga_jual),
-                'harga_beli' => str_replace(",", "", $request->harga_beli),
-                'stok' => $request->stok
-            ]);
 
-            if ($c) {
-                return response()->json(['data' => 'success', 'msg' => "Data berhasil di Tambah"]);
-            } else {
-                return response()->json(['data' => 'error', 'msg' => "Tambah data Gagal, periksa kembali"]);
-            }
-        }
+    //BARANG
+    //menampilkan halaman master barang
+    public function master_barang()
+    {
+        $merek = Merek::all();
+        return view('layouts.master.barang', ['merek' => $merek]);
     }
 
-    public function data_koreksi($id)
-    {
-        if ($id != 0) {
-            $data = Koreksi::with(['Barang'])->where('barang_id', $id)->get();
-        } else {
-            $data = Koreksi::with(['Barang'])->get();
-            return datatables()->of($data)
-                ->addIndexColumn()
-                ->addColumn('tgl_koreksi', function ($data) {
-                    return $data->tgl_koreksi;
-                })
-                ->addColumn('jenis', function ($data) {
-                    return $data->jenis == 'in' ? 'Stok Masuk' : 'Stok Keluar';
-                })
-                ->addColumn('nama', function ($data) {
-                    return $data->Barang->nama_barang;
-                })
-                ->addColumn('jumlah', function ($data) {
-                    return $data->jumlah;
-                })
-                ->addColumn('ket', function ($data) {
-                    return $data->keterangan;
-                })
-
-                ->addColumn('button', function ($data) {
-                    return ' <div class="grid grid-cols-2 tw-contents">
-                                                    <button id="btnedit" class="mr-4 tw-bg-transparent tw-border-none"
-                                                      data-id="' . $data->id . '"   data-nama="' . $data->nama_barang . '" >
-                                                        <i class="fa fa-pen tw-text-prim-blue"></i>
-                                                    </button>
-                                                    <button id="btndelete"       data-id="' . $data->id . '"   data-nama="' . $data->nama_barang . '"
-                                                        class="tw-bg-transparent tw-border-none">
-                                                        <i class="fa fa-trash tw-text-prim-red"></i>
-                                                    </button>
-                                                </div>';
-                })
-                ->rawColumns(['button'])
-                ->make(true);
-        }
-    }
+    //mengambil seluruh data barang yang ada di database
     public function master_barang_data($id)
     {
         if ($id != 0) {
@@ -1606,6 +1546,65 @@ class MasterController extends Controller
             ->rawColumns(['button'])
             ->make(true);
     }
+
+    //untuk menampilkan view tambah barang
+    public function master_barang_create()
+    {
+        $tipe = Tipe::all();
+        $merek = Merek::all();
+        $satuan = Satuan::all();
+        $supplier = Supplier::all();
+        return view('layouts.modal.barang-modal-create', ['tipe' => $tipe, 'merek' => $merek, 'satuan' => $satuan, 'supplier' => $supplier]);
+    }
+
+    //untuk menyimpan barang (store)
+    public function master_barang_store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'kode_barang' => ['required', 'unique:barang,kode_barang'],
+            'nama_barang' => ['required'],
+            'tipe' => ['required'],
+            'merk' => ['required'],
+            'satuan' => ['required'],
+            'harga_jual' => ['required'],
+            'harga_beli' => ['required'],
+            'stok' => ['required'],
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['data' => 'error', 'msg' => "Periksa dan Pastikan data yang sudah diisi dengan benar"]);
+        } else {
+            $c = Barang::create([
+                'kode_barang' => $request->kode_barang,
+                'nama_barang' => $request->nama_barang,
+                'tipe_id' => $request->tipe,
+                'merek_id' => $request->merk,
+                'satuan_id' => $request->satuan,
+                // 'supplier_id' => $request->supplier,
+                'harga_jual' => str_replace(",", "", $request->harga_jual),
+                'harga_beli' => str_replace(",", "", $request->harga_beli),
+                'stok' => $request->stok
+            ]);
+
+            if ($c) {
+                return response()->json(['data' => 'success', 'msg' => "Data berhasil di Tambah"]);
+            } else {
+                return response()->json(['data' => 'error', 'msg' => "Tambah data Gagal, periksa kembali"]);
+            }
+        }
+    }
+
+    //untuk menampilkan view edit barang
+    public function master_barang_edit($id)
+    {
+        $data = Barang::find($id);
+        $tipe = Tipe::all();
+        $merek = Merek::all();
+        $supplier = Supplier::all();
+        $satuan = Satuan::all();
+        return view('layouts.modal.barang-modal-edit', ['tipe' => $tipe, 'merek' => $merek, 'supplier' => $supplier, 'satuan' => $satuan, 'data' => $data]);
+    }
+
+    //untuk menyimpan hasil edit barang
     public function master_barang_update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
@@ -1642,15 +1641,7 @@ class MasterController extends Controller
         }
     }
 
-    public function master_barang_create()
-    {
-        $tipe = Tipe::all();
-        $merek = Merek::all();
-        $satuan = Satuan::all();
-        $supplier = Supplier::all();
-        return view('layouts.modal.barang-modal-create', ['tipe' => $tipe, 'merek' => $merek, 'satuan' => $satuan, 'supplier' => $supplier]);
-    }
-
+    //untuk menghapus barang sesuai dengan id yang dikirim
     public function master_barang_delete(Request $request)
     {
         $b = Barang::find($request->id);
@@ -1661,15 +1652,30 @@ class MasterController extends Controller
             return response()->json(['info' => 'error', 'msg' => 'Hapus Gagal, periksa kembali']);
         }
     }
-    public function master_barang_edit($id)
+
+    //KOTA
+    //mengambil seluruh data kota yang ada di database
+    public function master_kota_data()
     {
-        $data = Barang::find($id);
-        $tipe = Tipe::all();
-        $merek = Merek::all();
-        $supplier = Supplier::all();
-        $satuan = Satuan::all();
-        return view('layouts.modal.barang-modal-edit', ['tipe' => $tipe, 'merek' => $merek, 'supplier' => $supplier, 'satuan' => $satuan, 'data' => $data]);
+        $data = Kota::all();
+        return datatables()->of($data)
+            ->addIndexColumn()
+            ->addColumn('action', function ($data) {
+                return  '<div class="grid grid-cols-2">
+                    <a href="/api/kota/edit/' . $data->kode_kota . '" class="mr-4">
+                        <i class="fa fa-pen tw-text-prim-blue"></i>
+                    </a>
+                    <a href="/api/kota/delete/' . $data->kode_kota . '">
+                        <i class="fa fa-trash tw-text-prim-red"></i>
+                    </a>
+                </div>';
+            })
+            ->rawColumns(['action'])
+            ->make(true);
     }
+
+    //GET
+    //mengambil seluruh data barang untuk select dropdown
     public function master_barang_select_data(Request $request)
     {
         $data = Barang::where('nama_barang', 'LIKE', '%' . $request->input('term', '') . '%')
@@ -1677,11 +1683,14 @@ class MasterController extends Controller
         echo json_encode($data);
     }
 
+    //mengambil detail data dari barang berdasarkan id 
     public function master_barang_select_data_detail($id)
     {
         $data = Barang::find($id);
         echo json_encode($data);
     }
+
+    //mengambil seluruh data pembelian untuk select dropdown
     public function master_barang_select_data_po(Request $request, $id)
     {
 
@@ -1697,4 +1706,114 @@ class MasterController extends Controller
         }
         echo json_encode($array);
     }
+
+    //mengambil seluruh data barang dan jasa untuk select dropdown
+    public function barang_select(Request $r)
+    {
+        $d1 = Barang::where('nama_barang', 'LIKE', '%' . $r->input('term', '') . '%')->selectRaw('kode_barang as id_item, nama_barang as nama, IF(id IS NULL, "", "barang") as jenis, stok as stok, harga_jual as harga')->get();
+        $d2 = Jasa::where('nama_jasa', 'LIKE', '%' . $r->input('term', '') . '%')->selectRaw('id as id_item, nama_jasa as nama, IF(id IS NULL, "", "jasa") as jenis, harga as harga')->get();
+        $data = array();
+        $count = 0;
+        if (count($d1) > 0) {
+            $count = count($d1);
+            foreach ($d1 as $key => $d) {
+                $data[$key] = array(
+                    'id' => $d->id_item,
+                    'nama' => $d->nama,
+                    'stok' => $d->stok,
+                    'jenis' => $d->jenis,
+                    'harga' => $d->harga
+                );
+            }
+        }
+        if (count($d2) > 0) {
+            foreach ($d2 as $key => $d) {
+                $data[$count + $key] = array(
+                    'id' => $d->id_item,
+                    'nama' => $d->nama,
+                    'stok' => 100000000,
+                    'jenis' => $d->jenis,
+                    'harga' => $d->harga
+                );
+            }
+        }
+        return response()->json($data);
+    }
+
+    //mengambil seluruh data customer untuk select dropdown
+    public function customer_select(Request $r)
+    {
+        $data = Customer::where('nama_customer', 'LIKE', '%' . $r->input('term', '') . '%')->select('id', 'nama_customer')->get();
+        echo json_encode($data);
+    }
+
+    //mengambil seluruh data supplier untuk select dropdown
+    public function supplier_select(Request $r){
+        $data = Supplier::where('nama_supplier', 'LIKE', '%' . $r->input('term', '') . '%')->select('id', 'nama_supplier')->get();
+        echo json_encode($data);
+    }
+
+    //mengambil seluruh transaksi jual yang tanggal garansinya masih lebih dari hari ini untuk select dropdown
+    public function garansi_transaksi_jual_select()
+    {
+        $date = Carbon::now()->toDateString();
+        $res = TransJual::where('tgl_max_garansi', '>=', $date)->with('Booking.Customer', 'DTransJual.Barang')->has('DTransJual')->doesntHave('ReturJual')->get();
+        $data = array();
+
+        foreach ($res as $i => $p) {
+            $data[$i] = array(
+                'id' => $p->id,
+                'no_trans_jual' => $p->no_trans_jual,
+                'tgl_trans_jual' => $p->tgl_trans_jual,
+                'tgl_max_garansi' => $p->tgl_max_garansi,
+                'customer' => $p->Booking->Customer->nama_customer,
+                'alamat' => $p->Booking->Customer->alamat,
+                'telepon' => $p->Booking->Customer->telepon,
+                'detail' => array()
+            );
+            foreach ($p->DTransJual as $key => $d) {
+                $data[$i]['detail'][$key] = array(
+                    'id' => $d->barang_id,
+                    'text' => $d->Barang->nama_barang,
+                    'jumlah' => $d->jumlah,
+                    'harga' => $d->harga,
+                    'disc' => $d->disc
+                );
+            }
+        }
+
+        return response()->json($data);
+    }
+
+    //mengambil seluruh data barang transaksi jual berdasarkan id penjualan
+    public function get_d_trans_jual($id)
+    {
+        $data = array();
+        $p = DTransJual::where('htrans_jual_id', $id)->get();
+        foreach ($p as $key => $d) {
+            $data[$key] = array(
+                'id' => $d->barang_id,
+                'text' => $d->Barang->nama_barang,
+                'jumlah' => $d->jumlah,
+                'harga' => $d->harga,
+                'disc' => $d->disc
+            );
+        }
+        return response()->json($data);
+    }
+
+    //mengambil seluruh data booking yang belum memiliki transaksi jual untuk select dropdown
+    public function booking_select(Request $r)
+    {
+        $data = Booking::doesntHave('TransJual')->with('Customer', 'DBooking.Barang', 'DBooking.Jasa')->where('no_booking', 'LIKE', '%' . $r->input('term', '') . '%')->get();
+        echo json_encode($data);
+    }
+
+    //mengambil seluruh data pembayaran untuk select dropdown
+    public function pembayaran_select(Request $r)
+    {
+        $data = Pembayaran::where('nama_bayar', 'LIKE', '%' . $r->input('term', '') . '%')->get();
+        echo json_encode($data);
+    }
+
 }

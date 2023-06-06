@@ -19,6 +19,11 @@ use DB;
 
 class LaporanPiutang implements FromView, ShouldAutoSize, WithStyles, WithEvents, WithTitle
 {
+    public function customer()
+    {
+        return $this->customer;
+    }
+    
     public function tgl_awal()
     {
         return $this->tgl_awal;
@@ -28,10 +33,11 @@ class LaporanPiutang implements FromView, ShouldAutoSize, WithStyles, WithEvents
         return $this->tgl_akhir;
     }
 
-    public function __construct(string $tgl_awal, string $tgl_akhir)
+    public function __construct(string $customer, string $tgl_awal, string $tgl_akhir)
     {
         $this->tgl_awal = $tgl_awal;
         $this->tgl_akhir = $tgl_akhir;
+        $this->customer = $customer;
     }
 
 
@@ -95,14 +101,18 @@ class LaporanPiutang implements FromView, ShouldAutoSize, WithStyles, WithEvents
     {
         $from = date($this->tgl_awal);
         $to = date($this->tgl_akhir);
+        $customer = $this->customer;
         $array = array();
-        $data = DB::table('d_piutang')
+        $data = "";
+        if($customer != "0"){
+            $data = DB::table('d_piutang')
                 ->join('h_piutang', 'h_piutang.id', '=', 'd_piutang.h_piutang_id')
                 ->join('htrans_jual', 'htrans_jual.id', '=', 'h_piutang.htrans_jual_id')
                 ->join('booking', 'booking.id', '=', 'htrans_jual.booking_id')
                 ->join('customer', 'customer.id', '=', 'booking.customer_id')
                 ->join('pembayaran', 'pembayaran.id', '=', 'd_piutang.pembayaran_id')
                 ->whereBetween('d_piutang.tgl_piutang', [$from, $to])
+                ->where('customer.id', $customer)
                 ->select('htrans_jual.id as id_trans_jual',
                 'htrans_jual.no_trans_jual as no_trans_jual',
                 'customer.nama_customer as customer',
@@ -114,6 +124,28 @@ class LaporanPiutang implements FromView, ShouldAutoSize, WithStyles, WithEvents
                 )
                 ->orderByRaw('htrans_jual.id ASC, d_piutang.tgl_piutang ASC')
                 ->get();
+        }
+        else{
+            $data = DB::table('d_piutang')
+            ->join('h_piutang', 'h_piutang.id', '=', 'd_piutang.h_piutang_id')
+            ->join('htrans_jual', 'htrans_jual.id', '=', 'h_piutang.htrans_jual_id')
+            ->join('booking', 'booking.id', '=', 'htrans_jual.booking_id')
+            ->join('customer', 'customer.id', '=', 'booking.customer_id')
+            ->join('pembayaran', 'pembayaran.id', '=', 'd_piutang.pembayaran_id')
+            ->whereBetween('d_piutang.tgl_piutang', [$from, $to])
+            ->select('htrans_jual.id as id_trans_jual',
+            'htrans_jual.no_trans_jual as no_trans_jual',
+            'customer.nama_customer as customer',
+            'd_piutang.tgl_piutang as tgl_piutang',
+            'pembayaran.nama_bayar as pembayaran',
+            'd_piutang.no_giro as no_giro',
+            'd_piutang.tgl_jatuh_tempo as tgl_jatuh_tempo',
+            'd_piutang.total_bayar as total_bayar'
+            )
+            ->orderByRaw('htrans_jual.id ASC, d_piutang.tgl_piutang ASC')
+            ->get();
+        }
+        
         $currid = "";
         $count = 0;
         $c = 0;

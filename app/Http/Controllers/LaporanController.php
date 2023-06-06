@@ -21,106 +21,128 @@ use App\Exports\LaporanProduk;
 
 class LaporanController extends Controller
 {
+    //mengarahkan user menuju halaman archive-laporan
     public function archive_laporan()
     {
         return view('layouts.archive.archive-laporan');
     }
 
+    //mengarahkan user menuju halaman laporan laba-rugi
     public function laporan_laba_rugi()
     {
         return view('layouts.laporan.laba_rugi');
     }
 
+    //mengarahkan user menuju halaman laporan pembelian
     public function laporan_pembelian()
     {
         return view('layouts.laporan.pembelian');
     }
 
+    //mengarahkan user menuju halaman laporan penjualan
     public function laporan_penjualan()
     {
         return view('layouts.laporan.penjualan');
     }
 
+    //mengarahkan user menuju halaman laporan retur beli
     public function laporan_retur_beli()
     {
         return view('layouts.laporan.retur_beli');
     }
 
+    //mengarahkan user menuju halaman retur jual
     public function laporan_retur_jual()
     {
         return view('layouts.laporan.retur_jual');
     }
 
+    //mengarahkan user menuju halaman laporan hutang
     public function laporan_hutang()
     {
         return view('layouts.laporan.hutang');
     }
 
+    //mengarahkan user menuju halaman laporan piutang
     public function laporan_piutang()
     {
         return view('layouts.laporan.piutang');
     }
-    
+
+    //mengarahkan user menuju halaman laporan kartu stok
     public function laporan_kartu_stok()
     {
         return view('layouts.laporan.kartu_stok');
     }
 
+    //mengarahkan user menuju halaman laporan top penjualan
     public function laporan_top_penjualan()
     {
         return view('layouts.laporan.top_penjualan');
     }
 
+    //mengarahkan user menuju halaman laporan produk
     public function laporan_produk()
     {
         return view('layouts.laporan.produk');
     }
 
-    public function kasir()
-    {
-        return view('kasir');
-    }
+    // public function kasir()
+    // {
+    //     return view('kasir');
+    // }
     
+    //mendownload laporan laba rugi dalam excel 
     public function laporan_laba_rugi_data($tgl_awal, $tgl_akhir){
         return Excel::download(new LaporanLabaRugi($tgl_awal, $tgl_akhir), 'Laporan Laba Rugi.xlsx');
     }
 
+    //mendownload laporan penjualan dalam excel
     public function laporan_penjualan_data($tgl_awal, $tgl_akhir){
         return Excel::download(new LaporanPenjualan($tgl_awal, $tgl_akhir), 'Laporan Penjualan.xlsx');
     }
 
+    //mendownload laporan pembelian dalam excel
     public function laporan_pembelian_data($tgl_awal, $tgl_akhir){
         return Excel::download(new LaporanPembelian($tgl_awal, $tgl_akhir), 'Laporan Pembelian.xlsx');
     }
 
-    public function laporan_piutang_data($tgl_awal, $tgl_akhir){
-        return Excel::download(new LaporanPiutang($tgl_awal, $tgl_akhir), 'Laporan Piutang.xlsx');
+    //mendownload laporan piutang dalam excel
+    public function laporan_piutang_data($customer, $tgl_awal, $tgl_akhir){
+        return Excel::download(new LaporanPiutang($customer, $tgl_awal, $tgl_akhir), 'Laporan Piutang.xlsx');
     }
 
-    public function laporan_hutang_data($tgl_awal, $tgl_akhir){
-        return Excel::download(new LaporanHutang($tgl_awal, $tgl_akhir), 'Laporan Hutang.xlsx');
+    //mendownload laporan hutang dalam excel
+    public function laporan_hutang_data($supplier, $tgl_awal, $tgl_akhir){
+        return Excel::download(new LaporanHutang($supplier, $tgl_awal, $tgl_akhir), 'Laporan Hutang.xlsx');
     }
 
+    //mendownload laporan retur jual dalam excel
     public function laporan_retur_jual_data($tgl_awal, $tgl_akhir){
         return Excel::download(new LaporanReturJual($tgl_awal, $tgl_akhir), 'Laporan Retur Jual.xlsx');
     }
 
+    //mendownload laporan retur beli dalam excel
     public function laporan_retur_beli_data($tgl_awal, $tgl_akhir){
         return Excel::download(new LaporanReturBeli($tgl_awal, $tgl_akhir), 'Laporan Retur Beli.xlsx');
     }
 
+    //mendownload laporan top penjualan dalam excel
     public function laporan_top_penjualan_data($tgl_awal, $tgl_akhir){
         return Excel::download(new LaporanTopPenjualan($tgl_awal, $tgl_akhir), 'Laporan Top Penjualan.xlsx');
     }
 
+    //mendownload laporan kartu stok dalam excel
     public function laporan_kartu_stok_data($barang_id, $tgl_awal, $tgl_akhir){
         return Excel::download(new LaporanKartuStok($barang_id, $tgl_awal, $tgl_akhir), 'Laporan Kartu Stok.xlsx');
     }
 
+    //mendownload laporan produk dalam excel
     public function laporan_produk_data(){
         return Excel::download(new LaporanProduk(), 'Laporan Produk.xlsx');
     }
     
+    //mengambil seluruh data laba rugi untuk ditampilkan ke table (berdasarkan tanggal)
     public function data_laba_rugi($tgl_awal, $tgl_akhir){
         $from = date($tgl_awal);
         $to = date($tgl_akhir);
@@ -171,6 +193,7 @@ class LaporanController extends Controller
         return response()->json(['data' => $array]);
     }
 
+    //mengambil seluruh data penjualan untuk ditampilkan ke table (berdasarkan tanggal)
     public function data_penjualan($tgl_awal, $tgl_akhir){
         $from = date($tgl_awal);
         $to = date($tgl_akhir);
@@ -200,6 +223,7 @@ class LaporanController extends Controller
         return response()->json(['data' => $array]);
     }
 
+    //mengambil seluruh data pembelian untuk ditampilkan ke table (berdasarkan tanggal)
     public function data_pembelian($tgl_awal, $tgl_akhir){
         $from = date($tgl_awal);
         $to = date($tgl_akhir);
@@ -228,11 +252,37 @@ class LaporanController extends Controller
         return response()->json(['data' => $array]);
     }
 
-    public function data_piutang($tgl_awal, $tgl_akhir){
+    //mengambil seluruh data piutang untuk ditampilkan ke table (berdasarkan tanggal dan customer yang punya piutang)
+    public function data_piutang($customer, $tgl_awal, $tgl_akhir){
         $from = date($tgl_awal);
         $to = date($tgl_akhir);
         $array = array();
         $count = 0;
+
+        //jika user ingin melihat data piutang dari customer tertentu
+        if($customer != "0"){
+            $data = DB::table('d_piutang')
+                ->join('h_piutang', 'h_piutang.id', '=', 'd_piutang.h_piutang_id')
+                ->join('htrans_jual', 'htrans_jual.id', '=', 'h_piutang.htrans_jual_id')
+                ->join('booking', 'booking.id', '=', 'htrans_jual.booking_id')
+                ->join('customer', 'customer.id', '=', 'booking.customer_id')
+                ->join('pembayaran', 'pembayaran.id', '=', 'd_piutang.pembayaran_id')
+                ->whereBetween('d_piutang.tgl_piutang', [$from, $to])
+                ->where('customer.id', $customer)
+                ->select('htrans_jual.id as id_trans_jual',
+                'htrans_jual.no_trans_jual as no_trans_jual',
+                'customer.nama_customer as customer',
+                'd_piutang.tgl_piutang as tgl_piutang',
+                'pembayaran.nama_bayar as pembayaran',
+                'd_piutang.no_giro as no_giro',
+                'd_piutang.tgl_jatuh_tempo as tgl_jatuh_tempo',
+                'd_piutang.total_bayar as total_bayar'
+                )
+                ->orderByRaw('htrans_jual.id ASC, d_piutang.tgl_piutang ASC')
+                ->get();
+        }
+        //jika user ingin melihat data piutang dari semua customer
+        else{
         $data = DB::table('d_piutang')
                 ->join('h_piutang', 'h_piutang.id', '=', 'd_piutang.h_piutang_id')
                 ->join('htrans_jual', 'htrans_jual.id', '=', 'h_piutang.htrans_jual_id')
@@ -251,6 +301,7 @@ class LaporanController extends Controller
                 )
                 ->orderByRaw('htrans_jual.id ASC, d_piutang.tgl_piutang ASC')
                 ->get();
+        }
         foreach($data as $key => $i){
             $array[$key] = array(
             'no_trans_jual' => $i->no_trans_jual." (Customer: ".$i->customer.")",
@@ -263,12 +314,37 @@ class LaporanController extends Controller
         return response()->json(['data' => $array]);
     }
 
-    public function data_hutang($tgl_awal, $tgl_akhir){
+    //mengambil seluruh data hutang untuk ditampilkan ke table (berdasarkan tanggal & supplier dari pembelian)
+    public function data_hutang($supplier, $tgl_awal, $tgl_akhir){
         $from = date($tgl_awal);
         $to = date($tgl_akhir);
         $array = array();
         $count = 0;
-        $data = DB::table('d_hutang')
+        $data = "";
+        //jika user ingin melihat data hutang dari transaksi dengan supplier tertentu
+        if($supplier != "0"){
+            $data = DB::table('d_hutang')
+            ->join('h_hutang', 'h_hutang.id', '=', 'd_hutang.h_hutang_id')
+            ->join('htrans_beli', 'htrans_beli.id', '=', 'h_hutang.htrans_beli_id')
+            ->join('supplier', 'supplier.id', '=', 'htrans_beli.supplier_id')
+            ->join('pembayaran', 'pembayaran.id', '=', 'd_hutang.pembayaran_id')
+            ->whereBetween('d_hutang.tgl_bayar', [$from, $to])
+            ->where('supplier.id', $supplier)
+            ->select('htrans_beli.id as id_trans_beli',
+            'htrans_beli.nomor_po as no_po',
+            'supplier.nama_supplier as supplier',
+            'd_hutang.tgl_bayar as tgl_bayar',
+            'pembayaran.nama_bayar as pembayaran',
+            'd_hutang.no_giro as no_giro',
+            'd_hutang.tgl_jatuh_tempo as tgl_jatuh_tempo',
+            'd_hutang.total_bayar as total_bayar'
+            )
+            ->orderByRaw('htrans_beli.id ASC, d_hutang.tgl_bayar ASC')
+            ->get();
+        }
+        //jika user ingin melihat seluruh data hutang
+        else{
+            $data = DB::table('d_hutang')
                 ->join('h_hutang', 'h_hutang.id', '=', 'd_hutang.h_hutang_id')
                 ->join('htrans_beli', 'htrans_beli.id', '=', 'h_hutang.htrans_beli_id')
                 ->join('supplier', 'supplier.id', '=', 'htrans_beli.supplier_id')
@@ -285,6 +361,8 @@ class LaporanController extends Controller
                 )
                 ->orderByRaw('htrans_beli.id ASC, d_hutang.tgl_bayar ASC')
                 ->get();
+        }
+        
         foreach($data as $key => $i){
             $array[$key] = array(
             'no_po' => $i->no_po." (Supplier: ".$i->supplier.")",
@@ -297,6 +375,7 @@ class LaporanController extends Controller
         return response()->json(['data' => $array]);
     }
 
+    //mengambil seluruh data retur jual untuk ditampilkan ke table (berdasarkan tanggal)
     public function data_retur_jual($tgl_awal, $tgl_akhir){
         $from = date($tgl_awal);
         $to = date($tgl_akhir);
@@ -332,6 +411,7 @@ class LaporanController extends Controller
         return response()->json(['data' => $array]);
     }
 
+    //mengambil seluruh data retur beli untuk ditampilkan ke table (berdasarkan tanggal)
     public function data_retur_beli($tgl_awal, $tgl_akhir){
         $from = date($tgl_awal);
         $to = date($tgl_akhir);
@@ -365,6 +445,7 @@ class LaporanController extends Controller
         return response()->json(['data' => $array]);
     }
 
+    //mengambil seluruh data top penjualan untuk ditampilkan ke table (berdasarkan tanggal)
     public function data_top_penjualan($tgl_awal, $tgl_akhir){
         $from = date($tgl_awal);
         $to = date($tgl_akhir);
@@ -393,6 +474,7 @@ class LaporanController extends Controller
         return response()->json(['data' => $array]);
     }
 
+    //mengambil seluruh data kartu stok untuk ditampilkan ke table (berdasarkan tanggal & barang yang ingin dilihat stoknya)
     public function data_kartu_stok($barang_id, $tgl_awal, $tgl_akhir){
         $from = date($tgl_awal);
         $to = date($tgl_akhir);
@@ -401,6 +483,8 @@ class LaporanController extends Controller
         $data_jual = NULL;
         $data_beli = NULL;
         $data_koreksi = NULL;
+
+        //melihat seluruh stok keluar dari penjualan
         if($barang_id == "0"){
             $data_jual = DB::table('dtrans_jual')
             ->join('htrans_jual', 'htrans_jual.id', '=', 'dtrans_jual.htrans_jual_id')
@@ -440,6 +524,7 @@ class LaporanController extends Controller
             $count++;
         }
 
+        //melihat seluruh stok masuk dari pembelian
         if($barang_id == "0"){
             $data_beli = DB::table('dtrans_beli')
                 ->join('htrans_beli', 'htrans_beli.id', '=', 'dtrans_beli.htrans_beli_id')
@@ -480,6 +565,7 @@ class LaporanController extends Controller
                 $count++;
         }
 
+        //melihat seluruh stok masuk dan keluar dari koreksi
         if($barang_id == "0")
         {
             $data_koreksi = DB::table('koreksi')
@@ -528,6 +614,7 @@ class LaporanController extends Controller
         return response()->json(['data' => $array]);
     }
 
+    //mengambil seluruh data produk untuk ditampilkan ke table
     public function data_produk(){
         $array = array();
         $count = 0;
@@ -546,141 +633,248 @@ class LaporanController extends Controller
     }
 
     //GRAFIK
+    //mengambil seluruh data penjualan untuk ditampilkan ke grafik (berdasarkan tanggal / tahun)
     public function grafik_penjualan(Request $r){
+        $data = array();
         $bulan = $r->bulan;
         $tahun = $r->tahun;
 
-        $from = $tahun.'-'.$bulan.'-01';
-        $to = $tahun.'-'.$bulan.'-31';
+        //jika bulan untuk mengambil data ditentukan oleh user
+        if($bulan !== "0"){
+            $ket = "";
+            $from = $tahun.'-'.$bulan.'-01';
+            $to = $tahun.'-'.$bulan.'-31';
 
-        // $data = DB::table('dtrans_jual')
-        //         ->join('htrans_jual', 'htrans_jual.id', '=', 'dtrans_jual.htrans_jual_id')
-        //         ->join('barang', 'barang.id', '=', 'dtrans_jual.barang_id')
-        //         ->whereBetween('htrans_jual.tgl_trans_jual', [$from, $to])
-        //         ->selectRaw('barang.id as barang_id,
-        //         barang.nama_barang as nama_barang,
-        //         SUM(dtrans_jual.jumlah) as jumlah'
-        //         )
-        //         ->orderByRaw('SUM(dtrans_jual.jumlah) DESC')
-        //         ->groupByRaw('barang.id, barang.nama_barang')
-        //         ->get();
-
-        $data = DB::table('htrans_jual')
+            $data = DB::table('htrans_jual')
                 ->whereBetween('htrans_jual.tgl_trans_jual', [$from, $to])
                 ->selectRaw('htrans_jual.tgl_trans_jual as nama_barang,
                 SUM(htrans_jual.total_jual) as jumlah'
                 )
                 ->groupByRaw('htrans_jual.tgl_trans_jual')
                 ->get();
+        }
+        //jika user hanya ingin melihat berdasarkan tahun
+        else{
+            $ket = "Bulan ";
+            $from = $tahun.'-01-01';
+            $to = $tahun.'-12-31';
+
+            $data = DB::table('htrans_jual')
+                ->whereBetween('htrans_jual.tgl_trans_jual', [$from, $to])
+                ->selectRaw('MONTH(htrans_jual.tgl_trans_jual) as nama_barang,
+                SUM(htrans_jual.total_jual) as jumlah'
+                )
+                ->groupByRaw('MONTH(htrans_jual.tgl_trans_jual)')
+                ->get();
+        }
+
+        
         $array = array('nama' => array(), 'jumlah' => array());
         foreach($data as $key => $i){
-            $array['nama'][$key] = $i->nama_barang;
+            $array['nama'][$key] = $ket.$i->nama_barang;
             $array['jumlah'][$key] = $i->jumlah;
         }
         return response()->json(['data' => $array]);
     }
 
+    //mengambil seluruh data pembelian untuk ditampilkan ke grafik (berdasarkan tanggal / tahun)
     public function grafik_pembelian(Request $r){
+        $data = array();
         $bulan = $r->bulan;
         $tahun = $r->tahun;
 
-        $from = $tahun.'-'.$bulan.'-01';
-        $to = $tahun.'-'.$bulan.'-31';
+        if($bulan !== "0"){
+            $ket = "";
+            $from = $tahun.'-'.$bulan.'-01';
+            $to = $tahun.'-'.$bulan.'-31';
 
-        $data = DB::table('htrans_beli')
+            $data = DB::table('htrans_beli')
                 ->whereBetween('htrans_beli.tgl_trans_beli', [$from, $to])
                 ->selectRaw('htrans_beli.tgl_trans_beli as nama_barang,
                 SUM(htrans_beli.total) as jumlah'
                 )
                 ->groupByRaw('htrans_beli.tgl_trans_beli')
                 ->get();
+        }
+        else{
+            $ket = "Bulan ";
+            $from = $tahun.'-01-01';
+            $to = $tahun.'-12-31';
+
+            $data = DB::table('htrans_beli')
+                ->whereBetween('htrans_beli.tgl_trans_beli', [$from, $to])
+                ->selectRaw('MONTH(htrans_beli.tgl_trans_beli) as nama_barang,
+                SUM(htrans_beli.total) as jumlah'
+                )
+                ->groupByRaw('MONTH(htrans_beli.tgl_trans_beli)')
+                ->get();
+        }
+
         $array = array('nama' => array(), 'jumlah' => array());
         foreach($data as $key => $i){
-            $array['nama'][$key] = $i->nama_barang;
+            $array['nama'][$key] = $ket.$i->nama_barang;
             $array['jumlah'][$key] = $i->jumlah;
         }
         return response()->json(['data' => $array]);
     }
 
+    //mengambil seluruh data retur jual untuk ditampilkan ke grafik (berdasarkan tanggal / tahun)
     public function grafik_retur_jual(Request $r){
+        $data = array();
         $bulan = $r->bulan;
         $tahun = $r->tahun;
 
-        $from = $tahun.'-'.$bulan.'-01';
-        $to = $tahun.'-'.$bulan.'-31';
+        if($bulan !== "0"){
+            $ket = "";
+            $from = $tahun.'-'.$bulan.'-01';
+            $to = $tahun.'-'.$bulan.'-31';
 
-        $data = DB::table('hretur_jual')
+            $data = DB::table('hretur_jual')
                 ->whereBetween('hretur_jual.tgl_retur_jual', [$from, $to])
                 ->selectRaw('hretur_jual.tgl_retur_jual as nama_barang,
                 SUM(hretur_jual.total_retur_jual) as jumlah'
                 )
                 ->groupByRaw('hretur_jual.tgl_retur_jual')
                 ->get();
+        }
+        else{
+            $ket = "Bulan ";
+            $from = $tahun.'-01-01';
+            $to = $tahun.'-12-31';
+
+            $data = DB::table('hretur_jual')
+                ->whereBetween('hretur_jual.tgl_retur_jual', [$from, $to])
+                ->selectRaw('MONTH(hretur_jual.tgl_retur_jual) as nama_barang,
+                SUM(hretur_jual.total_retur_jual) as jumlah'
+                )
+                ->groupByRaw('MONTH(hretur_jual.tgl_retur_jual)')
+                ->get();
+        }
+
+        
         $array = array('nama' => array(), 'jumlah' => array());
         foreach($data as $key => $i){
-            $array['nama'][$key] = $i->nama_barang;
+            $array['nama'][$key] = $ket.$i->nama_barang;
             $array['jumlah'][$key] = $i->jumlah;
         }
         return response()->json(['data' => $array]);
     }
 
+    //mengambil seluruh data retur beli untuk ditampilkan ke grafik (berdasarkan tanggal / tahun)
     public function grafik_retur_beli(Request $r){
+        $data = array();
         $bulan = $r->bulan;
         $tahun = $r->tahun;
 
-        $from = $tahun.'-'.$bulan.'-01';
-        $to = $tahun.'-'.$bulan.'-31';
+        if($bulan !== "0"){
+            $ket = "";
+            $from = $tahun.'-'.$bulan.'-01';
+            $to = $tahun.'-'.$bulan.'-31';
 
-        $data = DB::table('hretur_beli')
+            $data = DB::table('hretur_beli')
                 ->whereBetween('hretur_beli.tgl_retur_beli', [$from, $to])
                 ->selectRaw('hretur_beli.tgl_retur_beli as nama_barang,
                 SUM(hretur_beli.total_retur_beli) as jumlah'
                 )
                 ->groupByRaw('hretur_beli.tgl_retur_beli')
                 ->get();
+        }
+        else{
+            $ket = "Bulan ";
+            $from = $tahun.'-01-01';
+            $to = $tahun.'-12-31';
+
+            $data = DB::table('hretur_beli')
+                ->whereBetween('hretur_beli.tgl_retur_beli', [$from, $to])
+                ->selectRaw('MONTH(hretur_beli.tgl_retur_beli) as nama_barang,
+                SUM(hretur_beli.total_retur_beli) as jumlah'
+                )
+                ->groupByRaw('MONTH(hretur_beli.tgl_retur_beli)')
+                ->get();
+        }
+
+        
         $array = array('nama' => array(), 'jumlah' => array());
         foreach($data as $key => $i){
-            $array['nama'][$key] = $i->nama_barang;
+            $array['nama'][$key] = $ket.$i->nama_barang;
             $array['jumlah'][$key] = $i->jumlah;
         }
         return response()->json(['data' => $array]);
     }
 
+    //mengambil seluruh data piutang untuk ditampilkan ke grafik (berdasarkan tanggal / tahun)
     public function grafik_piutang(Request $r){
+        $data = array();
         $bulan = $r->bulan;
         $tahun = $r->tahun;
 
-        $from = $tahun.'-'.$bulan.'-01';
-        $to = $tahun.'-'.$bulan.'-31';
+        if($bulan !== "0"){
+            $ket = "";
+            $from = $tahun.'-'.$bulan.'-01';
+            $to = $tahun.'-'.$bulan.'-31';
 
-        $data = DB::table('d_piutang')
+            $data = DB::table('d_piutang')
                 ->whereBetween('d_piutang.tgl_piutang', [$from, $to])
                 ->selectRaw('d_piutang.tgl_piutang as nama_barang,
                 SUM(d_piutang.total_bayar) as jumlah'
                 )
                 ->groupByRaw('d_piutang.tgl_piutang')
                 ->get();
+        }
+        else{
+            $ket = "Bulan ";
+            $from = $tahun.'-01-01';
+            $to = $tahun.'-12-31';
+
+            $data = DB::table('d_piutang')
+                ->whereBetween('d_piutang.tgl_piutang', [$from, $to])
+                ->selectRaw('MONTH(d_piutang.tgl_piutang) as nama_barang,
+                SUM(d_piutang.total_bayar) as jumlah'
+                )
+                ->groupByRaw('MONTH(d_piutang.tgl_piutang)')
+                ->get();
+        }
+
+        
         $array = array('nama' => array(), 'jumlah' => array());
         foreach($data as $key => $i){
-            $array['nama'][$key] = $i->nama_barang;
+            $array['nama'][$key] = $ket.$i->nama_barang;
             $array['jumlah'][$key] = $i->jumlah;
         }
         return response()->json(['data' => $array]);
     }
 
+    //mengambil seluruh data hutang untuk ditampilkan ke grafik (berdasarkan tanggal / tahun)
     public function grafik_hutang(Request $r){
+        $data = array();
         $bulan = $r->bulan;
         $tahun = $r->tahun;
 
-        $from = $tahun.'-'.$bulan.'-01';
-        $to = $tahun.'-'.$bulan.'-31';
+        if($bulan !== "0"){
+            $ket = "";
+            $from = $tahun.'-'.$bulan.'-01';
+            $to = $tahun.'-'.$bulan.'-31';
 
-        $data = DB::table('d_hutang')
+            $data = DB::table('d_hutang')
                 ->whereBetween('d_hutang.tgl_bayar', [$from, $to])
                 ->selectRaw('d_hutang.tgl_bayar as nama_barang,
                   SUM(d_hutang.total_bayar) as jumlah')
                 ->groupByRaw('d_hutang.tgl_bayar')
                 ->get();
+        }
+        else{
+            $ket = "Bulan ";
+            $from = $tahun.'-01-01';
+            $to = $tahun.'-12-31';
+
+            $data = DB::table('d_hutang')
+                ->whereBetween('d_hutang.tgl_bayar', [$from, $to])
+                ->selectRaw('MONTH(d_hutang.tgl_bayar) as nama_barang,
+                  SUM(d_hutang.total_bayar) as jumlah')
+                ->groupByRaw('MONTH(d_hutang.tgl_bayar)')
+                ->get();
+        }
+
         $array = array('nama' => array(), 'jumlah' => array());
         foreach($data as $key => $i){
             $array['nama'][$key] = $i->nama_barang;
@@ -689,12 +883,21 @@ class LaporanController extends Controller
         return response()->json(['data' => $array]);
     }
 
+    //mengambil seluruh data laba rugi untuk ditampilkan ke grafik (berdasarkan tanggal / tahun)
     public function grafik_laba_rugi(Request $r){
         $bulan = $r->bulan;
         $tahun = $r->tahun;
 
-        $from = $tahun.'-'.$bulan.'-01';
-        $to = $tahun.'-'.$bulan.'-31';
+        if($bulan !== "0"){
+            $ket = "";
+            $from = $tahun.'-'.$bulan.'-01';
+            $to = $tahun.'-'.$bulan.'-31';
+        }
+        else{
+            $ket = "Bulan ";
+            $from = $tahun.'-01-01';
+            $to = $tahun.'-12-31';
+        }
 
         $laba = DB::table('htrans_jual')
                 ->whereBetween('htrans_jual.tgl_trans_jual', [$from, $to])

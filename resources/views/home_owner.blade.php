@@ -30,6 +30,7 @@
                         </div>
 
                         <div class="table_master_beli tw-mt-5 tw-col-span-2" data-current-page="1">
+                            <!-- table stok barang  -->
                             <table id="tb_brg" class="table table-bordered responsive nowrap" style="width:100%">
                                 <thead class="tw-bg-prim-blue">
                                 <tr>

@@ -33,7 +33,14 @@
                             <div class="tab-content" id="pills-tabContent">
                                 <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
                                     <div class="tw-w-full  tw-mt-5 tw-col-span-2">
-                                        <div class="tw-grid tw-grid-cols-3 tw-px-4">
+                                        <div class="tw-grid tw-grid-cols-4 tw-px-4">
+                                            <div class="mx-2">
+                                                <label for="supplier_id">Supplier</label>
+                                                <div class="dropdown" style="width:100%;">
+                                                    <select class="custom-select select-user tw-text-prim-white supplier_id" id="supplier_id" name="supplier_id">
+                                                    </select>
+                                                </div>
+                                            </div>
                                             <div class="mx-2">
                                                 <label for="tgl_awal">Tgl Awal</label>
                                                 <input type="date" placeholder="Tanggal Transaksi" class="form-control tgl_awal" name="tgl_awal" id="tgl_awal">
@@ -52,7 +59,7 @@
                                             <thead class="tw-bg-prim-blue">
                                                 <tr class="tw-bg-prim-white">
                                                     <th colspan="7">
-                                                    <a href="" id="btncetak"><button type="button"  class="tw-w-48 tw-bg-prim-red tw-border-0  tw-text-center tw-text-white tw-py-2 tw-rounded-lg hover:tw-bg-red-700 tw-transition-all float-bottom">Cetak Laporan</button></a>
+                                                    <a href="" id="btncetak"><button type="button"  class="tw-w-48 tw-bg-prim-red tw-border-0  tw-text-center tw-text-white tw-py-2 tw-rounded-lg hover:tw-bg-red-700 tw-transition-all float-bottom">Download</button></a>
                                                     </th>
                                                 </tr>
                                                 <tr>
@@ -112,7 +119,36 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     $(function(){
+        $('.supplier_id').prepend('<option selected=""></option>').select2({
+                placeholder: "Pilih Supplier",
+                delay: 250,
+                allowClear: true,
+                ajax: {
+                    dataType: 'json',
+                    type: 'GET',
+                    url: '/api/supplier_select',
+                    data: function(params) {
+                        return {
+                            term: params.term
+                        }
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(obj) {
+                                return {
+                                    id: obj.id,
+                                    text: obj.nama_supplier
+                                };
+                            })
+                        };
+                    },
+                }
+            });
         const bulan = [
+                {
+                    id: '0',
+                    text: 'Seluruh Bulan'
+                },
                 {
                     id: '01',
                     text: 'Januari'
@@ -213,7 +249,7 @@
                 }
             );
 
-        function table(tgl_awal, tgl_akhir){
+        function table(supplier, tgl_awal, tgl_akhir){
             $('#showtable').DataTable({
                 "columnDefs": [
                     { "visible": false, "targets": 0 }
@@ -239,7 +275,7 @@
                 ajax: {
                     'type': 'POST',
                     'datatype': 'JSON',
-                    'url': '/laporan/table/hutang/'+tgl_awal+"/"+tgl_akhir,
+                    'url': '/laporan/table/hutang/'+supplier+"/"+tgl_awal+"/"+tgl_akhir,
                     'headers': {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     }
@@ -281,9 +317,11 @@
         $(document).on('click', '#btnlaporan', function(){
             var tgl_awal = $('#tgl_awal').val();
             var tgl_akhir = $('#tgl_akhir').val();
-            table(tgl_awal, tgl_akhir)
+            var supplier = $('.supplier_id').val() != "" ? $('.supplier_id').val() : "0";
+            table(supplier, tgl_awal, tgl_akhir)
+
             $('.viewtable').attr("hidden", false);
-            $('#btncetak').attr("href","/laporan/data/hutang/"+tgl_awal+"/"+tgl_akhir);
+            $('#btncetak').attr("href","/laporan/data/hutang/"+supplier+'/'+tgl_awal+"/"+tgl_akhir);
         })
 
         $(document).on('click', '#btngrafik', function(){

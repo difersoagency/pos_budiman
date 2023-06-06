@@ -201,12 +201,13 @@
                         type: 'GET',
                         dataType: 'json', // added data type
                         success: function(res) {
-                            if(jumlah > res){
-                                table.find('#msg-alert').html('Jumlah barang dibeli hanya '+res);
-                                console.log(table.find('#msg-alert').length);
-                            }else{
-                                table.find('#msg-alert').html('');
-                            }
+                            alert(jumlah);
+                            // if(jumlah > res){
+                            //     table.find('#msg-alert').html('Jumlah barang dibeli hanya '+res);
+                            //     console.log(table.find('#msg-alert').length);
+                            // }else{
+                            //     table.find('#msg-alert').html('');
+                            // }
                         }
                     });
             } else {

@@ -626,7 +626,6 @@ $(function(){
                     data += "Barang yang tersedia hanya "+ stok;
                     data += cek_subtitusi(ids, jumlah);
                             
-                    console.log(cek_subtitusi(ids, jumlah))
                             
                 }
                             data += `</small></td>

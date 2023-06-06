@@ -122,7 +122,7 @@
                 processing: '<i class="fa fa-spinner fa-spin"></i> Tunggu Sebentar'
             },
             ajax: {
-                'url': '/master/promo/data/0/0',
+                'url': '/master/promo/data/0/0', //untuk 2 parameter diakhir digunakan untuk memfilter tanggal
                 'type': 'POST',
                 'headers': {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'

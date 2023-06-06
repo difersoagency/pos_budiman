@@ -305,8 +305,8 @@ Route::group(['prefix' => '/laporan'], function () {
         Route::get('/penjualan/{tgl_awal}/{tgl_akhir}', [App\Http\Controllers\LaporanController::class, 'laporan_penjualan_data'])->name('data.laporan.penjualan');
         Route::get('/retur_beli/{tgl_awal}/{tgl_akhir}', [App\Http\Controllers\LaporanController::class, 'laporan_retur_beli_data'])->name('data.laporan.retur_beli');
         Route::get('/retur_jual/{tgl_awal}/{tgl_akhir}', [App\Http\Controllers\LaporanController::class, 'laporan_retur_jual_data'])->name('data.laporan.retur_jual');
-        Route::get('/hutang/{tgl_awal}/{tgl_akhir}', [App\Http\Controllers\LaporanController::class, 'laporan_hutang_data'])->name('data.laporan.hutang');
-        Route::get('/piutang/{tgl_awal}/{tgl_akhir}', [App\Http\Controllers\LaporanController::class, 'laporan_piutang_data'])->name('data.laporan.piutang');
+        Route::get('/hutang/{supplier}/{tgl_awal}/{tgl_akhir}', [App\Http\Controllers\LaporanController::class, 'laporan_hutang_data'])->name('data.laporan.hutang');
+        Route::get('/piutang/{customer}/{tgl_awal}/{tgl_akhir}', [App\Http\Controllers\LaporanController::class, 'laporan_piutang_data'])->name('data.laporan.piutang');
         Route::get('/kartu_stok/{barang_id}/{tgl_awal}/{tgl_akhir}', [App\Http\Controllers\LaporanController::class, 'laporan_kartu_stok_data'])->name('data.laporan.kartu_stok');
         Route::get('/top_penjualan/{tgl_awal}/{tgl_akhir}', [App\Http\Controllers\LaporanController::class, 'laporan_top_penjualan_data'])->name('data.laporan.top_penjualan');
         Route::get('/produk', [App\Http\Controllers\LaporanController::class, 'laporan_produk_data'])->name('data.laporan.produk');
@@ -317,8 +317,8 @@ Route::group(['prefix' => '/laporan'], function () {
         Route::post('/penjualan/{tgl_awal}/{tgl_akhir}', [App\Http\Controllers\LaporanController::class, 'data_penjualan'])->name('table.laporan.penjualan');
         Route::post('/retur_beli/{tgl_awal}/{tgl_akhir}', [App\Http\Controllers\LaporanController::class, 'data_retur_beli'])->name('table.laporan.retur_beli');
         Route::post('/retur_jual/{tgl_awal}/{tgl_akhir}', [App\Http\Controllers\LaporanController::class, 'data_retur_jual'])->name('table.laporan.retur_jual');
-        Route::post('/hutang/{tgl_awal}/{tgl_akhir}', [App\Http\Controllers\LaporanController::class, 'data_hutang'])->name('table.laporan.hutang');
-        Route::post('/piutang/{tgl_awal}/{tgl_akhir}', [App\Http\Controllers\LaporanController::class, 'data_piutang'])->name('table.laporan.piutang');
+        Route::post('/hutang/{supplier}/{tgl_awal}/{tgl_akhir}', [App\Http\Controllers\LaporanController::class, 'data_hutang'])->name('table.laporan.hutang');
+        Route::post('/piutang/{customer}/{tgl_awal}/{tgl_akhir}', [App\Http\Controllers\LaporanController::class, 'data_piutang'])->name('table.laporan.piutang');
         Route::post('/kartu_stok/{barang_id}/{tgl_awal}/{tgl_akhir}', [App\Http\Controllers\LaporanController::class, 'data_kartu_stok'])->name('table.laporan.kartu_stok');
         Route::post('/top_penjualan/{tgl_awal}/{tgl_akhir}', [App\Http\Controllers\LaporanController::class, 'data_top_penjualan'])->name('table.laporan.top_penjualan');
         Route::post('/produk', [App\Http\Controllers\LaporanController::class, 'data_produk'])->name('table.laporan.produk');

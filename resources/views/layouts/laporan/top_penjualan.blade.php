@@ -42,7 +42,7 @@
                                 <thead class="tw-bg-prim-blue">
                                     <tr class="tw-bg-prim-white">
                                         <th colspan="5">
-                                        <a href="" id="btncetak"><button type="button"  class="tw-w-48 tw-bg-prim-red tw-border-0  tw-text-center tw-text-white tw-py-2 tw-rounded-lg hover:tw-bg-red-700 tw-transition-all float-bottom" >Cetak Laporan</button></a>
+                                        <a href="" id="btncetak"><button type="button"  class="tw-w-48 tw-bg-prim-red tw-border-0  tw-text-center tw-text-white tw-py-2 tw-rounded-lg hover:tw-bg-red-700 tw-transition-all float-bottom" >Download</button></a>
                                         </th>
                                     </tr>
                                     <tr>
@@ -95,7 +95,8 @@
                     data: 'jumlah',
                     className: 'nowrap-text align-center',
                 }
-            ]
+            ],
+            order: [[2, 'desc']],
         });
         }
         $(document).on('click', '#btnlaporan', function(){

@@ -30,6 +30,7 @@ use PDF;
 
 class TransaksiController extends Controller
 {
+    //Mengarahkan user ke view archive-trans
     public function archive_trans()
     {
         return view('layouts.archive.archive-trans');
@@ -190,7 +191,7 @@ class TransaksiController extends Controller
         return view('layouts.transaksi.edit-hutang', ['data' => $data, 'p' => $p]);
     }
 
-    //Menyimpan 
+    //Menyimpan hasil update untuk perubahan data hutang
     public function update_hutang(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
@@ -227,12 +228,14 @@ class TransaksiController extends Controller
         }
     }
 
+    //Mengarahkan user ke modal penambahan pelunasan hutang
     public function tambah_detail_hutang($id)
     {
         $p = Pembayaran::all();
         return view('layouts.modal.hutang-modal-create', ['id' => $id, 'p' => $p]);
     }
 
+    //Menyimpan hasil penambahan pembayaran pelunasan hutang
     public function store_detail_hutang(Request $r, $id)
     {
         $validator = Validator::make($r->all(), [
@@ -276,7 +279,8 @@ class TransaksiController extends Controller
             }
         }
     }
-
+    
+    //Mengarahkan user menuju modal edit pembayaran pelunasan hutang
     public function edit_detail_hutang($id)
     {
         $data = DTransHutang::find($id);
@@ -285,6 +289,7 @@ class TransaksiController extends Controller
         return view('layouts.modal.hutang-modal-edit', ['id' => $id, 'p' => $p, 'data' => $data]);
     }
 
+    //Menyimpan hasil perubahan terhadap pembayaran pelunasan hutang
     public function update_detail_hutang(Request $r, $id)
     {
         $validator = Validator::make($r->all(), [
@@ -326,6 +331,7 @@ class TransaksiController extends Controller
         }
     }
 
+    //Menghapus salah satu pembayaran pelunasan hutang
     public function delete_detail_hutang(Request $r)
     {
         $del = DTransHutang::find($r->id);
@@ -344,6 +350,7 @@ class TransaksiController extends Controller
         }
     }
 
+    //Mengambil data seluruh hutang yang belum dilunasi
     public function selectdata_hutang(Request $r, $id)
     {
         if ($id == 0) {
@@ -362,11 +369,13 @@ class TransaksiController extends Controller
     }
 
     //PIUTANG
+    //Mengarahkan user ke view piutang
     public function master_piutang()
     {
         return view('layouts.transaksi.master-piutang');
     }
 
+    //Mengambil seluruh data piutang pada transaksi penjualan
     public function data_piutang()
     {
         $data = Piutang::with('TransJual')->addSelect(['sum_total' => function ($q) {
@@ -412,12 +421,14 @@ class TransaksiController extends Controller
             ->make(true);
     }
 
+    //Mengarahkan user ke modal detail piutang
     public function detail_piutang($id)
     {
         $data = Piutang::where('id', $id)->with('TransJual.Booking.Customer')->first();
         return view('layouts.modal.piutang-modal-detail', ['id' => $id, 'data' => $data]);
     }
 
+    //Mengambil seluruh detail pembayaran pelunasan untuk piutang tersebut
     public function data_detail_piutang($id)
     {
         $data = DPiutang::where('h_piutang_id', $id)->get();
@@ -445,17 +456,20 @@ class TransaksiController extends Controller
             ->make(true);
     }
 
+    //Mengarahkan user menuju modal penambahan pelunasan piutang
     public function tambah_detail_piutang($id)
     {
         $p = Pembayaran::all();
         return view('layouts.modal.piutang-modal-create', ['id' => $id, 'p' => $p]);
     }
 
+    //Mengarahkan user menuju halaman untuk menambahkan piutang
     public function bayar_piutang()
     {
         return view('layouts.transaksi.bayar-piutang');
     }
 
+    //Menyimpan hasil penambahan pelunasan piutang baru
     public function store_detail_piutang(Request $r, $id)
     {
         $validator = Validator::make($r->all(), [
@@ -494,6 +508,7 @@ class TransaksiController extends Controller
         }
     }
 
+    //Mengarahkan user menuju modal untuk mengedit pembayaran cicilan piutang
     public function edit_detail_piutang($id)
     {
         $data = DPiutang::find($id);
@@ -501,6 +516,7 @@ class TransaksiController extends Controller
         return view('layouts.modal.piutang-modal-edit', ['id' => $id, 'p' => $p, 'data' => $data]);
     }
 
+    //Menyimpan hasil data yang diedit pada pembayaran cicilan piutang 
     public function update_detail_piutang(Request $r, $id)
     {
         $validator = Validator::make($r->all(), [
@@ -537,6 +553,7 @@ class TransaksiController extends Controller
         }
     }
 
+    //Menghapus data piutang
     public function delete_piutang(Request $r)
     {
         $del = Piutang::where('id', $r->id)->delete();
@@ -548,6 +565,7 @@ class TransaksiController extends Controller
         }
     }
 
+    //Menghapus data pembayaran cicilan piutang
     public function delete_detail_piutang(Request $r)
     {
         $del = DPiutang::find($r->id);
@@ -700,7 +718,7 @@ class TransaksiController extends Controller
         }
     }
 
-    //Mengambil data Retur Beli sesuai ID fan 
+    //Mengambil data Retur Beli sesuai ID dan mengarahkan ke halaman edit retur beli
     public function edit_retur_beli($id)
     {
         $data = ReturBeli::find($id);
@@ -723,15 +741,17 @@ class TransaksiController extends Controller
 
         if ($validator->fails()) {
             return response()->json(['data' => 'error']);
-        } else {
+        }
+        else {
             $rb = ReturBeli::find($id);
             for ($i = 0; $i < count($request->barang_id); $i++) {
                 $drb = DTransBeli::where([['barang_id', '=', $request->barang_id[$i]], ['htrans_beli_id', '=', $rb->htrans_beli_id]])->first();
-                if($drb->jumlah < $request->jumlah[$i]){
-                    $bool = false;
+                if($drb){
+                    if($drb->jumlah < $request->jumlah[$i]){
+                        $bool = false;
+                    }
                 }
             }
-
             if($bool == false){
                 return response()->json(['data' => 'kelebihan']);
             }
@@ -741,11 +761,14 @@ class TransaksiController extends Controller
                 $retur_beli->tgl_retur_beli = $request->tgl_retur_beli;
                 $retur_beli->total_retur_beli = str_replace('.', "", $request->total);
                 $retur_beli->save();
-
                 $tb = DReturBeli::where('hretur_beli_id', $id)->get();
 
-
                 if (count($tb) > 0) {
+                    foreach($tb as $res){
+                        $bu = Barang::find($res->barang_id);
+                        $bu->stok = $bu->stok + $res->jumlah;
+                        $bu->save();
+                    }
                     DReturBeli::where('hretur_beli_id', $id)->delete();
                 }
 
@@ -774,9 +797,9 @@ class TransaksiController extends Controller
         $tb = DReturBeli::where('hretur_beli_id', $request->id)->get();
 
         if (count($tb) > 0) {
-            foreach($tb as $i => $res){
-                $b = Barang::find($res->barang_id[$i]);
-                $b->stok = $b->stok + $res->jumlah[$i];
+            foreach($tb as $res){
+                $b = Barang::find($res->barang_id);
+                $b->stok = $b->stok + $res->jumlah;
                 $b->save();
             }
             DReturBeli::where('hretur_beli_id', $request->id)->delete();
@@ -792,11 +815,13 @@ class TransaksiController extends Controller
     }
 
     //RETUR JUAL
+    //Mengarahkan user ke view retur jual 
     public function transaksi_retur_jual()
     {
         return view('layouts.transaksi.retur-jual');
     }
 
+    //Mengambil seluruh data retur jual
     public function data_retur_jual()
     {
         $data = ReturJual::with('TransJual.Booking.Customer')->get();
@@ -851,6 +876,7 @@ class TransaksiController extends Controller
         return view('layouts.transaksi.tambah_retur-jual');
     }
 
+    //Menyimpan hasil Insert (Store) Retur Jual yang Baru
     public function store_retur_jual(Request $r)
     {
         $bool = true;
@@ -908,6 +934,7 @@ class TransaksiController extends Controller
         }
     }
 
+    //Mengambil data Retur Jual sesuai ID dan mengarahkan ke halaman edit retur jual
     public function edit_retur_jual($id)
     {
         $r = ReturJual::find($id);
@@ -915,6 +942,7 @@ class TransaksiController extends Controller
         return view('layouts.transaksi.edit_retur-jual', ['id' => $id, 'd' => $d, 'r' => $r]);
     }
 
+    //Menyimpan hasil Edit (Update) Retur Jual
     public function update_retur_jual(Request $r, $id)
     {
         $bool = true;
@@ -983,6 +1011,7 @@ class TransaksiController extends Controller
         }
     }
 
+    //Menghapus Retur Jual sesuai ID yang di request
     public function delete_retur_jual(Request $r)
     {
         $drj = DReturJual::where('hretur_jual_id', $r->id)->get();
@@ -1003,11 +1032,13 @@ class TransaksiController extends Controller
     }
 
     //PEMBELIAN
+    //Mengarahkan user ke view master beli
     public function transaksi_beli()
     {
         return view('layouts.transaksi.master-beli');
     }
 
+    //Mengambil seluruh data transaksi pembelian
     public function data_transaksi_beli()
     {
         $data = TransBeli::with('Supplier', 'Pembayaran', 'ReturBeli', 'TransHutang')->orderBy('tgl_trans_beli', 'desc')->get();
@@ -1075,12 +1106,14 @@ class TransaksiController extends Controller
             ->make(true);
     }
 
+    //Mengarahkan user ke view modal Detail Pembelian
     public function detail_beli($id)
     {
         $data = TransBeli::find($id);
         return view('layouts.modal.beli-modal-detail', ['data' => $data]);
     }
 
+    //Mengambil seluruh data barang pembelian berdasarakan ID transaksi
     public function detail_data_transaksi_beli($id)
     {
         $data = DTransBeli::where('htrans_beli_id', $id)->get();
@@ -1104,12 +1137,14 @@ class TransaksiController extends Controller
             ->make(true);
     }
 
+    //Mengecek jumlah kuantitas barang tertentu yang dibeli berdasarkan transaksi pembelian
     public function cek_jumlah_beli($po, $barang)
     {
         $d = DTransBeli::where([['htrans_beli_id', '=', $po], ['barang_id', '=', $barang]])->first();
         return $d->jumlah;
     }
 
+    //Mengarahkan user ke view tambah beli
     public function tambah_beli()
     {
         $supplier = Supplier::all();
@@ -1118,9 +1153,9 @@ class TransaksiController extends Controller
         return view('layouts.transaksi.tambah_beli', ['supplier' => $supplier, 'barang' => $barang, 'bayar' => $bayar]);
     }
 
+    //Menyimpan hasil Insert (Store) Beli yang Baru
     public function store_beli(Request $request)
     {
-        //dd($request);
         $validator = Validator::make(
             $request->all(),
             [
@@ -1143,6 +1178,7 @@ class TransaksiController extends Controller
                 return response()->json(['data' => 'dibayar']);
             } else {
                 $tgl_jatuh_tempo = NULL;
+                //set value tgl_jatuh_tempo untuk pembayaran metode giro
                 if($request->pembayaran_id == "4"){
                     $tgl_jatuh_tempo = $request->tgl_jatuh_tempo;
                 }
@@ -1159,6 +1195,7 @@ class TransaksiController extends Controller
                     'total' =>  str_replace('.', "", $request->total_bayar)
                 ]);
 
+                //masukkan ke table detail trans pembelian
                 for ($i = 0; $i < count($request->barang); $i++) {
                     DTransBeli::create([
                         'htrans_beli_id' => $header->id,
@@ -1168,11 +1205,13 @@ class TransaksiController extends Controller
                         'disc' => $request->diskon_beli[$i]
                     ]);
 
+                    //update stok pada table barang
                     $b = Barang::find($request->barang[$i]);
                     $b->stok = $b->stok + $request->jumlah_beli[$i];
                     $b->save();
                 }
 
+                //tambah hutang jika jumlah bayar kurang dari total
                 if (str_replace('.', "", $request->total_dibayar) != str_replace('.', "", $request->total_bayar)) {
                     TransHutang::create([
                         'pembayaran_id' => $request->pembayaran_id,
@@ -1187,6 +1226,7 @@ class TransaksiController extends Controller
         }
     }
 
+    //Mengambil data Transaksi Beli sesuai ID dan mengarahkan ke halaman edit edit beli
     public function edit_beli($id)
     {
         $dth = DTransHutang::whereHas('TransHutang', function($q) use($id){
@@ -1194,6 +1234,7 @@ class TransaksiController extends Controller
         })->count();
         $rb = ReturBeli::where('htrans_beli_id', $id)->count();
 
+        //cek jika transaksi jual tersebut memiliki retur beli dan pembayaran hutang
         if($dth > 0 || $rb > 0){
             return redirect()->back()->with('gagal', 'Gagal Edit');
         }else{
@@ -1205,10 +1246,9 @@ class TransaksiController extends Controller
         }
     }
     
+    //Menyimpan hasil Edit (Update) Transaksi Beli
     public function update_beli(Request $request, $id)
     {
-
-        //dd($request);
         $validator = Validator::make($request->all(), [
             'tgl_beli' => 'required',
             'supplier' => 'required',
@@ -1228,6 +1268,7 @@ class TransaksiController extends Controller
                 return response()->json(['data' => 'dibayar']);
             } else {
                 $tgl_jatuh_tempo = NULL;
+                //set value tgl_jatuh_tempo untuk pembayaran metode giro
                 if($request->pembayaran_id == "4"){
                     $tgl_jatuh_tempo = $request->tgl_jatuh_tempo;
                 }
@@ -1248,6 +1289,7 @@ class TransaksiController extends Controller
 
                 $tb = DTransBeli::where('htrans_beli_id', $id)->get();
 
+                //mengembalikan stok barang sebelum transaksi pembelian berlangsung
                 if (count($tb) > 0) {
                     foreach($tb as $i){
                         $ub = Barang::find($i->barang_id);
@@ -1267,7 +1309,7 @@ class TransaksiController extends Controller
                         'disc' => $request->diskon_beli[$i]
                     ]);
 
-
+                    //mengupdate stok barang setelah transaksi pembelian
                     $b = Barang::find($request->barang[$i]);
                     $b->stok = $b->stok + $request->jumlah_beli[$i];
                     $u = $b->save();
@@ -1276,6 +1318,7 @@ class TransaksiController extends Controller
                     }
                 }
 
+                //tambah hutang jika jumlah bayar kurang dari total
                 if (str_replace('.', "", $request->total_dibayar) != str_replace('.', "", $request->total_bayar)) {
                     TransHutang::create([
                         'pembayaran_id' => $request->pembayaran_id,
@@ -1293,6 +1336,7 @@ class TransaksiController extends Controller
         }
     }
 
+    //Menghapus Transaksi Beli sesuai ID yang di request
     public function delete_beli(Request $request)
     {
         $dth = DTransHutang::whereHas('TransHutang', function($q) use($request){
@@ -1323,6 +1367,7 @@ class TransaksiController extends Controller
         }
     }
 
+    //Mencetak nota pembelian (tampilan nota berdasarkan halaman nota beli)
     public function nota_beli($id)
     {
         $beli = TransBeli::find($id);
@@ -1330,6 +1375,7 @@ class TransaksiController extends Controller
         return $pdf->stream();
     }
 
+    //Mengambil data lengkap dari transaksi pembelian yang dipilih
     public function selectdata_beli(Request $r, $id)
     {
         if ($id == 0) {
@@ -1369,7 +1415,7 @@ class TransaksiController extends Controller
     }
 
     //PENJUALAN
-    //Mengarahkan user ke view Penjualan
+    //Mengarahkan user ke view master jual
     public function transaksi_jual()
     {
         return view('layouts.transaksi.master-jual');
@@ -1464,6 +1510,7 @@ class TransaksiController extends Controller
         return view('layouts.transaksi.tambah_jual');
     }
 
+    //Menyimpan hasil Insert (Store) jual yang Baru
     public function store_jual(Request $r)
     {
         $validator = Validator::make($r->all(), [
@@ -1478,6 +1525,7 @@ class TransaksiController extends Controller
             return response()->json(['data' => 'error', 'msg' => "Gagal menambahkan, periksa kembali form anda"]);
         } else {
             $tgl_jatuh_tempo = NULL;
+            //set value tgl_jatuh_tempo untuk pembayaran metode giro
             if($r->pembayaran_id == "4"){
                 $tgl_jatuh_tempo = $r->tgl_jatuh_tempo;
             }
@@ -1491,7 +1539,7 @@ class TransaksiController extends Controller
                 'total_jual' => str_replace(",", "", $r->total_jual),
                 'bayar_jual' => str_replace(",", "", $r->bayar_jual),
                 'kembali_jual' => str_replace(",", "", $r->kembali_jual),
-                'no_giro' => $r->no_giro,
+                'no_giro' => $r->no_giro, //no_giro = no kredit, no debet, no giro
                 'pembayaran_id' => $r->pembayaran_id,
             ]);
             $bool = true;
@@ -1499,6 +1547,7 @@ class TransaksiController extends Controller
             $jb = '';
             if ($c) {
                 for ($i = 0; $i < count($r->barang_id); $i++) {
+                    //memasukkan data ke table detail transaksi jual jasa
                     if ($r->jenis_brg[$i] == "jasa") {
                         $promo_id = NULL;
                         if(isset($r->promo_id[$i])){
@@ -1511,7 +1560,7 @@ class TransaksiController extends Controller
                             'promo_id' => $promo_id,
                             'disc' => $r->disc[$i]
                         ]);
-                        
+                    //memasukkan data ke table detail transaksi jual barang                        
                     } else if ($r->jenis_brg[$i] == "barang") {
                         $promo_id = NULL;
                         if(isset($r->promo_id[$i])){
@@ -1528,6 +1577,7 @@ class TransaksiController extends Controller
                             'disc' => $r->disc[$i]
                         ]);
 
+                        //update data barang setelah transaksi penjualan
                         $b = Barang::find($kb->id);
                         $b->stok = $b->stok - $r->jumlah[$i];
                         $b->save();
@@ -1538,6 +1588,8 @@ class TransaksiController extends Controller
                 }
                 $byrjual = (float)str_replace(",", "", $r->bayar_jual);
                 $totaljual = (float)str_replace(",", "", $r->total_jual);
+
+                //jika jumlah bayar kurang dari total, tambah piutang
                 if ($byrjual < $totaljual) {
                     Piutang::create([
                         'htrans_jual_id' => $c->id,
@@ -1555,6 +1607,7 @@ class TransaksiController extends Controller
         }
     }
 
+    //Mengambil data transaksi jual sesuai ID dan mengarahkan ke halaman edit jual
     public function edit_jual($id)
     {
         $dpu = DPiutang::whereHas('Piutang', function($q) use($id){
@@ -1562,6 +1615,7 @@ class TransaksiController extends Controller
         })->count();
         $drj = ReturJual::where('htrans_jual_id', $id)->count();
 
+        //cek jika transaksi jual tersebut memiliki retur jual dan pembayaran piutang
         if($dpu > 0 || $drj > 0){
             return redirect()->back()->with('gagal', "Gagal edit");
         }
@@ -1575,6 +1629,7 @@ class TransaksiController extends Controller
         }
     }
 
+    //Menyimpan hasil Edit (Update) Transaksi Jual
     public function update_jual(Request $r, $id)
     {
         $validator = Validator::make($r->all(), [
@@ -1585,14 +1640,17 @@ class TransaksiController extends Controller
             return response()->json(['data' => 'error', 'msg' => "Gagal menambahkan, periksa kembali form anda"]);
         } else {
             $pu = Piutang::where('htrans_jual_id', $id)->count();
+            //periksa jika ada piutang maka hapus dulu data piutangnya
             if($pu > 0){
                 $pud = Piutang::where('htrans_jual_id', $id)->delete();
             }
             $dtjj = DTransJualJasa::where('htrans_jual_id', $id)->count();
+            //periksa jika ada data detail jual jasa hapus dulu detail jual jasanya 
             if($dtjj > 0){
                 $dtjjd = DTransJualJasa::where('htrans_jual_id', $id)->delete();
             }
             $dtj = DTransJual::where('htrans_jual_id', $id)->count();
+            //periksa jika ada data detail jual barang kembalikan dulu stok barangnya kemudian hapus detail jual barang
             if($dtj > 0){
                 $dtjs = DTransJual::where('htrans_jual_id', $id)->get();
                 foreach($dtjs as $i){
@@ -1604,6 +1662,7 @@ class TransaksiController extends Controller
             }
 
             $tgl_jatuh_tempo = NULL;
+            //set value tgl_jatuh_tempo untuk pembayaran metode giro
             if($r->pembayaran_id == "4"){
                 $tgl_jatuh_tempo = $r->tgl_jatuh_tempo;
             }
@@ -1625,6 +1684,7 @@ class TransaksiController extends Controller
             $jb = '';
             if ($u) {
                 for ($i = 0; $i < count($r->barang_id); $i++) {
+                    //jika barang termasuk jasa, insert ke detail trans jual jasa
                     if ($r->jenis_brg[$i] == "jasa") {
                         $promo_id = NULL;
                         if(isset($r->promo_id[$i])){
@@ -1637,6 +1697,7 @@ class TransaksiController extends Controller
                             'promo_id' => $promo_id,
                             'disc' => $r->disc[$i]
                         ]);
+                    //jika barang termasuk barang, insert ke detail trans jual
                     } else if ($r->jenis_brg[$i] == "barang") {
                         $promo_id = NULL;
                         if(isset($r->promo_id[$i])){
@@ -1652,6 +1713,7 @@ class TransaksiController extends Controller
                             'disc' => $r->disc[$i]
                         ]);
 
+                        //update stok barang setelah transaksi penjualan
                         $b = Barang::find($kb->id);
                         $b->stok = $b->stok - $r->jumlah[$i];
                         $b->save();
@@ -1662,6 +1724,7 @@ class TransaksiController extends Controller
                 }
                 $byrjual = (float)str_replace(",", "", $r->bayar_jual);
                 $totaljual = (float)str_replace(",", "", $r->total_jual);
+                //jika jumlah bayar kurang dari total tambahkan piutang
                 if ($byrjual < $totaljual) {
                     Piutang::create([
                         'htrans_jual_id' => $id,
@@ -1679,6 +1742,7 @@ class TransaksiController extends Controller
         }
     }
 
+    //Menghapus Transaksi Jual sesuai ID yang di request
     public function delete_jual(Request $r)
     {
         $dpu = DPiutang::whereHas('Piutang', function($q) use($r){
@@ -1716,6 +1780,7 @@ class TransaksiController extends Controller
         }
     }
 
+    //Mencetak nota penjualan (tampilan nota berdasarkan halaman nota jual)
     public function nota_jual($id)
     {
         $jual = TransJual::find($id);
@@ -1723,14 +1788,17 @@ class TransaksiController extends Controller
         return $pdf->stream();
     }
 
+    //Mengambil seluruh data promo yang masih aktif saat ini
     public function promo_aktif($id, $jenis, $qty)
     {
         $date = Carbon::now()->toDateString();
         $promo = NULL;
+        //ambil promo untuk barang yang masih berlaku
         if($jenis == 'barang'){
             $kb = Barang::where('kode_barang', $id)->first();
             $promo = Promo::where('tgl_mulai', '<=', $date)->where('tgl_selesai', '>=', $date)->where('barang_id', $kb->id)->where('qty_sk', '<=', $qty)->get();
         }
+        //ambil promo untuk jasa yang masih berlaku
         else{
             $promo = Promo::where('tgl_mulai', '<=', $date)->where('tgl_selesai', '>=', $date)->where('jasa_id', $id)->get();
         }
@@ -1739,11 +1807,13 @@ class TransaksiController extends Controller
 
 
     //BOOKING
+    //Mengarahkan user ke view Master Booking
     public function master_booking()
     {
         return view('layouts.transaksi.master_booking');
     }
 
+    //Mengambil seluruh data booking
     public function data_master_booking()
     {
         $data = Booking::with('Customer', 'TransJual')->get();
@@ -1778,11 +1848,13 @@ class TransaksiController extends Controller
             ->make(true);
     }
 
+    //Mengarahkan user ke view tambah booking
     public function tambah_booking()
     {
         return view('layouts.transaksi.tambah_booking');
     }
 
+    //Menyimpan hasil Insert (Store) booking yang Baru
     public function store_booking(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -1832,6 +1904,7 @@ class TransaksiController extends Controller
         }
     }
 
+    //Mengambil data booking sesuai ID dan mengarahkan ke halaman edit booking
     public function edit_booking($id)
     {
         $data = Booking::find($id);
@@ -1846,6 +1919,7 @@ class TransaksiController extends Controller
         return view('layouts.transaksi.edit_booking', ['id' => $id, 'data' => $data, 'dbooking' => $dbooking]);
     }
 
+    //Menyimpan hasil Edit (Update) Booking
     public function update_booking(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
@@ -1901,6 +1975,7 @@ class TransaksiController extends Controller
         }
     }
 
+    //Menghapus Booking sesuai ID yang di request
     public function delete_booking(Request $r){
         $id = $r->id;
         $bool = true;
